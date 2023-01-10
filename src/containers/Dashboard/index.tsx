@@ -1,17 +1,19 @@
+import { Box, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Text, View } from 'src/components/common';
 import { IRootState } from 'src/redux/rootReducer';
 import './styles.scss';
 
 const Dashboard: React.FC<Props> = () => {
   return (
-    <View className="ctn-dashboard" flexGrow={1}>
-      <Text>
-        Welcome to © {new Date().getFullYear()}{' '}
-        <b className="has-text-primary">The Research Corporation of the University of Hawaii</b>
-      </Text>
-    </View>
+    <Box minHeight={'70vh'}>
+      <Stack height="100%" justifyContent={'center'} alignItems={'center'}>
+        <Typography variant="h3">
+          Welcome to © {new Date().getFullYear()}{' '}
+          <b className="has-text-primary">The Research Corporation of the University of Hawaii</b>
+        </Typography>
+      </Stack>
+    </Box>
   );
 };
 

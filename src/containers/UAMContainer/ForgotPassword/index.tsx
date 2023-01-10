@@ -8,8 +8,8 @@ import { IRootState } from 'src/redux/rootReducer';
 
 import { PATHS } from 'src/appConfig/paths';
 import { useComponentDidMount } from 'src/hooks';
-import { ForgotPasswordPayload, useForgotPassword, useResendSignUp } from 'src/queries';
-import { ErrorService, Navigator, Toastify } from 'src/services';
+import { ForgotPasswordPayload, useForgotPassword } from 'src/queries';
+import { ErrorService, Toastify } from 'src/services';
 import { getLocationState } from 'src/utils';
 
 import { Grid, Typography } from '@mui/material';
@@ -17,9 +17,7 @@ import { Box, Stack } from '@mui/system';
 import { Link } from 'react-router-dom';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
-import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { UAMBody } from '../common';
-import EmailConfirmationModal from '../common/EmailConfirmationModal';
 import { SIGNIN_KEY } from '../Signin/helpers';
 import {
   forgotPasswordFormSchema,
@@ -31,7 +29,6 @@ const ForgotPassword: React.FC<Props> = ({ location, onHideDialog, onShowDialog 
   const formRef = useRef<FormikProps<ForgotPasswordFormValue>>(null);
 
   const [userNameSent, setUsernameSent] = useState('');
-  const { resendSignUp } = useResendSignUp();
 
   useComponentDidMount(() => {
     const state = getLocationState(location);
@@ -42,23 +39,6 @@ const ForgotPassword: React.FC<Props> = ({ location, onHideDialog, onShowDialog 
 
   const handleError = (error: AuthError, variables: ForgotPasswordPayload) => {
     switch (error.code) {
-      case 'InvalidParameterException':
-        resendSignUp({ username: variables.username });
-        return onShowDialog({
-          type: DIALOG_TYPES.CONTENT_DIALOG,
-          data: {
-            content: (
-              <EmailConfirmationModal
-                username={variables.username}
-                onConfirmSuccess={() => {
-                  onHideDialog();
-                  Navigator.navigate(PATHS.signIn, { username: variables.username });
-                }}
-              />
-            ),
-            hideTitle: true,
-          },
-        });
       default:
         return ErrorService.handler(error);
     }

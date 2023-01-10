@@ -1,6 +1,5 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
-import { setAuthenticated } from '../auth/authSlice';
 
 export interface ICommonState {
   loading: boolean;
@@ -37,11 +36,6 @@ export const commonSlice = createSlice({
       state.showNavbar = action.payload;
     },
     setShowSidebar: (state, action: PayloadAction<boolean>) => {
-      state.showSidebar = action.payload;
-    },
-  },
-  extraReducers: {
-    [setAuthenticated.type]: (state, action: PayloadAction<boolean>) => {
       state.showSidebar = action.payload;
     },
   },

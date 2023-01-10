@@ -9,12 +9,8 @@ import {
   CompleteNewPasswordPayload,
   ConfirmPasswordPayload,
   ConfirmSignInPayload,
-  ConfirmSignUpPayload,
-  EmployerSignUpPayload,
   ForgotPasswordPayload,
-  ResendSignUpPayload,
   SignInPayload,
-  SignUpPayload,
   SubmitForgotPasswordPayload,
 } from 'src/queries/UAM/types';
 import { newCancelToken, stringify } from 'src/utils';
@@ -52,51 +48,6 @@ const create = (baseURL = appConfig.API_URL) => {
 
   // ====================== Auth ======================
   const signIn = (body: SignInPayload) => Auth.signIn(body.username, body.password);
-  const signUp = (body: SignUpPayload) => {
-    const params = {
-      username: body.username,
-      password: body.password,
-    };
-
-    const attributes = {
-      email: body.email,
-      given_name: body.firstName,
-      family_name: body.lastName,
-      middle_name: body.middleName,
-      birthdate: body.dateOfBirth,
-      'custom:ssn': body.socialSecurityNumber,
-      'custom:user_type': 'CLAIMANT',
-    };
-
-    return Auth.signUp({ ...params, attributes });
-  };
-
-  const employerSignUp = (body: EmployerSignUpPayload) => {
-    const params = {
-      username: body.username,
-      password: body.password,
-    };
-
-    const attributes = {
-      email: body.email,
-      given_name: body.firstName,
-      family_name: body.lastName,
-      middle_name: body.middleName,
-      phone_number: body.phoneNumber,
-      'custom:fein': body.federalEmployerIdentificationNumber,
-      'custom:title': body.title,
-      'custom:online_business_id': body.onlineBusinessId,
-      'custom:employer_type': body.employerType,
-      'custom:user_type': 'EMPLOYER',
-    };
-
-    return Auth.signUp({ ...params, attributes });
-  };
-
-  const resendSignUp = (body: ResendSignUpPayload) => Auth.resendSignUp(body.username);
-
-  const confirmSignUp = (body: ConfirmSignUpPayload) =>
-    Auth.confirmSignUp(body.username, body.code);
 
   const signOut = () => Auth.signOut();
 
@@ -131,47 +82,13 @@ const create = (baseURL = appConfig.API_URL) => {
   };
 
   // ====================== Claimant Profile ======================
-  const getMyProfile = () => api.get('/account-svc/v1/claimant/me', {}, newCancelToken());
-
-  const getMyProfileMock = () => {
-    const response = {
-      id: '115176d7-2d27-4ee3-9f43-47c4eeb02d1e',
-      createdAt: '2022-01-19T17:23:30.530Z',
-      updatedAt: '2022-01-19T17:23:30.530Z',
-      email: 'john_doe@gmail.com',
-      firstName: 'John',
-      lastName: 'Christopher',
-      middleName: 'Doe',
-      claimantUser: {
-        socialSecurityNumber: 783910003,
-        dateOfBirth: '1983-03-27',
-        phoneNumber: 12012987481,
-        mailingAddress: {
-          deliverTo: 'John Doe',
-          careOf: 'Edward Moore',
-          address: '1100 Manor Dr., Chalfont, PA 18914',
-          country: 'United States',
-          zipCode: 55000,
-          city: 'New York',
-          state: 'New York',
-        },
-        directDeposit: {
-          accountType: 'CHECKING',
-          routingNumber: 1236789043,
-          accountNumber: 'TPA423465235NH',
-        },
-      },
-    };
-    return new Promise((resolve) => {
-      setTimeout(() => resolve({ ok: true, data: response }), 600);
-    });
-  };
+  const getMyProfile = () => api.get('/account-svc/v1/me', {}, newCancelToken());
 
   const updateUserAvatar = (body: { avatarUrl: string }) =>
     api.patch(`/me/avatar`, body, newCancelToken());
 
   const updateMyProfile = (body: ProfilePayload) =>
-    api.put(`/account-svc/v1/claimant/me`, body, newCancelToken());
+    api.put(`/account-svc/v1/me`, body, newCancelToken());
 
   // ====================== Content ======================
   // const getContent = () => api.get('/content', {}, newCancelToken());
@@ -213,6 +130,10 @@ const create = (baseURL = appConfig.API_URL) => {
     const queryString = stringify(params);
     return api.get(`${appConfig.API_URL}/users/search?${queryString}`, {}, newCancelToken());
   };
+
+  // ====================== System Accounts ======================
+  const getMyPermissions = () => api.get('/account-svc/v1/permissions/me', {}, newCancelToken());
+
   //
   // Return back a collection of functions that we would consider our
   // interface.  Most of the time it'll be just the list of all the
@@ -227,10 +148,7 @@ const create = (baseURL = appConfig.API_URL) => {
     // getPermission,
     confirmSignIn,
     signIn,
-    signUp,
-    employerSignUp,
-    resendSignUp,
-    confirmSignUp,
+
     signOut,
     forgotPassword,
     submitForgotPassword,
@@ -252,7 +170,6 @@ const create = (baseURL = appConfig.API_URL) => {
 
     // ====================== Profile ======================
     getMyProfile,
-    getMyProfileMock,
     // updateMyProfile,
     updateUserAvatar,
     updateMyProfile,
@@ -262,6 +179,9 @@ const create = (baseURL = appConfig.API_URL) => {
     searchUserAccounts,
     searchUserAccountsAxios,
     searchUserAccountsByOrderAxios,
+
+    // ====================== System Accounts ======================
+    getMyPermissions,
   };
 };
 

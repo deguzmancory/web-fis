@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import { useComponentDidMount } from 'src/hooks';
-import { MyProfile, useLogout, useProfile } from 'src/queries';
+import { MyProfile, useLogout, useMyPermissions, useProfile } from 'src/queries';
 import { setAuthenticated, setUserName } from 'src/redux/auth/authSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { ErrorService, Navigator, TokenService } from 'src/services';
@@ -21,35 +21,30 @@ const AuthContainer: React.FC<Props> = ({
   const { logout } = useLogout();
 
   const handleSetAuthenticated = (data: MyProfile) => {
-    onSetUserName({
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
-    });
-
+    onSetUserName(data);
     onSetAuth(true);
   };
 
-  // const { getMyPermissions } = useMyPermissions({
-  //   onSuccess: async (data) => {
-  //     onSetMyPermissions(data);
-  //     const localPermissions = await PermissionsService.getPermissions();
-  //     onSetMyPermissions(data);
-  //     const isDiffPermissions =
-  //       isEmpty(localPermissions) ||
-  //       data.length !== localPermissions.length ||
-  //       // eslint-disable-next-line security/detect-object-injection
-  //       localPermissions.some((item, idx) => item !== data[idx]);
-  //     if (isDiffPermissions) {
-  //       const cognitoUser: CognitoUser = await Auth.currentAuthenticatedUser();
-  //       const refreshToken = cognitoUser.getSignInUserSession().getRefreshToken();
-  //       return cognitoUser.refreshSession(refreshToken, () => {
-  //         getMyProfile();
-  //       });
-  //     }
-  //     return getMyProfile();
-  //   },
-  // });
+  const { getMyPermissions } = useMyPermissions({
+    onSuccess: async (data) => {
+      // onSetMyPermissions(data);
+      // const localPermissions = await PermissionsService.getPermissions();
+      // onSetMyPermissions(data);
+      // const isDiffPermissions =
+      //   isEmpty(localPermissions) ||
+      //   data.length !== localPermissions.length ||
+      //   // eslint-disable-next-line security/detect-object-injection
+      //   localPermissions.some((item, idx) => item !== data[idx]);
+      // if (isDiffPermissions) {
+      //   const cognitoUser: CognitoUser = await Auth.currentAuthenticatedUser();
+      //   const refreshToken = cognitoUser.getSignInUserSession().getRefreshToken();
+      //   return cognitoUser.refreshSession(refreshToken, () => {
+      //     getMyProfile();
+      //   });
+      // }
+      return getMyProfile();
+    },
+  });
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { getMyProfile } = useProfile({
@@ -113,7 +108,7 @@ const AuthContainer: React.FC<Props> = ({
         .then((user) => {
           // const userAttributes = user.attributes;
           // TODO: Temp fix until fis profile integrated
-          // getMyPermissions();
+          getMyPermissions();
         })
         .catch(() => {
           clearAuth();
@@ -134,6 +129,7 @@ const mapStateToProps = (state: IRootState) => ({
 const mapDispatchToProps = {
   onSetAuth: setAuthenticated,
   onSetUserName: setUserName,
+  // onSetMyPermissions: setMyPermissions,
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AuthContainer));

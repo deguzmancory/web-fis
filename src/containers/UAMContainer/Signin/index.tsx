@@ -8,14 +8,13 @@ import { Link } from 'react-router-dom';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import { PATHS } from 'src/appConfig/paths';
 import { Button, Form, Input, InputPassword } from 'src/components/common';
-import { SignInPayload, useLogin, useProfile, useResendSignUp } from 'src/queries';
+import { SignInPayload, useLogin, useProfile } from 'src/queries';
 import { useUserId } from 'src/queries/UAM/useUserId';
 import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { IRootState } from 'src/redux/rootReducer';
 import { ErrorService, Navigator } from 'src/services';
 import { UAMBody } from '../common';
-import EmailConfirmationModal from '../common/EmailConfirmationModal';
 import MFAConfirmationModal from '../common/MFAConfirmationModal';
 import { initialSignInFormValue, signInFormSchema, SignInFormValue, SIGNIN_KEY } from './helpers';
 
@@ -52,17 +51,10 @@ const Signin: React.FC<Props> = ({ onShowDialog, onHideDialog }) => {
 
   const { loading } = useProfile();
 
-  const { resendSignUp } = useResendSignUp();
-
   const handleLogin = (values: SignInFormValue) => {
     const { username, password } = values;
 
     login({ username, password });
-  };
-
-  const handleConfirmSuccess = (payload: SignInPayload) => {
-    onHideDialog();
-    login(payload);
   };
 
   const handleError = (error: AuthError, variables: SignInPayload) => {
@@ -79,32 +71,6 @@ const Signin: React.FC<Props> = ({ onShowDialog, onHideDialog }) => {
       case ErrorService.TYPES.UserNotFoundException:
         return formRef.current.setErrors({ username: ErrorService.MESSAGES.accountNotExist });
 
-      case ErrorService.TYPES.UserNotConfirmedException:
-        resendSignUp(
-          { username: variables.username },
-          {
-            onSuccess(data) {
-              onShowDialog({
-                type: DIALOG_TYPES.CONTENT_DIALOG,
-                data: {
-                  content: (
-                    <EmailConfirmationModal
-                      username={variables.username}
-                      onConfirmSuccess={() =>
-                        handleConfirmSuccess({
-                          username: variables.username,
-                          password: variables.password,
-                        })
-                      }
-                    />
-                  ),
-                  hideTitle: true,
-                },
-              });
-            },
-          }
-        );
-        return;
       case ErrorService.TYPES.UsernameExistsException:
         return;
 

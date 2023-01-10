@@ -1,24 +1,17 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { MyProfile } from 'src/queries';
 import { IRootState } from '../store';
 
 export interface IAuthState {
   isAuthenticated?: boolean;
-  user: {
-    firstName: string;
-    lastName: string;
-    email?: string;
-    userType?: string;
-  };
+  user: MyProfile;
   isPasswordVerify: boolean;
   isWelcomeScreen: boolean;
 }
 
 const initialState: IAuthState = {
   isAuthenticated: null,
-  user: {
-    firstName: 'Tue',
-    lastName: 'Truong',
-  },
+  user: null,
   isPasswordVerify: false,
   isWelcomeScreen: false,
 };
@@ -43,15 +36,7 @@ export const authSlice = createSlice({
     setIsWelcomeScreen: (state, action: PayloadAction<boolean>) => {
       state.isWelcomeScreen = action.payload;
     },
-    setUserName: (
-      state,
-      action: PayloadAction<{
-        firstName: string;
-        lastName: string;
-        email?: string;
-        userType?: string;
-      }>
-    ) => {
+    setUserName: (state, action: PayloadAction<MyProfile>) => {
       state.user = action.payload;
     },
   },
