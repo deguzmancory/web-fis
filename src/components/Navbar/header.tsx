@@ -15,20 +15,29 @@ const Header = () => {
       py={1}
     >
       {navbarItems.map((item) => (
-        <MuiLink
-          {...(item?.url && {
-            href: item.url,
-            target: '_blank',
-            rel: NO_OPENER,
-          })}
-          key={item.label}
-          className={`${clsPrefix}-item ${clsPrefix}-link`}
+        <Box
+          className={`${clsPrefix}-item`}
           sx={{
-            fontSize: 12,
+            cursor: 'pointer',
           }}
-          underline="none"
+          key={item.label}
+          my={'auto'}
         >
-          {item.label}
+          <MuiLink
+            {...(item?.url && {
+              href: item.url,
+              target: '_blank',
+              rel: NO_OPENER,
+            })}
+            key={item.label}
+            className={`${clsPrefix}-link`}
+            sx={{
+              fontSize: 12,
+            }}
+            underline="none"
+          >
+            {item.label}
+          </MuiLink>
           <Box
             className={cn(`${clsPrefix}-item__sub subItems`, {
               isLeft: item?.isDisplayLeft,
@@ -43,6 +52,7 @@ const Header = () => {
                       target: '_blank',
                       rel: NO_OPENER,
                     })}
+                    fontWeight="bold"
                     underline="none"
                   >
                     {subItem.label}
@@ -51,7 +61,7 @@ const Header = () => {
               )),
             ]}
           </Box>
-        </MuiLink>
+        </Box>
       ))}
     </Stack>
   );
