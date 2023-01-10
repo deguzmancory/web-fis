@@ -1,9 +1,9 @@
-import { Box, Container, Grid, Link, Stack, Typography } from '@mui/material';
+import { Email, LocationOn, Phone } from '@mui/icons-material';
+import { Box, Container, Grid, Icon, Link, Stack, Typography } from '@mui/material';
 import React from 'react';
 import appConfig from 'src/appConfig';
 import { IMAGES } from 'src/appConfig/images';
 import { isEmpty } from 'src/validations';
-import { externalsFooterLink } from './helpers';
 
 const Footer: React.FC<Props> = () => {
   return (
@@ -22,46 +22,47 @@ const Footer: React.FC<Props> = () => {
           <Grid container spacing={2} pt={3}>
             <Grid item xs={4}>
               <TypoTitle text={'General Inquiries Email'} />
-              <TypoDescription text={'rcuh@rcuh.com'} />
-              <TypoDescription text={''} />
+              <TypoDescription text={'rcuh@rcuh.com'} type="email" />
+              <TypoDescription text={''} type="" />
 
               <TypoTitle text={'HR & Payroll Inquiries Email'} />
-              <TypoDescription text={'rcuhhr@rcuh.com'} />
+              <TypoDescription text={'rcuhhr@rcuh.com'} type="email" />
             </Grid>
             <Grid item xs={4}>
               <TypoTitle text={'Accounting & Project Admin'} />
-              <TypoDescription text={'808.988.8300'} />
-              <TypoDescription text={'2800 Woodlawn Drive, Suite 200 | Honolulu, HI 96822'} />
-              <TypoDescription text={''} />
+              <TypoDescription text={'808.988.8300'} type="phone" />
+              <TypoDescription
+                text={'2800 Woodlawn Drive, Suite 200 | Honolulu, HI 96822'}
+                type="location"
+              />
+              <TypoDescription text={''} type={''} />
 
               <TypoTitle text={'Human Resources/ Payroll '} />
-              <TypoDescription text={'808.956.3100'} />
+              <TypoDescription text={'808.956.3100'} type="phone" />
               <TypoDescription
                 text={'1601 East-West Road | Burns Hall 4th Floor, Makai Wing | Honolulu, HI 96848'}
+                type="location"
               />
             </Grid>
             <Grid item xs={4}>
               <TypoTitle text={'Disbursing / Procurement'} />
-              <TypoDescription text={'808.956.3608'} />
-              <TypoDescription text={'2800 Woodlawn Drive, Suite 200 | Honolulu, HI 96822'} />
-              <TypoDescription text={''} />
+              <TypoDescription text={'808.956.3608'} type="phone" />
+              <TypoDescription
+                text={'2800 Woodlawn Drive, Suite 200 | Honolulu, HI 96822'}
+                type="location"
+              />
+              <TypoDescription text={''} type={''} />
 
               <TypoTitle text={`Executive Director's Office`} />
-              <TypoDescription text={'808.988.8311'} />
-              <TypoDescription text={'2800 Woodlawn Drive, Suite 200 | Honolulu, HI 96822'} />
-              <TypoDescription text={''} />
+              <TypoDescription text={'808.988.8311'} type="phone" />
+              <TypoDescription
+                text={'2800 Woodlawn Drive, Suite 200 | Honolulu, HI 96822'}
+                type="location"
+              />
+              <TypoDescription text={''} type={''} />
             </Grid>
           </Grid>
-          <Box pt={2}>
-            <Stack flexDirection={'row'} justifyContent="center">
-              {externalsFooterLink.map((item) => (
-                <Link href={item.url} key={item.title}>
-                  <Typography variant="body2" fontWeight={'bold'} color="white" mr={4}>
-                    {item.title}
-                  </Typography>
-                </Link>
-              ))}
-            </Stack>
+          <Box>
             <Stack flexDirection={'row'} justifyContent="center" py={1}>
               <Typography variant="body2" fontWeight={'bold'} color="white">
                 If you require assistance in accessing content on this website, please contact
@@ -95,11 +96,35 @@ const TypoTitle = ({ text }) => {
   );
 };
 
-const TypoDescription = ({ text }) => {
+const TypoDescription = ({ text, type }) => {
+  const getIconName = (type) => {
+    switch (type) {
+      case 'email':
+        return <Email fontSize="small" />;
+      case 'phone':
+        return <Phone fontSize="small" />;
+      case 'location':
+        return <LocationOn fontSize="small" />;
+      default:
+        break;
+    }
+  };
+
   return (
-    <Typography variant="subtitle1" color={'white'}>
-      {!isEmpty(text) ? text : <br />}
-    </Typography>
+    <Stack flexDirection="row" alignItems={'flex-start'}>
+      <Icon
+        sx={{
+          '& svg': {
+            transform: 'translateY(-7px)',
+          },
+        }}
+      >
+        {getIconName(type)}
+      </Icon>
+      <Typography variant="subtitle1" color={'white'} className="ml-1">
+        {!isEmpty(text) ? text : <br />}
+      </Typography>
+    </Stack>
   );
 };
 

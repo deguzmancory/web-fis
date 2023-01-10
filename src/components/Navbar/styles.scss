@@ -1,0 +1,67 @@
+@use '~src/scss/vars' as *;
+@use '~src/scss/mixin' as *;
+
+.ctn-navbar {
+  &-desktop {
+    &-link {
+      padding: 0 16px !important;
+      margin: auto 0px !important;
+      color: $color-primary-400 !important;
+      font-size: 14 !important;
+      font-weight: bold !important;
+
+      &:hover {
+        color: $color-white !important;
+      }
+    }
+    &-item {
+      position: relative;
+      display: inline-block;
+
+      &::before {
+        content: '';
+        background-color: transparent;
+        width: 45px;
+        height: 26px;
+
+        position: absolute;
+        top: 20px;
+        z-index: 99;
+      }
+
+      &:hover {
+        & .subItems {
+          display: block !important;
+        }
+      }
+      &__sub {
+        display: none;
+        position: absolute;
+        z-index: 99;
+        top: 40px;
+        left: 6px;
+
+        min-width: 192px;
+        background-color: rgba($color: $color-primary-700, $alpha: 0.9);
+        border-radius: 0 0 4px 4px;
+
+        &.isLeft {
+          left: -96px;
+        }
+
+        & .subItem {
+          padding: 8px 12px !important;
+          width: 100%;
+          &:hover {
+            & a {
+              color: $color-info;
+            }
+          }
+          & a {
+            color: $color-white;
+          }
+        }
+      }
+    }
+  }
+}

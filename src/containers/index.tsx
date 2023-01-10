@@ -37,16 +37,15 @@ const Routing: React.FC<{ location: Location }> = (props) => {
 
   useComponentDidMount(() => {
     const currentWebTenant = TenantService.getWebTenant();
-    console.log('currentWebTenant: ', currentWebTenant);
     TenantService.setTenant({ name: currentWebTenant });
   });
 
   return (
-    <Box pt={8}>
+    <Box pt={12}>
       <Navbar />
       <Switch location={props.location}>
         <Route path={PATHS.root} render={() => <Redirect to={PATHS.dashboard} />} exact />
-        <CustomRoute path={PATHS.dashboard} component={Dashboard} />
+        <CustomRoute pageRequiredAuth path={PATHS.dashboard} component={Dashboard} />
 
         <CustomRoute path={PATHS.signIn} component={Signin} />
         <CustomRoute path={PATHS.signUp} component={Signup} />
