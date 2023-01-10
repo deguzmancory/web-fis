@@ -2,7 +2,7 @@
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import Amplify from 'aws-amplify';
+import { Amplify } from 'aws-amplify';
 import { createRoot } from 'react-dom/client';
 
 import * as workbox from './workbox';
@@ -36,7 +36,7 @@ const queryClient = new QueryClient({
 Amplify.configure(appConfig.AWS_CONFIG);
 
 const container = document.getElementById('root');
-const root = createRoot(container); // createRoot(container!) if you use TypeScript
+const root = createRoot(container!);
 root.render(
   <ThemeProvider theme={theme}>
     <Provider store={store}>

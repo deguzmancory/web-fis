@@ -1,4 +1,4 @@
-import { AppBar, Box, Stack, Toolbar, Typography } from '@mui/material';
+import { AppBar, Backdrop, Box, CircularProgress, Stack, Toolbar, Typography } from '@mui/material';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -18,8 +18,10 @@ const Navbar: React.FC<Props> = () => {
   const { profile } = useProfile();
   const { fullName, roleName } = profile || {};
   const { logout } = useLogout();
+  const [isClickedLogout, setIsClickedLogout] = React.useState(false);
 
   const handleLogout = () => {
+    setIsClickedLogout(true);
     logout();
     TokenService.clearToken();
   };
@@ -27,6 +29,15 @@ const Navbar: React.FC<Props> = () => {
   if (!showNavbar) return null;
   return (
     <AppBar variant="elevation" position="fixed">
+      {isClickedLogout && (
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={true}
+          onClick={() => {}}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      )}
       <Header />
 
       <Toolbar variant="regular">
@@ -42,7 +53,7 @@ const Navbar: React.FC<Props> = () => {
             </Box>
             <Box p={2}>
               <Typography variant="body2" fontWeight={'bold'} color="white">
-                {roleName}
+                {roleName || 'Unknown'}
               </Typography>
             </Box>
             <Box

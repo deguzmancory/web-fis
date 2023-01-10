@@ -9,27 +9,18 @@ import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, TenantService } from 'src/services';
 import Dev from './Dev';
 
-import Sidebar from 'src/components/Sidebar';
 import AuthContainer from './StartupContainers/AuthContainer';
 import ContentContainer from './StartupContainers/ContentContainer';
 import DialogContainer from './StartupContainers/DialogContainer';
-import LoadingContainer from './StartupContainers/LoadingContainer';
 import NotFound from './StartupContainers/NotFound';
-import ResponsiveContainer from './StartupContainers/ResponsiveContainer';
 import SplashScreen from './StartupContainers/SplashScreen';
 import ToastContainer from './StartupContainers/ToastContainer';
-import UploadProgressContainer from './StartupContainers/UploadProgressContainer';
 
 import { Box } from '@mui/material';
 import Footer from 'src/components/Footer';
 import { useComponentDidMount } from 'src/hooks';
 import ScrollToTop from './StartupContainers/ScrollToTop';
 
-const Signin = React.lazy(() => import('./UAMContainer/Signin'));
-const Signup = React.lazy(() => import('./UAMContainer/Signup'));
-const ForgotPassword = React.lazy(() => import('./UAMContainer/ForgotPassword'));
-const ResetPassword = React.lazy(() => import('./UAMContainer/ResetPassword'));
-const Welcome = React.lazy(() => import('./UAMContainer/Welcome'));
 const Dashboard = React.lazy(() => import('./Dashboard'));
 
 const Routing: React.FC<{ location: Location }> = (props) => {
@@ -47,29 +38,19 @@ const Routing: React.FC<{ location: Location }> = (props) => {
         <Route path={PATHS.root} render={() => <Redirect to={PATHS.dashboard} />} exact />
         <CustomRoute pageRequiredAuth path={PATHS.dashboard} component={Dashboard} />
 
-        <CustomRoute path={PATHS.signIn} component={Signin} />
-        <CustomRoute path={PATHS.signUp} component={Signup} />
-
-        <CustomRoute path={PATHS.forgotPassword} component={ForgotPassword} />
-        <CustomRoute path={PATHS.resetPassword} component={ResetPassword} />
-        <CustomRoute path={PATHS.welcome} component={Welcome} />
-
         <Route path={PATHS.dev} component={Dev} />
         <CustomRoute path={PATHS.dev} component={Dev} />
         <Route component={NotFound} />
       </Switch>
 
-      <Sidebar />
       <Footer />
 
-      <ScrollToTop />
       <AuthContainer />
+
       <ContentContainer />
-      <LoadingContainer />
       <DialogContainer />
       <ToastContainer />
-      <ResponsiveContainer />
-      <UploadProgressContainer />
+      <ScrollToTop />
     </Box>
   );
 };
@@ -85,7 +66,7 @@ const CRouting: React.FC<Props> = ({ isAuthenticated, pageRequiredAuth, componen
       return <Component {...props} />;
     }
 
-    const redirectPath = isAuthenticated ? PATHS.myProfile : PATHS.signIn;
+    const redirectPath = isAuthenticated ? PATHS.dashboard : PATHS.dashboard;
     const redirectProps = {
       to: {
         pathname: redirectPath,

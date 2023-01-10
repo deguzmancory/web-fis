@@ -15,7 +15,7 @@ export interface MyProfile {
   passwordSetDate: string;
   comments: string;
   defaultRoleCode: string;
-  defaultSubsystemCode: string;
+  defaultUserType: string;
   status: string;
   fisPiInfo: any;
   fisSuInfo: any;

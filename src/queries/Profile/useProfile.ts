@@ -35,7 +35,7 @@ export function useProfile(
       if (!data) return null;
       const profileResponse: MyProfile = {
         ...data,
-        roleName: getRoleName(data.defaultRoleCode),
+        roleName: getRoleName(data.defaultUserType),
       };
       return profileResponse;
     }, [data]),

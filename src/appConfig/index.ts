@@ -11,11 +11,6 @@ const configs = {
   APP_VERSION: process.env.REACT_APP_VERSION || '0.1.0',
 };
 
-const googleServices = {
-  CAPTCHA_KEY: process.env.REACT_APP_RECAPTCHA_CLIENT_KEY,
-  TRACKING_ID: process.env.REACT_APP_TRACKING_ID,
-};
-
 const common = {
   CONNECTION_TIMEOUT: 30000,
   MAXIMUM_FILE_SIZE: 1024 * 1024 * 7, //7 MB
@@ -80,7 +75,6 @@ const PERMISSIONS = {
 
 export default {
   ...configs,
-  ...googleServices,
   ...common,
   ...textLength,
   ...table,

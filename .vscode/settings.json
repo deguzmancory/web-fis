@@ -35,8 +35,9 @@
     "mrkdwn"
   ],
   "files.exclude": {
-    "bin": false,
-    "node_modules": false
+    "bin": true,
+    "node_modules": true,
+    ".husky": true
   },
   "files.eol": "\n",
   "editor.tabSize": 2,
