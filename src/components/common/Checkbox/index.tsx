@@ -13,23 +13,40 @@ const Checkbox: React.FC<CheckboxProps> = ({
   className,
   disabled,
   style,
+  isCustomLabel,
+  labelClassName,
+  isGetStringValue,
+  isMiddle,
   ...props
 }) => {
   const id = useRef(shortid.generate());
   const hasError = !isEmpty(errorMessage);
-
   return (
-    <View className={cn('cmp-checkbox', { 'cmp-checkbox__disabled': disabled }, className)}>
-      <View isRow style={style}>
+    <View
+      isRow
+      className={cn('cmp-checkbox', { 'cmp-checkbox__disabled': disabled }, className)}
+      style={style}
+    >
+      <View isRow>
         <input
           id={id.current}
           type="checkbox"
           className={cn('cmp-checkbox__input')}
           style={{ display: 'none' }}
-          name={id.current}
           {...props}
         />
-        <label htmlFor={id.current} className={cn('cmp-checkbox__label', 'check')}>
+        <label
+          htmlFor={id.current}
+          className={cn(
+            'cmp-checkbox__label',
+            'check',
+            {
+              'custom-label': isCustomLabel,
+              'is-middle': isMiddle,
+            },
+            labelClassName
+          )}
+        >
           <svg width="18px" height="18px" viewBox="0 0 18 18">
             <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z" />
             <polyline points="1 9 7 14 15 4" />
@@ -49,6 +66,11 @@ type BaseInputProps = Pick<
 type CheckboxProps = BaseInputProps & {
   label?: React.ReactNode | string;
   errorMessage?: string;
+  isMiddle?: boolean;
+  isCustomLabel?: boolean;
+  labelClassName?: string;
+  noneOfAboveKey?;
+  isGetStringValue?: boolean;
 };
 
 const Group: React.FC<CheckboxGroupProps> = ({
@@ -64,6 +86,7 @@ const Group: React.FC<CheckboxGroupProps> = ({
   disabled,
   description,
   noneOfAboveKey,
+  isGetStringValue,
 }) => {
   const [data, setData] = useState<any[]>(value);
   const hasInteract = useRef(false);
@@ -79,7 +102,8 @@ const Group: React.FC<CheckboxGroupProps> = ({
     hasInteract.current = true;
 
     const target = event.target as HTMLInputElement;
-    const key = isNumeric(target.value) ? parseInt(target.value) : target.value;
+    const key =
+      isNumeric(target.value) && !isGetStringValue ? parseInt(target.value) : target.value;
 
     const isChecked = data?.indexOf(key) >= 0;
 
@@ -120,7 +144,7 @@ const Group: React.FC<CheckboxGroupProps> = ({
             checked={data?.indexOf(option.value) >= 0}
             label={option.label}
             onChange={handleValueChange}
-            className={cn(columns && 'cmp-checkbox-group__column')}
+            className={cn(columns && 'cmp-checkbox-group__column mb-8')}
             style={
               customColumnMargin
                 ? { marginRight: customColumnMargin + 'px' }
@@ -149,6 +173,8 @@ type CheckboxGroupProps = {
   customColumnMargin?: number;
   disabled?: boolean;
   noneOfAboveKey?;
+  isCustomLabel?: boolean;
+  isGetStringValue?: boolean;
 };
 
 export default { Item: Checkbox, Group };

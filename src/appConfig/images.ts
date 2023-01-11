@@ -5,6 +5,7 @@ import backgroundDiamondSmall from 'src/assets/images/background_diamond_small.p
 import backgroundLogin from 'src/assets/images/background_login.webp';
 import defaultAvatar from 'src/assets/images/default-avatar.svg';
 import defaultUser from 'src/assets/images/default-user.png';
+import documentView from 'src/assets/images/document-view.png';
 import iconComputer from 'src/assets/images/icons/ic_computer.png';
 import logoFull from 'src/assets/images/logos/logo-full.png';
 import logo from 'src/assets/images/logos/logo.png';
@@ -20,4 +21,5 @@ export const IMAGES = {
   defaultUser,
   defaultAvatar,
   iconComputer,
+  documentView,
 };

@@ -17,6 +17,7 @@ import './styles.scss';
 import cn from 'classnames';
 import { Callback } from 'src/redux/types';
 import { IoClose } from 'react-icons/io5';
+import { COLOR_CODE } from 'src/appConfig/constants';
 
 const Dialog: React.FC<
   Omit<DialogProps, 'onClose'> & {
@@ -74,7 +75,7 @@ const Dialog: React.FC<
             onClose({}, REASON_CLOSE_DIALOG.CLOSE_ICON_CLICK);
           }}
         >
-          <IoClose />
+          <IoClose color={COLOR_CODE.PRIMARY_200} />
         </IconButton>
       )}
       {!hideTitle && (

@@ -13,6 +13,7 @@ import {
   SignInPayload,
   SubmitForgotPasswordPayload,
 } from 'src/queries/UAM/types';
+import { GetPropertiesParams } from 'src/queries/Users/types';
 import { newCancelToken, stringify } from 'src/utils';
 import { TokenService } from '.';
 
@@ -81,7 +82,7 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.get(`/account-svc/v1/users/user-id?${queryString}`, {}, newCancelToken());
   };
 
-  // ====================== Claimant Profile ======================
+  // ====================== Profile ======================
   const getMyProfile = () => api.get('/account-svc/v1/me', {}, newCancelToken());
 
   const updateUserAvatar = (body: { avatarUrl: string }) =>
@@ -91,7 +92,6 @@ const create = (baseURL = appConfig.API_URL) => {
     api.put(`/account-svc/v1/me`, body, newCancelToken());
 
   // ====================== Content ======================
-  // const getContent = () => api.get('/content', {}, newCancelToken());
   const getContents = () => api.get('/account-svc/v1/contents', {}, newCancelToken());
 
   // ====================== File ======================
@@ -113,6 +113,7 @@ const create = (baseURL = appConfig.API_URL) => {
     });
 
   // ====================== System Accounts ======================
+
   const searchUserAccounts = (params: { search: string }) => {
     const queryString = stringify(params);
     return api.get(`/users/search?${queryString}`, {}, newCancelToken());
@@ -133,6 +134,12 @@ const create = (baseURL = appConfig.API_URL) => {
 
   // ====================== System Accounts ======================
   const getMyPermissions = () => api.get('/account-svc/v1/permissions/me', {}, newCancelToken());
+
+  // ====================== Users Management ======================
+  const getAllUsers = (params: GetPropertiesParams) => {
+    const queryString = stringify(params);
+    return api.get(`/account-svc/v1/users?${queryString}`, {}, newCancelToken());
+  };
 
   //
   // Return back a collection of functions that we would consider our
@@ -182,6 +189,9 @@ const create = (baseURL = appConfig.API_URL) => {
 
     // ====================== System Accounts ======================
     getMyPermissions,
+
+    // ====================== Users Management ======================
+    getAllUsers,
   };
 };
 

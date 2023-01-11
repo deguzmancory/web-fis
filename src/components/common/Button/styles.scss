@@ -35,6 +35,10 @@
     box-shadow: $focus-shadow;
   }
 
+  &--font-weight-normal {
+    font-weight: normal;
+  }
+
   &--outline {
     background-color: $color-white;
     color: $color-primary;
@@ -68,29 +72,35 @@
   }
 
   &--link-primary,
-  &--link {
-    background-color: transparent;
+  &--link,
+  &--link-danger {
     min-width: auto;
-    padding: 0;
+    padding: 0px 8px;
     color: $color-link;
     border: none;
+    background-color: transparent;
 
     @include hover {
-      text-decoration: underline;
+      text-decoration: none;
+      background-color: $color-primary-50;
 
       & span {
-        text-decoration: underline;
+        text-decoration: none;
       }
     }
 
     @include focus {
       box-shadow: none;
-      text-decoration: underline;
+      text-decoration: none;
     }
   }
 
   &--link-primary {
     color: $color-primary;
+  }
+
+  &--link-danger {
+    color: $color-danger;
   }
 
   &--disabled {

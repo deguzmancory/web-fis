@@ -1,6 +1,9 @@
 import { Box, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { PATHS } from 'src/appConfig/paths';
+import TypographyLink from 'src/components/TypographyLink';
 import { IRootState } from 'src/redux/rootReducer';
 import './styles.scss';
 
@@ -12,6 +15,11 @@ const Dashboard: React.FC<Props> = () => {
           Welcome to © {new Date().getFullYear()}{' '}
           <b className="has-text-primary">The Research Corporation of the University of Hawaii</b>
         </Typography>
+        <Box p={4}>
+          <Link to={PATHS.userManagements}>
+            <TypographyLink variant="h1">User Management</TypographyLink>
+          </Link>
+        </Box>
       </Stack>
     </Box>
   );

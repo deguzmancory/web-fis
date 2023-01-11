@@ -8,7 +8,7 @@ export const DateFormat = 'MM/DD/YYYY';
 export const DateFormatWithHour = 'DD/MM/YYYY HH:mm';
 export const DateFormatDisplay = 'MMMM DD, YYYY';
 export const DateFormatDisplayShort = 'MMM DD, YYYY';
-export const DateFormatDisplayMinute = 'MM/DD/YYYY hh:mm:ss A';
+export const DateFormatDisplayMinute = 'MM/DD/YYYY hh:mm A';
 
 export const TimeFormat = 'HH:mm';
 

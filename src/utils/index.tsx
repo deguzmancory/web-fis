@@ -225,6 +225,12 @@ export const isURLImage = (url: string) => {
   return isImage;
 };
 
+export const capitalizeWords = (string: string) => {
+  return string.replace(/(?:^|\s)\S/g, function (a) {
+    return a.toUpperCase();
+  });
+};
+
 export const getStartCase = (value: string) => (value ? _.startCase(value.toLowerCase()) : '');
 
 export const getTitleCase = (str: string): string => {
@@ -269,4 +275,14 @@ export const removeSpecialCharacterFromString = (value: string) => {
 export const formatStringToNumber = (value: string) => {
   if (isEmpty(value)) return null;
   return Number(value);
+};
+
+export const getDefaultSubsystemName = (defaultSubsystemCode: string) => {
+  switch (defaultSubsystemCode) {
+    case 'PI':
+      return 'Financial';
+
+    default:
+      return '--';
+  }
 };

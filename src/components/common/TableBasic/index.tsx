@@ -1,13 +1,15 @@
 import { createTheme, ThemeOptions, ThemeProvider } from '@mui/material/styles';
 import cn from 'classnames';
 import MUIDataTable, {
-  debounceSearchRender,
   MUIDataTableOptions,
   MUIDataTableProps,
   MUIDataTableState,
 } from 'mui-datatables';
 import React, { memo, useMemo } from 'react';
+import { COLOR_CODE } from 'src/appConfig/constants';
 import { LoadingCommon, View } from 'src/components/common';
+import CustomFooterRender from './customFooterRender';
+import CustomSearchRender from './customSearchRender';
 import './styles.scss';
 
 const TableBasic: React.FC<Props> = ({
@@ -39,13 +41,51 @@ const TableBasic: React.FC<Props> = ({
     jumpToPage: false,
     rowHover: true,
     onTableChange,
-    customSearchRender: debounceSearchRender(500),
+    customSearchRender: (searchText: string, handleSearch: (text: string) => void) => {
+      return (
+        <CustomSearchRender
+          searchText={searchText}
+          onSearch={handleSearch}
+          placeholder={options.searchPlaceholder}
+        />
+      );
+    },
+    customFooter: (
+      count: number,
+      page: number,
+      rowsPerPage: number,
+      changeRowsPerPage: (page: string | number) => void,
+      changePage: (newPage: number) => void
+    ) => {
+      return (
+        <CustomFooterRender
+          count={count}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          changeRowsPerPage={changeRowsPerPage}
+          changePage={changePage}
+          theme={getMuiTheme()}
+        />
+      );
+    },
+
     ...options,
   };
 
   const hasRowClickAction = !!options?.onRowClick;
   const getMuiTheme = () =>
     createTheme({
+      primary: {
+        main: COLOR_CODE.PRIMARY,
+        dark: COLOR_CODE.PRIMARY_DARK,
+        light: COLOR_CODE.PRIMARY_LIGHT,
+      },
+      secondary: {
+        main: COLOR_CODE.SECONDARY,
+      },
+      typography: {
+        fontFamily: ['Arial'].join(','),
+      },
       components: {
         MuiPaper: {
           styleOverrides: {
@@ -64,7 +104,29 @@ const TableBasic: React.FC<Props> = ({
         MuiTableCell: {
           styleOverrides: {
             root: {
-              padding: '16px 24px',
+              padding: '2px 16px',
+            },
+            head: {
+              '&.MuiTableCell-root': {
+                backgroundColor: COLOR_CODE.PRIMARY_800,
+                color: 'white',
+                fontWeight: 'bold',
+                padding: '0 16px',
+              },
+              '&.MuiTableCell-root span button': {
+                color: 'white',
+                fontWeight: 'bold',
+              },
+              '&.MuiTableCell-root span button div, &.MuiTableCell-root span button div span svg': {
+                color: 'white !important',
+                fontWeight: 'bold',
+              },
+            },
+            footer: {
+              '&.MuiTableCell-root': {
+                borderBottom: 'none',
+                padding: '6px 0',
+              },
             },
           },
         },
@@ -75,29 +137,16 @@ const TableBasic: React.FC<Props> = ({
             },
           },
         },
-        MuiPopover: {
+        MuiChip: {
           styleOverrides: {
-            paper: {
-              minWidth: 300,
+            root: {
+              // Hide Chip filter
+              '&.MuiChip-filled.MuiChip-colorDefault.MuiChip-deletable': {
+                display: 'none !important',
+              },
             },
           },
         },
-        // MUIDataTableSearch: {
-        //   main: {
-        //     '& button': {
-        //       display: 'none !important',
-        //     },
-        //     '& svg': {
-        //       transform: 'translateY(0px) !important',
-        //       marginTop: '0px !important',
-        //     },
-        //     padding: '2px 8px !important',
-        //     borderRadius: '4px !important',
-        //     alignItems: 'center !important',
-        //   },
-        //   searchText: {
-        //   },
-        // },
       },
     } as ThemeOptions);
 

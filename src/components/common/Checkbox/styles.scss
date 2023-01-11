@@ -14,7 +14,21 @@
   }
 
   &__disabled &__input:checked + &__label svg polyline {
-    fill: $color-primary;
+    fill: $color-secondary;
+  }
+
+  &__input:not(:checked) + &__label.is-middle {
+    position: relative;
+    &::before {
+      content: '';
+      z-index: 185;
+      display: block;
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      left: 5px;
+      background-color: $color-secondary;
+    }
   }
 
   &__label {
@@ -63,13 +77,13 @@
   }
 
   &__input:checked + &__label svg {
-    stroke: $color-primary;
+    stroke: $color-secondary;
   }
 
   &__input:checked + &__label svg path {
     // stroke-dashoffset: 60;
     // transition-delay: 0s;
-    fill: $color-primary;
+    fill: $color-secondary;
   }
 
   &__input:checked + &__label svg polyline {
@@ -79,7 +93,7 @@
   }
 
   &__label--text {
-    margin-left: 12px;
+    margin-left: 8px;
     line-height: 20px;
     font: {
       weight: $font-weight-regular;

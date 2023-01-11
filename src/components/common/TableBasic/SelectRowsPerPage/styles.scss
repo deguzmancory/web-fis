@@ -1,14 +1,25 @@
 @use '~src/scss/vars' as *;
 @use '~src/scss/mixin' as *;
 
-.cmp-select {
+.cmp-select-rows-per-page {
   text-align: left;
 
-  .cmp-select {
+  .cmp-select-rows-per-page {
+    &__single-value {
+      font-size: 14px;
+    }
+    &__input {
+      input {
+        &:disabled {
+          visibility: visible;
+        }
+      }
+    }
+
     &__control {
       height: $input-small;
-      // padding: $input-padding;
       border: $default-border;
+      border-color: $color-white;
       background-color: $color-white;
       transition: $default-transition;
       border-radius: $input-border-radius;
@@ -17,25 +28,35 @@
       &--is-disabled {
         background-color: $color-input-disabled;
         border: none;
+        color: $color-primary-800;
+
+        .cmp-select-rows-per-page__single-value {
+          color: $color-primary-800;
+        }
       }
 
-      // &:hover {
-      //   border-color: $color-border;
-      // }
+      &:hover {
+        border-color: $color-primary-300;
+        background-color: $color-primary-100;
+      }
 
-      &--is-focused {
-        // border-color: $color-border;
+      &:active &--is-focused {
+        border-color: $color-primary-500;
+        background-color: $color-primary-500;
         box-shadow: none;
-        border: $default-border-primary;
       }
     }
 
     &__placeholder {
-      color: #707070 !important;
+      color: $color-placeholder;
     }
 
     &__value-container {
-      padding: 0 10px;
+      padding: 0 28px 0 10px;
+    }
+
+    &__indicator-separator {
+      display: none;
     }
 
     &__menu {
@@ -48,29 +69,16 @@
       font-size: 14px;
       padding-left: 16px;
       padding-right: 16px;
+
       &--is-selected {
         color: $color-white;
         background-color: $color-primary-600;
         font-weight: 600;
         border: $default-border;
+
         &::after {
           content: '';
         }
-      }
-    }
-  }
-
-  &--error {
-    .cmp-select__control {
-      border-color: $color-danger;
-
-      &:hover {
-        border-color: $color-danger;
-      }
-
-      &--is-focused {
-        border-color: $color-danger;
-        // box-shadow: $error-shadow;
       }
     }
   }

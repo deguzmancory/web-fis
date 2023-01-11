@@ -39,6 +39,7 @@ export const COLOR_CODE = {
   PRIMARY_200: '#d9d9d9',
   PRIMARY_100: '#ececec',
   PRIMARY_50: '#f8f8f8',
+  DEFAULT_BORDER: '1px solid #ccc',
 };
 
 export enum BOOLEAN {

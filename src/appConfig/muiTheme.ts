@@ -12,7 +12,7 @@ const configTheme = createTheme({
       light: COLOR_CODE.PRIMARY_LIGHT,
     },
     secondary: {
-      main: COLOR_CODE.PRIMARY,
+      main: COLOR_CODE.SECONDARY,
     },
     grey: {
       '50': COLOR_CODE.PRIMARY_50,

@@ -6,7 +6,7 @@
   flex-direction: row;
   border: $default-border;
   border-radius: $input-border-radius;
-  height: $input-normal;
+  height: $input-small;
   width: 100%;
 
   &--error {
@@ -14,7 +14,7 @@
   }
 
   &__select {
-    height: $input-normal;
+    height: $input-small;
     border: none !important;
   }
 

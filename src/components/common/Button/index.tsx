@@ -16,6 +16,7 @@ const Button: React.FC<PropsWithChildren<ButtonProps>> = ({
   isLoading,
   type = 'button',
   variant = 'primary',
+  fontWeightNormal = false,
   onClick = (event) => {},
   ...props
 }) => {
@@ -43,6 +44,7 @@ const Button: React.FC<PropsWithChildren<ButtonProps>> = ({
         'cmp-button--full-width': isFull,
         'cmp-button--is-loading': isLoading,
         [`cmp-button__icon--${iconPosition}`]: isRenderIcon,
+        [`cmp-button--font-weight-normal`]: fontWeightNormal,
       })}
       type={type}
       disabled={isDisabled}
@@ -62,6 +64,7 @@ export type ButtonVariant =
   | 'text'
   | 'link'
   | 'link-primary'
+  | 'link-danger'
   | 'secondary-outline'
   | 'secondary'
   | 'sorting';
@@ -77,6 +80,7 @@ export type ButtonProps = React.DetailedHTMLProps<
   isFull?: boolean;
   isLoading?: boolean;
   variant?: ButtonVariant;
+  fontWeightNormal?: boolean;
 };
 
 export default Button;

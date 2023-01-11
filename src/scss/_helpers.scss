@@ -244,6 +244,10 @@ $fontFizes: 12, 14, 16, 18, 20, 22, 24, 32, 36, 40, 56;
   color: $color-primary-900 !important;
 }
 
+.text-color-link {
+  color: $color-link !important;
+}
+
 .cursor-pointer {
   cursor: pointer !important;
 }

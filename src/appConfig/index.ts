@@ -20,8 +20,8 @@ const common = {
 };
 
 const table = {
-  ROWS_PER_PAGE_OPTIONS: [10, 25, 50, 100],
-  ROWS_PER_PAGE: 10,
+  ROWS_PER_PAGE_OPTIONS: [20, 50, 100],
+  ROWS_PER_PAGE: 20,
 };
 
 const textLength = {

@@ -2,7 +2,7 @@
 @use '~src/scss/mixin' as *;
 
 .cmp-input {
-  height: $input-normal;
+  height: $input-small;
   padding: $input-padding;
   border: $default-border;
   border-radius: $input-border-radius;
