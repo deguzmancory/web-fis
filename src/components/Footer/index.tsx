@@ -19,48 +19,61 @@ const Footer: React.FC<Props> = () => {
         }}
       >
         <Container maxWidth="md">
-          <Grid container spacing={2} pt={3}>
-            <Grid item xs={4}>
+          <Grid flexDirection={'row'} container spacing={1} pt={3}>
+            <Box width={'260px'}>
               <TypoTitle text={'General Inquiries Email'} />
-              <TypoDescription text={'rcuh@rcuh.com'} type="email" />
-              <TypoDescription text={''} type="" />
+              <TypoDescription text={' rcuh@rcuh.com'} type={'email'} />
+              <TypoDescription text={''} type={''} />
 
               <TypoTitle text={'HR & Payroll Inquiries Email'} />
-              <TypoDescription text={'rcuhhr@rcuh.com'} type="email" />
-            </Grid>
-            <Grid item xs={4}>
-              <TypoTitle text={'Accounting & Project Admin'} />
-              <TypoDescription text={'808.988.8300'} type="phone" />
-              <TypoDescription
-                text={'2800 Woodlawn Drive, Suite 200 | Honolulu, HI 96822'}
-                type="location"
-              />
-              <TypoDescription text={''} type={''} />
+              <TypoDescription text={' rcuhhr@rcuh.com'} type={'email'} />
+            </Box>
+            <Box width={'calc(100% - 260px)'}>
+              <Grid width="100%" container spacing={1}>
+                <Grid item xs={6}>
+                  <TypoTitle text={'Human Resources/ Payroll '} />
+                  <TypoDescription text={'808.956.3100'} type={'phone'} />
+                  <TypoDescription
+                    text={
+                      '1601 East-West Road | Burns Hall 4th Floor, Makai Wing | Honolulu, HI 96848'
+                    }
+                    type={'location'}
+                  />
 
-              <TypoTitle text={'Human Resources/ Payroll '} />
-              <TypoDescription text={'808.956.3100'} type="phone" />
-              <TypoDescription
-                text={'1601 East-West Road | Burns Hall 4th Floor, Makai Wing | Honolulu, HI 96848'}
-                type="location"
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TypoTitle text={'Disbursing / Procurement'} />
-              <TypoDescription text={'808.956.3608'} type="phone" />
-              <TypoDescription
-                text={'2800 Woodlawn Drive, Suite 200 | Honolulu, HI 96822'}
-                type="location"
-              />
-              <TypoDescription text={''} type={''} />
+                  <TypoDescription text={' '} type="" />
 
-              <TypoTitle text={`Executive Director's Office`} />
-              <TypoDescription text={'808.988.8311'} type="phone" />
-              <TypoDescription
-                text={'2800 Woodlawn Drive, Suite 200 | Honolulu, HI 96822'}
-                type="location"
-              />
-              <TypoDescription text={''} type={''} />
-            </Grid>
+                  <TypoTitle text={'Accounting & Project Admin'} />
+                  <TypoDescription text={'808.988.8300'} type={'phone'} />
+                  <TypoDescription
+                    text={'2800 Woodlawn Drive, Suite 200 | Honolulu, HI 96822'}
+                    type={'location'}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TypoTitle text={'Disbursing / Procurement'} />
+                  <TypoDescription text={'808.956.3608'} type={'phone'} />
+                  <TypoDescription
+                    text={'2800 Woodlawn Drive, Suite 200 | Honolulu, HI 96822'}
+                    type={'location'}
+                  />
+
+                  <TypoDescription text={' '} type="" />
+
+                  <Box
+                    sx={{
+                      transform: 'translateY(16px)',
+                    }}
+                  >
+                    <TypoTitle text={`Executive Director's Office`} />
+                    <TypoDescription text={'808.988.8311'} type={'phone'} />
+                    <TypoDescription
+                      text={'2800 Woodlawn Drive, Suite 200 | Honolulu, HI 96822'}
+                      type={'location'}
+                    />
+                  </Box>
+                </Grid>
+              </Grid>
+            </Box>
           </Grid>
           <Box>
             <Stack flexDirection={'row'} justifyContent="center" py={1}>
@@ -115,7 +128,7 @@ const TypoDescription = ({ text, type }) => {
       <Icon
         sx={{
           '& svg': {
-            transform: 'translateY(-7px)',
+            transform: 'translateY(-8px)',
           },
         }}
       >
