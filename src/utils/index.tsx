@@ -276,13 +276,3 @@ export const formatStringToNumber = (value: string) => {
   if (isEmpty(value)) return null;
   return Number(value);
 };
-
-export const getDefaultSubsystemName = (defaultSubsystemCode: string) => {
-  switch (defaultSubsystemCode) {
-    case 'PI':
-      return 'Financial';
-
-    default:
-      return '--';
-  }
-};

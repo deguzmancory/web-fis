@@ -8,8 +8,6 @@ import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 
 const ActionsButton: React.FC<Props> = ({ data, onShowDialog, onHideDialog }) => {
-  console.log('data: ', data);
-
   const handleDeleteUser = (user: User) => {
     onShowDialog({
       type: DIALOG_TYPES.YESNO_DIALOG,

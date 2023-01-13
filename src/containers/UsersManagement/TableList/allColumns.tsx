@@ -2,7 +2,6 @@ import { Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import { MUIDataTableColumn, MUIDataTableMeta } from 'mui-datatables';
 import { User, USER_KEY } from 'src/queries/Users/types';
-import { getDefaultSubsystemName } from 'src/utils';
 import { DateFormatDisplayMinute } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
 import ActionsButton from './actionsButton';
@@ -43,18 +42,18 @@ export const allColumns = (): MUIDataTableColumn[] => [
     },
   },
   {
-    name: USER_KEY.DEFAULT_SUB_SYSTEM_CODE,
+    name: USER_KEY.SYSTEM,
     label: 'System',
     options: {
       filter: false,
-      sort: true,
+      sort: false,
       customBodyRender: (value: string) => {
-        return <Typography variant="body2">{getDefaultSubsystemName(value)}</Typography>;
+        return <Typography variant="body2">{value ?? '--'}</Typography>;
       },
     },
   },
   {
-    name: USER_KEY.ROLE_DISPLAY_NAME,
+    name: USER_KEY.DISPLAY_NAME,
     label: 'User Type',
     options: {
       filter: false,
@@ -69,7 +68,7 @@ export const allColumns = (): MUIDataTableColumn[] => [
     label: 'Last Login',
     options: {
       filter: false,
-      sort: false,
+      sort: true,
       customBodyRender: (value: string) => {
         return (
           <Typography variant="body2">
