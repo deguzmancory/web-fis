@@ -1,13 +1,24 @@
 import React from 'react';
-import { Button } from 'src/components/common';
-import { User } from 'src/queries/Users/types';
-import { Toastify } from 'src/services';
 import { connect } from 'react-redux';
-import { IRootState } from 'src/redux/rootReducer';
+import { Button } from 'src/components/common';
+import { useDeleteUser, useGetAllUsers } from 'src/queries/Users';
+import { User } from 'src/queries/Users/types';
 import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
-
+import { Toastify } from 'src/services';
+import { handleShowErrorMsg } from '../helpers';
 const ActionsButton: React.FC<Props> = ({ data, onShowDialog, onHideDialog }) => {
+  const { handleInvalidateAllUser, isFetching } = useGetAllUsers();
+  const { deleteUser, isLoading } = useDeleteUser({
+    onSuccess() {
+      Toastify.success(`${data.username} record Deleted.`);
+      handleInvalidateAllUser();
+    },
+    onError(error, variables, context) {
+      handleShowErrorMsg(error, 'Error when delete user');
+    },
+  });
+
   const handleDeleteUser = (user: User) => {
     onShowDialog({
       type: DIALOG_TYPES.YESNO_DIALOG,
@@ -17,7 +28,7 @@ const ActionsButton: React.FC<Props> = ({ data, onShowDialog, onHideDialog }) =>
         okText: 'Yes, delete',
         cancelText: 'Cancel',
         onOk: () => {
-          Toastify.success(`onYes Delete ${user.username} clicked!`);
+          deleteUser(user.id);
           onHideDialog();
         },
         onCancel: () => {
@@ -31,25 +42,25 @@ const ActionsButton: React.FC<Props> = ({ data, onShowDialog, onHideDialog }) =>
     <Button
       variant="link-danger"
       fontWeightNormal
-      onClick={() => {
+      onClick={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
         handleDeleteUser(data);
       }}
+      disabled={isLoading || isFetching}
     >
       Delete
     </Button>
   );
 };
 
-type Props = ReturnType<typeof mapStateToProps> &
-  typeof mapDispatchToProps & {
-    data: User;
-  };
-
-const mapStateToProps = (state: IRootState) => ({});
+type Props = typeof mapDispatchToProps & {
+  data: User;
+};
 
 const mapDispatchToProps = {
   onShowDialog: showDialog,
   onHideDialog: hideDialog,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ActionsButton);
+export default connect(undefined, mapDispatchToProps)(ActionsButton);

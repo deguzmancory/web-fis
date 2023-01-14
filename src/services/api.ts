@@ -13,7 +13,7 @@ import {
   SignInPayload,
   SubmitForgotPasswordPayload,
 } from 'src/queries/UAM/types';
-import { GetPropertiesParams } from 'src/queries/Users/types';
+import { GetPropertiesParams, User } from 'src/queries/Users/types';
 import { newCancelToken, stringify } from 'src/utils';
 import { TokenService } from '.';
 
@@ -141,6 +141,10 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.get(`/account-svc/v1/users?${queryString}`, {}, newCancelToken());
   };
 
+  const deleteUser = (userId: User['id']) => {
+    return api.delete(`/account-svc/v1/users/${userId}`, {}, newCancelToken());
+  };
+
   //
   // Return back a collection of functions that we would consider our
   // interface.  Most of the time it'll be just the list of all the
@@ -192,6 +196,7 @@ const create = (baseURL = appConfig.API_URL) => {
 
     // ====================== Users Management ======================
     getAllUsers,
+    deleteUser,
   };
 };
 
