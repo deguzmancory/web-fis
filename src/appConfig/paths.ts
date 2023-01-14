@@ -15,6 +15,8 @@ export const PATHS = {
 
   // miscellaneous / Users Managements
   userManagements: '/miscellaneous/user-managements',
+  addUser: '/miscellaneous/user-managements/add',
+  userDetail: '/miscellaneous/user-managements/user-detail',
 };
 
 export const PATH_HEADERS = {

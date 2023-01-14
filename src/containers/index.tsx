@@ -23,6 +23,7 @@ import ScrollToTop from './StartupContainers/ScrollToTop';
 
 const Dashboard = React.lazy(() => import('./Dashboard'));
 const UsersManagement = React.lazy(() => import('./UsersManagement'));
+const CRUUSerContainer = React.lazy(() => import('./CRUUSerContainer'));
 
 const Routing: React.FC<{ location: Location }> = (props) => {
   Navigator.setTopHistory(useHistory());
@@ -40,7 +41,15 @@ const Routing: React.FC<{ location: Location }> = (props) => {
           <Route path={PATHS.root} render={() => <Redirect to={PATHS.dashboard} />} exact />
           <CustomRoute pageRequiredAuth path={PATHS.dashboard} component={Dashboard} />
 
+          {/* Users */}
+          <CustomRoute pageRequiredAuth path={PATHS.addUser} component={CRUUSerContainer} exact />
+          <CustomRoute
+            pageRequiredAuth
+            path={`${PATHS.userDetail}/:userId`}
+            component={CRUUSerContainer}
+          />
           <CustomRoute pageRequiredAuth path={PATHS.userManagements} component={UsersManagement} />
+          {/* Users */}
 
           <Route path={PATHS.dev} component={Dev} />
           <CustomRoute path={PATHS.dev} component={Dev} />

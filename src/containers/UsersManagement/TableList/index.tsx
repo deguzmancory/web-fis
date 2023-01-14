@@ -4,11 +4,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { muiResponsive } from 'src/appConfig/constants';
+import { PATHS } from 'src/appConfig/paths';
 import { Table } from 'src/components/common';
 import EmptyTable from 'src/components/EmptyTable';
 import { useGetAllUsers } from 'src/queries/Users';
 import { GetPropertiesParams } from 'src/queries/Users/types';
 import { IRootState } from 'src/redux/rootReducer';
+import { Navigator } from 'src/services';
 import { handleShowErrorMsg, QUERY_KEY } from '../helpers';
 import { allColumns } from './allColumns';
 import {
@@ -44,7 +46,7 @@ const TableList: React.FC<Props> = () => {
       const index = meta.rowIndex;
       // eslint-disable-next-line security/detect-object-injection
       const user = users[index];
-      console.log('user: ', user);
+      Navigator.navigate(`${PATHS.userDetail}/${user.id}`);
     },
     [users]
   );

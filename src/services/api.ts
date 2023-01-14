@@ -141,6 +141,10 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.get(`/account-svc/v1/users?${queryString}`, {}, newCancelToken());
   };
 
+  const getUser = (params: { id: User['id'] }) => {
+    return api.get(`/account-svc/v1/users/${params.id}`, {}, newCancelToken());
+  };
+
   const deleteUser = (userId: User['id']) => {
     return api.delete(`/account-svc/v1/users/${userId}`, {}, newCancelToken());
   };
@@ -196,6 +200,7 @@ const create = (baseURL = appConfig.API_URL) => {
 
     // ====================== Users Management ======================
     getAllUsers,
+    getUser,
     deleteUser,
   };
 };

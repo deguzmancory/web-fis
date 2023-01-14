@@ -5,7 +5,7 @@ export const QUERY_KEY = {
   filter: 'filter',
 };
 
-export const handleShowErrorMsg = (error: Error) => {
+export const handleShowErrorMsg = (error: Error, prefix: string = '') => {
   let errorMessage = ErrorService.MESSAGES.unknown;
   if (!isEmpty(error)) {
     if (typeof error?.message === 'string') {
@@ -13,6 +13,6 @@ export const handleShowErrorMsg = (error: Error) => {
     } else {
       errorMessage = error?.message[0];
     }
-    Toastify.error(errorMessage);
+    Toastify.error(`${!isEmpty(prefix) ? `${prefix}: ` : ''}${errorMessage}`);
   }
 };

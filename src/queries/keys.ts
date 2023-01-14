@@ -9,6 +9,7 @@ export enum API_QUERIES {
 
   // Users Management
   USERS = '/users',
+  USER = '/users/:id',
 }
 
 export type QueryOptions<T> = Omit<UseQueryOptions, 'QueryKey'> & { QueryKey: T };

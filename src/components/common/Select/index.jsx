@@ -39,7 +39,6 @@ const SelectCmp = ({
   containerClassName = '',
   onBlur,
   name = '',
-  isTranslatable = false,
   required = false,
   infoTooltipMessage = '',
   infoTooltipPlacement = 'right',
@@ -74,7 +73,6 @@ const SelectCmp = ({
       errorMessage={errorMessage}
       label={label}
       className={containerClassName}
-      isTranslatable={isTranslatable}
       required={required}
       infoTooltipMessage={infoTooltipMessage}
       infoTooltipPlacement={infoTooltipPlacement}
