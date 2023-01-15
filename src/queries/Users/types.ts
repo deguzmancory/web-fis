@@ -8,6 +8,10 @@ export enum USER_KEY {
   LAST_LOGIN_DATE = 'lastLoginDate',
   DISPLAY_NAME = 'displayName',
   SYSTEM = 'system',
+  PROJECT_NUMBER = 'projectNumber',
+  START_DATE = 'startDate',
+  END_DATE = 'endDate',
+  DEFAULT_USER_TYPE = 'defaultUserType',
 }
 
 export enum USER_STATUS {
@@ -72,13 +76,13 @@ export type UserDetail = {
   fullName: User['fullName'];
   username: User['username'];
   email: User['email'];
-  lastLoginDate: User;
   isDhUser: boolean;
   allowMaintenanceModeLogin: boolean;
   accountDisabled: boolean;
+  lastLoginDate: User['lastLoginDate'];
   passwordSetDate: string;
   comments: string;
-  defaultUserType: ROLE_NAME;
+  defaultUserType: string;
   status: USER_STATUS;
   roles: {
     userId: User['id'];

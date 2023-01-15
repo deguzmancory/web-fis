@@ -1,17 +1,19 @@
 import { Box, Container, Stack, Typography } from '@mui/material';
+import dayjs from 'dayjs';
 import { FormikProps, useFormik } from 'formik';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { AiFillWarning } from 'react-icons/ai';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import { PATHS } from 'src/appConfig/paths';
-import { Button } from 'src/components/common';
+import { Accordion, Button, LoadingCommon } from 'src/components/common';
 import { useGetUser } from 'src/queries/Users';
 import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, Toastify } from 'src/services';
+import { DateFormatDisplayMinute } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
 import { handleShowErrorMsg } from '../UsersManagement/helpers';
 import BreadcrumbsUserDetail from './breadcrumbs';
@@ -25,8 +27,10 @@ import {
 import InternalComments from './InternalComments';
 import Layout from './layout';
 import './styles.scss';
+import UserType from './UserType';
 
 const RefetchUser = React.lazy(() => import('./refetchUser'));
+const AuditInformation = React.lazy(() => import('./AuditInformation'));
 
 const clsPrefix = 'ctn-cruuser';
 
@@ -70,20 +74,28 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog }) => {
   const formRef = React.useRef<FormikProps<CRUUserFormValue>>(null);
 
   const initialFormValue = React.useMemo(() => {
+    const formatDate = (date: string) => {
+      if (!date) return '';
+      return dayjs(date).format(DateFormatDisplayMinute);
+    };
     if (isViewMode && !isEmpty(user)) {
       return {
         ...initialCRUUserFormValue,
+        isViewMode: isViewMode,
         firstName: user.firstName,
         lastName: user.lastName,
         middleName: user.middleName || '',
         defaultUserType: user.defaultUserType,
         username: user.username,
         email: user.email,
+        lastLoginDate: formatDate(user.lastLoginDate),
+        passwordSetDate: formatDate(user.passwordSetDate),
         comments: user.comments,
       };
     } else {
       return {
         ...initialCRUUserFormValue,
+        isViewMode: isViewMode,
       };
     }
   }, [isViewMode, user]);
@@ -96,7 +108,7 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog }) => {
       innerRef: formRef,
       enableReinitialize: true,
     });
-  // console.log('values: ', values);
+  console.log('values: ', values);
 
   const formikProps: CRUUserFormikProps = {
     values,
@@ -115,15 +127,27 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog }) => {
           {isViewMode ? 'Edit' : 'Add'} User
         </Typography>
         {isErrorWhenFetchUser ? (
-          <RefetchUser onGetUserById={onGetUserById} isLoading={isLoading} />
+          <Suspense fallback={<LoadingCommon />}>
+            <RefetchUser onGetUserById={onGetUserById} isLoading={isLoading} />
+          </Suspense>
         ) : (
           <>
             <Layout>
               <GeneralInfo formikProps={formikProps} />
             </Layout>
             <Layout>
+              <UserType formikProps={formikProps} />
+            </Layout>
+            <Layout>
               <InternalComments formikProps={formikProps} />
             </Layout>
+            {isViewMode && (
+              <Suspense fallback={<LoadingCommon />}>
+                <Accordion title="Audit Information" className="mt-16">
+                  <AuditInformation formikProps={formikProps} />
+                </Accordion>
+              </Suspense>
+            )}
             <Layout>
               <Typography>{userId}</Typography>
               <Typography>{JSON.stringify(user)}</Typography>

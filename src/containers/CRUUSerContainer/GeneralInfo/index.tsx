@@ -5,7 +5,7 @@ import { userTypeOptions } from 'src/containers/UsersManagement/TableList/Custom
 import { CRUUserFormikProps, CRUUSER_KEY, getErrorMessage } from '../helper';
 
 const GeneralInfo: React.FC<Props> = ({ formikProps }) => {
-  const { errors, touched, getFieldProps, setFieldValue, setFieldTouched } = formikProps;
+  const { values, errors, touched, getFieldProps, setFieldValue, setFieldTouched } = formikProps;
 
   const _getErrorMessage = (fieldName: CRUUSER_KEY) => {
     return getErrorMessage(fieldName, { touched, errors });
@@ -74,6 +74,28 @@ const GeneralInfo: React.FC<Props> = ({ formikProps }) => {
               {...getFieldProps(CRUUSER_KEY.EMAIL)}
             />
           </Grid>
+          {values.isViewMode && (
+            <>
+              <Grid item xs={4}>
+                <Input
+                  label={'Last Login'}
+                  required
+                  errorMessage={_getErrorMessage(CRUUSER_KEY.LAST_LOGIN_DATE)}
+                  {...getFieldProps(CRUUSER_KEY.LAST_LOGIN_DATE)}
+                  disabled
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <Input
+                  label={'Password Changed'}
+                  required
+                  errorMessage={_getErrorMessage(CRUUSER_KEY.PASSWORD_SET_DATE)}
+                  {...getFieldProps(CRUUSER_KEY.PASSWORD_SET_DATE)}
+                  disabled
+                />
+              </Grid>
+            </>
+          )}
         </Grid>
         <Grid item container spacing={3}>
           <Grid item xs={4} container spacing={3}>
@@ -81,7 +103,10 @@ const GeneralInfo: React.FC<Props> = ({ formikProps }) => {
               <Checkbox.Item label="User Locked Out" />
             </Grid>
             <Grid item xs={6}>
-              <Checkbox.Item label="Login Disabled" />
+              <Checkbox.Item
+                label="Login Disabled"
+                {...getFieldProps(CRUUSER_KEY.ACCOUNT_DISABLED)}
+              />
             </Grid>
           </Grid>
           <Grid item xs={4}>

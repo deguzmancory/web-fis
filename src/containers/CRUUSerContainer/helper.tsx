@@ -1,4 +1,5 @@
 import { FieldInputProps, FormikErrors, FormikTouched } from 'formik';
+import { UserDetail } from 'src/queries/Users/types';
 import { Yup } from 'src/services';
 
 export enum CRUUSER_KEY {
@@ -8,35 +9,59 @@ export enum CRUUSER_KEY {
   DEFAULT_USER_TYPE = 'defaultUserType',
   USERNAME = 'username',
   EMAIL = 'email',
-  COMMENTS = 'comment',
+  LAST_LOGIN_DATE = 'lastLoginDate',
+  PASSWORD_SET_DATE = 'passwordSetDate', //pragma: allowlist secret
+  ACCOUNT_DISABLED = 'accountDisabled',
+  COMMENTS = 'comments',
 }
 export type CRUUserFormValue = {
-  firstName: string;
-  lastName: string;
-  middleName: string;
-  defaultUserType: string;
-  username: string;
-  email: string;
-  comment: string;
+  isViewMode: boolean;
+
+  // General Info
+  firstName: UserDetail['firstName'];
+  lastName: UserDetail['lastName'];
+  middleName: UserDetail['middleName'];
+  defaultUserType: UserDetail['defaultUserType'];
+  username: UserDetail['username'];
+  email: UserDetail['email'];
+  lastLoginDate: UserDetail['lastLoginDate'];
+  passwordSetDate: UserDetail['passwordSetDate'];
+  accountDisabled: UserDetail['accountDisabled'];
+
+  // Comments
+  comment: UserDetail['firstName'];
 };
 
 export const initialCRUUserFormValue = {
+  isViewMode: null,
+
+  // General Info
   firstName: '',
   lastName: '',
   middleName: '',
   defaultUserType: '',
   username: '',
   email: '',
+  lastLoginDate: '',
+  passwordSetDate: '',
+  accountDisabled: false,
+
+  // Comments
   comment: '',
 };
 
 export const cRUUserFormSchema = Yup.object().shape({
+  // General Info
   firstName: Yup.string().letterOnly().max(255).required(),
   lastName: Yup.string().letterOnly().max(255).required(),
   middleName: Yup.string().letterOnly().max(5),
   defaultUserType: Yup.string().nullable(),
   username: Yup.string().username().required(),
   email: Yup.string().email().required(),
+  lastLoginDate: Yup.string().notRequired(),
+  passwordSetDate: Yup.string().notRequired(),
+  accountDisabled: Yup.boolean().required(),
+  // Comments
   comment: Yup.string().nullable(),
 });
 

@@ -104,7 +104,7 @@ const TableBasic: React.FC<Props> = ({
         MuiTableCell: {
           styleOverrides: {
             root: {
-              padding: '2px 16px',
+              padding: '4px 16px',
             },
             head: {
               '&.MuiTableCell-root': {
