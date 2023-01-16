@@ -80,7 +80,7 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
 
   const { createUser, isLoading: isLoadingCreateUser } = useCreateUser({
     onSuccess(data, variables, context) {
-      Toastify.success(`Add User successfully.`);
+      Toastify.success(`Add User ${variables.username} successfully.`);
       handleInvalidateAllUser();
       Navigator.navigate(PATHS.userManagements);
     },
@@ -98,6 +98,7 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
       Toastify.info('Save mode Edit clicked');
     } else {
       const payload = formatPayloadSubmit(values);
+      console.log('payload: ', payload);
       createUser(payload);
     }
   };
@@ -124,6 +125,22 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
         status: getValueUserStatus(user.status),
         roles: getValueRoles(user.roles),
         comments: user.comments,
+        delegateAccess: user.delegateAccesses.map((item) => ({
+          isEdit: false,
+          delegatedUserId: item.delegatedUserId,
+          username: item.delegatedUser.username,
+          fullName: item.delegatedUser.fullName,
+          roleName: item.delegatedUser.defaultUserType,
+          projectNumber: item.projectNumber,
+          startDate: item.startDate,
+          startDateTemp: item.startDate,
+          endDate: item.endDate,
+          endDateTemp: item.endDate,
+          isAllProjects: item.isAllProjects,
+          userId: item.userId,
+          roleId: item.roleId,
+          delegatedUser: item.delegatedUser,
+        })),
       };
     } else {
       return {
@@ -210,8 +227,8 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
               </Button>
               <Button
                 onClick={() => {
-                  handleSubmit();
                   handleScrollToTopError();
+                  handleSubmit();
                 }}
                 isLoading={isLoadingGetUser || isLoadingCreateUser}
                 disabled={isLoadingGetUser || isLoadingCreateUser}

@@ -159,6 +159,16 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.delete(`/account-svc/v1/users/${userId}`, {}, newCancelToken());
   };
 
+  const searchUsers = (params: GetPropertiesParams) => {
+    const queryString = stringify(params);
+    return api.get(`/account-svc/v1/users/search/delegates?${queryString}`, {}, newCancelToken());
+  };
+
+  const searchProjects = (params: GetPropertiesParams) => {
+    const queryString = stringify(params);
+    return api.get(`/account-svc/v1/projects?${queryString}`, {}, newCancelToken());
+  };
+
   //
   // Return back a collection of functions that we would consider our
   // interface.  Most of the time it'll be just the list of all the
@@ -213,6 +223,8 @@ const create = (baseURL = appConfig.API_URL) => {
     getUser,
     createUser,
     deleteUser,
+    searchUsers,
+    searchProjects,
   };
 };
 

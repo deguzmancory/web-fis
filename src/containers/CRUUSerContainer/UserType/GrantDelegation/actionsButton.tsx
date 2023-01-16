@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { Callback } from 'src/redux/types';
+import { CRUUserFormikProps, CRUUSER_KEY } from '../../helper';
 
 const ActionsButton: React.FC<Props> = ({
   data,
@@ -12,7 +13,10 @@ const ActionsButton: React.FC<Props> = ({
   onHideDialog,
   setRows,
   rowIndex,
+  formikProps,
 }) => {
+  const { setFieldValue } = formikProps;
+
   const handleDeleteRow = () => {
     onShowDialog({
       type: DIALOG_TYPES.YESNO_DIALOG,
@@ -24,10 +28,12 @@ const ActionsButton: React.FC<Props> = ({
         onOk: () => {
           onHideDialog();
           setRows((prevRows) => {
-            return [
+            const newRows = [
               ...prevRows.slice(0, rowIndex),
               ...prevRows.slice(rowIndex + 1, prevRows.length),
             ];
+            setFieldValue(CRUUSER_KEY.DELEGATE_ACCESS, newRows);
+            return newRows;
           });
         },
         onCancel: () => {
@@ -52,7 +58,7 @@ const ActionsButton: React.FC<Props> = ({
 
   const handleConfirmEdit = () => {
     setRows((prevRows) => {
-      return prevRows.map((row, index) => {
+      const formattedRows = prevRows.map((row, index) => {
         return rowIndex === index
           ? {
               ...row,
@@ -62,6 +68,8 @@ const ActionsButton: React.FC<Props> = ({
             }
           : row;
       });
+      setFieldValue(CRUUSER_KEY.DELEGATE_ACCESS, formattedRows);
+      return formattedRows;
     });
   };
 
@@ -136,6 +144,7 @@ type Props = typeof mapDispatchToProps & {
   data: any;
   setRows: Callback;
   rowIndex: number;
+  formikProps: CRUUserFormikProps;
 };
 
 const mapDispatchToProps = {

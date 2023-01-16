@@ -5,7 +5,14 @@ import { DatePicker } from 'src/components/common';
 import { Callback } from 'src/redux/types';
 import { DateFormat } from 'src/utils/momentUtils';
 
-const DatePickerEdit: React.FC<Props> = ({ data, setRows, rowIndex, keyValue }) => {
+const DatePickerEdit: React.FC<Props> = ({
+  data,
+  setRows,
+  rowIndex,
+  keyValue,
+  minDate,
+  maxDate,
+}) => {
   // eslint-disable-next-line security/detect-object-injection
   const _keyValue = data[keyValue];
 
@@ -28,7 +35,13 @@ const DatePickerEdit: React.FC<Props> = ({ data, setRows, rowIndex, keyValue }) 
 
   return data.isEdit ? (
     <>
-      <DatePicker label={null} selected={new Date(date)} onChange={handleDatePickerChange} />
+      <DatePicker
+        label={null}
+        selected={new Date(date)}
+        onChange={handleDatePickerChange}
+        minDate={minDate}
+        maxDate={maxDate}
+      />
     </>
   ) : (
     <Typography variant="body2">
@@ -42,5 +55,7 @@ type Props = {
   setRows: Callback;
   rowIndex: number;
   keyValue: string;
+  minDate?: Date;
+  maxDate?: Date;
 };
 export default DatePickerEdit;

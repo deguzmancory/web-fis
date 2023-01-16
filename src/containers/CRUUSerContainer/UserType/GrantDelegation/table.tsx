@@ -1,76 +1,115 @@
-import { Box } from '@mui/material';
-import { MUIDataTableOptions } from 'mui-datatables';
+import {
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { tableCellClasses } from '@mui/material/TableCell';
+import dayjs from 'dayjs';
 import React from 'react';
-import { Table } from 'src/components/common';
-import EmptyTable from 'src/components/EmptyTable';
-import { CRUUserFormikProps, CRUUSER_KEY, getErrorMessage } from '../../helper';
-import { allColumns } from './allColumns';
+import { COLOR_CODE } from 'src/appConfig/constants';
+import { getRoleName } from 'src/queries/Profile/helpers';
+import { USER_KEY } from 'src/queries/Users/types';
+import { isEmpty } from 'src/validations';
+import { CRUUserFormikProps } from '../../helper';
+import ActionsButton from './actionsButton';
+import DatePickerEdit from './datePickerEdit';
 
 const TableGrantDelegation: React.FC<Props> = ({ formikProps }) => {
-  const { errors, touched, getFieldProps } = formikProps;
-
-  const _getErrorMessage = (fieldName: CRUUSER_KEY) => {
-    return getErrorMessage(fieldName, { touched, errors });
-  };
-
-  const tableOptions: MUIDataTableOptions = React.useMemo(
-    () => ({
-      rowHover: true,
-      filter: false,
-      searchAlwaysOpen: false,
-      searchOpen: false,
-      search: false,
-      customFooter(rowCount, page, rowsPerPage, changeRowsPerPage, changePage, textLabels) {
-        return null;
-      },
-    }),
-    []
-  );
-
-  const initialRows = [
-    {
-      isEdit: false,
-      username: 'zoia_stoytcheva',
-      fullName: 'Zoia Stoytcheva',
-      defaultUserType: 'Secondary User',
-      projectNumber: '0001',
-      startDate: new Date().toISOString(),
-      startDateTemp: new Date().toISOString(),
-      endDate: new Date().toISOString(),
-      endDateTemp: new Date().toISOString(),
-    },
-    {
-      isEdit: false,
-      username: 'tin_pham',
-      fullName: 'Tin Pham',
-      defaultUserType: 'Central User',
-      projectNumber: '0002',
-      startDate: new Date().toISOString(),
-      startDateTemp: new Date().toISOString(),
-      endDate: new Date().toISOString(),
-      endDateTemp: new Date().toISOString(),
-    },
-  ];
-
-  const [rows, setRows] = React.useState(initialRows);
-
-  const columns = React.useMemo(() => allColumns(setRows, rows), [rows]);
+  const { values } = formikProps;
+  const [rows, setRows] = React.useState(values.delegateAccess);
 
   return (
-    <Box>
-      <Table
-        title={''}
-        data={rows}
-        onAction={() => {}}
-        tableOptions={tableOptions}
-        columns={columns}
-        emptyComponent={<EmptyTable />}
-      />
-    </Box>
+    <TableContainer>
+      <Table>
+        <TableHead>
+          <TableRow>
+            {['Username', 'Full Name', 'User Type', 'Project #', 'Start Date', 'End Date', ' '].map(
+              (item) => (
+                <StyledTableCell key={item}>{item}</StyledTableCell>
+              )
+            )}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {isEmpty(rows) ? (
+            <StyledTableRow>
+              <StyledTableCell>
+                <Box minHeight={'150px'}>&nbsp;</Box>
+              </StyledTableCell>
+            </StyledTableRow>
+          ) : (
+            rows.map((row, index) => (
+              <StyledTableRow key={row.username}>
+                <StyledTableCell>{row.username}</StyledTableCell>
+                <StyledTableCell>{row.fullName}</StyledTableCell>
+                <StyledTableCell>{getRoleName(row.roleName)}</StyledTableCell>
+                <StyledTableCell>{row.projectNumber}</StyledTableCell>
+                <StyledTableCell>
+                  <DatePickerEdit
+                    data={row}
+                    rowIndex={index}
+                    setRows={setRows}
+                    keyValue={USER_KEY.START_DATE}
+                    maxDate={dayjs(row.endDateTemp).toDate()}
+                  />
+                </StyledTableCell>
+                <StyledTableCell>
+                  <DatePickerEdit
+                    data={row}
+                    rowIndex={index}
+                    setRows={setRows}
+                    keyValue={USER_KEY.END_DATE}
+                    minDate={dayjs(row.startDateTemp).toDate()}
+                  />
+                </StyledTableCell>
+                <StyledTableCell>
+                  <ActionsButton
+                    data={row}
+                    setRows={setRows}
+                    rowIndex={index}
+                    formikProps={formikProps}
+                  />
+                </StyledTableCell>
+              </StyledTableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 
 type Props = {
   formikProps: CRUUserFormikProps;
 };
+
 export default TableGrantDelegation;
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: COLOR_CODE.PRIMARY_900,
+    color: theme.palette.common.white,
+    padding: '4px 16px',
+    fontWeight: 'bold',
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+    padding: '4px 16px',
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  borderBottom: COLOR_CODE.DEFAULT_BORDER,
+  '&:nth-of-type(even)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  // '&:last-child td, &:last-child th': {
+  //   border: 0,
+  // },
+}));

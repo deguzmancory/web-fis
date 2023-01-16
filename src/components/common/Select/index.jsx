@@ -48,6 +48,7 @@ const SelectCmp = ({
   isDisabled = false,
   isMulti = false,
   menuPosition = 'fixed',
+  onInputChange = (value) => {},
   ...props
 }) => {
   const id = useRef(`select-${getRandomId()}`);
@@ -114,6 +115,10 @@ const SelectCmp = ({
                 ? COLOR_CODE.PRIMARY_100
                 : 'white',
             }),
+            menuPortal: (base, props) => ({
+              ...base,
+              zIndex: 999,
+            }),
           }}
           {...props}
           components={{
@@ -121,6 +126,7 @@ const SelectCmp = ({
             Control: hideSearchIcon ? ControlNoSearchIcon : Control,
           }}
           menuPosition={menuPosition}
+          onInputChange={onInputChange}
         />
       </View>
     </Element>

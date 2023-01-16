@@ -1,7 +1,9 @@
+import dayjs from 'dayjs';
 import { FieldInputProps, FormikErrors, FormikTouched } from 'formik';
 import { UserDetail, USER_STATUS } from 'src/queries/Users/types';
 import { ErrorService, Yup } from 'src/services';
 import { getTitleCase } from 'src/utils';
+import { isEmpty } from 'src/validations';
 
 export enum CRUUSER_KEY {
   FIRST_NAME = 'firstName',
@@ -13,7 +15,12 @@ export enum CRUUSER_KEY {
   LAST_LOGIN_DATE = 'lastLoginDate',
   PASSWORD_SET_DATE = 'passwordSetDate', //pragma: allowlist secret
   STATUS = 'status',
+
+  // User Type
+  DELEGATE_ACCESS = 'delegateAccess',
   ROLES = 'roles',
+
+  // Comments
   COMMENTS = 'comments',
 }
 export type CRUUserFormValue = {
@@ -31,6 +38,19 @@ export type CRUUserFormValue = {
   status: boolean;
 
   // User Type
+  delegateAccess: {
+    isEdit: boolean;
+    delegatedUserId: string;
+    username: string;
+    fullName: string;
+    roleName: string;
+    projectNumber: string;
+    startDate: string;
+    startDateTemp: string;
+    endDate: string;
+    endDateTemp: string;
+    isAllProjects: boolean;
+  }[];
   roles: string[];
 
   // Comments
@@ -52,6 +72,7 @@ export const initialCRUUserFormValue = {
   status: false,
 
   // User Type
+  delegateAccess: [],
   roles: [],
 
   // Comments
@@ -95,7 +116,7 @@ export type CRUUserFormikProps = {
   ) => Promise<void> | Promise<FormikErrors<CRUUserFormValue>>;
 };
 
-export const getErrorMessage = (fieldName: CRUUSER_KEY, { touched, errors }) => {
+export const getErrorMessage = (fieldName: string, { touched, errors }) => {
   // eslint-disable-next-line security/detect-object-injection
   return touched[fieldName] && errors[fieldName] ? errors[fieldName] : '';
 };
@@ -126,6 +147,18 @@ export const getValueRoles = (roles: UserDetail['roles']) => {
   return roles.map((role) => role.role.name);
 };
 
+const getPayloadDelegateAccess = (delegateAccess: CRUUserFormValue['delegateAccess']) => {
+  if (isEmpty(delegateAccess)) return [];
+  return delegateAccess.map((item) => ({
+    delegatedUserId: item.delegatedUserId,
+    roleName: item.roleName,
+    startDate: dayjs(item.startDate).utc().format(),
+    endDate: dayjs(item.endDate).utc().format(),
+    isAllProjects: false,
+    projectNumber: item.projectNumber,
+  }));
+};
+
 export const formatPayloadSubmit = (values: CRUUserFormValue) => {
   const _values = {
     ...values,
@@ -134,16 +167,7 @@ export const formatPayloadSubmit = (values: CRUUserFormValue) => {
     middleName: values.middleName.toUpperCase(),
     username: values.username.toLowerCase(),
     status: getPayloadUserStatus(values.status),
-    delegateAccess: [
-      // {
-      //   delegatedUserId: '028c60dc-c831-4d15-8cac-a9d51ea58850',
-      //   roleName: 'PI',
-      //   startDate: '2022-11-17 00:00:00.000',
-      //   endDate: '2022-12-17 00:00:00.000',
-      //   isAllProjects: false,
-      //   projectNumber: '222',
-      // },
-    ],
+    delegateAccess: getPayloadDelegateAccess(values.delegateAccess),
   };
   delete _values.isViewMode;
   delete _values.lastLoginDate;

@@ -36,11 +36,31 @@ export type GetPropertiesParams = TableParams & {
 
 export type DelegateAccess = {
   delegatedUserId: User['id'];
-  roleId: string;
+  roleName: string;
   startDate: string;
   endDate: string;
   isAllProjects: boolean;
   projectNumber: string;
+  userId?: string;
+  roleId?: string;
+  delegatedUser?: {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    firstName: string;
+    lastName: string;
+    middleName: string;
+    fullName: string;
+    username: string;
+    email: string;
+    lastLoginDate: string;
+    isDhUser: boolean;
+    allowMaintenanceModeLogin: boolean;
+    passwordSetDate: string;
+    comments: string;
+    defaultUserType: string;
+    status: string;
+  };
 };
 
 export type AddUserPayload = {
@@ -95,4 +115,22 @@ export type UserDetail = {
   delegateAccesses: DelegateAccess[];
   fisFaInfo: any; //TODO: tin_pham update type
   fisPiInfo: any; //TODO: tin_pham update type
+};
+
+export interface SearchUser {
+  username: UserDetail['username'];
+  email: UserDetail['email'];
+  fullName: UserDetail['fullName'];
+  id: UserDetail['id'];
+  roles: UserRole[];
+  defaultUserType: UserDetail['defaultUserType'];
+}
+
+export type SearchProject = {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  referenceId: number;
+  referenceTable: string;
+  projectNumber: string;
 };
