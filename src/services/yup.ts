@@ -81,8 +81,16 @@ yup.addMethod<yup.StringSchema>(yup.string, 'username', function (message) {
 
     if (!value) return true;
 
-    // TODO: tin_pham update regex
-    const re = /^\S*$/;
+    //     allow
+    //      characters
+    //      number
+    //      underscore _
+    //      dot .
+    //      hyphen -
+    //      length: 3-100
+    //    not allow
+    //      space
+    const re = /^([a-zA-Z0-9_.-]){3,100}$/;
 
     if (!re.test(value)) {
       return createError({
