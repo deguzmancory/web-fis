@@ -100,7 +100,7 @@ const TableBasic: React.FC<Props> = ({
               cursor: hasRowClickAction ? 'pointer' : 'default',
             },
             root: {
-              '&:nth-child(even)': {
+              '&:nth-of-type(even)': {
                 backgroundColor: COLOR_CODE.PRIMARY_50,
               },
             },

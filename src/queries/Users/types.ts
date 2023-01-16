@@ -1,5 +1,4 @@
 import { TableParams } from 'src/redux/types';
-import { ROLE_NAME } from '../Profile/helpers';
 export enum USER_KEY {
   USERNAME = 'username',
   EMAIL = 'email',
@@ -16,7 +15,9 @@ export enum USER_KEY {
 
 export enum USER_STATUS {
   ACTIVE = 'ACTIVE',
-  INACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  PENDING = 'PENDING',
+  DENIED = 'DENIED',
 }
 
 export interface User {
@@ -43,14 +44,14 @@ export type DelegateAccess = {
 };
 
 export type AddUserPayload = {
-  username: User['username'];
-  firstName: string;
-  lastName: string;
-  middleName: string;
-  email: User['email'];
-  comments: string;
-  defaultUserType: ROLE_NAME;
-  roles: ROLE_NAME[];
+  username: UserDetail['username'];
+  firstName: UserDetail['firstName'];
+  lastName: UserDetail['lastName'];
+  middleName: UserDetail['middleName'];
+  email: UserDetail['email'];
+  comments: UserDetail['comments'];
+  defaultUserType: UserDetail['defaultUserType'];
+  roles: string[];
   delegateAccess: DelegateAccess[];
 };
 

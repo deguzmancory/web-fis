@@ -1,6 +1,7 @@
 import { Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import { MUIDataTableColumn, MUIDataTableMeta } from 'mui-datatables';
+import TypographyLink from 'src/components/TypographyLink';
 import { User, USER_KEY } from 'src/queries/Users/types';
 import { DateFormatDisplayMinute } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
@@ -14,7 +15,7 @@ export const allColumns = (): MUIDataTableColumn[] => [
       filter: false,
       sort: true,
       customBodyRender: (value: string) => {
-        return <Typography variant="body2">{value ?? '--'}</Typography>;
+        return <TypographyLink variant="body2">{value ?? '--'}</TypographyLink>;
       },
     },
   },

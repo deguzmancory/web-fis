@@ -1,9 +1,9 @@
 import { Box, Typography } from '@mui/material';
 import React from 'react';
 import { CRUUserFormikProps } from '../../helper';
-import TableGiveDelegation from './table';
+import TableGrantDelegation from './table';
 
-const GiveDelegation: React.FC<Props> = ({ formikProps }) => {
+const GrantDelegation: React.FC<Props> = ({ formikProps }) => {
   // const { errors, touched, getFieldProps } = formikProps;
 
   // const _getErrorMessage = (fieldName: CRUUSER_KEY) => {
@@ -18,11 +18,11 @@ const GiveDelegation: React.FC<Props> = ({ formikProps }) => {
       <Typography variant="body1" mb={1}>
         Users Who Have Been Granted Access to This Account
       </Typography>
-      <TableGiveDelegation formikProps={formikProps} />
+      <TableGrantDelegation formikProps={formikProps} />
     </Box>
   );
 };
 type Props = {
   formikProps: CRUUserFormikProps;
 };
-export default GiveDelegation;
+export default GrantDelegation;

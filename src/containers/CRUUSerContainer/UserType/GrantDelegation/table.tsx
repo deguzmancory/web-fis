@@ -6,7 +6,7 @@ import EmptyTable from 'src/components/EmptyTable';
 import { CRUUserFormikProps, CRUUSER_KEY, getErrorMessage } from '../../helper';
 import { allColumns } from './allColumns';
 
-const TableGiveDelegation: React.FC<Props> = ({ formikProps }) => {
+const TableGrantDelegation: React.FC<Props> = ({ formikProps }) => {
   const { errors, touched, getFieldProps } = formikProps;
 
   const _getErrorMessage = (fieldName: CRUUSER_KEY) => {
@@ -73,4 +73,4 @@ const TableGiveDelegation: React.FC<Props> = ({ formikProps }) => {
 type Props = {
   formikProps: CRUUserFormikProps;
 };
-export default TableGiveDelegation;
+export default TableGrantDelegation;

@@ -2,18 +2,17 @@ import { Box, Container, Stack, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import { FormikProps, useFormik } from 'formik';
 import React, { Suspense } from 'react';
-import { AiFillWarning } from 'react-icons/ai';
 import ReactJson from 'react-json-view';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { COLOR_CODE } from 'src/appConfig/constants';
 import { PATHS } from 'src/appConfig/paths';
 import { Accordion, Button, LoadingCommon } from 'src/components/common';
-import { useGetUser } from 'src/queries/Users';
-import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
+import { useCreateUser, useGetAllUsers, useGetUser } from 'src/queries/Users';
+import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, Toastify } from 'src/services';
+import { deepKeys, scrollToTopError } from 'src/utils';
 import { DateFormatDisplayMinute } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
 import { handleShowErrorMsg } from '../UsersManagement/helpers';
@@ -23,6 +22,10 @@ import {
   CRUUserFormikProps,
   cRUUserFormSchema,
   CRUUserFormValue,
+  CRUUSER_KEY,
+  formatPayloadSubmit,
+  getValueRoles,
+  getValueUserStatus,
   initialCRUUserFormValue,
 } from './helper';
 import InternalComments from './InternalComments';
@@ -35,12 +38,16 @@ const AuditInformation = React.lazy(() => import('./AuditInformation'));
 
 const clsPrefix = 'ctn-cruuser';
 
-const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog }) => {
+const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideAllDialog }) => {
   const { userId } = useParams<{ userId: string }>();
   const [isViewMode] = React.useState(!isEmpty(userId));
   const [isErrorWhenFetchUser, setIsErrorWhenFetchUser] = React.useState(false);
 
-  const { user, onGetUserById, isLoading } = useGetUser({
+  const {
+    user,
+    onGetUserById,
+    isLoading: isLoadingGetUser,
+  } = useGetUser({
     userId: userId || null,
     onError(err: Error) {
       handleShowErrorMsg(err, 'Error when fetch data user');
@@ -52,24 +59,45 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog }) => {
     onShowDialog({
       type: DIALOG_TYPES.YESNO_DIALOG,
       data: {
-        title: `Attention`,
-        iconTitle: <AiFillWarning color={COLOR_CODE.WARNING} size={25} />,
-        content: `Changes you made may not be saved. Are you sure you want to proceed?`,
-        okText: 'Yes, leave',
-        cancelText: 'No, stay',
+        title: `Cancel`,
+        content: `There are unsaved changes on the Form. Are you sure you want to leave this page?`,
+        okText: 'Ok',
+        cancelText: 'Cancel',
         onOk: () => {
           onHideDialog();
           Navigator.navigate(PATHS.userManagements);
         },
         onCancel: () => {
-          onHideDialog();
+          onHideAllDialog();
         },
       },
     });
   };
 
+  const { handleInvalidateAllUser } = useGetAllUsers();
+
+  const { createUser, isLoading: isLoadingCreateUser } = useCreateUser({
+    onSuccess(data, variables, context) {
+      Toastify.success(`Add User successfully.`);
+      handleInvalidateAllUser();
+      Navigator.navigate(PATHS.userManagements);
+    },
+    onError(error, variables, context) {
+      if (error.message === 'An account with this username already existed.') {
+        setFieldError(CRUUSER_KEY.USERNAME, error.message);
+        handleScrollToTopError();
+      }
+      handleShowErrorMsg(error);
+    },
+  });
+
   const handleFormSubmit = (values: CRUUserFormValue) => {
-    Toastify.info('Save clicked');
+    if (isViewMode) {
+      Toastify.info('Save mode Edit clicked');
+    } else {
+      const payload = formatPayloadSubmit(values);
+      createUser(payload);
+    }
   };
 
   const formRef = React.useRef<FormikProps<CRUUserFormValue>>(null);
@@ -91,6 +119,8 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog }) => {
         email: user.email,
         lastLoginDate: formatDate(user.lastLoginDate),
         passwordSetDate: formatDate(user.passwordSetDate),
+        status: getValueUserStatus(user.status),
+        roles: getValueRoles(user.roles),
         comments: user.comments,
       };
     } else {
@@ -101,15 +131,31 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog }) => {
     }
   }, [isViewMode, user]);
 
-  const { values, setFieldValue, errors, touched, getFieldProps, setFieldTouched, handleSubmit } =
-    useFormik<CRUUserFormValue>({
-      initialValues: initialFormValue,
-      onSubmit: handleFormSubmit,
-      validationSchema: cRUUserFormSchema,
-      innerRef: formRef,
-      enableReinitialize: true,
-    });
-  console.log('values: ', values);
+  const handleScrollToTopError = () => {
+    return setTimeout(() => {
+      scrollToTopError(deepKeys(errors));
+    }, 100);
+  };
+
+  const {
+    values,
+    setFieldValue,
+    errors,
+    touched,
+    getFieldProps,
+    setFieldTouched,
+    handleSubmit,
+    setFieldError,
+  } = useFormik<CRUUserFormValue>({
+    initialValues: initialFormValue,
+    onSubmit: handleFormSubmit,
+    validationSchema: cRUUserFormSchema,
+    innerRef: formRef,
+    enableReinitialize: true,
+  });
+
+  // console.log('values: ', values);
+  // console.log('errors: ', errors);
 
   const formikProps: CRUUserFormikProps = {
     values,
@@ -129,7 +175,7 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog }) => {
         </Typography>
         {isErrorWhenFetchUser ? (
           <Suspense fallback={<LoadingCommon />}>
-            <RefetchUser onGetUserById={onGetUserById} isLoading={isLoading} />
+            <RefetchUser onGetUserById={onGetUserById} isLoading={isLoadingGetUser} />
           </Suspense>
         ) : (
           <>
@@ -160,13 +206,24 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog }) => {
               >
                 Cancel
               </Button>
-              <Button onClick={() => handleSubmit()}>Save</Button>
+              <Button
+                onClick={() => {
+                  handleSubmit();
+                  handleScrollToTopError();
+                }}
+                isLoading={isLoadingGetUser || isLoadingCreateUser}
+                disabled={isLoadingGetUser || isLoadingCreateUser}
+              >
+                Save
+              </Button>
             </Stack>
 
-            <Layout>
-              <Typography>{userId}</Typography>
-              {user && <ReactJson src={user} />}
-            </Layout>
+            {isViewMode && (
+              <Accordion title={'Raw Data'}>
+                <Typography>{userId}</Typography>
+                {user && <ReactJson src={user} />}
+              </Accordion>
+            )}
           </>
         )}
       </Container>
@@ -181,6 +238,7 @@ const mapStateToProps = (state: IRootState) => ({});
 const mapDispatchToProps = {
   onShowDialog: showDialog,
   onHideDialog: hideDialog,
+  onHideAllDialog: hideAllDialog,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CRUUserContainer);

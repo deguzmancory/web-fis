@@ -25,16 +25,16 @@ export const userTypeOptions = [
     value: ROLE_NAME.SU,
   },
   {
-    label: getRoleName(ROLE_NAME.CENTRAL),
-    value: ROLE_NAME.CENTRAL,
+    label: getRoleName(ROLE_NAME.PI),
+    value: ROLE_NAME.PI,
   },
   {
     label: getRoleName(ROLE_NAME.FA),
     value: ROLE_NAME.FA,
   },
   {
-    label: getRoleName(ROLE_NAME.PI),
-    value: ROLE_NAME.PI,
+    label: getRoleName(ROLE_NAME.CENTRAL),
+    value: ROLE_NAME.CENTRAL,
   },
 ];
 

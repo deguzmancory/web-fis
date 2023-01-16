@@ -2,18 +2,20 @@ import { Box, Typography } from '@mui/material';
 import React from 'react';
 import { Accordion } from 'src/components/common';
 import { CRUUserFormikProps } from '../helper';
-import GiveDelegation from './GiveDelegation';
+import GrantDelegation from './GrantDelegation';
 import ReceivedDelegation from './ReceivedDelegation';
+import SelectUserType from './SelectUserType';
 
 const UserType: React.FC<Props> = ({ formikProps }) => {
   return (
     <Box>
-      <Typography variant="h3" mb={3}>
-        User Type
-      </Typography>
+      <Typography variant="h3">User Type</Typography>
+      <Box my={3}>
+        <SelectUserType formikProps={formikProps} />
+      </Box>
       <Box>
-        <Accordion title={'Delegation'} isExpanded={true}>
-          <GiveDelegation formikProps={formikProps} />
+        <Accordion title={'Delegation'}>
+          <GrantDelegation formikProps={formikProps} />
           <ReceivedDelegation formikProps={formikProps} />
         </Accordion>
       </Box>

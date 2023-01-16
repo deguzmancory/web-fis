@@ -8,6 +8,7 @@ import { DateFormat } from 'src/utils/momentUtils';
 const DatePickerEdit: React.FC<Props> = ({ data, setRows, rowIndex, keyValue }) => {
   // eslint-disable-next-line security/detect-object-injection
   const _keyValue = data[keyValue];
+
   const [date, setDate] = React.useState(_keyValue);
 
   const handleDatePickerChange = (name, value: Date) => {

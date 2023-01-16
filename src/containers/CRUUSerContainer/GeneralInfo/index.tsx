@@ -2,6 +2,7 @@ import { Box, Grid } from '@mui/material';
 import React from 'react';
 import { Checkbox, Input, Select } from 'src/components/common';
 import { userTypeOptions } from 'src/containers/UsersManagement/TableList/CustomFilter/helpers';
+import { isEmpty } from 'src/validations';
 import { CRUUserFormikProps, CRUUSER_KEY, getErrorMessage } from '../helper';
 
 const GeneralInfo: React.FC<Props> = ({ formikProps }) => {
@@ -48,13 +49,15 @@ const GeneralInfo: React.FC<Props> = ({ formikProps }) => {
             <Select
               name={CRUUSER_KEY.DEFAULT_USER_TYPE}
               options={userTypeOptions}
+              filterOption={(option) => values.roles.includes(option.value)}
               {...getFieldProps(CRUUSER_KEY.DEFAULT_USER_TYPE)}
               label="Default User Type"
               hideSearchIcon
+              required
               onChange={setFieldValue}
               onBlur={setFieldTouched}
               errorMessage={_getErrorMessage(CRUUSER_KEY.DEFAULT_USER_TYPE)}
-              isDisabled={false}
+              isDisabled={isEmpty(values.roles)}
             />
           </Grid>
           <Grid item xs={4}>
@@ -98,19 +101,8 @@ const GeneralInfo: React.FC<Props> = ({ formikProps }) => {
           )}
         </Grid>
         <Grid item container spacing={3}>
-          <Grid item xs={4} container spacing={3}>
-            <Grid item xs={6}>
-              <Checkbox.Item label="User Locked Out" />
-            </Grid>
-            <Grid item xs={6}>
-              <Checkbox.Item
-                label="Login Disabled"
-                {...getFieldProps(CRUUSER_KEY.ACCOUNT_DISABLED)}
-              />
-            </Grid>
-          </Grid>
           <Grid item xs={4}>
-            <Checkbox.Item label="Password Change Required on Login" />
+            <Checkbox.Item label="Login Disabled" {...getFieldProps(CRUUSER_KEY.STATUS)} />
           </Grid>
         </Grid>
       </Grid>

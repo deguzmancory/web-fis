@@ -8,7 +8,6 @@ import { Callback } from 'src/redux/types';
 
 const ActionsButton: React.FC<Props> = ({
   data,
-
   onShowDialog,
   onHideDialog,
   setRows,

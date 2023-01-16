@@ -13,7 +13,7 @@ import {
   SignInPayload,
   SubmitForgotPasswordPayload,
 } from 'src/queries/UAM/types';
-import { GetPropertiesParams, User } from 'src/queries/Users/types';
+import { AddUserPayload, GetPropertiesParams, User } from 'src/queries/Users/types';
 import { newCancelToken, stringify } from 'src/utils';
 import { TokenService } from '.';
 
@@ -145,6 +145,16 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.get(`/account-svc/v1/users/${params.id}`, {}, newCancelToken());
   };
 
+  const createUser = (payload: AddUserPayload) => {
+    return api.post(
+      `/account-svc/v1/users`,
+      {
+        ...payload,
+      },
+      newCancelToken()
+    );
+  };
+
   const deleteUser = (userId: User['id']) => {
     return api.delete(`/account-svc/v1/users/${userId}`, {}, newCancelToken());
   };
@@ -201,6 +211,7 @@ const create = (baseURL = appConfig.API_URL) => {
     // ====================== Users Management ======================
     getAllUsers,
     getUser,
+    createUser,
     deleteUser,
   };
 };
