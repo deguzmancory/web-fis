@@ -72,7 +72,6 @@ const GeneralInfo: React.FC<Props> = ({ formikProps }) => {
             <Input
               label={'Email'}
               required
-              type="email"
               errorMessage={_getErrorMessage(CRUUSER_KEY.EMAIL)}
               {...getFieldProps(CRUUSER_KEY.EMAIL)}
             />

@@ -65,7 +65,9 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
         cancelText: 'Cancel',
         onOk: () => {
           onHideDialog();
-          Navigator.navigate(PATHS.userManagements);
+          setTimeout(() => {
+            Navigator.navigate(PATHS.userManagements);
+          }, 50);
         },
         onCancel: () => {
           onHideAllDialog();

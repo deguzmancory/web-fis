@@ -102,8 +102,19 @@ const SelectCmp = ({
               ...theme.colors,
               primary: COLOR_CODE.PRIMARY,
               neutral20: hasError ? COLOR_CODE.DANGER : COLOR_CODE.DISABLED,
+              primary50: COLOR_CODE.PRIMARY_100,
             },
           })}
+          styles={{
+            option: (base, state) => ({
+              ...base,
+              backgroundColor: state.isFocused
+                ? COLOR_CODE.PRIMARY_100
+                : state.isSelected
+                ? COLOR_CODE.PRIMARY_100
+                : 'white',
+            }),
+          }}
           {...props}
           components={{
             DropdownIndicator,
