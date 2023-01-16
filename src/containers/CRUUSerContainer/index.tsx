@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { FormikProps, useFormik } from 'formik';
 import React, { Suspense } from 'react';
 import { AiFillWarning } from 'react-icons/ai';
+import ReactJson from 'react-json-view';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { COLOR_CODE } from 'src/appConfig/constants';
@@ -148,10 +149,6 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog }) => {
                 </Accordion>
               </Suspense>
             )}
-            <Layout>
-              <Typography>{userId}</Typography>
-              <Typography>{JSON.stringify(user)}</Typography>
-            </Layout>
 
             <Stack my={4} flexDirection={'row'} justifyContent="center">
               <Button
@@ -165,6 +162,11 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog }) => {
               </Button>
               <Button onClick={() => handleSubmit()}>Save</Button>
             </Stack>
+
+            <Layout>
+              <Typography>{userId}</Typography>
+              {user && <ReactJson src={user} />}
+            </Layout>
           </>
         )}
       </Container>
