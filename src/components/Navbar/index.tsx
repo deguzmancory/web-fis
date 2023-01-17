@@ -1,4 +1,12 @@
-import { AppBar, Backdrop, Box, Link as MuiLink , CircularProgress, Stack, Toolbar } from '@mui/material';
+import {
+  AppBar,
+  Backdrop,
+  Box,
+  Link as MuiLink,
+  CircularProgress,
+  Stack,
+  Toolbar,
+} from '@mui/material';
 import cn from 'classnames';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -10,9 +18,9 @@ import { useProfile } from 'src/queries';
 import { IRootState } from 'src/redux/rootReducer';
 import { Image } from '../common';
 import Header from './header';
-import { NavbarMenuItems } from './helpers';
+import { navbarMenuItems } from './helpers';
 import './styles.scss';
-import UserMenu from './UserMenu';
+import UserMenu from './userMenu';
 
 const clsPrefix = 'ctn-navbar-desktop';
 
@@ -21,7 +29,6 @@ const Navbar: React.FC<Props> = () => {
   const { profile } = useProfile();
   const { fullName } = profile || {};
   const [isClickedLogout] = React.useState(false);
-
 
   if (!showNavbar) return null;
   return (
@@ -44,7 +51,7 @@ const Navbar: React.FC<Props> = () => {
           </Link>
           {/* Main Menu Navbar */}
           <Stack flexDirection={'row'}>
-            {NavbarMenuItems.map((item) => (
+            {navbarMenuItems.map((item) => (
               <MuiLink
                 {...(item?.url && {
                   href: item.url,
@@ -80,9 +87,9 @@ const Navbar: React.FC<Props> = () => {
               </MuiLink>
             ))}
           </Stack>
-          
+
           {/* User Menu */}
-          <Box p={2}>
+          <Box>
             <UserMenu fullName={fullName} />
           </Box>
         </Stack>
@@ -94,4 +101,3 @@ const Navbar: React.FC<Props> = () => {
 type Props = {};
 
 export default Navbar;
-

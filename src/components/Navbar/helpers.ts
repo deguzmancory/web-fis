@@ -106,7 +106,7 @@ export const navbarItems: NavbarItemType[] = [
 ];
 
 // Main Menu Navbar
-export type NavbarMenuType = {
+export type navbarMenuType = {
   id?: string;
   label: string;
   url?: string;
@@ -117,7 +117,7 @@ export type NavbarMenuType = {
     url?: string;
   }[];
 };
-export const NavbarMenuItems: NavbarMenuType[] = [
+export const navbarMenuItems: navbarMenuType[] = [
   {
     label: 'Main Menu',
     url: 'https://fis.rcuh.com/#!/home',
