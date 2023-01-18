@@ -1,5 +1,5 @@
 import { ROLE_NAME, getRoleName } from 'src/queries/Profile/helpers';
-import { GetPropertiesParams } from 'src/queries/Users/types';
+import { GetPropertiesParams, USER_KEY } from 'src/queries/Users/types';
 import { isEmpty } from 'src/validations';
 
 export enum CUSTOM_FILTER_USERS_KEY {
@@ -25,16 +25,12 @@ export const userTypeOptions = [
     value: ROLE_NAME.SU,
   },
   {
-    label: getRoleName(ROLE_NAME.CU),
-    value: ROLE_NAME.CU,
+    label: getRoleName(ROLE_NAME.PI),
+    value: ROLE_NAME.PI,
   },
   {
     label: getRoleName(ROLE_NAME.FA),
     value: ROLE_NAME.FA,
-  },
-  {
-    label: getRoleName(ROLE_NAME.PI),
-    value: ROLE_NAME.PI,
   },
 ];
 
@@ -48,7 +44,7 @@ export const getUsersUpdatedParams = (
   if (!isEmpty(roleParams)) {
     newParams['userType'] = roleParams.map((r) => r.toUpperCase().replace(/\s/g, '_')).join(',');
   }
-  delete newParams['roleDisplayName'];
+  delete newParams[USER_KEY.DISPLAY_NAME];
 
   return newParams;
 };

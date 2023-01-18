@@ -11,6 +11,7 @@ import appConfig from './appConfig';
 import './scss/styles.scss';
 import 'dayjs/locale/vi';
 import 'dayjs/locale/en';
+import utc from 'dayjs/plugin/utc';
 import createStore from './redux/store';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
@@ -20,6 +21,10 @@ import { ThemeProvider } from '@mui/material/styles';
 import { theme } from './appConfig/muiTheme';
 import { Suspense } from 'react';
 import { LoadingCommon } from './components/common';
+import dayjs from 'dayjs';
+
+dayjs.extend(utc);
+
 const { store, history } = createStore();
 
 const queryClient = new QueryClient({

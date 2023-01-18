@@ -20,81 +20,12 @@ declare module 'yup' {
   interface StringSchema {
     phone(message?: string): StringSchema;
     password(message?: string): StringSchema;
-    ssn(message?: string): StringSchema;
     letterOnly(message?: string): StringSchema;
     numberOnly(message?: string): StringSchema;
-    businessId(message?: string): StringSchema;
     notTrimmable(message?: string): StringSchema;
+    username(message?: string): StringSchema;
   }
 }
-
-yup.addMethod<yup.StringSchema>(yup.string, 'businessId', function (message) {
-  return this.test('isValidBusinessId', message, function (value) {
-    const { path, createError } = this;
-
-    if (!value) return true;
-
-    if (value.length < 3 || value.length > 25) {
-      return createError({
-        path,
-        message: message ?? ErrorService.MESSAGES.businessIdLength,
-      });
-    }
-
-    if (/\s+/.test(value)) {
-      return createError({
-        path,
-        message: message ?? ErrorService.MESSAGES.noSpaces,
-      });
-    }
-
-    // eslint-disable-next-line no-useless-escape
-    if (/[_!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(value)) {
-      return createError({
-        path,
-        message: message ?? ErrorService.MESSAGES.noSpecialCharacters,
-      });
-    }
-
-    if (!/^[a-zA-Z0-9]+$/.test(value)) {
-      return createError({
-        path,
-        message: message ?? ErrorService.MESSAGES.alphanumeric,
-      });
-    }
-
-    return true;
-  });
-});
-
-yup.addMethod<yup.StringSchema>(yup.string, 'ssn', function (message) {
-  return this.test('isValidSSN', message, function (value) {
-    const { path, createError } = this;
-
-    if (!value) return true;
-
-    if (/000\d{6}/.test(value)) {
-      return createError({
-        path,
-        message: message ?? ErrorService.MESSAGES.invalidSSN,
-      });
-    }
-    if (/\d{3}00\d{4}/.test(value)) {
-      return createError({
-        path,
-        message: message ?? ErrorService.MESSAGES.invalidSSN,
-      });
-    }
-    if (/\d{5}0{4}/.test(value)) {
-      return createError({
-        path,
-        message: message ?? ErrorService.MESSAGES.invalidSSN,
-      });
-    }
-
-    return true;
-  });
-});
 
 yup.addMethod<yup.StringSchema>(yup.string, 'phone', function (message) {
   return this.test('isValidPhone', message, function (value) {
@@ -139,6 +70,34 @@ yup.addMethod<yup.StringSchema>(yup.string, 'password', function (message) {
         path,
         message: message ?? 'Your password must have at one special character',
       });
+
+    return true;
+  });
+});
+
+yup.addMethod<yup.StringSchema>(yup.string, 'username', function (message) {
+  return this.test('isValidUsername', message, function (value) {
+    const { path, createError } = this;
+
+    if (!value) return true;
+
+    //     allow
+    //      characters
+    //      number
+    //      underscore _
+    //      dot .
+    //      hyphen -
+    //      length: 3-100
+    //    not allow
+    //      space
+    const re = /^([a-zA-Z0-9_.-]){3,100}$/;
+
+    if (!re.test(value)) {
+      return createError({
+        path,
+        message: message ?? ErrorService.MESSAGES.inValidUsername,
+      });
+    }
 
     return true;
   });

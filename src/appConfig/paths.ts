@@ -12,9 +12,12 @@ export const PATHS = {
   changePassword: '/me/change-password',
   editMyProfile: '/me/edit',
   configureNotification: '/me/notification',
+  switchUser: '/switch-user',
 
   // miscellaneous / Users Managements
   userManagements: '/miscellaneous/user-managements',
+  addUser: '/miscellaneous/user-managements/add',
+  userDetail: '/miscellaneous/user-managements/user-detail',
 };
 
 export const PATH_HEADERS = {

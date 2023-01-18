@@ -194,13 +194,6 @@ export const getFileType = (file: File) => {
 
 export const getNavigateUrl = (url: string) => (url.includes('http') ? url : `https://${url}`);
 
-export const getRoleName = (role: string) => {
-  if (role === 'SYSTEM_ADMINISTRATOR') return 'System Admin';
-  else if (role === 'USER') return 'User';
-  else if (role === 'APPRAISER') return 'Appraiser';
-  else if (role === 'SUPERVISOR') return 'Supervisor';
-};
-
 export const isURLImage = (url: string) => {
   if (isEmpty(url)) return false;
 
@@ -275,14 +268,4 @@ export const removeSpecialCharacterFromString = (value: string) => {
 export const formatStringToNumber = (value: string) => {
   if (isEmpty(value)) return null;
   return Number(value);
-};
-
-export const getDefaultSubsystemName = (defaultSubsystemCode: string) => {
-  switch (defaultSubsystemCode) {
-    case 'PI':
-      return 'Financial';
-
-    default:
-      return '--';
-  }
 };

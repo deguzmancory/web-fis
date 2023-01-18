@@ -3,9 +3,12 @@
 
 .cmp-select {
   text-align: left;
+  height: $input-small;
 
   .cmp-select {
     &__control {
+      min-height: $input-small !important;
+      max-height: $input-small;
       height: $input-small;
       // padding: $input-padding;
       border: $default-border;
@@ -36,6 +39,9 @@
 
     &__value-container {
       padding: 0 10px;
+    }
+    &__indicators {
+      height: $input-small;
     }
 
     &__menu {

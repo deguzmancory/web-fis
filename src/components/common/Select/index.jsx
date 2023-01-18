@@ -39,7 +39,6 @@ const SelectCmp = ({
   containerClassName = '',
   onBlur,
   name = '',
-  isTranslatable = false,
   required = false,
   infoTooltipMessage = '',
   infoTooltipPlacement = 'right',
@@ -49,6 +48,7 @@ const SelectCmp = ({
   isDisabled = false,
   isMulti = false,
   menuPosition = 'fixed',
+  onInputChange = (value) => {},
   ...props
 }) => {
   const id = useRef(`select-${getRandomId()}`);
@@ -74,7 +74,6 @@ const SelectCmp = ({
       errorMessage={errorMessage}
       label={label}
       className={containerClassName}
-      isTranslatable={isTranslatable}
       required={required}
       infoTooltipMessage={infoTooltipMessage}
       infoTooltipPlacement={infoTooltipPlacement}
@@ -104,14 +103,30 @@ const SelectCmp = ({
               ...theme.colors,
               primary: COLOR_CODE.PRIMARY,
               neutral20: hasError ? COLOR_CODE.DANGER : COLOR_CODE.DISABLED,
+              primary50: COLOR_CODE.PRIMARY_100,
             },
           })}
+          styles={{
+            option: (base, state) => ({
+              ...base,
+              backgroundColor: state.isFocused
+                ? COLOR_CODE.PRIMARY_100
+                : state.isSelected
+                ? COLOR_CODE.PRIMARY_100
+                : 'white',
+            }),
+            menuPortal: (base, props) => ({
+              ...base,
+              zIndex: 999,
+            }),
+          }}
           {...props}
           components={{
             DropdownIndicator,
             Control: hideSearchIcon ? ControlNoSearchIcon : Control,
           }}
           menuPosition={menuPosition}
+          onInputChange={onInputChange}
         />
       </View>
     </Element>

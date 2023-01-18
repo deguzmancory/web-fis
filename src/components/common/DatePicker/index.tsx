@@ -18,6 +18,7 @@ const DateSelector: React.FC<Props> = ({
   required,
   name,
   onBlur,
+  positionFixed = true,
   ...props
 }) => {
   const id = useRef<string>(`datepicker-${getRandomId()}`);
@@ -55,6 +56,10 @@ const DateSelector: React.FC<Props> = ({
         showMonthDropdown
         showYearDropdown
         dropdownMode="select"
+        popperProps={{
+          positionFixed: positionFixed,
+        }}
+        portalId="root"
         {...props}
       />
     </Element>
@@ -76,6 +81,7 @@ type Props = BaseDatePickerProps & {
   onChange: Callback;
   onBlur?: Callback;
   hasDifferentValue?: boolean;
+  positionFixed?: boolean;
 };
 
 export default DateSelector;

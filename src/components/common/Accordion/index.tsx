@@ -3,7 +3,7 @@ import cn from 'classnames';
 import './styles.scss';
 import { View, Icon, Text } from 'src/components/common';
 import { AnimatePresence, motion, MotionProps } from 'framer-motion';
-import { AiOutlineDown, AiOutlineUp } from 'react-icons/ai';
+import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 
 const Accordion: React.FC<Props> = ({
   title,
@@ -51,18 +51,22 @@ const Accordion: React.FC<Props> = ({
             { 'cmp-accordion-item__header--collapsed': expanded === false }
           )}
         >
-          {typeof title === 'string' ? (
-            <Text className="fw-bold" size={18}>
-              {title}
+          <View isRow align="center">
+            <Icon className="mr-16">{expanded ? <KeyboardArrowUp /> : <KeyboardArrowDown />}</Icon>
+
+            {typeof title === 'string' ? (
+              <Text className="fw-bold" size={16}>
+                {title}
+              </Text>
+            ) : (
+              title
+            )}
+            <Text size={14} className="ml-16">
+              Click here to {expanded ? 'Collapse' : 'Expand'}
             </Text>
-          ) : (
-            title
-          )}
+          </View>
           <View isRow justify="flex-end" align="center">
             {subTitle && <View className="mr-16">{subTitle}</View>}
-            <Icon className="cmp-accordion-item__header__icon">
-              {expanded ? <AiOutlineUp /> : <AiOutlineDown />}
-            </Icon>
           </View>
         </View>
       </motion.header>

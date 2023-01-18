@@ -99,12 +99,20 @@ const TableBasic: React.FC<Props> = ({
             hover: {
               cursor: hasRowClickAction ? 'pointer' : 'default',
             },
+            root: {
+              '&:nth-of-type(even)': {
+                backgroundColor: COLOR_CODE.PRIMARY_50,
+              },
+            },
           },
         },
         MuiTableCell: {
           styleOverrides: {
             root: {
-              padding: '2px 16px',
+              padding: '4px 16px',
+            },
+            body: {
+              cursor: hasRowClickAction ? 'pointer' : 'default',
             },
             head: {
               '&.MuiTableCell-root': {

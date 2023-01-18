@@ -1,10 +1,11 @@
 import { Add, Refresh } from '@mui/icons-material';
 import { Box, Stack } from '@mui/material';
 import { FaDownload } from 'react-icons/fa';
+import { PATHS } from 'src/appConfig/paths';
 import { Button } from 'src/components/common';
 import CustomSearchTable from 'src/components/CustomSearchTable';
 import { Callback } from 'src/redux/types';
-import { Toastify } from 'src/services';
+import { Navigator, Toastify } from 'src/services';
 import CustomFilterUsersManagement from './CustomFilter';
 
 const HeaderTable: React.FC<Props> = ({ onRefreshTable, isLoading }) => {
@@ -33,7 +34,7 @@ const HeaderTable: React.FC<Props> = ({ onRefreshTable, isLoading }) => {
           <Button
             icon={<Add />}
             onClick={() => {
-              Toastify.info('Add User clicked!');
+              Navigator.navigate(PATHS.addUser);
             }}
             disabled={isLoading}
           >
