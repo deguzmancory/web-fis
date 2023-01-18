@@ -1,3 +1,5 @@
+import { PATHS } from 'src/appConfig/paths';
+
 // External Links Navbar
 export type NavbarItemType = {
   id?: string;
@@ -120,7 +122,7 @@ export type navbarMenuType = {
 export const navbarMenuItems: navbarMenuType[] = [
   {
     label: 'Main Menu',
-    url: 'https://fis.rcuh.com/#!/home',
+    url: PATHS.dashboard,
     subItems: [
       // No Items Here
     ],
@@ -239,14 +241,6 @@ export const navbarMenuItems: navbarMenuType[] = [
       {
         label: 'Search Vendors',
         url: 'https://awsnode.test.rcuh.com/#!/vendor_search',
-      },
-      {
-        label: 'Register for ePayments',
-        url: 'https://awsnode.test.rcuh.com/#!/register_for_epayments',
-      },
-      {
-        label: 'Register for ePayments',
-        url: 'https://awsnode.test.rcuh.com/#!/register_for_epayments',
       },
       {
         label: 'Register for ePayments',
