@@ -1,5 +1,5 @@
 export enum ROLE_NAME {
-  CENTRAL = 'CENTRAL',
+  CU = 'CU',
   PI = 'PI',
   SU = 'SU',
   FA = 'FA',
@@ -7,7 +7,7 @@ export enum ROLE_NAME {
 
 export const getRoleName = (role: string) => {
   switch (role) {
-    case ROLE_NAME.CENTRAL:
+    case ROLE_NAME.CU:
       return 'Central User';
     case ROLE_NAME.PI:
       return 'Principal Investigator';
