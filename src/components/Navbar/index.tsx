@@ -11,7 +11,7 @@ import { Image } from '../common';
 import Header from './header';
 import { navbarMenuItems } from './helpers';
 import './styles.scss';
-import UserMenu from './userMenu';
+import UserMenu from './UserMenu';
 const clsPrefix = 'ctn-navbar-desktop';
 
 const Navbar: React.FC<Props> = () => {
