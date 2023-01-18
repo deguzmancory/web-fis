@@ -9,7 +9,7 @@ import { useComponentDidMount } from 'src/hooks';
 import { MyProfile, useLogout, useMyPermissions, useProfile } from 'src/queries';
 import { setAuthenticated, setUserName } from 'src/redux/auth/authSlice';
 import { IRootState } from 'src/redux/rootReducer';
-import { ErrorService, Navigator, TokenService } from 'src/services';
+import { Navigator, Toastify, TokenService } from 'src/services';
 
 const AuthContainer: React.FC<Props> = ({
   history,
@@ -23,6 +23,11 @@ const AuthContainer: React.FC<Props> = ({
   const handleSetAuthenticated = (data: MyProfile) => {
     onSetUserName(data);
     onSetAuth(true);
+  };
+
+  const handleLogout = () => {
+    logout();
+    TokenService.clearToken();
   };
 
   const { getMyPermissions } = useMyPermissions({
@@ -44,6 +49,14 @@ const AuthContainer: React.FC<Props> = ({
       // }
       return getMyProfile();
     },
+    onError(err) {
+      if (err['code'] === 500) {
+        Toastify.error('Error when fetch user permission. Try to login again!');
+        setTimeout(() => {
+          handleLogout();
+        }, 3000);
+      }
+    },
   });
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -54,8 +67,10 @@ const AuthContainer: React.FC<Props> = ({
       }
     },
     onError(err) {
-      ErrorService.handler(err);
-      logout();
+      Toastify.error('Error when fetch user data. Try to login again!');
+      setTimeout(() => {
+        handleLogout();
+      }, 3000);
     },
   });
 
