@@ -12,6 +12,7 @@ export const PATHS = {
   changePassword: '/me/change-password',
   editMyProfile: '/me/edit',
   configureNotification: '/me/notification',
+  switchUser: '/switch-user',
 
   // miscellaneous / Users Managements
   userManagements: '/miscellaneous/user-managements',

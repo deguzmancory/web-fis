@@ -19,6 +19,9 @@ const Dashboard: React.FC<Props> = () => {
           <Link to={PATHS.userManagements}>
             <TypographyLink variant="h1">User Management</TypographyLink>
           </Link>
+          <Link to={PATHS.switchUser}>
+            <TypographyLink variant="h1">Switch User</TypographyLink>
+          </Link>
         </Box>
       </Stack>
     </Box>
