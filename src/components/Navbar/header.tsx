@@ -1,8 +1,8 @@
-import { Stack, Link as MuiLink, Box } from '@mui/material';
-import React from 'react';
+import { Box, Link as MuiLink, Stack, Typography } from '@mui/material';
+import cn from 'classnames';
+import { Link } from 'react-router-dom';
 import { COLOR_CODE, NO_OPENER } from 'src/appConfig/constants';
 import { navbarItems } from './helpers';
-import cn from 'classnames';
 
 const clsPrefix = 'ctn-navbar-desktop';
 
@@ -23,21 +23,29 @@ const Header = () => {
           key={item.label}
           my={'auto'}
         >
-          <MuiLink
-            {...(item?.url && {
-              href: item.url,
-              target: '_blank',
-              rel: NO_OPENER,
-            })}
-            key={item.label}
-            className={`${clsPrefix}-link`}
-            sx={{
-              fontSize: 12,
-            }}
-            underline="none"
-          >
-            {item.label}
-          </MuiLink>
+          {item?.isExternalUrl ? (
+            <MuiLink
+              {...(item?.url && {
+                href: item.url,
+                target: '_blank',
+                rel: NO_OPENER,
+              })}
+              className={`${clsPrefix}-link`}
+              sx={{
+                fontSize: 12,
+              }}
+              underline="none"
+            >
+              {item.label}
+            </MuiLink>
+          ) : (
+            <Link to={item.url}>
+              <Typography variant="subtitle1" className={`${clsPrefix}-link`}>
+                {item.label}
+              </Typography>
+            </Link>
+          )}
+
           <Box
             className={cn(`${clsPrefix}-item__sub subItems`, {
               isLeft: item?.isDisplayLeft,

@@ -32,6 +32,10 @@ export const userTypeOptions = [
     label: getRoleName(ROLE_NAME.FA),
     value: ROLE_NAME.FA,
   },
+  {
+    label: getRoleName(ROLE_NAME.CU),
+    value: ROLE_NAME.CU,
+  },
 ];
 
 export const getUsersUpdatedParams = (

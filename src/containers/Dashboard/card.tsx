@@ -5,11 +5,12 @@ import { Link } from 'react-router-dom';
 import { COLOR_CODE, NO_OPENER } from 'src/appConfig/constants';
 import { DashboardItem } from './helpers';
 
-const CardDashboard: React.FC<Props> = ({ card, userRoles }) => {
+const CardDashboard: React.FC<Props> = ({ card, userRole }) => {
   return (
     <Box
       minHeight={'100%'}
-      p={4}
+      py={4}
+      px={3}
       bgcolor={COLOR_CODE.WHITE}
       border={COLOR_CODE.DEFAULT_BORDER}
       borderRadius={'4px'}
@@ -35,7 +36,7 @@ const CardDashboard: React.FC<Props> = ({ card, userRoles }) => {
       </Box>
       <Box mt={2}>
         {card.items.map((item, index) => {
-          const isShow = item.roles.some((role) => userRoles.includes(role));
+          const isShow = item.roles.some((role) => role === userRole);
           return isShow ? (
             <Box key={item.title} py={1} borderBottom={`1px solid ${COLOR_CODE.PRIMARY_100}`}>
               {item.isExternalUrl ? (
@@ -69,7 +70,7 @@ const CardDashboard: React.FC<Props> = ({ card, userRoles }) => {
               )}
             </Box>
           ) : (
-            <></>
+            <React.Fragment key={item.title} />
           );
         })}
       </Box>
@@ -79,7 +80,7 @@ const CardDashboard: React.FC<Props> = ({ card, userRoles }) => {
 
 type Props = {
   card: DashboardItem;
-  userRoles: string[];
+  userRole: string;
 };
 
 export default CardDashboard;

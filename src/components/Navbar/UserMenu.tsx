@@ -1,25 +1,20 @@
 import { ArrowDropDown } from '@mui/icons-material';
-import {
-  Backdrop,
-  Box,
-  CircularProgress,
-  Divider,
-  MenuItem,
-  MenuList,
-  Paper,
-  Popover,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Box, Divider, MenuItem, MenuList, Paper, Popover, Stack, Typography } from '@mui/material';
 import * as React from 'react';
 import { COLOR_CODE } from 'src/appConfig/constants';
+import { PATHS } from 'src/appConfig/paths';
 import { useLogout, useProfile } from 'src/queries';
-import { TokenService } from 'src/services';
+import { Callback } from 'src/redux/types';
+import { Navigator, TokenService } from 'src/services';
 
-export default function UserMenu({ fullName }) {
+type Props = {
+  fullName: string;
+  setIsClickedLogout: Callback;
+};
+
+const UserMenu: React.FC<Props> = ({ fullName, setIsClickedLogout }) => {
   const anchorRef = React.useRef(null);
   const [openPopover, setOpenPopover] = React.useState(false);
-  const [isClickedLogout, setIsClickedLogout] = React.useState(false);
 
   const { profile } = useProfile();
   const { roleName } = profile || {};
@@ -29,7 +24,7 @@ export default function UserMenu({ fullName }) {
     setIsClickedLogout(true);
     logout();
     TokenService.clearToken();
-  }, [logout]);
+  }, [logout, setIsClickedLogout]);
 
   const handleToggleMenu = () => {
     setOpenPopover((prev) => !prev);
@@ -43,7 +38,10 @@ export default function UserMenu({ fullName }) {
       },
       {
         title: 'Switch User',
-        onClick: () => {},
+        onClick: () => {
+          Navigator.navigate(PATHS.switchUser);
+          handleToggleMenu();
+        },
       },
       {
         title: 'Log out',
@@ -54,15 +52,6 @@ export default function UserMenu({ fullName }) {
 
   return (
     <>
-      {isClickedLogout && (
-        <Backdrop
-          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={true}
-          onClick={() => {}}
-        >
-          <CircularProgress color="inherit" />
-        </Backdrop>
-      )}
       <Stack width={162} height={32}>
         <Box
           ref={anchorRef}
@@ -110,4 +99,6 @@ export default function UserMenu({ fullName }) {
       </Stack>
     </>
   );
-}
+};
+
+export default UserMenu;
