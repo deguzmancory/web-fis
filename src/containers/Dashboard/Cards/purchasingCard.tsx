@@ -1,4 +1,5 @@
-import { Card, CardContent, Divider, Typography } from '@mui/material';
+import { Box, Card, CardContent, Divider, Typography } from '@mui/material';
+import { IoServer } from 'react-icons/io5';
 import { COLOR_CODE } from 'src/appConfig/constants';
 
 export default function PurchasingCard() {
@@ -15,6 +16,9 @@ export default function PurchasingCard() {
           m: 2,
         }}
       >
+        <Box textAlign={'center'}>
+          <IoServer style={{ color: '#08C', width: 75, height: 65 }} />
+        </Box>
         <Typography variant="h2" textAlign={'center'} sx={{ color: '#08C' }}>
           Purchasing
         </Typography>

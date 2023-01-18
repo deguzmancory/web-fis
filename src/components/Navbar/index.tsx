@@ -20,7 +20,7 @@ import { Image } from '../common';
 import Header from './header';
 import { navbarMenuItems } from './helpers';
 import './styles.scss';
-import UserMenu from './userMenu';
+import UserMenu from './UserMenu';
 
 const clsPrefix = 'ctn-navbar-desktop';
 
@@ -45,56 +45,56 @@ const Navbar: React.FC<Props> = () => {
       )}
       <Header />
 
-      {/* <Toolbar variant="regular"> */}
-      <Stack width={'100%'} height={70} flexDirection={'row'}>
-        <Box sx={{ transform: 'translateY(15px)' }}>
-          <Link to={PATHS.root}>
-            <Image src={IMAGES.logoFull} />
-          </Link>
-        </Box>
-        {/* Main Menu Navbar */}
-        <Stack flexDirection={'row'}>
-          {navbarMenuItems.map((item) => (
-            <MuiLink
-              {...(item?.url && {
-                href: item.url,
-                target: '_blank',
-                rel: NO_OPENER,
-              })}
-              className={`${clsPrefix}-item ${clsPrefix}-link`}
-              underline="none"
-            >
-              {item.label}
-              <Box
-                className={cn(`${clsPrefix}-item__sub subItems`, {
-                  isLeft: item?.isDisplayLeft,
+      <Toolbar variant="regular">
+        <Stack width={'100%'} height={70} flexDirection={'row'} justifyContent={'space-between'}>
+          <Box sx={{ transform: 'translateY(15px)' }}>
+            <Link to={PATHS.root}>
+              <Image src={IMAGES.logoFull} />
+            </Link>
+          </Box>
+          {/* Main Menu Navbar */}
+          <Stack flexDirection={'row'}>
+            {navbarMenuItems.map((item) => (
+              <MuiLink
+                {...(item?.url && {
+                  href: item.url,
+                  target: '_blank',
+                  rel: NO_OPENER,
                 })}
+                className={`${clsPrefix}-item ${clsPrefix}-link`}
+                underline="none"
               >
-                {[
-                  item.subItems.map((subItem) => (
-                    <Box className={`subItem`}>
-                      <MuiLink
-                        {...(subItem?.url && {
-                          href: subItem.url,
-                          target: '_blank',
-                          rel: NO_OPENER,
-                        })}
-                        underline="none"
-                      >
-                        {subItem.label}
-                      </MuiLink>
-                    </Box>
-                  )),
-                ]}
-              </Box>
-            </MuiLink>
-          ))}
+                {item.label}
+                <Box
+                  className={cn(`${clsPrefix}-item__sub subItems`, {
+                    isLeft: item?.isDisplayLeft,
+                  })}
+                >
+                  {[
+                    item.subItems.map((subItem) => (
+                      <Box className={`subItem`}>
+                        <MuiLink
+                          {...(subItem?.url && {
+                            href: subItem.url,
+                            target: '_blank',
+                            rel: NO_OPENER,
+                          })}
+                          underline="none"
+                        >
+                          {subItem.label}
+                        </MuiLink>
+                      </Box>
+                    )),
+                  ]}
+                </Box>
+              </MuiLink>
+            ))}
+          </Stack>
+          <Box sx={{ transform: 'translateY(7px)' }}>
+            <UserMenu fullName={fullName} />
+          </Box>
         </Stack>
-        <Box>
-          <UserMenu fullName={fullName} />
-        </Box>
-      </Stack>
-      {/* </Toolbar> */}
+      </Toolbar>
     </AppBar>
   );
 };

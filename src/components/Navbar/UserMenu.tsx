@@ -71,7 +71,7 @@ export default function UserMenu({ fullName }) {
       </MuiLink>
 
       <Box>
-        <Typography variant="body2" sx={{ color: COLOR_CODE.PRIMARY_500 }}>
+        <Typography variant="body2" sx={{ color: COLOR_CODE.PRIMARY_500, textAlign: 'center' }}>
           {roleName || 'Unknown'}
         </Typography>
         <Divider sx={{ background: COLOR_CODE.PRIMARY_500 }} />

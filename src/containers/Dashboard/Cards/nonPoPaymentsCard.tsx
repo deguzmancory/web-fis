@@ -1,5 +1,5 @@
-import { Wallet } from '@mui/icons-material';
 import { Box, Card, CardContent, Divider, Typography } from '@mui/material';
+import { IoWallet } from 'react-icons/io5';
 import { COLOR_CODE } from 'src/appConfig/constants';
 
 export default function NonPoPaymentCard() {
@@ -17,7 +17,7 @@ export default function NonPoPaymentCard() {
         }}
       >
         <Box textAlign={'center'}>
-          <Wallet sx={{ color: '#08C', width: 75, height: 65 }} />
+          <IoWallet style={{ color: '#08C', width: 75, height: 65 }} />
         </Box>
         <Typography variant="h2" textAlign={'center'} sx={{ color: '#08C' }}>
           Non-PO Payments
