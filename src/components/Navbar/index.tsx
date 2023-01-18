@@ -31,6 +31,7 @@ const Navbar: React.FC<Props> = () => {
   const [isClickedLogout] = React.useState(false);
 
   if (!showNavbar) return null;
+
   return (
     <AppBar variant="elevation" position="fixed">
       {isClickedLogout && (
@@ -44,56 +45,56 @@ const Navbar: React.FC<Props> = () => {
       )}
       <Header />
 
-      <Toolbar variant="regular">
-        <Stack width={'100%'} flexDirection={'row'} justifyContent={'space-between'}>
+      {/* <Toolbar variant="regular"> */}
+      <Stack width={'100%'} height={70} flexDirection={'row'}>
+        <Box sx={{ transform: 'translateY(15px)' }}>
           <Link to={PATHS.root}>
             <Image src={IMAGES.logoFull} />
           </Link>
-          {/* Main Menu Navbar */}
-          <Stack flexDirection={'row'}>
-            {navbarMenuItems.map((item) => (
-              <MuiLink
-                {...(item?.url && {
-                  href: item.url,
-                  target: '_blank',
-                  rel: NO_OPENER,
+        </Box>
+        {/* Main Menu Navbar */}
+        <Stack flexDirection={'row'}>
+          {navbarMenuItems.map((item) => (
+            <MuiLink
+              {...(item?.url && {
+                href: item.url,
+                target: '_blank',
+                rel: NO_OPENER,
+              })}
+              className={`${clsPrefix}-item ${clsPrefix}-link`}
+              underline="none"
+            >
+              {item.label}
+              <Box
+                className={cn(`${clsPrefix}-item__sub subItems`, {
+                  isLeft: item?.isDisplayLeft,
                 })}
-                className={`${clsPrefix}-item ${clsPrefix}-link`}
-                underline="none"
               >
-                {item.label}
-                <Box
-                  className={cn(`${clsPrefix}-item__sub subItems`, {
-                    isLeft: item?.isDisplayLeft,
-                  })}
-                >
-                  {[
-                    item.subItems.map((subItem) => (
-                      <Box className={`subItem`}>
-                        <MuiLink
-                          {...(subItem?.url && {
-                            href: subItem.url,
-                            target: '_blank',
-                            rel: NO_OPENER,
-                          })}
-                          underline="none"
-                        >
-                          {subItem.label}
-                        </MuiLink>
-                      </Box>
-                    )),
-                  ]}
-                </Box>
-              </MuiLink>
-            ))}
-          </Stack>
-
-          {/* User Menu */}
-          <Box>
-            <UserMenu fullName={fullName} />
-          </Box>
+                {[
+                  item.subItems.map((subItem) => (
+                    <Box className={`subItem`}>
+                      <MuiLink
+                        {...(subItem?.url && {
+                          href: subItem.url,
+                          target: '_blank',
+                          rel: NO_OPENER,
+                        })}
+                        underline="none"
+                      >
+                        {subItem.label}
+                      </MuiLink>
+                    </Box>
+                  )),
+                ]}
+              </Box>
+            </MuiLink>
+          ))}
         </Stack>
-      </Toolbar>
+        <Box>
+          <UserMenu fullName={fullName} />
+        </Box>
+      </Stack>
+      {/* </Toolbar> */}
     </AppBar>
   );
 };

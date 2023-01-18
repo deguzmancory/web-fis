@@ -1,11 +1,14 @@
 import { Box, Grid, Stack, Typography } from '@mui/material';
 import { connect } from 'react-redux';
-import TypographyLink from 'src/components/TypographyLink';
 import { IRootState } from 'src/redux/rootReducer';
 import './styles.scss';
 import { useProfile } from 'src/queries';
-import { AirplanemodeActive } from '@mui/icons-material';
-import { COLOR_CODE } from 'src/appConfig/constants';
+import PurchasingCard from './Cards/purchasingCard';
+import NonPoPaymentCard from './Cards/nonPoPaymentsCard';
+import TravelCard from './Cards/travelCard';
+import ReportingCard from './Cards/reportingCard';
+import MiscellaneousCard from './Cards/miscellaneousCard';
+import HelpCard from './Cards/helpCard';
 
 const Dashboard: React.FC<Props> = () => {
   const { profile } = useProfile();
@@ -14,49 +17,30 @@ const Dashboard: React.FC<Props> = () => {
 
   return (
     <Box minHeight={'70vh'}>
-      <Stack marginLeft={'7%'} marginTop={'3%'}>
+      <Stack marginLeft={'7%'} marginTop={'3%'} marginRight={'7%'}>
         <Box>
-          <Typography variant="h3">
+          <Typography variant="h3" paddingBottom={3}>
             Welcome {fullName} ({roleName})
           </Typography>
         </Box>
         <Grid container spacing={3}>
-          <Grid item md={4}>
-            <Box p={4}>
-              <TypographyLink variant="h1">Purchasing</TypographyLink>
-            </Box>
+          <Grid item xs={4}>
+            <PurchasingCard />
           </Grid>
-          <Grid item md={4}>
-            <Box p={4}>
-              <TypographyLink variant="h1">Non-PO Payments</TypographyLink>
-            </Box>
+          <Grid item xs={4}>
+            <NonPoPaymentCard />
           </Grid>
-          <Grid item md={4}>
-            <Box p={4}>
-              <AirplanemodeActive
-                sx={{
-                  width: 75,
-                  height: 65,
-                  bgColor: COLOR_CODE.PRIMARY_500,
-                }}
-              />
-              <TypographyLink variant="h2">Travel</TypographyLink>
-            </Box>
+          <Grid item xs={4}>
+            <TravelCard />
           </Grid>
-          <Grid item md={4}>
-            <Box p={4}>
-              <TypographyLink variant="h1">Reporting</TypographyLink>
-            </Box>
+          <Grid item xs={4}>
+            <ReportingCard />
           </Grid>
-          <Grid item md={4}>
-            <Box p={4}>
-              <TypographyLink variant="h1">Miscellaneous</TypographyLink>
-            </Box>
+          <Grid item xs={4}>
+            <MiscellaneousCard />
           </Grid>
-          <Grid item md={4}>
-            <Box p={4}>
-              <TypographyLink variant="h1">Help</TypographyLink>
-            </Box>
+          <Grid item xs={4}>
+            <HelpCard />
           </Grid>
         </Grid>
       </Stack>
