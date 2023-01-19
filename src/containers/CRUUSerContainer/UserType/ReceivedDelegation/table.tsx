@@ -90,7 +90,7 @@ type Props = {
 
 export default TableGrantDelegation;
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
+export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: COLOR_CODE.PRIMARY_900,
     color: theme.palette.common.white,
@@ -103,7 +103,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
+export const StyledTableRow = styled(TableRow)(({ theme }) => ({
   borderBottom: COLOR_CODE.DEFAULT_BORDER,
   '&:nth-of-type(even)': {
     backgroundColor: theme.palette.action.hover,

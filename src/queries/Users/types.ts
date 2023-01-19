@@ -132,6 +132,38 @@ export type UserDetail = {
   delegateAccesses: DelegateAccess[];
   fisFaInfo: any; //TODO: tin_pham update type
   fisPiInfo: any; //TODO: tin_pham update type
+
+  // Audit info
+  userAuditTrails: AuditInformation[];
+};
+
+export type AuditInformation = {
+  action: string;
+  createdAt: string;
+  fullName: UserDetail['fullName'];
+  id: UserDetail['id'];
+  timestamp: string;
+  updatedAt: string;
+  user: {
+    allowMaintenanceModeLogin: UserDetail['allowMaintenanceModeLogin'];
+    comments: UserDetail['comments'];
+    createdAt: UserDetail['createdAt'];
+    defaultUserType: UserDetail['defaultUserType'];
+    email: UserDetail['email'];
+    firstName: UserDetail['firstName'];
+    fullName: UserDetail['fullName'];
+    id: UserDetail['id'];
+    isDhUser: UserDetail['isDhUser'];
+    lastLoginDate: UserDetail['lastLoginDate'];
+    lastName: UserDetail['lastName'];
+    middleName: UserDetail['middleName'];
+    passwordSetDate: UserDetail['passwordSetDate'];
+    status: UserDetail['status'];
+    updatedAt: UserDetail['updatedAt'];
+    username: UserDetail['username'];
+  };
+  userId: UserDetail['id'];
+  username: UserDetail['username'];
 };
 
 export interface SearchUser {

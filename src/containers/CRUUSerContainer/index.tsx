@@ -186,7 +186,7 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
     enableReinitialize: true,
   });
 
-  console.log('values: ', values);
+  // console.log('values: ', values);
   // console.log('errors: ', errors);
 
   const formikProps: CRUUserFormikProps = {
@@ -223,7 +223,10 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
             {isViewMode && (
               <Suspense fallback={<LoadingCommon />}>
                 <Accordion title="Audit Information" className="mt-16">
-                  <AuditInformation formikProps={formikProps} />
+                  <AuditInformation
+                    formikProps={formikProps}
+                    userAuditTrails={user?.userAuditTrails || []}
+                  />
                 </Accordion>
               </Suspense>
             )}
