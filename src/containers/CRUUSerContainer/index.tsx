@@ -2,11 +2,13 @@ import { Box, Container, Stack, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import { FormikProps, useFormik } from 'formik';
 import React, { Suspense } from 'react';
+import ReactJson from 'react-json-view';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import { Accordion, Button, LoadingCommon } from 'src/components/common';
 import { useCreateUser, useGetAllUsers, useGetUser } from 'src/queries/Users';
+import { useUpdateUser } from 'src/queries/Users/useUpdateUser';
 import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { IRootState } from 'src/redux/rootReducer';
@@ -23,6 +25,7 @@ import {
   CRUUserFormValue,
   CRUUSER_KEY,
   formatPayloadSubmit,
+  formatPayloadUpdate,
   getValueRoles,
   getValueUserStatus,
   initialCRUUserFormValue,
@@ -92,12 +95,23 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
     },
   });
 
+  const { updateUser, isLoading: isLoadingUpdateUser } = useUpdateUser({
+    onSuccess(data, variables, context) {
+      Toastify.success(`Update User ${variables.username} successfully.`);
+      window.scrollTo(0, 0);
+    },
+    onError(error, variables, context) {
+      handleShowErrorMsg(error);
+    },
+  });
+
   const handleFormSubmit = (values: CRUUserFormValue) => {
     if (isViewMode) {
-      Toastify.info('Save mode Edit clicked');
+      const payload = formatPayloadUpdate(values, user);
+      console.log('payload: ', payload);
+      updateUser(payload);
     } else {
       const payload = formatPayloadSubmit(values);
-      console.log('payload: ', payload);
       createUser(payload);
     }
   };
@@ -172,7 +186,7 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
     enableReinitialize: true,
   });
 
-  // console.log('values: ', values);
+  console.log('values: ', values);
   // console.log('errors: ', errors);
 
   const formikProps: CRUUserFormikProps = {
@@ -229,19 +243,19 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
                   handleScrollToTopError();
                   handleSubmit();
                 }}
-                isLoading={isLoadingGetUser || isLoadingCreateUser}
-                disabled={isLoadingGetUser || isLoadingCreateUser}
+                isLoading={isLoadingGetUser || isLoadingCreateUser || isLoadingUpdateUser}
+                disabled={isLoadingGetUser || isLoadingCreateUser || isLoadingUpdateUser}
               >
                 Save
               </Button>
             </Stack>
 
-            {/* {isViewMode && (
+            {isViewMode && (
               <Accordion title={'Raw Data'}>
                 <Typography>{userId}</Typography>
                 {user && <ReactJson src={user} />}
               </Accordion>
-            )} */}
+            )}
           </>
         )}
       </Container>

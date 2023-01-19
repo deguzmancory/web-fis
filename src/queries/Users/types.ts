@@ -75,6 +75,23 @@ export type AddUserPayload = {
   delegateAccess: DelegateAccess[];
 };
 
+export type UpdateUserPayload = {
+  id: UserDetail['id'];
+  username: UserDetail['username'];
+  firstName: UserDetail['firstName'];
+  lastName: UserDetail['lastName'];
+  middleName: UserDetail['middleName'];
+  fullName: UserDetail['fullName'];
+  email: UserDetail['email'];
+  comments: UserDetail['comments'];
+  defaultUserType: UserDetail['defaultUserType'];
+  roles: string[];
+  allowMaintenanceModeLogin: UserDetail['allowMaintenanceModeLogin'];
+  isDhUser: UserDetail['isDhUser'];
+  status: UserDetail['status'];
+  delegateAccess: DelegateAccess[];
+};
+
 export type UserRole = {
   id: string;
   createdAt: string;

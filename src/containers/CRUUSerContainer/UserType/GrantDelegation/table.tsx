@@ -21,7 +21,14 @@ import DatePickerEdit from './datePickerEdit';
 
 const TableGrantDelegation: React.FC<Props> = ({ formikProps }) => {
   const { values } = formikProps;
+
   const [rows, setRows] = React.useState(values.delegateAccess);
+
+  React.useEffect(() => {
+    if (!isEmpty(values.delegateAccess)) {
+      setRows(values.delegateAccess);
+    }
+  }, [values.delegateAccess]);
 
   return (
     <TableContainer>

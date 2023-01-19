@@ -144,7 +144,7 @@ export const getPayloadUserStatus = (status: boolean) => {
 };
 
 export const getValueRoles = (roles: UserDetail['roles']) => {
-  return roles.map((role) => role.role.name);
+  return roles.map((role) => role.role.domain);
 };
 
 const getPayloadDelegateAccess = (delegateAccess: CRUUserFormValue['delegateAccess']) => {
@@ -160,7 +160,7 @@ const getPayloadDelegateAccess = (delegateAccess: CRUUserFormValue['delegateAcce
 };
 
 export const formatPayloadSubmit = (values: CRUUserFormValue) => {
-  const _values = {
+  const payload = {
     ...values,
     firstName: getTitleCase(values.firstName),
     lastName: getTitleCase(values.lastName),
@@ -169,9 +169,26 @@ export const formatPayloadSubmit = (values: CRUUserFormValue) => {
     status: getPayloadUserStatus(values.status),
     delegateAccess: getPayloadDelegateAccess(values.delegateAccess),
   };
-  delete _values.isViewMode;
-  delete _values.lastLoginDate;
-  delete _values.passwordSetDate;
+  delete payload.isViewMode;
+  delete payload.lastLoginDate;
+  delete payload.passwordSetDate;
 
-  return _values;
+  return payload;
+};
+
+export const formatPayloadUpdate = (values: CRUUserFormValue, user: UserDetail) => {
+  const payload = {
+    ...values,
+    id: user.id,
+    username: values.username.toLowerCase(),
+    firstName: getTitleCase(values.firstName),
+    lastName: getTitleCase(values.lastName),
+    middleName: values.middleName.toUpperCase(),
+    fullName: user.fullName,
+    allowMaintenanceModeLogin: user.allowMaintenanceModeLogin,
+    isDhUser: user.isDhUser,
+    status: getPayloadUserStatus(values.status),
+    delegateAccess: getPayloadDelegateAccess(values.delegateAccess),
+  };
+  return payload;
 };
