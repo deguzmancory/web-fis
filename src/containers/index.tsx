@@ -1,5 +1,5 @@
 import { Location } from 'history';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
 import { Redirect, Route, RouteProps, Switch, useHistory } from 'react-router-dom';
 
@@ -19,6 +19,7 @@ import ToastContainer from './StartupContainers/ToastContainer';
 import { Box } from '@mui/material';
 import Footer from 'src/components/Footer';
 import { useComponentDidMount } from 'src/hooks';
+import LoadingContainer from './StartupContainers/LoadingContainer';
 import ScrollToTop from './StartupContainers/ScrollToTop';
 
 const Dashboard = React.lazy(() => import('./Dashboard'));
@@ -38,26 +39,32 @@ const Routing: React.FC<{ location: Location }> = (props) => {
     <Box pt={13}>
       <Navbar />
       <Box mb={3}>
-        <Switch location={props.location}>
-          <Route path={PATHS.root} render={() => <Redirect to={PATHS.dashboard} />} exact />
-          <CustomRoute pageRequiredAuth path={PATHS.dashboard} component={Dashboard} />
+        <Suspense fallback={<LoadingContainer />}>
+          <Switch location={props.location}>
+            <Route path={PATHS.root} render={() => <Redirect to={PATHS.dashboard} />} exact />
+            <CustomRoute pageRequiredAuth path={PATHS.dashboard} component={Dashboard} />
 
-          {/* Users */}
-          <CustomRoute pageRequiredAuth path={PATHS.addUser} component={CRUUSerContainer} exact />
-          <CustomRoute
-            pageRequiredAuth
-            path={`${PATHS.userDetail}/:userId`}
-            component={CRUUSerContainer}
-          />
-          <CustomRoute pageRequiredAuth path={PATHS.userManagements} component={UsersManagement} />
-          {/* Users */}
+            {/* Users */}
+            <CustomRoute pageRequiredAuth path={PATHS.addUser} component={CRUUSerContainer} exact />
+            <CustomRoute
+              pageRequiredAuth
+              path={`${PATHS.userDetail}/:userId`}
+              component={CRUUSerContainer}
+            />
+            <CustomRoute
+              pageRequiredAuth
+              path={PATHS.userManagements}
+              component={UsersManagement}
+            />
+            {/* Users */}
 
-          <CustomRoute pageRequiredAuth path={PATHS.switchUser} component={SwitchUser} />
+            <CustomRoute pageRequiredAuth path={PATHS.switchUser} component={SwitchUser} />
 
-          <Route path={PATHS.dev} component={Dev} />
-          <CustomRoute path={PATHS.dev} component={Dev} />
-          <Route component={NotFound} />
-        </Switch>
+            <Route path={PATHS.dev} component={Dev} />
+            <CustomRoute path={PATHS.dev} component={Dev} />
+            <Route component={NotFound} />
+          </Switch>
+        </Suspense>
       </Box>
 
       <Footer />

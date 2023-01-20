@@ -20,8 +20,8 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from './appConfig/muiTheme';
 import { Suspense } from 'react';
-import { LoadingCommon } from './components/common';
 import dayjs from 'dayjs';
+import LoadingContainer from './containers/StartupContainers/LoadingContainer';
 
 dayjs.extend(utc);
 
@@ -46,7 +46,7 @@ root.render(
   <ThemeProvider theme={theme}>
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        <Suspense fallback={<LoadingCommon />}>
+        <Suspense fallback={<LoadingContainer />}>
           <ConnectedRouter history={history}>
             <Router>
               <Route component={MainAppNavigator} />
