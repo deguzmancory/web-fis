@@ -49,9 +49,17 @@ const AuthContainer: React.FC<Props> = ({
       // }
       return getMyProfile();
     },
-    onError(err) {
-      if (err['code'] === 500) {
+    onError(error) {
+      if (error['code'] === 500) {
         Toastify.error('Error when fetch user permission. Try to login again!');
+        setTimeout(() => {
+          handleLogout();
+        }, 3000);
+      }
+      if (error['message'].includes('User is not active')) {
+        Toastify.error(
+          'Your account is deactivated. Please contact to your administrator to reactivate your account.'
+        );
         setTimeout(() => {
           handleLogout();
         }, 3000);
