@@ -35,8 +35,6 @@ yarn fix-detect-secret
 
 ```
 
-and open file .secrets.baseline, change all `\\` to `/`
-
 ## Commit Message Format:
 
 ```
