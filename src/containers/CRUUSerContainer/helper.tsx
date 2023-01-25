@@ -124,9 +124,9 @@ export const getErrorMessage = (fieldName: string, { touched, errors }) => {
 export const getValueUserStatus = (status: UserDetail['status']) => {
   switch (status) {
     case USER_STATUS.ACTIVE:
-      return true;
-    case USER_STATUS.INACTIVE:
       return false;
+    case USER_STATUS.INACTIVE:
+      return true;
     default:
       return false;
   }

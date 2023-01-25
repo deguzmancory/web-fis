@@ -108,7 +108,6 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
   const handleFormSubmit = (values: CRUUserFormValue) => {
     if (isViewMode) {
       const payload = formatPayloadUpdate(values, user);
-      console.log('payload: ', payload);
       updateUser(payload);
     } else {
       const payload = formatPayloadSubmit(values);
