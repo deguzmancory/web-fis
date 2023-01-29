@@ -9,7 +9,7 @@ const EmptyTable: React.FC<Props> = ({ title = 'No records' }) => {
   return (
     <View flexGrow={1} justify="center" align="center" className="my-32">
       <Image src={IMAGES.documentView} width="120" className="mb-8" />
-      <Text size={20} color="text-color-primary-700 text-align-center">
+      <Text size={20} className="text-color-primary-700 text-align-center">
         {title}
       </Text>
     </View>

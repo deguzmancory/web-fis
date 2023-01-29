@@ -1,13 +1,20 @@
 import { Box, Container } from '@mui/material';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
 import { COLOR_CODE } from 'src/appConfig/constants';
+import { LoadingCommon } from 'src/components/common';
+import { useProfile } from 'src/queries';
+import { isCU } from 'src/queries/Profile/helpers';
 import { IRootState } from 'src/redux/rootReducer';
 import BreadcrumbsUserManagement from './breadcrumbs';
 import './styles.scss';
-import TableList from './TableList';
+
+const NoPermission = React.lazy(() => import('src/components/NoPermission'));
+const TableList = React.lazy(() => import('./TableList'));
 
 const UsersManagementContainers: React.FC<Props> = () => {
+  const { profile } = useProfile();
+  const roleName = profile.roleName;
   return (
     <Box py={2} minHeight={'50vh'}>
       <Container maxWidth="lg">
@@ -22,7 +29,9 @@ const UsersManagementContainers: React.FC<Props> = () => {
           border={COLOR_CODE.DEFAULT_BORDER}
           borderRadius={1}
         >
-          <TableList />
+          <Suspense fallback={<LoadingCommon />}>
+            {isCU(roleName) ? <TableList /> : <NoPermission />}
+          </Suspense>
         </Box>
       </Container>
     </Box>

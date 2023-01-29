@@ -7,6 +7,8 @@ import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import { Accordion, Button, LoadingCommon } from 'src/components/common';
+import { useProfile } from 'src/queries';
+import { isCU } from 'src/queries/Profile/helpers';
 import { useCreateUser, useGetAllUsers, useGetUser } from 'src/queries/Users';
 import { useUpdateUser } from 'src/queries/Users/useUpdateUser';
 import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
@@ -18,7 +20,6 @@ import { DateFormatDisplayMinute } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
 import { handleShowErrorMsg } from '../UsersManagement/helpers';
 import BreadcrumbsUserDetail from './breadcrumbs';
-import GeneralInfo from './GeneralInfo';
 import {
   CRUUserFormikProps,
   cRUUserFormSchema,
@@ -30,13 +31,15 @@ import {
   getValueUserStatus,
   initialCRUUserFormValue,
 } from './helper';
-import InternalComments from './InternalComments';
 import Layout from './layout';
 import './styles.scss';
-import UserType from './UserType';
 
 const RefetchUser = React.lazy(() => import('./refetchUser'));
 const AuditInformation = React.lazy(() => import('./AuditInformation'));
+const UserType = React.lazy(() => import('./UserType'));
+const InternalComments = React.lazy(() => import('./InternalComments'));
+const GeneralInfo = React.lazy(() => import('./GeneralInfo'));
+const NoPermission = React.lazy(() => import('src/components/NoPermission'));
 
 const clsPrefix = 'ctn-cruuser';
 
@@ -79,7 +82,8 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
   };
 
   const { handleInvalidateAllUser } = useGetAllUsers();
-
+  const { profile, handleInvalidateProfile, getMyProfile } = useProfile();
+  const roleName = profile.roleName;
   const { createUser, isLoading: isLoadingCreateUser } = useCreateUser({
     onSuccess(data, variables, context) {
       Toastify.success(`Add User ${variables.username} successfully.`);
@@ -99,6 +103,11 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
     onSuccess(data, variables, context) {
       Toastify.success(`Update User ${variables.username} successfully.`);
       window.scrollTo(0, 0);
+      const isMyProfile = userId === profile.id;
+      if (isMyProfile) {
+        handleInvalidateProfile();
+        getMyProfile();
+      }
     },
     onError(error, variables, context) {
       handleShowErrorMsg(error);
@@ -204,62 +213,68 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
         <Typography mt={2} variant="h2">
           {isViewMode ? 'Edit' : 'Add'} User
         </Typography>
-        {isErrorWhenFetchUser ? (
-          <Suspense fallback={<LoadingCommon />}>
-            <RefetchUser onGetUserById={onGetUserById} isLoading={isLoadingGetUser} />
-          </Suspense>
-        ) : (
-          <>
+        <Suspense fallback={<LoadingCommon />}>
+          {!isCU(roleName) ? (
             <Layout>
-              <GeneralInfo formikProps={formikProps} />
+              <NoPermission />
             </Layout>
+          ) : isErrorWhenFetchUser ? (
             <Layout>
-              <UserType formikProps={formikProps} />
+              <RefetchUser onGetUserById={onGetUserById} isLoading={isLoadingGetUser} />
             </Layout>
-            <Layout>
-              <InternalComments formikProps={formikProps} />
-            </Layout>
-            {isViewMode && (
-              <Suspense fallback={<LoadingCommon />}>
-                <Accordion title="Audit Information" className="mt-16">
-                  <AuditInformation
-                    formikProps={formikProps}
-                    userAuditTrails={user?.userAuditTrails || []}
-                  />
+          ) : (
+            <>
+              <Layout>
+                <GeneralInfo formikProps={formikProps} />
+              </Layout>
+              <Layout>
+                <UserType formikProps={formikProps} />
+              </Layout>
+              <Layout>
+                <InternalComments formikProps={formikProps} />
+              </Layout>
+              {isViewMode && (
+                <Suspense fallback={<LoadingCommon />}>
+                  <Accordion title="Audit Information" className="mt-16">
+                    <AuditInformation
+                      formikProps={formikProps}
+                      userAuditTrails={user?.userAuditTrails || []}
+                    />
+                  </Accordion>
+                </Suspense>
+              )}
+
+              <Stack my={4} flexDirection={'row'} justifyContent="center">
+                <Button
+                  variant="outline"
+                  className="mr-8"
+                  onClick={() => {
+                    handleCancelButton();
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={() => {
+                    handleScrollToTopError();
+                    handleSubmit();
+                  }}
+                  isLoading={isLoadingGetUser || isLoadingCreateUser || isLoadingUpdateUser}
+                  disabled={isLoadingGetUser || isLoadingCreateUser || isLoadingUpdateUser}
+                >
+                  Save
+                </Button>
+              </Stack>
+
+              {isViewMode && (
+                <Accordion title={'Raw Data'}>
+                  <Typography>{userId}</Typography>
+                  {user && <ReactJson src={user} />}
                 </Accordion>
-              </Suspense>
-            )}
-
-            <Stack my={4} flexDirection={'row'} justifyContent="center">
-              <Button
-                variant="outline"
-                className="mr-8"
-                onClick={() => {
-                  handleCancelButton();
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={() => {
-                  handleScrollToTopError();
-                  handleSubmit();
-                }}
-                isLoading={isLoadingGetUser || isLoadingCreateUser || isLoadingUpdateUser}
-                disabled={isLoadingGetUser || isLoadingCreateUser || isLoadingUpdateUser}
-              >
-                Save
-              </Button>
-            </Stack>
-
-            {isViewMode && (
-              <Accordion title={'Raw Data'}>
-                <Typography>{userId}</Typography>
-                {user && <ReactJson src={user} />}
-              </Accordion>
-            )}
-          </>
-        )}
+              )}
+            </>
+          )}
+        </Suspense>
       </Container>
     </Box>
   );

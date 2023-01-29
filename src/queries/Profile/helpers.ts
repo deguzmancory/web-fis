@@ -19,3 +19,16 @@ export const getRoleName = (role: string) => {
       return 'Unknown';
   }
 };
+
+export const isCU = (role: string) => {
+  return role === ROLE_NAME.CU || role === getRoleName(ROLE_NAME.CU);
+};
+export const isPI = (role: string) => {
+  return role === ROLE_NAME.PI || role === getRoleName(ROLE_NAME.PI);
+};
+export const isSU = (role: string) => {
+  return role === ROLE_NAME.SU || role === getRoleName(ROLE_NAME.SU);
+};
+export const isFA = (role: string) => {
+  return role === ROLE_NAME.FA || role === getRoleName(ROLE_NAME.FA);
+};

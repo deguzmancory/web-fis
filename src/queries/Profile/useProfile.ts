@@ -28,7 +28,7 @@ export function useProfile(
 
   const queryClient = useQueryClient();
 
-  const handleSetStaleProfile = () => queryClient.invalidateQueries([API_QUERIES.PROFILE]);
+  const handleInvalidateProfile = () => queryClient.invalidateQueries([API_QUERIES.PROFILE]);
 
   return {
     profile: React.useMemo(() => {
@@ -43,6 +43,6 @@ export function useProfile(
     isError,
     loading: isFetching,
     getMyProfile,
-    handleSetStaleProfile,
+    handleInvalidateProfile,
   };
 }
