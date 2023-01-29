@@ -5,6 +5,7 @@ export { default as FileCache } from './fileCache';
 export { default as LanguageService } from './language';
 export { default as Navigator } from './navigator';
 export { default as PermissionsService } from './permissions';
+export { pollAndDownloadFile } from './pollAndDownLoadFile';
 export { default as RoleService } from './roles';
 export * as TenantService from './tenantService';
 export { default as Toastify } from './toastify';

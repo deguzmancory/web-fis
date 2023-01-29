@@ -12,7 +12,6 @@ import Compressor from 'compressorjs';
 import appConfig from 'src/appConfig';
 import { isEmpty } from 'src/validations';
 import { Location } from 'history';
-// import { AccountStatus, StatementStatus } from 'src/redux/account/types';
 import _ from 'lodash';
 
 export const handleGetError = (touched, errors, prefix) =>
@@ -20,18 +19,6 @@ export const handleGetError = (touched, errors, prefix) =>
 
 export const waiter = (time: number = 100) =>
   new Promise<Array<any>>((res) => setTimeout(() => res([]), time));
-// import vnLocale from 'dayjs/locale/vi';
-// var updateLocale = require('dayjs/plugin/updateLocale');
-// export const updateVnLocale = () => {
-//   dayjs.extend(updateLocale);
-//   const newLocale = {
-//     ...vnLocale,
-//     meridiem: (hour, minute, isLowercase) => {
-//       return hour >= 12 ? 'CH' : 'SA';
-//     },
-//   };
-//   dayjs?.['updateLocale']('vi', newLocale);
-// };
 
 export function newCancelToken(timeout = appConfig.CONNECTION_TIMEOUT) {
   const source = CancelToken.source();

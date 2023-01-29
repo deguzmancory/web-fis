@@ -183,3 +183,8 @@ export type SearchProject = {
   referenceTable: string;
   projectNumber: string;
 };
+
+export type UrlExportUser = {
+  head: string;
+  get: string;
+};

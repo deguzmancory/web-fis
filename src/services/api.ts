@@ -186,6 +186,10 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.get(`/account-svc/v1/projects?${queryString}`, {}, newCancelToken());
   };
 
+  const getUrlExportUsers = () => {
+    return api.get('/account-svc/v1/users/export', {}, newCancelToken());
+  };
+
   //
   // Return back a collection of functions that we would consider our
   // interface.  Most of the time it'll be just the list of all the
@@ -243,6 +247,7 @@ const create = (baseURL = appConfig.API_URL) => {
     deleteUser,
     searchUsers,
     searchProjects,
+    getUrlExportUsers,
   };
 };
 
