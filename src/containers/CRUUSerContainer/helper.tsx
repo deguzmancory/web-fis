@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { FieldInputProps, FormikErrors, FormikTouched } from 'formik';
-import { UserDetail, USER_STATUS } from 'src/queries/Users/types';
+import { DelegatedAccess, UserDetail, USER_STATUS } from 'src/queries/Users/types';
 import { ErrorService, Yup } from 'src/services';
 import { getTitleCase } from 'src/utils';
 import { isEmpty } from 'src/validations';
@@ -51,6 +51,7 @@ export type CRUUserFormValue = {
     endDateTemp: string;
     isAllProjects: boolean;
   }[];
+  delegatedAccess: DelegatedAccess[];
   roles: string[];
 
   // Comments
@@ -73,6 +74,7 @@ export const initialCRUUserFormValue = {
 
   // User Type
   delegateAccess: [],
+  delegatedAccess: [],
   roles: [],
 
   // Comments

@@ -162,6 +162,7 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
           roleId: item.roleId,
           delegatedUser: item.delegatedUser,
         })),
+        delegatedAccess: user.delegatedAccesses,
       };
     } else {
       return {
@@ -170,6 +171,8 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
       };
     }
   }, [isViewMode, user]);
+
+  const loading = isLoadingGetUser || isLoadingCreateUser || isLoadingUpdateUser;
 
   const handleScrollToTopError = () => {
     return setTimeout(() => {
@@ -225,13 +228,13 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
           ) : (
             <>
               <Layout>
-                <GeneralInfo formikProps={formikProps} />
+                <GeneralInfo formikProps={formikProps} isLoading={loading} />
               </Layout>
               <Layout>
-                <UserType formikProps={formikProps} />
+                <UserType formikProps={formikProps} isLoading={loading} />
               </Layout>
               <Layout>
-                <InternalComments formikProps={formikProps} />
+                <InternalComments formikProps={formikProps} isLoading={loading} />
               </Layout>
               {isViewMode && (
                 <Suspense fallback={<LoadingCommon />}>
@@ -239,6 +242,7 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
                     <AuditInformation
                       formikProps={formikProps}
                       userAuditTrails={user?.userAuditTrails || []}
+                      isLoading={loading}
                     />
                   </Accordion>
                 </Suspense>
@@ -259,8 +263,8 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
                     handleScrollToTopError();
                     handleSubmit();
                   }}
-                  isLoading={isLoadingGetUser || isLoadingCreateUser || isLoadingUpdateUser}
-                  disabled={isLoadingGetUser || isLoadingCreateUser || isLoadingUpdateUser}
+                  isLoading={loading}
+                  disabled={loading}
                 >
                   Save
                 </Button>

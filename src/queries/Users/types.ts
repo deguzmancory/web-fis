@@ -130,6 +130,7 @@ export type UserDetail = {
     role: UserRole;
   }[];
   delegateAccesses: DelegateAccess[];
+  delegatedAccesses: DelegatedAccess[];
   fisFaInfo: any; //TODO: tin_pham update type
   fisPiInfo: any; //TODO: tin_pham update type
 
@@ -187,4 +188,25 @@ export type SearchProject = {
 export type UrlExportUser = {
   head: string;
   get: string;
+};
+
+export type DelegatedAccess = {
+  delegatedUser: DelegateAccess['delegatedUser'];
+  delegatedUserId: DelegateAccess['delegatedUserId'];
+  endDate: DelegateAccess['endDate'];
+  id: string;
+  isAllProjects: boolean;
+  projectNumber: DelegateAccess['projectNumber'];
+  roleId: DelegateAccess['roleId'];
+  startDate: DelegateAccess['startDate'];
+  userId: DelegateAccess['userId'];
+  userRole: {
+    userId: User['id'];
+    roleId: UserRole['id'];
+    createdAt: string;
+    updatedAt: string;
+    role: {
+      displayName: UserRole['displayName'];
+    };
+  };
 };
