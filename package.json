@@ -1,6 +1,6 @@
 {
   "name": "rcuh-fis-modernization",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "RCUH FIS Modernization",
   "private": true,
   "husky": {
@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build-app": "react-scripts --max_old_space_size=4096 build",
+    "build-app": "react-scripts --max_old_space_size=6656 build",
     "build-sw": "workbox generateSW workbox-config.js",
     "build": "yarn run build-app && yarn run build-sw",
     "test": "react-scripts test",
