@@ -8,12 +8,7 @@ const clsPrefix = 'ctn-navbar-desktop';
 
 const Header = () => {
   return (
-    <Stack
-      flexDirection={'row'}
-      justifyContent={'flex-end'}
-      bgcolor={COLOR_CODE.PRIMARY_800}
-      py={1}
-    >
+    <Stack flexDirection={'row'} justifyContent={'flex-end'} bgcolor={COLOR_CODE.PRIMARY_800} p={1}>
       {navbarItems.map((item) => (
         <Box
           className={`${clsPrefix}-item`}

@@ -58,6 +58,11 @@ export const navbarItems: NavbarItemType[] = [
         isExternalUrl: true,
       },
       {
+        label: 'Awards',
+        url: 'https://www.rcuh.com/about/awards/',
+        isExternalUrl: true,
+      },
+      {
         label: 'Board of Directors',
         url: 'http://www.rcuh.com/about/board-of-directors/',
         isExternalUrl: true,
