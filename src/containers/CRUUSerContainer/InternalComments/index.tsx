@@ -3,7 +3,7 @@ import React from 'react';
 import { TextArea } from 'src/components/common';
 import { CRUUserFormikProps, CRUUSER_KEY, getErrorMessage } from '../helper';
 
-const InternalComments: React.FC<Props> = ({ formikProps }) => {
+const InternalComments: React.FC<Props> = ({ formikProps, isLoading }) => {
   const { errors, touched, getFieldProps } = formikProps;
 
   const _getErrorMessage = (fieldName: CRUUSER_KEY) => {
@@ -18,6 +18,7 @@ const InternalComments: React.FC<Props> = ({ formikProps }) => {
             label={'Internal Comments'}
             errorMessage={_getErrorMessage(CRUUSER_KEY.COMMENTS)}
             {...getFieldProps(CRUUSER_KEY.COMMENTS)}
+            disabled={isLoading}
           />
         </Grid>
       </Grid>
@@ -26,5 +27,6 @@ const InternalComments: React.FC<Props> = ({ formikProps }) => {
 };
 type Props = {
   formikProps: CRUUserFormikProps;
+  isLoading: boolean;
 };
 export default InternalComments;

@@ -6,13 +6,13 @@ import GrantDelegation from './GrantDelegation';
 import ReceivedDelegation from './ReceivedDelegation';
 import SelectUserType from './SelectUserType';
 
-const UserType: React.FC<Props> = ({ formikProps }) => {
+const UserType: React.FC<Props> = ({ formikProps, isLoading }) => {
   const { values } = formikProps;
   return (
     <Box>
       <Typography variant="h3">User Type</Typography>
       <Box my={3}>
-        <SelectUserType formikProps={formikProps} />
+        <SelectUserType formikProps={formikProps} isLoading={isLoading} />
       </Box>
       {values.isViewMode && (
         <Box>
@@ -27,5 +27,6 @@ const UserType: React.FC<Props> = ({ formikProps }) => {
 };
 type Props = {
   formikProps: CRUUserFormikProps;
+  isLoading: boolean;
 };
 export default UserType;

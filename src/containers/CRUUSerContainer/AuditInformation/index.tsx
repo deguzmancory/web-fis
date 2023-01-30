@@ -5,9 +5,9 @@ import { UserDetail } from 'src/queries/Users/types';
 import { DateFormatDisplayMinute } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
 import { CRUUserFormikProps } from '../helper';
-import { StyledTableCell, StyledTableRow } from '../UserType/ReceivedDelegation/table';
+import { StyledTableCell, StyledTableRow } from '../UserType/GrantDelegation/table';
 
-const AuditInformation: React.FC<Props> = ({ formikProps, userAuditTrails }) => {
+const AuditInformation: React.FC<Props> = ({ formikProps, userAuditTrails, isLoading }) => {
   return (
     <TableContainer>
       <Table>
@@ -61,5 +61,6 @@ const AuditInformation: React.FC<Props> = ({ formikProps, userAuditTrails }) => 
 type Props = {
   formikProps: CRUUserFormikProps;
   userAuditTrails: UserDetail['userAuditTrails'];
+  isLoading: boolean;
 };
 export default AuditInformation;

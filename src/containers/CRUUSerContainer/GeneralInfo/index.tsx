@@ -5,7 +5,7 @@ import { userTypeOptions } from 'src/containers/UsersManagement/TableList/Custom
 import { isEmpty } from 'src/validations';
 import { CRUUserFormikProps, CRUUSER_KEY, getErrorMessage } from '../helper';
 
-const GeneralInfo: React.FC<Props> = ({ formikProps }) => {
+const GeneralInfo: React.FC<Props> = ({ formikProps, isLoading }) => {
   const { values, errors, touched, getFieldProps, setFieldValue, setFieldTouched } = formikProps;
 
   const _getErrorMessage = (fieldName: CRUUSER_KEY) => {
@@ -22,6 +22,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps }) => {
               required
               errorMessage={_getErrorMessage(CRUUSER_KEY.FIRST_NAME)}
               {...getFieldProps(CRUUSER_KEY.FIRST_NAME)}
+              disabled={isLoading}
             />
           </Grid>
           <Grid item xs={4} container spacing={3}>
@@ -31,6 +32,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps }) => {
                 required
                 errorMessage={_getErrorMessage(CRUUSER_KEY.LAST_NAME)}
                 {...getFieldProps(CRUUSER_KEY.LAST_NAME)}
+                disabled={isLoading}
               />
             </Grid>
             <Grid item xs={4}>
@@ -42,6 +44,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps }) => {
                 infoTooltipPlacement="right-end"
                 errorMessage={_getErrorMessage(CRUUSER_KEY.MIDDLE_NAME)}
                 {...getFieldProps(CRUUSER_KEY.MIDDLE_NAME)}
+                disabled={isLoading}
               />
             </Grid>
           </Grid>
@@ -58,6 +61,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps }) => {
               onBlur={setFieldTouched}
               errorMessage={_getErrorMessage(CRUUSER_KEY.DEFAULT_USER_TYPE)}
               isDisabled={isEmpty(values.roles)}
+              disabled={isLoading}
             />
           </Grid>
           <Grid item xs={4}>
@@ -66,6 +70,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps }) => {
               required
               errorMessage={_getErrorMessage(CRUUSER_KEY.USERNAME)}
               {...getFieldProps(CRUUSER_KEY.USERNAME)}
+              disabled={isLoading}
             />
           </Grid>
           <Grid item xs={4}>
@@ -74,6 +79,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps }) => {
               required
               errorMessage={_getErrorMessage(CRUUSER_KEY.EMAIL)}
               {...getFieldProps(CRUUSER_KEY.EMAIL)}
+              disabled={isLoading}
             />
           </Grid>
           {values.isViewMode && (
@@ -101,7 +107,11 @@ const GeneralInfo: React.FC<Props> = ({ formikProps }) => {
         </Grid>
         <Grid item container spacing={3}>
           <Grid item xs={4}>
-            <Checkbox.Item label="Login Disabled" {...getFieldProps(CRUUSER_KEY.STATUS)} />
+            <Checkbox.Item
+              label="Login Disabled"
+              {...getFieldProps(CRUUSER_KEY.STATUS)}
+              disabled={isLoading}
+            />
           </Grid>
         </Grid>
       </Grid>
@@ -110,5 +120,6 @@ const GeneralInfo: React.FC<Props> = ({ formikProps }) => {
 };
 type Props = {
   formikProps: CRUUserFormikProps;
+  isLoading: boolean;
 };
 export default GeneralInfo;

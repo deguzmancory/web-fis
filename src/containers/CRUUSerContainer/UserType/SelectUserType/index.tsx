@@ -4,7 +4,7 @@ import { Checkbox } from 'src/components/common';
 import { userTypeOptions } from 'src/containers/UsersManagement/TableList/CustomFilter/helpers';
 import { CRUUserFormikProps, CRUUSER_KEY, getErrorMessage } from '../../helper';
 
-const SelectUserType: React.FC<Props> = ({ formikProps }) => {
+const SelectUserType: React.FC<Props> = ({ formikProps, isLoading }) => {
   const { errors, touched, getFieldProps, setFieldValue } = formikProps;
 
   const _getErrorMessage = (fieldName: CRUUSER_KEY) => {
@@ -26,6 +26,7 @@ const SelectUserType: React.FC<Props> = ({ formikProps }) => {
             {...getFieldProps(CRUUSER_KEY.ROLES)}
             onChange={handleCheckboxChange}
             errorMessage={_getErrorMessage(CRUUSER_KEY.ROLES)}
+            disabled={isLoading}
           />
         </Grid>
       </Grid>
@@ -34,5 +35,6 @@ const SelectUserType: React.FC<Props> = ({ formikProps }) => {
 };
 type Props = {
   formikProps: CRUUserFormikProps;
+  isLoading: boolean;
 };
 export default SelectUserType;
