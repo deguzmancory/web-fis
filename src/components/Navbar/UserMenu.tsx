@@ -71,10 +71,10 @@ const UserMenu: React.FC<Props> = ({ fullName, setIsClickedLogout }) => {
           </Typography>
 
           <Box>
-            <Typography variant="body2" sx={{ color: COLOR_CODE.PRIMARY_500, textAlign: 'center' }}>
-              {roleName || 'Unknown'}
+            <Typography variant="body2" sx={{ color: COLOR_CODE.PRIMARY_500, textAlign: 'right' }}>
+              {roleName || 'Unknown Role'}
             </Typography>
-            <Divider sx={{ background: COLOR_CODE.PRIMARY_500 }} />
+            <Divider sx={{ background: COLOR_CODE.PRIMARY_600 }} />
           </Box>
         </Box>
         <Popover

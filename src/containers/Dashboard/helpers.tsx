@@ -68,7 +68,7 @@ export const dashboardItems: DashboardItem[] = [
         title: 'Pending PO Document',
         url: '#',
         isExternalUrl: false,
-        roles: [ROLE_NAME.PI, ROLE_NAME.SU, ROLE_NAME.FA],
+        roles: [ROLE_NAME.PI, ROLE_NAME.SU],
       },
       {
         title: 'Approved PO Documents',
