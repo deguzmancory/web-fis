@@ -16,11 +16,12 @@ import {
 import {
   AddUserPayload,
   GetPropertiesParams,
+  UpdateUserLastPasswordChangedParams,
   UpdateUserPayload,
   User,
 } from 'src/queries/Users/types';
 import { newCancelToken, stringify } from 'src/utils';
-import { TokenService } from '.';
+import { TokenService, XApiKeyService } from '.';
 
 axios.defaults.withCredentials = true;
 
@@ -190,6 +191,21 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.get('/account-svc/v1/users/export', {}, newCancelToken());
   };
 
+  const updateUserLastPasswordChanged = (payload: UpdateUserLastPasswordChangedParams) => {
+    const url = `/account-svc/v1/users/pass/${payload.username}`;
+    const localXApiKey = XApiKeyService.getApiKey();
+
+    const options = {
+      headers: {
+        ...(localXApiKey && {
+          'X-API-KEY': localXApiKey,
+        }),
+      },
+    };
+
+    return api.put(url, undefined, options);
+  };
+
   //
   // Return back a collection of functions that we would consider our
   // interface.  Most of the time it'll be just the list of all the
@@ -248,6 +264,7 @@ const create = (baseURL = appConfig.API_URL) => {
     searchUsers,
     searchProjects,
     getUrlExportUsers,
+    updateUserLastPasswordChanged,
   };
 };
 

@@ -10,4 +10,5 @@ export { default as RoleService } from './roles';
 export * as TenantService from './tenantService';
 export { default as Toastify } from './toastify';
 export { default as TokenService } from './token';
+export { default as XApiKeyService } from './xApiKey';
 export { default as Yup } from './yup';

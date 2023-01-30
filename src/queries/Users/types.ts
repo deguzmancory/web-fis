@@ -210,3 +210,7 @@ export type DelegatedAccess = {
     };
   };
 };
+
+export type UpdateUserLastPasswordChangedParams = {
+  username: User['username'];
+};
