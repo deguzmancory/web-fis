@@ -62,6 +62,12 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, isLoading }) => {
               errorMessage={_getErrorMessage(CRUUSER_KEY.DEFAULT_USER_TYPE)}
               isDisabled={isEmpty(values.roles)}
               disabled={isLoading}
+              infoTooltipMessage={
+                values.isViewMode
+                  ? 'The selected user type will be the default when logging in.'
+                  : 'Please select the user types available to this user below.'
+              }
+              infoToolTipWithArrow
             />
           </Grid>
           <Grid item xs={4}>

@@ -1,8 +1,8 @@
-import dayjs from 'dayjs';
 import { FieldInputProps, FormikErrors, FormikTouched } from 'formik';
 import { DelegatedAccess, UserDetail, USER_STATUS } from 'src/queries/Users/types';
 import { ErrorService, Yup } from 'src/services';
 import { getTitleCase } from 'src/utils';
+import { formatDateUtc } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
 
 export enum CRUUSER_KEY {
@@ -18,11 +18,28 @@ export enum CRUUSER_KEY {
 
   // User Type
   DELEGATE_ACCESS = 'delegateAccess',
+  TEMP_DELEGATE_ACCESS = 'tempDelegateAccess',
+  DELEGATED_ACCESS = 'delegatedAccess',
   ROLES = 'roles',
 
   // Comments
   COMMENTS = 'comments',
 }
+
+type DelegateAccessFormValue = {
+  isEdit: boolean;
+  delegatedUserId: string;
+  username: string;
+  fullName: string;
+  roleName: string;
+  projectNumber: string;
+  startDate: string;
+  startDateTemp: string;
+  endDate: string;
+  endDateTemp: string;
+  isAllProjects: boolean;
+}[];
+
 export type CRUUserFormValue = {
   isViewMode: boolean;
 
@@ -38,19 +55,9 @@ export type CRUUserFormValue = {
   status: boolean;
 
   // User Type
-  delegateAccess: {
-    isEdit: boolean;
-    delegatedUserId: string;
-    username: string;
-    fullName: string;
-    roleName: string;
-    projectNumber: string;
-    startDate: string;
-    startDateTemp: string;
-    endDate: string;
-    endDateTemp: string;
-    isAllProjects: boolean;
-  }[];
+  delegateAccess: DelegateAccessFormValue;
+  tempDelegateAccess: DelegateAccessFormValue;
+
   delegatedAccess: DelegatedAccess[];
   roles: string[];
 
@@ -74,6 +81,7 @@ export const initialCRUUserFormValue = {
 
   // User Type
   delegateAccess: [],
+  tempDelegateAccess: [],
   delegatedAccess: [],
   roles: [],
 
@@ -154,8 +162,8 @@ const getPayloadDelegateAccess = (delegateAccess: CRUUserFormValue['delegateAcce
   return delegateAccess.map((item) => ({
     delegatedUserId: item.delegatedUserId,
     roleName: item.roleName,
-    startDate: dayjs(item.startDate).utc().format(),
-    endDate: dayjs(item.endDate).utc().format(),
+    startDate: formatDateUtc(item.startDate),
+    endDate: formatDateUtc(item.endDate),
     isAllProjects: false,
     projectNumber: item.projectNumber,
   }));
@@ -171,9 +179,11 @@ export const formatPayloadSubmit = (values: CRUUserFormValue) => {
     status: getPayloadUserStatus(values.status),
     delegateAccess: getPayloadDelegateAccess(values.delegateAccess),
   };
+
   delete payload.isViewMode;
   delete payload.lastLoginDate;
   delete payload.passwordSetDate;
+  delete payload.tempDelegateAccess;
 
   return payload;
 };
@@ -192,5 +202,9 @@ export const formatPayloadUpdate = (values: CRUUserFormValue, user: UserDetail) 
     status: getPayloadUserStatus(values.status),
     delegateAccess: getPayloadDelegateAccess(values.delegateAccess),
   };
+
+  delete payload.isViewMode;
+  delete payload.tempDelegateAccess;
+
   return payload;
 };

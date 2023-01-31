@@ -61,6 +61,15 @@ export type DelegateAccess = {
     defaultUserType: string;
     status: string;
   };
+  userRole?: {
+    createdAt: string;
+    role: {
+      displayName: string;
+    };
+    roleId: string;
+    updatedAt: string;
+    userId: string;
+  };
 };
 
 export type AddUserPayload = {

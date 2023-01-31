@@ -1,5 +1,3 @@
-import { PATHS } from 'src/appConfig/paths';
-
 export type NavbarItemType = {
   id?: string;
   label: string;
@@ -14,12 +12,6 @@ export type NavbarItemType = {
   }[];
 };
 export const navbarItems: NavbarItemType[] = [
-  {
-    label: 'navigate to User Management (temp)',
-    url: PATHS.userManagements,
-    isExternalUrl: false,
-    subItems: [],
-  },
   {
     label: 'Login',
     url: '',

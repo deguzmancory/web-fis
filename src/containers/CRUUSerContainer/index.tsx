@@ -133,6 +133,23 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
       return localTimeToHawaii(date);
     };
     if (isViewMode && !isEmpty(user)) {
+      const delegateAccess = user.delegateAccesses.map((item) => ({
+        isEdit: false,
+        delegatedUserId: item.delegatedUserId,
+        username: item.delegatedUser.username,
+        fullName: item.delegatedUser.fullName,
+        roleName: item.userRole.role.displayName,
+        projectNumber: item.projectNumber,
+        startDate: item.startDate,
+        startDateTemp: item.startDate,
+        endDate: item.endDate,
+        endDateTemp: item.endDate,
+        isAllProjects: item.isAllProjects,
+        userId: item.userId,
+        roleId: item.roleId,
+        delegatedUser: item.delegatedUser,
+      }));
+
       return {
         ...initialCRUUserFormValue,
         isViewMode: isViewMode,
@@ -147,22 +164,8 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
         status: getValueUserStatus(user.status),
         roles: getValueRoles(user.roles),
         comments: user.comments,
-        delegateAccess: user.delegateAccesses.map((item) => ({
-          isEdit: false,
-          delegatedUserId: item.delegatedUserId,
-          username: item.delegatedUser.username,
-          fullName: item.delegatedUser.fullName,
-          roleName: item.delegatedUser.defaultUserType,
-          projectNumber: item.projectNumber,
-          startDate: item.startDate,
-          startDateTemp: item.startDate,
-          endDate: item.endDate,
-          endDateTemp: item.endDate,
-          isAllProjects: item.isAllProjects,
-          userId: item.userId,
-          roleId: item.roleId,
-          delegatedUser: item.delegatedUser,
-        })),
+        delegateAccess: delegateAccess,
+        tempDelegateAccess: delegateAccess,
         delegatedAccess: user.delegatedAccesses,
       };
     } else {

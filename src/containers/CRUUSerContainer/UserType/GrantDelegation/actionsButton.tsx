@@ -4,37 +4,34 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
-import { Callback } from 'src/redux/types';
 import { CRUUserFormikProps, CRUUSER_KEY } from '../../helper';
 
 const ActionsButton: React.FC<Props> = ({
   data,
   onShowDialog,
   onHideDialog,
-  setRows,
   rowIndex,
   formikProps,
+  fieldName = CRUUSER_KEY.TEMP_DELEGATE_ACCESS,
 }) => {
-  const { setFieldValue } = formikProps;
+  const { setFieldValue, values } = formikProps;
 
   const handleDeleteRow = () => {
     onShowDialog({
       type: DIALOG_TYPES.YESNO_DIALOG,
       data: {
-        title: `Delete`,
-        content: `You will not be able to recover this user. Are you sure you want to delete`,
-        okText: 'Yes, delete',
+        title: `Remove`,
+        content: `Remove this delegate’s access to the project(s)?`,
+        okText: 'Remove',
         cancelText: 'Cancel',
         onOk: () => {
           onHideDialog();
-          setRows((prevRows) => {
-            const newRows = [
-              ...prevRows.slice(0, rowIndex),
-              ...prevRows.slice(rowIndex + 1, prevRows.length),
-            ];
-            setFieldValue(CRUUSER_KEY.DELEGATE_ACCESS, newRows);
-            return newRows;
-          });
+          const newRows = [
+            ...values.tempDelegateAccess.slice(0, rowIndex),
+            ...values.tempDelegateAccess.slice(rowIndex + 1, values.tempDelegateAccess.length),
+          ];
+          setFieldValue(CRUUSER_KEY.DELEGATE_ACCESS, newRows);
+          setFieldValue(fieldName, newRows);
         },
         onCancel: () => {
           onHideDialog();
@@ -44,33 +41,30 @@ const ActionsButton: React.FC<Props> = ({
   };
 
   const handleChangeEditRow = (isEdit: boolean) => {
-    setRows((prevRows) => {
-      return prevRows.map((row, index) => {
-        return rowIndex === index
-          ? {
-              ...row,
-              isEdit: isEdit,
-            }
-          : row;
-      });
+    const rows = values.tempDelegateAccess.map((row, index) => {
+      return rowIndex === index
+        ? {
+            ...row,
+            isEdit: isEdit,
+          }
+        : row;
     });
+    setFieldValue(fieldName, rows);
   };
 
   const handleConfirmEdit = () => {
-    setRows((prevRows) => {
-      const formattedRows = prevRows.map((row, index) => {
-        return rowIndex === index
-          ? {
-              ...row,
-              isEdit: false,
-              startDate: data.startDateTemp,
-              endDate: data.endDateTemp,
-            }
-          : row;
-      });
-      setFieldValue(CRUUSER_KEY.DELEGATE_ACCESS, formattedRows);
-      return formattedRows;
+    const newRows = values.tempDelegateAccess.map((row, index) => {
+      return rowIndex === index
+        ? {
+            ...row,
+            isEdit: false,
+            startDate: data.startDateTemp,
+            endDate: data.endDateTemp,
+          }
+        : row;
     });
+    setFieldValue(CRUUSER_KEY.DELEGATE_ACCESS, newRows);
+    setFieldValue(fieldName, newRows);
   };
 
   return (
@@ -142,9 +136,9 @@ const ActionsButton: React.FC<Props> = ({
 
 type Props = typeof mapDispatchToProps & {
   data: any;
-  setRows: Callback;
   rowIndex: number;
   formikProps: CRUUserFormikProps;
+  fieldName?: CRUUSER_KEY;
 };
 
 const mapDispatchToProps = {

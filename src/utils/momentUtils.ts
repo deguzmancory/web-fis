@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import weekday from 'dayjs/plugin/weekday';
 import momentTz from 'moment-timezone';
+import { isEmpty } from 'src/validations';
 
 dayjs.extend(weekday);
 
@@ -35,4 +36,12 @@ export const getTimeDisplay = (value: string) => {
 export const localTimeToHawaii = (dateTime) => {
   const date = momentTz(dateTime).format(DateFormatWithHour);
   return momentTz(date, DateFormatWithHour).utcOffset('-1000').format(DateFormatDisplayMinute);
+};
+
+export const formatDateUtc = (value: Date | string) => {
+  if (!value || (typeof value === 'string' && isEmpty(value))) {
+    return '';
+  } else {
+    return dayjs(value).utc().format();
+  }
 };

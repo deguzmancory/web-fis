@@ -2,17 +2,21 @@ import { Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import React from 'react';
 import { DatePicker } from 'src/components/common';
-import { Callback } from 'src/redux/types';
 import { DateFormat } from 'src/utils/momentUtils';
+import { isEmpty } from 'src/validations';
+import { CRUUserFormikProps, CRUUSER_KEY } from '../../helper';
 
 const DatePickerEdit: React.FC<Props> = ({
   data,
-  setRows,
   rowIndex,
   keyValue,
   minDate,
   maxDate,
+  formikProps,
+  fieldName = CRUUSER_KEY.TEMP_DELEGATE_ACCESS,
 }) => {
+  const { setFieldValue, values } = formikProps;
+
   // eslint-disable-next-line security/detect-object-injection
   const _keyValue = data[keyValue];
 
@@ -21,23 +25,22 @@ const DatePickerEdit: React.FC<Props> = ({
   const handleDatePickerChange = (name, value: Date) => {
     setDate(value.toISOString());
 
-    setRows((prevRows) => {
-      return prevRows.map((row, index) => {
-        return rowIndex === index
-          ? {
-              ...row,
-              [`${keyValue}Temp`]: value.toISOString(),
-            }
-          : row;
-      });
+    const rows = values.tempDelegateAccess.map((row, index) => {
+      return rowIndex === index
+        ? {
+            ...row,
+            [`${keyValue}Temp`]: value.toISOString(),
+          }
+        : row;
     });
+    setFieldValue(fieldName, rows);
   };
 
   return data.isEdit ? (
     <>
       <DatePicker
         label={null}
-        selected={new Date(date)}
+        selected={isEmpty(date) ? null : new Date(date)}
         onChange={handleDatePickerChange}
         minDate={minDate}
         maxDate={maxDate}
@@ -52,10 +55,11 @@ const DatePickerEdit: React.FC<Props> = ({
 
 type Props = {
   data: any;
-  setRows: Callback;
   rowIndex: number;
   keyValue: string;
   minDate?: Date;
   maxDate?: Date;
+  formikProps: CRUUserFormikProps;
+  fieldName?: CRUUSER_KEY;
 };
 export default DatePickerEdit;

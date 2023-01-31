@@ -5,6 +5,7 @@ import { debounce } from 'lodash';
 import React from 'react';
 import { Button, DatePicker, Select } from 'src/components/common';
 import { useSearchProjects, useSearchUsers } from 'src/queries/Users';
+import { formatDateUtc } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
 import { CRUUserFormikProps, CRUUSER_KEY, getErrorMessage } from '../../helper';
 import {
@@ -25,6 +26,7 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
 
   const handleAddDelegation = (values: AddDelegationFormValue) => {
     const user = users.find((user) => user.id === values.existingUserAccount);
+
     const payload = {
       isEdit: false,
       delegatedUserId: user?.id,
@@ -32,10 +34,10 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
       fullName: user?.fullName,
       roleName: values.userType,
       projectNumber: values.projectNumber,
-      startDate: values.startDate.toISOString(),
-      startDateTemp: values.startDate.toISOString(),
-      endDate: values.endDate.toISOString(),
-      endDateTemp: values.endDate.toISOString(),
+      startDate: formatDateUtc(values.startDate),
+      startDateTemp: formatDateUtc(values.startDate),
+      endDate: formatDateUtc(values.endDate),
+      endDateTemp: formatDateUtc(values.endDate),
       isAllProjects: false,
     };
     const delegateAccess = valuesFormik.delegateAccess;
@@ -101,7 +103,7 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
           <Select
             {...getFieldProps(ADD_DELEGATION_KEY.EXISTING_USER_ACCOUNT)}
             label="Existing User Account"
-            placeholder={'Search by 3 characters'}
+            placeholder={'Search'}
             options={
               users
                 ? users.map((user) => ({
@@ -114,7 +116,7 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
             value={values.existingUserAccount}
             name={ADD_DELEGATION_KEY.EXISTING_USER_ACCOUNT}
             onInputChange={(value: string) => {
-              if (value.length > 2) {
+              if (!isEmpty(value)) {
                 debounceSearchUsersValue(value);
               }
             }}
@@ -174,7 +176,7 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
             }}
             hideSearchIcon
             isClearable={false}
-            isDisabled={isEmpty(values.existingUserAccount)}
+            isDisabled={isEmpty(values.userType)}
             onChange={setFieldValue}
             errorMessage={_getErrorMessage(ADD_DELEGATION_KEY.PROJECT_NUMBER)}
           />
