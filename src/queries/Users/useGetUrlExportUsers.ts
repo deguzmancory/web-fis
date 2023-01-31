@@ -1,12 +1,20 @@
 import { useMutation, UseMutationOptions } from 'react-query';
 import apiClient from '../apiClient';
-import { authResponseWrapper } from '../helpers';
+import { ApiResponseType, authResponseWrapper } from '../helpers';
 import { UrlExportUser } from './types';
 
-export function useGetUrlExportUsers(options?: UseMutationOptions<UrlExportUser, Error, string>) {
-  const { mutate: getUrlExportUsers, isLoading } = useMutation<UrlExportUser, Error, string>({
+export function useGetUrlExportUsers(
+  options?: UseMutationOptions<ApiResponseType<{ data: UrlExportUser }>, Error, string>
+) {
+  const { mutate: getUrlExportUsers, isLoading } = useMutation<
+    ApiResponseType<{ data: UrlExportUser }>,
+    Error,
+    string
+  >({
     mutationFn: () => {
-      return authResponseWrapper<UrlExportUser>(apiClient.getUrlExportUsers);
+      return authResponseWrapper<ApiResponseType<{ data: UrlExportUser }>>(
+        apiClient.getUrlExportUsers
+      );
     },
     ...options,
   });

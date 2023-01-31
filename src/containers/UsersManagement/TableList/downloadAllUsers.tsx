@@ -1,5 +1,4 @@
-import { Close } from '@mui/icons-material';
-import { IconButton, Snackbar } from '@mui/material';
+import { Snackbar } from '@mui/material';
 import dayjs from 'dayjs';
 import React from 'react';
 import { FaDownload } from 'react-icons/fa';
@@ -11,16 +10,24 @@ import { handleShowErrorMsg } from '../helpers';
 
 const DownloadAllUsers: React.FC<Props> = ({ isLoading }) => {
   const [isOpenSnackbar, setIsOpenSnackbar] = React.useState(false);
+  const [isDownloading, setIsDownloading] = React.useState(false);
+  const [status, setStatus] = React.useState<'Fetching' | 'Downloading' | ''>('');
 
   const { getUrlExportUsers, isLoading: loading } = useGetUrlExportUsers({
     onSuccess(data) {
+      setIsDownloading(true);
+      setStatus('Downloading');
+
+      const response = data.data.data;
       pollAndDownloadFile({
-        get: data.get,
-        head: data.head,
+        get: response.get,
+        head: response.head,
         fileName: `Users_${dayjs().format(DateFormat)}.csv`,
         fileType: `text/csv`,
         onSuccess: () => {
-          Toastify.success('Download All Users successfully');
+          setIsOpenSnackbar(false);
+          setIsDownloading(false);
+          setStatus('');
         },
         onError: () => {
           Toastify.error('Failed when Download All Users. Please try again');
@@ -40,6 +47,7 @@ const DownloadAllUsers: React.FC<Props> = ({ isLoading }) => {
     }
 
     setIsOpenSnackbar(false);
+    setStatus('');
   };
 
   return (
@@ -50,21 +58,22 @@ const DownloadAllUsers: React.FC<Props> = ({ isLoading }) => {
         onClick={() => {
           setIsOpenSnackbar(true);
           getUrlExportUsers('');
+          setStatus('Fetching');
         }}
-        disabled={isLoading || loading}
+        disabled={isLoading || loading || isDownloading}
       >
         Download All Users
       </Button>
       <Snackbar
         open={isOpenSnackbar}
         onClose={handleCloseSnackbar}
-        message="Downloading..."
+        message={`${status}...`}
         action={
           <>
             <LoadingCommon />
-            <IconButton size="small" color="inherit" onClick={handleCloseSnackbar}>
+            {/* <IconButton size="small" color="inherit" onClick={handleCloseSnackbar}>
               <Close />
-            </IconButton>
+            </IconButton> */}
           </>
         }
       />
