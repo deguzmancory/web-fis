@@ -1,13 +1,16 @@
 import { Box, Table, TableBody, TableContainer, TableHead, TableRow } from '@mui/material';
-import dayjs from 'dayjs';
 import React from 'react';
 import { UserDetail } from 'src/queries/Users/types';
-import { DateFormatDisplayMinute } from 'src/utils/momentUtils';
+import { localTimeToHawaii } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
 import { CRUUserFormikProps } from '../helper';
 import { StyledTableCell, StyledTableRow } from '../UserType/GrantDelegation/table';
 
 const AuditInformation: React.FC<Props> = ({ formikProps, userAuditTrails, isLoading }) => {
+  const audits = userAuditTrails.sort((cur, next) => {
+    return cur.createdAt < next.createdAt ? 1 : -1;
+  });
+
   return (
     <TableContainer>
       <Table>
@@ -34,20 +37,18 @@ const AuditInformation: React.FC<Props> = ({ formikProps, userAuditTrails, isLoa
           </TableRow>
         </TableHead>
         <TableBody>
-          {isEmpty(userAuditTrails) ? (
+          {isEmpty(audits) ? (
             <StyledTableRow>
               <StyledTableCell>
                 <Box minHeight={'100px'}>&nbsp;</Box>
               </StyledTableCell>
             </StyledTableRow>
           ) : (
-            userAuditTrails.map((row, index) => (
+            audits.map((row, index) => (
               <StyledTableRow key={row.id}>
-                <StyledTableCell width={'20%'}>
-                  {dayjs(row.createdAt).format(DateFormatDisplayMinute)}
-                </StyledTableCell>
+                <StyledTableCell width={'20%'}>{localTimeToHawaii(row.createdAt)}</StyledTableCell>
                 <StyledTableCell width={'30%'}>
-                  {row.fullName}({row.username})
+                  {row.fullName} ({row.username})
                 </StyledTableCell>
                 <StyledTableCell width={'50%'}>{row.action}</StyledTableCell>
               </StyledTableRow>

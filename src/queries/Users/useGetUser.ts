@@ -1,4 +1,4 @@
-import { useQuery, UseQueryOptions } from 'react-query';
+import { useQuery, useQueryClient, UseQueryOptions } from 'react-query';
 import apiClient from '../apiClient';
 import { ApiResponseType, responseWrapper } from '../helpers';
 import { API_QUERIES } from '../keys';
@@ -31,11 +31,15 @@ export function useGetUser(
     }
   );
 
+  const queryClient = useQueryClient();
+  const handleInvalidateUser = () => queryClient.invalidateQueries(API_QUERIES.USER);
+
   return {
     user,
     error,
     isError,
     isLoading,
     onGetUserById,
+    handleInvalidateUser,
   };
 }

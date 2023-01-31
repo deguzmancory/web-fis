@@ -1,5 +1,4 @@
 import { Box, Container, Stack, Typography } from '@mui/material';
-import dayjs from 'dayjs';
 import { FormikProps, useFormik } from 'formik';
 import React, { Suspense } from 'react';
 import ReactJson from 'react-json-view';
@@ -16,7 +15,7 @@ import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, Toastify } from 'src/services';
 import { deepKeys, scrollToTopError } from 'src/utils';
-import { DateFormatDisplayMinute } from 'src/utils/momentUtils';
+import { localTimeToHawaii } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
 import { handleShowErrorMsg } from '../UsersManagement/helpers';
 import BreadcrumbsUserDetail from './breadcrumbs';
@@ -52,6 +51,7 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
     user,
     onGetUserById,
     isLoading: isLoadingGetUser,
+    handleInvalidateUser,
   } = useGetUser({
     userId: userId || null,
     onError(err: Error) {
@@ -102,6 +102,7 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
   const { updateUser, isLoading: isLoadingUpdateUser } = useUpdateUser({
     onSuccess(data, variables, context) {
       Toastify.success(`Update User ${variables.username} successfully.`);
+      handleInvalidateUser();
       window.scrollTo(0, 0);
       const isMyProfile = userId === profile.id;
       if (isMyProfile) {
@@ -129,7 +130,7 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
   const initialFormValue = React.useMemo(() => {
     const formatDate = (date: string) => {
       if (!date) return '';
-      return dayjs(date).format(DateFormatDisplayMinute);
+      return localTimeToHawaii(date);
     };
     if (isViewMode && !isEmpty(user)) {
       return {
