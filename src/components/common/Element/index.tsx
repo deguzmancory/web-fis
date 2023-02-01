@@ -34,6 +34,9 @@ const Element: React.FC<Props> = ({
           classes={{
             root: 'mb-1',
           }}
+          sx={{
+            height: 24,
+          }}
         >
           {label} {required && <span className="has-text-danger fw-bold text-is-16">*</span>}
           {infoTooltipMessage && (

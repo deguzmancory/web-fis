@@ -6,7 +6,7 @@ import { SearchProject } from './types';
 
 export function useSearchProjects(
   options?: UseQueryOptions<ApiResponseType<{ data: SearchProject[] }>, Error, SearchProject[]> & {
-    search: string;
+    projectNumber: string;
   }
 ) {
   const {
@@ -16,7 +16,7 @@ export function useSearchProjects(
     isFetching: isLoading,
     refetch: onSearchProjects,
   } = useQuery<ApiResponseType<{ data: SearchProject[] }>, Error, SearchProject[]>(
-    [API_QUERIES.SEARCH_PROJECTS, { projectNumber: options.search }],
+    [API_QUERIES.SEARCH_PROJECTS, { projectNumber: options.projectNumber }],
     {
       queryFn: (query) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -29,7 +29,7 @@ export function useSearchProjects(
       select(data) {
         return data.data.data;
       },
-      enabled: !!options.search,
+      enabled: !!options.projectNumber,
       ...options,
     }
   );

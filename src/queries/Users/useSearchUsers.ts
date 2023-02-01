@@ -6,7 +6,8 @@ import { SearchUser } from './types';
 
 export function useSearchUsers(
   options?: UseQueryOptions<ApiResponseType<{ data: SearchUser[] }>, Error, SearchUser[]> & {
-    search: string;
+    name: string;
+    exclude?: string;
   }
 ) {
   const {
@@ -16,7 +17,7 @@ export function useSearchUsers(
     isFetching: isLoading,
     refetch: onSearchUsers,
   } = useQuery<ApiResponseType<{ data: SearchUser[] }>, Error, SearchUser[]>(
-    [API_QUERIES.SEARCH_USER, { name: options.search }],
+    [API_QUERIES.SEARCH_USER, { name: options.name, exclude: options.exclude }],
     {
       queryFn: (query) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -29,7 +30,7 @@ export function useSearchUsers(
       select(data) {
         return data.data.data;
       },
-      enabled: !!options.search,
+      enabled: !!options.name,
       ...options,
     }
   );

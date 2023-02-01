@@ -1,4 +1,4 @@
-import { Box, Grid } from '@mui/material';
+import { Box, Grid, Stack } from '@mui/material';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import { debounce } from 'lodash';
@@ -12,6 +12,7 @@ import {
   addDelegationFormSchema,
   AddDelegationFormValue,
   ADD_DELEGATION_KEY,
+  getDelegateUserTypeOptions,
   initialAddDelegationFormValue,
 } from './helpers';
 
@@ -83,7 +84,8 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
   const [searchUsers, setSearchUsers] = React.useState('');
 
   const { users, isLoading: isLoadingSearchUsers } = useSearchUsers({
-    search: searchUsers,
+    name: searchUsers,
+    exclude: valuesFormik.username,
   });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceSearchUsersValue = React.useCallback(debounce(setSearchUsers, 200), []);
@@ -91,142 +93,140 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
   const [searchProjects, setSearchProjects] = React.useState('');
 
   const { projects, isLoading: isLoadingSearchProjects } = useSearchProjects({
-    search: searchProjects,
+    projectNumber: searchProjects,
   });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceSearchProjectsValue = React.useCallback(debounce(setSearchProjects, 200), []);
 
   return (
     <Box mb={2}>
-      <Grid container spacing={1} alignItems={'flex-start'}>
-        <Grid item xs={3}>
-          <Select
-            {...getFieldProps(ADD_DELEGATION_KEY.EXISTING_USER_ACCOUNT)}
-            label="Existing User Account"
-            placeholder={'Search'}
-            options={
-              users
-                ? users.map((user) => ({
-                    label: `${user.fullName}(${user.username})`,
-                    value: user.id,
-                  }))
-                : []
-            }
-            isLoading={isLoadingSearchUsers}
-            value={values.existingUserAccount}
-            name={ADD_DELEGATION_KEY.EXISTING_USER_ACCOUNT}
-            onInputChange={(value: string) => {
-              if (!isEmpty(value)) {
-                debounceSearchUsersValue(value);
-              }
-            }}
-            required
-            hideSearchIcon
-            isClearable={false}
-            onChange={setFieldValue}
-            errorMessage={_getErrorMessage(ADD_DELEGATION_KEY.EXISTING_USER_ACCOUNT)}
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <Select
-            {...getFieldProps(ADD_DELEGATION_KEY.USER_TYPE)}
-            label="User Type"
-            placeholder={'Select'}
-            options={
-              users
-                ? users
-                    .find((user) => user.id === values.existingUserAccount)
-                    ?.roles.map((role) => ({
-                      label: role.displayName,
-                      value: role.name,
+      <Stack flexDirection={'row'}>
+        <Grid container spacing={1} alignItems={'flex-start'}>
+          <Grid item xs={3}>
+            <Select
+              {...getFieldProps(ADD_DELEGATION_KEY.EXISTING_USER_ACCOUNT)}
+              label="Existing User Account"
+              placeholder={'Search'}
+              options={
+                users
+                  ? users.map((user) => ({
+                      label: `${user.fullName}(${user.username})`,
+                      value: user.id,
                     }))
-                : []
-            }
-            hideSearchIcon
-            required
-            isClearable={false}
-            isDisabled={isEmpty(values.existingUserAccount)}
-            value={values.userType}
-            name={ADD_DELEGATION_KEY.USER_TYPE}
-            onChange={setFieldValue}
-            errorMessage={_getErrorMessage(ADD_DELEGATION_KEY.USER_TYPE)}
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <Select
-            {...getFieldProps(ADD_DELEGATION_KEY.PROJECT_NUMBER)}
-            label="Project Number"
-            placeholder={'Search'}
-            options={
-              projects
-                ? projects.map((project) => ({
-                    label: `${project.projectNumber}`,
-                    value: project.projectNumber,
-                  }))
-                : []
-            }
-            required
-            isLoading={isLoadingSearchProjects}
-            value={values.projectNumber}
-            name={ADD_DELEGATION_KEY.PROJECT_NUMBER}
-            onInputChange={(value: string) => {
-              if (value.length > 0) {
-                debounceSearchProjectsValue(value);
+                  : []
               }
-            }}
-            hideSearchIcon
-            isClearable={false}
-            isDisabled={isEmpty(values.userType)}
-            onChange={setFieldValue}
-            errorMessage={_getErrorMessage(ADD_DELEGATION_KEY.PROJECT_NUMBER)}
-          />
+              isLoading={isLoadingSearchUsers}
+              value={values.existingUserAccount}
+              name={ADD_DELEGATION_KEY.EXISTING_USER_ACCOUNT}
+              onInputChange={(value: string) => {
+                if (!isEmpty(value)) {
+                  debounceSearchUsersValue(value);
+                }
+              }}
+              required
+              hideSearchIcon
+              isClearable={false}
+              onChange={setFieldValue}
+              errorMessage={_getErrorMessage(ADD_DELEGATION_KEY.EXISTING_USER_ACCOUNT)}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <Select
+              {...getFieldProps(ADD_DELEGATION_KEY.USER_TYPE)}
+              label="User Type"
+              placeholder={'Select'}
+              options={
+                users
+                  ? getDelegateUserTypeOptions(
+                      users
+                        .find((user) => user.id === values.existingUserAccount)
+                        ?.roles.map((role) => role.name),
+                      valuesFormik.roles
+                    )
+                  : []
+              }
+              hideSearchIcon
+              required
+              isClearable={false}
+              isDisabled={isEmpty(values.existingUserAccount)}
+              value={values.userType}
+              name={ADD_DELEGATION_KEY.USER_TYPE}
+              onChange={setFieldValue}
+              errorMessage={_getErrorMessage(ADD_DELEGATION_KEY.USER_TYPE)}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <Select
+              {...getFieldProps(ADD_DELEGATION_KEY.PROJECT_NUMBER)}
+              label="Project Number"
+              placeholder={'Search'}
+              options={
+                projects
+                  ? projects.map((project) => ({
+                      label: `${project.projectNumber}`,
+                      value: project.projectNumber,
+                    }))
+                  : []
+              }
+              isLoading={isLoadingSearchProjects}
+              value={values.projectNumber}
+              name={ADD_DELEGATION_KEY.PROJECT_NUMBER}
+              onInputChange={(value: string) => {
+                if (value.length > 0) {
+                  debounceSearchProjectsValue(value);
+                }
+              }}
+              hideSearchIcon
+              isClearable={false}
+              isDisabled={isEmpty(values.userType)}
+              onChange={setFieldValue}
+              errorMessage={_getErrorMessage(ADD_DELEGATION_KEY.PROJECT_NUMBER)}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <DatePicker
+              label="Start Date"
+              {...getFieldProps(ADD_DELEGATION_KEY.START_DATE)}
+              name={ADD_DELEGATION_KEY.START_DATE}
+              selected={values.startDate}
+              placeholder={'MM/DD/YYYY'}
+              onChange={setFieldValue}
+              onBlur={setFieldTouched}
+              errorMessage={_getErrorMessage(ADD_DELEGATION_KEY.START_DATE)}
+              maxDate={values.endDate}
+              disabled={isEmpty(values.existingUserAccount)}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <DatePicker
+              label="End Date"
+              {...getFieldProps(ADD_DELEGATION_KEY.END_DATE)}
+              name={ADD_DELEGATION_KEY.END_DATE}
+              selected={values.endDate}
+              placeholder={'MM/DD/YYYY'}
+              onChange={setFieldValue}
+              onBlur={setFieldTouched}
+              errorMessage={_getErrorMessage(ADD_DELEGATION_KEY.END_DATE)}
+              minDate={getAfterDate(values.startDate, new Date())}
+              disabled={isEmpty(values.existingUserAccount)}
+            />
+          </Grid>
         </Grid>
-        <Grid item xs={2}>
-          <DatePicker
-            label="Start Date"
-            {...getFieldProps(ADD_DELEGATION_KEY.START_DATE)}
-            name={ADD_DELEGATION_KEY.START_DATE}
-            selected={values.startDate}
-            placeholder={'MM/DD/YYYY'}
-            onChange={setFieldValue}
-            onBlur={setFieldTouched}
-            errorMessage={_getErrorMessage(ADD_DELEGATION_KEY.START_DATE)}
-            maxDate={values.endDate}
-            required
-            disabled={isEmpty(values.existingUserAccount)}
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <DatePicker
-            label="End Date"
-            {...getFieldProps(ADD_DELEGATION_KEY.END_DATE)}
-            name={ADD_DELEGATION_KEY.END_DATE}
-            selected={values.endDate}
-            placeholder={'MM/DD/YYYY'}
-            onChange={setFieldValue}
-            onBlur={setFieldTouched}
-            errorMessage={_getErrorMessage(ADD_DELEGATION_KEY.END_DATE)}
-            minDate={getAfterDate(values.startDate, new Date())}
-            required
-            disabled={isEmpty(values.existingUserAccount)}
-          />
-        </Grid>
-        <Grid item xs={1}>
-          <Box
-            sx={{
-              transform: 'translateY(27px)',
+        <Box
+          sx={{
+            transform: 'translateY(27px)',
+            ml: 1,
+          }}
+        >
+          <Button
+            onClick={() => {
+              handleSubmit();
             }}
           >
-            <Button
-              onClick={() => {
-                handleSubmit();
-              }}
-            >
-              Add
-            </Button>
-          </Box>
-        </Grid>
-      </Grid>
+            Add
+          </Button>
+        </Box>
+      </Stack>
     </Box>
   );
 };

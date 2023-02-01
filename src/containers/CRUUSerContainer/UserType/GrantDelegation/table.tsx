@@ -12,6 +12,7 @@ import { tableCellClasses } from '@mui/material/TableCell';
 import dayjs from 'dayjs';
 import React from 'react';
 import { COLOR_CODE } from 'src/appConfig/constants';
+import { getRoleName, ROLE_NAME } from 'src/queries/Profile/helpers';
 import { USER_KEY } from 'src/queries/Users/types';
 import { isEmpty } from 'src/validations';
 import { CRUUserFormikProps } from '../../helper';
@@ -22,6 +23,19 @@ const TableGrantDelegation: React.FC<Props> = ({ formikProps }) => {
   const { values } = formikProps;
 
   const rows = values.tempDelegateAccess;
+
+  const displayRoleName = (value: string) => {
+    if (
+      value === ROLE_NAME.CU ||
+      value === ROLE_NAME.PI ||
+      value === ROLE_NAME.SU ||
+      value === ROLE_NAME.FA
+    ) {
+      return getRoleName(value);
+    } else {
+      return value;
+    }
+  };
 
   return (
     <TableContainer>
@@ -47,7 +61,7 @@ const TableGrantDelegation: React.FC<Props> = ({ formikProps }) => {
               <StyledTableRow key={row.username}>
                 <StyledTableCell>{row.username}</StyledTableCell>
                 <StyledTableCell>{row.fullName}</StyledTableCell>
-                <StyledTableCell>{row.roleName}</StyledTableCell>
+                <StyledTableCell>{displayRoleName(row.roleName)}</StyledTableCell>
                 <StyledTableCell>{row.projectNumber}</StyledTableCell>
                 <StyledTableCell>
                   <DatePickerEdit
