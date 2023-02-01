@@ -1,4 +1,5 @@
 import { FieldInputProps, FormikErrors, FormikTouched } from 'formik';
+import { getRoleNamePayload } from 'src/queries/Profile/helpers';
 import { DelegatedAccess, UserDetail, USER_STATUS } from 'src/queries/Users/types';
 import { ErrorService, Yup } from 'src/services';
 import { getTitleCase } from 'src/utils';
@@ -161,7 +162,7 @@ const getPayloadDelegateAccess = (delegateAccess: CRUUserFormValue['delegateAcce
   if (isEmpty(delegateAccess)) return [];
   return delegateAccess.map((item) => ({
     delegatedUserId: item.delegatedUserId,
-    roleName: item.roleName,
+    roleName: getRoleNamePayload(item.roleName),
     startDate: formatDateUtc(item.startDate),
     endDate: formatDateUtc(item.endDate),
     isAllProjects: false,
@@ -198,13 +199,15 @@ export const formatPayloadUpdate = (values: CRUUserFormValue, user: UserDetail) 
     middleName: getTitleCase(values.middleName),
     fullName: user.fullName,
     allowMaintenanceModeLogin: user.allowMaintenanceModeLogin,
-    isDhUser: user.isDhUser,
+    isDhUser: values.email.includes('datahouse.com') ? true : false,
     status: getPayloadUserStatus(values.status),
     delegateAccess: getPayloadDelegateAccess(values.delegateAccess),
   };
 
   delete payload.isViewMode;
   delete payload.tempDelegateAccess;
+  delete payload.lastLoginDate;
+  delete payload.passwordSetDate;
 
   return payload;
 };

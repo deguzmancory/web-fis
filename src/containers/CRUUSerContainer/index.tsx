@@ -103,6 +103,7 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
     onSuccess(data, variables, context) {
       Toastify.success(`Update User ${variables.username} successfully.`);
       handleInvalidateUser();
+      handleInvalidateAllUser();
       window.scrollTo(0, 0);
       const isMyProfile = userId === profile.id;
       if (isMyProfile) {
