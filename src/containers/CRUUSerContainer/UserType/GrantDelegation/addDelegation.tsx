@@ -28,27 +28,34 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
   const handleAddDelegation = (values: AddDelegationFormValue) => {
     const user = users.find((user) => user.id === values.existingUserAccount);
 
-    const payload = {
-      isEdit: false,
-      delegatedUserId: user?.id,
-      username: user?.username,
-      fullName: user?.fullName,
-      roleName: values.userType,
-      projectNumber: values.projectNumber,
-      startDate: formatDateUtc(values.startDate),
-      startDateTemp: formatDateUtc(values.startDate),
-      endDate: formatDateUtc(values.endDate),
-      endDateTemp: formatDateUtc(values.endDate),
-      isAllProjects: false,
-    };
-    const delegateAccess = valuesFormik.delegateAccess;
-    delegateAccess.unshift(payload);
+    if (valuesFormik.delegateAccess.findIndex((row) => row.delegatedUserId === user?.id) > -1) {
+      setFieldError(
+        ADD_DELEGATION_KEY.EXISTING_USER_ACCOUNT,
+        'Access has been granted to current user.'
+      );
+    } else {
+      const payload = {
+        isEdit: false,
+        delegatedUserId: user?.id,
+        username: user?.username,
+        fullName: user?.fullName,
+        roleName: values.userType,
+        projectNumber: values.projectNumber,
+        startDate: formatDateUtc(values.startDate),
+        startDateTemp: formatDateUtc(values.startDate),
+        endDate: formatDateUtc(values.endDate),
+        endDateTemp: formatDateUtc(values.endDate),
+        isAllProjects: false,
+      };
+      const delegateAccess = valuesFormik.delegateAccess;
+      delegateAccess.unshift(payload);
 
-    setFieldValueFormik(CRUUSER_KEY.DELEGATE_ACCESS, delegateAccess);
+      setFieldValueFormik(CRUUSER_KEY.DELEGATE_ACCESS, delegateAccess);
 
-    setTimeout(() => {
-      resetForm();
-    }, 10);
+      setTimeout(() => {
+        resetForm();
+      }, 10);
+    }
   };
 
   const {
@@ -58,6 +65,7 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
     touched,
     setFieldTouched,
     setFieldValue,
+    setFieldError,
     handleSubmit,
     resetForm,
   } = useFormik<AddDelegationFormValue>({
@@ -110,8 +118,9 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
               options={
                 users
                   ? users.map((user) => ({
-                      label: `${user.fullName}(${user.username})`,
+                      label: user.fullName,
                       value: user.id,
+                      subLabel: user.username,
                     }))
                   : []
               }
@@ -126,7 +135,11 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
               required
               hideSearchIcon
               isClearable={false}
-              onChange={setFieldValue}
+              optionWithSubLabel
+              onChange={(name, value) => {
+                setFieldValue(name, value);
+                setFieldValue(ADD_DELEGATION_KEY.USER_TYPE, '');
+              }}
               errorMessage={_getErrorMessage(ADD_DELEGATION_KEY.EXISTING_USER_ACCOUNT)}
             />
           </Grid>
@@ -151,7 +164,10 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
               isDisabled={isEmpty(values.existingUserAccount)}
               value={values.userType}
               name={ADD_DELEGATION_KEY.USER_TYPE}
-              onChange={setFieldValue}
+              onChange={(name, value) => {
+                setFieldValue(name, value);
+                setFieldValue(ADD_DELEGATION_KEY.PROJECT_NUMBER, '');
+              }}
               errorMessage={_getErrorMessage(ADD_DELEGATION_KEY.USER_TYPE)}
             />
           </Grid>
@@ -165,6 +181,7 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
                   ? projects.map((project) => ({
                       label: `${project.projectNumber}`,
                       value: project.projectNumber,
+                      subLabel: project.projectNumber,
                     }))
                   : []
               }
@@ -179,6 +196,7 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
               hideSearchIcon
               isClearable={false}
               isDisabled={isEmpty(values.userType)}
+              optionWithSubLabel
               onChange={setFieldValue}
               errorMessage={_getErrorMessage(ADD_DELEGATION_KEY.PROJECT_NUMBER)}
             />

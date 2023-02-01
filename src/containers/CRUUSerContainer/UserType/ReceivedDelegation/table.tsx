@@ -46,8 +46,12 @@ const TableGrantDelegation: React.FC<Props> = ({ formikProps }) => {
                 <StyledTableCell>{row.delegatedUser.fullName}</StyledTableCell>
                 <StyledTableCell>{row.userRole.role.displayName}</StyledTableCell>
                 <StyledTableCell>{row.projectNumber}</StyledTableCell>
-                <StyledTableCell>{dayjs(row.startDate).format(DateFormat)}</StyledTableCell>
-                <StyledTableCell>{dayjs(row.endDate).format(DateFormat)}</StyledTableCell>
+                <StyledTableCell>
+                  {row.startDate ? dayjs(row.startDate).format(DateFormat) : '--'}
+                </StyledTableCell>
+                <StyledTableCell>
+                  {row.endDate ? dayjs(row.endDate).format(DateFormat) : '--'}
+                </StyledTableCell>
                 <StyledTableCell>
                   <IconButton
                     size="small"

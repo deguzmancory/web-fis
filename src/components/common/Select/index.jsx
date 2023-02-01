@@ -1,5 +1,5 @@
 import cn from 'classnames';
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { FiSearch } from 'react-icons/fi';
 import { IoCaretDownOutline } from 'react-icons/io5';
 import Select, { components } from 'react-select';
@@ -49,6 +49,7 @@ const SelectCmp = ({
   isMulti = false,
   menuPosition = 'fixed',
   onInputChange = (value) => {},
+  optionWithSubLabel = false,
   ...props
 }) => {
   const id = useRef(`select-${getRandomId()}`);
@@ -68,6 +69,24 @@ const SelectCmp = ({
     : options?.find((option) => option.value === value) || null;
   // For custom select, follow this link:
   // https://react-select.com/styles#using-classnames
+
+  const Option = useCallback((props) => {
+    const { data } = props;
+    const children = (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <div>{data.label}</div>
+        <div>{data?.subLabel}</div>
+      </div>
+    );
+    return <components.Option {...props} children={children} />;
+  }, []);
+
   return (
     <Element
       id={id.current}
@@ -124,6 +143,9 @@ const SelectCmp = ({
           components={{
             DropdownIndicator,
             Control: hideSearchIcon ? ControlNoSearchIcon : Control,
+            ...(optionWithSubLabel && {
+              Option: Option,
+            }),
           }}
           menuPosition={menuPosition}
           onInputChange={onInputChange}
