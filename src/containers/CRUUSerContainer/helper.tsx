@@ -208,6 +208,7 @@ export const formatPayloadUpdate = (values: CRUUserFormValue, user: UserDetail) 
   delete payload.tempDelegateAccess;
   delete payload.lastLoginDate;
   delete payload.passwordSetDate;
+  delete payload.fullName;
 
   return payload;
 };
