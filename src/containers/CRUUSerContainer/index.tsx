@@ -83,7 +83,6 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
 
   const { handleInvalidateAllUser } = useGetAllUsers();
   const { profile, handleInvalidateProfile, getMyProfile } = useProfile();
-  const roleName = profile.roleName;
   const { createUser, isLoading: isLoadingCreateUser } = useCreateUser({
     onSuccess(data, variables, context) {
       Toastify.success(`Add User ${variables.username} successfully.`);
@@ -222,7 +221,7 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
           {isViewMode ? 'Edit' : 'Add'} User
         </Typography>
         <Suspense fallback={<LoadingCommon />}>
-          {!isCU(roleName) ? (
+          {!isCU(profile.currentRole) ? (
             <Layout>
               <NoPermission />
             </Layout>

@@ -1,9 +1,7 @@
-import React from 'react';
 import { QueryFunction, useQuery, useQueryClient, UseQueryOptions } from 'react-query';
 import apiClient from '../apiClient';
 import { ApiResponseType, getResponseData, responseWrapper } from '../helpers';
 import { API_QUERIES } from '../keys';
-import { getRoleName } from './helpers';
 import { MyProfile } from './types';
 
 export function useProfile(
@@ -31,14 +29,7 @@ export function useProfile(
   const handleInvalidateProfile = () => queryClient.invalidateQueries([API_QUERIES.PROFILE]);
 
   return {
-    profile: React.useMemo(() => {
-      if (!data) return null;
-      const profileResponse: MyProfile = {
-        ...data,
-        roleName: getRoleName(data.defaultUserType),
-      };
-      return profileResponse;
-    }, [data]),
+    profile: data,
     error,
     isError,
     loading: isFetching,

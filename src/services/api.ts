@@ -69,8 +69,8 @@ const create = (baseURL = appConfig.API_URL) => {
   const confirmSignIn = (body: ConfirmSignInPayload) =>
     Auth.sendCustomChallengeAnswer(body.user, body.code);
 
-  const confirmPassword = (password: ConfirmPasswordPayload) => {
-    return Auth.currentAuthenticatedUser().then((user) =>
+  const confirmPassword = async (password: ConfirmPasswordPayload) => {
+    return await Auth.currentAuthenticatedUser().then((user) =>
       Auth.signIn({
         username: user.username,
         password: password.password,
@@ -82,20 +82,13 @@ const create = (baseURL = appConfig.API_URL) => {
     Auth.completeNewPassword(body.user, body.password, body.requiredAttributes);
 
   // ====================== Profile ======================
-  const getUserId = (params: { username: string }) => {
-    const username = { username: params.username };
-    const queryString = stringify(username);
-    return api.get(`/account-svc/v1/users/user-id?${queryString}`, {}, newCancelToken());
-  };
-
-  // ====================== Profile ======================
   const getMyProfile = () => api.get('/account-svc/v1/me', {}, newCancelToken());
-
-  const updateUserAvatar = (body: { avatarUrl: string }) =>
-    api.patch(`/me/avatar`, body, newCancelToken());
 
   const updateMyProfile = (body: ProfilePayload) =>
     api.put(`/account-svc/v1/me`, body, newCancelToken());
+
+  const updateCurrentRoleMyProfile = (body: { roleName: string }) =>
+    api.put(`/account-svc/v1/me/current-role`, body, newCancelToken());
 
   // ====================== Content ======================
   const getContents = () => api.get('/account-svc/v1/contents', {}, newCancelToken());
@@ -117,26 +110,6 @@ const create = (baseURL = appConfig.API_URL) => {
         body.setProgress(percentageProgress);
       },
     });
-
-  // ====================== System Accounts ======================
-
-  const searchUserAccounts = (params: { search: string }) => {
-    const queryString = stringify(params);
-    return api.get(`/users/search?${queryString}`, {}, newCancelToken());
-  };
-  const searchUserAccountsAxios = (params: { search: string; skip: number; take: number }) => {
-    const queryString = stringify(params);
-    return api.get(`${appConfig.API_URL}/users/search?${queryString}`, {}, newCancelToken());
-  };
-  const searchUserAccountsByOrderAxios = (params: {
-    search: string;
-    skip: number;
-    take: number;
-    order: string;
-  }) => {
-    const queryString = stringify(params);
-    return api.get(`${appConfig.API_URL}/users/search?${queryString}`, {}, newCancelToken());
-  };
 
   // ====================== System Accounts ======================
   const getMyPermissions = () => api.get('/account-svc/v1/permissions/me', {}, newCancelToken());
@@ -217,7 +190,6 @@ const create = (baseURL = appConfig.API_URL) => {
   return {
     getRoot,
     // ====================== Auth ======================
-    // getPermission,
     confirmSignIn,
     signIn,
 
@@ -225,8 +197,8 @@ const create = (baseURL = appConfig.API_URL) => {
     forgotPassword,
     submitForgotPassword,
     changePassword,
-    // setPreferredMfa,
     completeNewPassword,
+    confirmPassword,
 
     // ====================== File ======================
     getPresignedUserServiceUrl,
@@ -237,20 +209,11 @@ const create = (baseURL = appConfig.API_URL) => {
     // ====================== Content ======================
     getContents,
 
-    // ====================== Users ======================
-    getUserId,
-
     // ====================== Profile ======================
     getMyProfile,
     // updateMyProfile,
-    updateUserAvatar,
     updateMyProfile,
-    confirmPassword,
-
-    // ====================== System Accounts ======================
-    searchUserAccounts,
-    searchUserAccountsAxios,
-    searchUserAccountsByOrderAxios,
+    updateCurrentRoleMyProfile,
 
     // ====================== System Accounts ======================
     getMyPermissions,

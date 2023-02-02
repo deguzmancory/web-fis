@@ -4,6 +4,7 @@ import * as React from 'react';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import { PATHS } from 'src/appConfig/paths';
 import { useLogout, useProfile } from 'src/queries';
+import { getRoleName } from 'src/queries/Profile/helpers';
 import { Callback } from 'src/redux/types';
 import { Navigator, TokenService } from 'src/services';
 
@@ -17,7 +18,7 @@ const UserMenu: React.FC<Props> = ({ fullName, setIsClickedLogout }) => {
   const [openPopover, setOpenPopover] = React.useState(false);
 
   const { profile } = useProfile();
-  const { roleName } = profile || {};
+  const { currentRole } = profile || {};
   const { logout } = useLogout();
 
   const handleLogout = React.useCallback(() => {
@@ -72,7 +73,7 @@ const UserMenu: React.FC<Props> = ({ fullName, setIsClickedLogout }) => {
 
           <Box>
             <Typography variant="body2" sx={{ color: COLOR_CODE.PRIMARY_500, textAlign: 'right' }}>
-              {roleName || 'Unknown Role'}
+              {getRoleName(currentRole) || 'Unknown Role'}
             </Typography>
             <Divider sx={{ background: COLOR_CODE.PRIMARY_600 }} />
           </Box>

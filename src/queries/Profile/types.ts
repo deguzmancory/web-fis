@@ -1,25 +1,38 @@
 export interface MyProfile {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  firstName: string;
-  lastName: string;
-  middleInitial: string;
-  fullName: string;
-  username: string;
-  email: string;
-  lastLoginDate: string | null;
-  isDhUser: boolean;
   allowMaintenanceModeLogin: boolean;
-  accountDisabled: boolean;
-  passwordSetDate: string;
   comments: string;
-  defaultRoleCode: string;
+  createdAt: string;
+  currentRole: string | null;
   defaultUserType: string;
+  email: string;
+  firstName: string;
+  fisFaInfo: any; //TODO: tin_pham update type
+  fisPiInfo: any; //TODO: tin_pham update type
+  fisSuInfo: any; //TODO: tin_pham update type
+  fullName: string;
+  id: string;
+  isDhUser: boolean;
+  lastLoginDate: string | null;
+  lastName: string;
+  middleName: string;
+  passwordResetRequired: boolean;
+  passwordSetDate: string;
+
+  roles: {
+    userId: string;
+    roleId: string;
+    createdAt: string;
+    updatedAt: string;
+    role: {
+      id: string;
+      name: string;
+      displayName: string;
+      description: string;
+    };
+  }[];
   status: string;
-  fisPiInfo: any;
-  fisSuInfo: any;
-  roleName?: string;
+  updatedAt: string;
+  username: string;
 }
 
 export interface ProfilePayload {
@@ -31,3 +44,7 @@ export interface ProfilePayload {
   state: string;
   careOf: string;
 }
+
+export type UpdateCurrentRoleProfilePayload = {
+  roleName: string;
+};

@@ -36,14 +36,14 @@ export const authSlice = createSlice({
     setIsWelcomeScreen: (state, action: PayloadAction<boolean>) => {
       state.isWelcomeScreen = action.payload;
     },
-    setUserName: (state, action: PayloadAction<MyProfile>) => {
+    setProfile: (state, action: PayloadAction<MyProfile>) => {
       state.user = action.payload;
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setAuthenticated, setUserName, setPasswordVerify, setIsWelcomeScreen } =
+export const { setAuthenticated, setProfile, setPasswordVerify, setIsWelcomeScreen } =
   authSlice.actions;
 
 export const authState = authSlice.getInitialState();

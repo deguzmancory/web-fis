@@ -14,7 +14,6 @@ const TableList = React.lazy(() => import('./TableList'));
 
 const UsersManagementContainers: React.FC<Props> = () => {
   const { profile } = useProfile();
-  const roleName = profile.roleName;
   return (
     <Box py={2} minHeight={'50vh'}>
       <Container maxWidth="lg">
@@ -30,7 +29,7 @@ const UsersManagementContainers: React.FC<Props> = () => {
           borderRadius={1}
         >
           <Suspense fallback={<LoadingCommon />}>
-            {isCU(roleName) ? <TableList /> : <NoPermission />}
+            {isCU(profile.currentRole) ? <TableList /> : <NoPermission />}
           </Suspense>
         </Box>
       </Container>

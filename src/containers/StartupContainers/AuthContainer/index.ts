@@ -6,8 +6,8 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import { useComponentDidMount } from 'src/hooks';
-import { MyProfile, useLogout, useMyPermissions, useProfile } from 'src/queries';
-import { setAuthenticated, setUserName } from 'src/redux/auth/authSlice';
+import { MyProfile, useLogout, useProfile, useUpdateCurrentRoleProfile } from 'src/queries';
+import { setAuthenticated, setProfile } from 'src/redux/auth/authSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, Toastify, TokenService } from 'src/services';
 
@@ -15,13 +15,13 @@ const AuthContainer: React.FC<Props> = ({
   history,
   isAuthenticated,
   onSetAuth,
-  onSetUserName,
+  onSetProfile,
   isWelcomeScreen,
 }) => {
   const { logout } = useLogout();
 
   const handleSetAuthenticated = (data: MyProfile) => {
-    onSetUserName(data);
+    onSetProfile(data);
     onSetAuth(true);
   };
 
@@ -30,35 +30,29 @@ const AuthContainer: React.FC<Props> = ({
     TokenService.clearToken();
   };
 
-  const { getMyPermissions } = useMyPermissions({
-    onSuccess: async (data) => {
-      // onSetMyPermissions(data);
-      // const localPermissions = await PermissionsService.getPermissions();
-      // onSetMyPermissions(data);
-      // const isDiffPermissions =
-      //   isEmpty(localPermissions) ||
-      //   data.length !== localPermissions.length ||
-      //   // eslint-disable-next-line security/detect-object-injection
-      //   localPermissions.some((item, idx) => item !== data[idx]);
-      // if (isDiffPermissions) {
-      //   const cognitoUser: CognitoUser = await Auth.currentAuthenticatedUser();
-      //   const refreshToken = cognitoUser.getSignInUserSession().getRefreshToken();
-      //   return cognitoUser.refreshSession(refreshToken, () => {
-      //     getMyProfile();
-      //   });
-      // }
-      return getMyProfile();
+  const { getMyProfile, handleInvalidateProfile } = useProfile({
+    onSuccess(data) {
+      if (data) {
+        if (data.defaultUserType === data.currentRole) {
+          handleSetAuthenticated(data);
+        } else {
+          updateCurrentRoleMyProfile({ roleName: data.defaultUserType });
+        }
+      }
     },
     onError(error) {
-      if (error['code'] === 500) {
-        Toastify.error('Error when fetch user permission. Try to login again!');
-        setTimeout(() => {
-          handleLogout();
-        }, 3000);
-      }
       if (error['message'].includes('User is not active')) {
         Toastify.error(
           'Your account is deactivated. Please contact to your administrator to reactivate your account.'
+        );
+        setTimeout(() => {
+          handleLogout();
+        }, 3000);
+      } else {
+        Toastify.error(
+          `Error when fetch profile data: ${JSON.stringify(
+            error.message
+          )} Please try to login again!`
         );
         setTimeout(() => {
           handleLogout();
@@ -67,25 +61,15 @@ const AuthContainer: React.FC<Props> = ({
     },
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { getMyProfile } = useProfile({
-    onSuccess(data) {
-      if (data) {
-        handleSetAuthenticated(data);
-      }
-    },
-    onError(err) {
-      Toastify.error('Error when fetch user data. Try to login again!');
-      setTimeout(() => {
-        handleLogout();
-      }, 3000);
+  const { updateCurrentRoleMyProfile } = useUpdateCurrentRoleProfile({
+    onSuccess(data, variables, context) {
+      handleInvalidateProfile();
+      getMyProfile();
     },
   });
 
   useEffect(() => {
     Hub.listen('auth', authLogin);
-    // 1.call this first when mount because history listen fire when route changed
-    // authenticate();
     return () => {
       Hub.remove('auth', authLogin);
     };
@@ -126,12 +110,9 @@ const AuthContainer: React.FC<Props> = ({
 
   const authenticate = () => {
     if (!isAuthenticated) {
-      // 2. Get current user
       Auth.currentAuthenticatedUser()
         .then((user) => {
-          // const userAttributes = user.attributes;
-          // TODO: Temp fix until fis profile integrated
-          getMyPermissions();
+          getMyProfile();
         })
         .catch(() => {
           clearAuth();
@@ -151,8 +132,7 @@ const mapStateToProps = (state: IRootState) => ({
 
 const mapDispatchToProps = {
   onSetAuth: setAuthenticated,
-  onSetUserName: setUserName,
-  // onSetMyPermissions: setMyPermissions,
+  onSetProfile: setProfile,
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AuthContainer));

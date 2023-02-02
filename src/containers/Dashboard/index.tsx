@@ -1,6 +1,7 @@
 import { Box, Container, Grid, Typography } from '@mui/material';
 import { connect } from 'react-redux';
 import { useProfile } from 'src/queries';
+import { getRoleName } from 'src/queries/Profile/helpers';
 import { IRootState } from 'src/redux/rootReducer';
 import CardDashboard from './card';
 import { dashboardItems } from './helpers';
@@ -9,7 +10,7 @@ import './styles.scss';
 
 const Dashboard: React.FC<Props> = () => {
   const { profile, loading } = useProfile();
-  const { roleName, fullName, defaultUserType } = profile || {};
+  const { currentRole, fullName, defaultUserType } = profile || {};
 
   return (
     <Box py={4}>
@@ -20,7 +21,7 @@ const Dashboard: React.FC<Props> = () => {
           <>
             <Box>
               <Typography variant="h3" paddingBottom={3}>
-                Welcome {fullName} (Financial System - {roleName})
+                Welcome {fullName || 'Anonymous'} (Financial System - {getRoleName(currentRole)})
               </Typography>
             </Box>
             <Grid container spacing={2} alignItems="stretch">
