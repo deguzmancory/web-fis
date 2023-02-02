@@ -2,7 +2,7 @@ import { Typography } from '@mui/material';
 import React from 'react';
 import { COLOR_CODE } from 'src/appConfig/constants';
 
-const TypographyLink: React.FC<Props> = ({ variant = 'body2', children }) => {
+const TypographyLink: React.FC<Props> = ({ variant = 'body2', children, className }) => {
   return (
     <Typography
       variant={variant}
@@ -12,6 +12,14 @@ const TypographyLink: React.FC<Props> = ({ variant = 'body2', children }) => {
           textDecoration: 'underline',
         },
       }}
+      {...(className && {
+        classes: {
+          root: className,
+        },
+      })}
+      // classes={{
+      //   root:
+      // }}
     >
       {children}
     </Typography>
@@ -35,6 +43,7 @@ type Props = {
     | 'button'
     | 'overline'
     | 'inherit';
+  className?: string;
 };
 
 export default TypographyLink;

@@ -92,8 +92,8 @@ export const initialCRUUserFormValue = {
 
 export const cRUUserFormSchema = Yup.object().shape({
   // General Info
-  firstName: Yup.string().letterOnly().max(255).notTrimmable().required(),
-  lastName: Yup.string().letterOnly().max(255).notTrimmable().required(),
+  firstName: Yup.string().letterOnly().max(100).notTrimmable().required(),
+  lastName: Yup.string().letterOnly().max(100).notTrimmable().required(),
   middleName: Yup.string().letterOnly().notTrimmable().max(5),
   defaultUserType: Yup.string().required().typeError('Please select at least 1 user type'),
   username: Yup.string().username().required(),

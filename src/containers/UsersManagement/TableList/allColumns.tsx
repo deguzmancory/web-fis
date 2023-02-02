@@ -1,10 +1,11 @@
-import { Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { MUIDataTableColumn, MUIDataTableMeta } from 'mui-datatables';
 import TypographyLink from 'src/components/TypographyLink';
 import { User, USER_KEY } from 'src/queries/Users/types';
 import { localTimeToHawaii } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
 import ActionsButton from './actionsButton';
+import cn from 'classnames';
 
 export const allColumns = (): MUIDataTableColumn[] => [
   {
@@ -14,7 +15,22 @@ export const allColumns = (): MUIDataTableColumn[] => [
       filter: false,
       sort: true,
       customBodyRender: (value: string) => {
-        return <TypographyLink variant="body2">{value ?? '--'}</TypographyLink>;
+        return (
+          <Box
+            sx={{
+              minWidth: 100,
+              maxWidth: 100,
+            }}
+            className={cn({ 'marquee-left': value.length > 20 })}
+          >
+            <TypographyLink
+              variant="body2"
+              className={value.length > 20 ? 'marquee-left__text' : ''}
+            >
+              {value ?? '--'}
+            </TypographyLink>
+          </Box>
+        );
       },
     },
   },
@@ -26,7 +42,19 @@ export const allColumns = (): MUIDataTableColumn[] => [
       filter: false,
       sort: true,
       customBodyRender: (value: string) => {
-        return <Typography variant="body2">{value ?? '--'}</Typography>;
+        return (
+          <Box
+            sx={{
+              minWidth: 140,
+              maxWidth: 140,
+            }}
+            className={cn({ 'marquee-left': value.length > 24 })}
+          >
+            <Typography variant="body2" className={value.length > 24 ? 'marquee-left__text' : ''}>
+              {value ?? '--'}
+            </Typography>
+          </Box>
+        );
       },
     },
   },
