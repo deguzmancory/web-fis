@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import { useComponentDidMount } from 'src/hooks';
 import { MyProfile, useLogout, useProfile, useUpdateCurrentRoleProfile } from 'src/queries';
-import { setAuthenticated, setProfile } from 'src/redux/auth/authSlice';
+import { setAuthenticated, setIsUpdatedCurrentRole, setProfile } from 'src/redux/auth/authSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, Toastify, TokenService } from 'src/services';
 
@@ -16,7 +16,8 @@ const AuthContainer: React.FC<Props> = ({
   isAuthenticated,
   onSetAuth,
   onSetProfile,
-  isWelcomeScreen,
+  isUpdatedCurrentRole,
+  onSetUpdatedCurrentRoleStatus,
 }) => {
   const { logout } = useLogout();
 
@@ -35,8 +36,10 @@ const AuthContainer: React.FC<Props> = ({
       if (data) {
         if (data.defaultUserType === data.currentRole) {
           handleSetAuthenticated(data);
-        } else {
+        } else if (!isUpdatedCurrentRole) {
           updateCurrentRoleMyProfile({ roleName: data.defaultUserType });
+        } else if (isUpdatedCurrentRole) {
+          handleSetAuthenticated(data);
         }
       }
     },
@@ -65,6 +68,7 @@ const AuthContainer: React.FC<Props> = ({
     onSuccess(data, variables, context) {
       handleInvalidateProfile();
       getMyProfile();
+      onSetUpdatedCurrentRoleStatus(true);
     },
   });
 
@@ -127,12 +131,13 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & { 
 
 const mapStateToProps = (state: IRootState) => ({
   isAuthenticated: state.auth.isAuthenticated,
-  isWelcomeScreen: state.auth.isWelcomeScreen,
+  isUpdatedCurrentRole: state.auth.isUpdatedCurrentRole,
 });
 
 const mapDispatchToProps = {
   onSetAuth: setAuthenticated,
   onSetProfile: setProfile,
+  onSetUpdatedCurrentRoleStatus: setIsUpdatedCurrentRole,
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AuthContainer));

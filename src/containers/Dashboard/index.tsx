@@ -10,7 +10,7 @@ import './styles.scss';
 
 const Dashboard: React.FC<Props> = () => {
   const { profile, loading } = useProfile();
-  const { currentRole, fullName, defaultUserType } = profile || {};
+  const { currentRole, fullName } = profile || {};
 
   return (
     <Box py={4}>
@@ -27,7 +27,7 @@ const Dashboard: React.FC<Props> = () => {
             <Grid container spacing={2} alignItems="stretch">
               {dashboardItems.map((card) => (
                 <Grid item xs={4} key={card.title}>
-                  <CardDashboard card={card} userRole={defaultUserType} />
+                  <CardDashboard card={card} userRole={currentRole} />
                 </Grid>
               ))}
             </Grid>

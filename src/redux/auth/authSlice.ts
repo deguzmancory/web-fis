@@ -7,6 +7,7 @@ export interface IAuthState {
   user: MyProfile;
   isPasswordVerify: boolean;
   isWelcomeScreen: boolean;
+  isUpdatedCurrentRole: boolean;
 }
 
 const initialState: IAuthState = {
@@ -14,6 +15,7 @@ const initialState: IAuthState = {
   user: null,
   isPasswordVerify: false,
   isWelcomeScreen: false,
+  isUpdatedCurrentRole: false,
 };
 
 const userSelector = (state: IRootState) => state.auth.user;
@@ -36,6 +38,9 @@ export const authSlice = createSlice({
     setIsWelcomeScreen: (state, action: PayloadAction<boolean>) => {
       state.isWelcomeScreen = action.payload;
     },
+    setIsUpdatedCurrentRole: (state, action: PayloadAction<boolean>) => {
+      state.isUpdatedCurrentRole = action.payload;
+    },
     setProfile: (state, action: PayloadAction<MyProfile>) => {
       state.user = action.payload;
     },
@@ -43,8 +48,13 @@ export const authSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setAuthenticated, setProfile, setPasswordVerify, setIsWelcomeScreen } =
-  authSlice.actions;
+export const {
+  setAuthenticated,
+  setProfile,
+  setPasswordVerify,
+  setIsWelcomeScreen,
+  setIsUpdatedCurrentRole,
+} = authSlice.actions;
 
 export const authState = authSlice.getInitialState();
 
