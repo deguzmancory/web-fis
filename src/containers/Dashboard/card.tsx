@@ -13,7 +13,6 @@ const CardDashboard: React.FC<Props> = ({ card, userRole }) => {
       px={3}
       bgcolor={COLOR_CODE.WHITE}
       border={COLOR_CODE.DEFAULT_BORDER}
-      borderRadius={'4px'}
     >
       <Box>
         <Stack flexDirection={'row'} justifyContent={'center'}>
