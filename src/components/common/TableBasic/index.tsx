@@ -7,7 +7,7 @@ import MUIDataTable, {
 } from 'mui-datatables';
 import React, { memo, useMemo } from 'react';
 import { COLOR_CODE } from 'src/appConfig/constants';
-import { LoadingCommon, View } from 'src/components/common';
+import { Loading, View } from 'src/components/common';
 import CustomFooterRender from './customFooterRender';
 import CustomSearchRender from './customSearchRender';
 import './styles.scss';
@@ -35,7 +35,7 @@ const TableBasic: React.FC<Props> = ({
     selectableRows: 'none',
     textLabels: {
       body: {
-        noMatch: isLoading ? <LoadingCommon /> : emptyComponent,
+        noMatch: isLoading ? <Loading variant="primary" /> : emptyComponent,
       },
     },
     jumpToPage: false,
@@ -163,7 +163,7 @@ const TableBasic: React.FC<Props> = ({
       return <MUIDataTable options={tableOptions} data={data} {...props} />;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data]
+    [data, isLoading]
   );
 
   // More info: https://github.com/gregnb/mui-datatables
