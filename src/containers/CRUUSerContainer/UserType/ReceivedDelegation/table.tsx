@@ -42,8 +42,8 @@ const TableGrantDelegation: React.FC<Props> = ({ formikProps }) => {
           ) : (
             rows.map((row) => (
               <StyledTableRow key={row.id}>
-                <StyledTableCell>{row.delegatedUser.username}</StyledTableCell>
-                <StyledTableCell>{row.delegatedUser.fullName}</StyledTableCell>
+                <StyledTableCell>{row.user.username}</StyledTableCell>
+                <StyledTableCell>{row.user.fullName}</StyledTableCell>
                 <StyledTableCell>{row.userRole.role.displayName}</StyledTableCell>
                 <StyledTableCell>{row.projectNumber}</StyledTableCell>
                 <StyledTableCell>
