@@ -10,10 +10,10 @@ import {
 } from '@mui/material';
 import dayjs from 'dayjs';
 import React from 'react';
+import { StyledTableCell, StyledTableRow } from 'src/components/CustomTable';
 import { DateFormat } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
 import { CRUUserFormikProps } from '../../helper';
-import { StyledTableCell, StyledTableRow } from '../GrantDelegation/table';
 
 const TableGrantDelegation: React.FC<Props> = ({ formikProps }) => {
   const { values } = formikProps;

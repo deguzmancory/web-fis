@@ -1,10 +1,10 @@
 import { Box, Table, TableBody, TableContainer, TableHead, TableRow } from '@mui/material';
 import React from 'react';
+import { StyledTableCell, StyledTableRow } from 'src/components/CustomTable';
 import { UserDetail } from 'src/queries/Users/types';
 import { localTimeToHawaii } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
 import { CRUUserFormikProps } from '../helper';
-import { StyledTableCell, StyledTableRow } from '../UserType/GrantDelegation/table';
 
 const AuditInformation: React.FC<Props> = ({ formikProps, userAuditTrails, isLoading }) => {
   const audits = userAuditTrails.sort((cur, next) => {

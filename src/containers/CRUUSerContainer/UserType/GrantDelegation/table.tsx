@@ -1,17 +1,9 @@
-import {
-  Box,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { tableCellClasses } from '@mui/material/TableCell';
+import { Box, Table, TableBody, TableContainer, TableHead, TableRow } from '@mui/material';
+
 import dayjs from 'dayjs';
 import React from 'react';
-import { COLOR_CODE } from 'src/appConfig/constants';
+import { StyledTableCell, StyledTableRow } from 'src/components/CustomTable';
+
 import { getRoleName, ROLE_NAME } from 'src/queries/Profile/helpers';
 import { USER_KEY } from 'src/queries/Users/types';
 import { isEmpty } from 'src/validations';
@@ -98,27 +90,3 @@ type Props = {
 };
 
 export default TableGrantDelegation;
-
-export const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: COLOR_CODE.PRIMARY_900,
-    color: theme.palette.common.white,
-    padding: '4px 16px',
-    fontWeight: 'bold',
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-    padding: '4px 16px',
-  },
-}));
-
-export const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  borderBottom: COLOR_CODE.DEFAULT_BORDER,
-  '&:nth-of-type(even)': {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  // '&:last-child td, &:last-child th': {
-  //   border: 0,
-  // },
-}));
