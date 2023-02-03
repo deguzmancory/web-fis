@@ -23,7 +23,7 @@ const ActionsButton: React.FC<Props> = ({ data, onShowDialog, onHideDialog }) =>
     onShowDialog({
       type: DIALOG_TYPES.YESNO_DIALOG,
       data: {
-        title: `Delete user ${user.username}(${user.fullName})`,
+        title: `Delete user ${user.username}`,
         content: `You will not be able to recover this user. Are you sure you want to delete`,
         okText: 'Yes, delete',
         cancelText: 'Cancel',
