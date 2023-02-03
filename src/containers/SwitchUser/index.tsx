@@ -10,48 +10,37 @@ import {
   Typography,
 } from '@mui/material';
 import React from 'react';
+import ReactJson from 'react-json-view';
 import { connect } from 'react-redux';
 import { COLOR_CODE } from 'src/appConfig/constants';
-import { Button } from 'src/components/common';
+import { Accordion, Button } from 'src/components/common';
+import { StyledTableCell, StyledTableRow } from 'src/components/CustomTable';
 import { useProfile, useUpdateCurrentRoleProfile } from 'src/queries';
 import { getRoleName } from 'src/queries/Profile/helpers';
 import { setIsUpdatedCurrentRole } from 'src/redux/auth/authSlice';
-import { IRootState } from 'src/redux/rootReducer';
 import { Toastify } from 'src/services';
 import { isEmpty } from 'src/validations';
-import {
-  StyledTableCell,
-  StyledTableRow,
-} from '../CRUUSerContainer/UserType/GrantDelegation/table';
+
 import './styles.scss';
 
 const SwitchUser: React.FC<Props> = ({ onSetUpdatedCurrentRoleStatus }) => {
   const { profile } = useProfile();
   const [rowSelected, setRowSelected] = React.useState(null);
 
-  const currentProfile = React.useMemo(() => {
-    return {
-      fullName: profile.fullName || 'Anonymous',
-      username: profile.username || 'Anonymous',
-      roleName: getRoleName(profile.currentRole),
-    };
+  const roleRows = React.useMemo(() => {
+    return [...profile.roles];
   }, [profile]);
 
-  const rows = React.useMemo(() => {
-    return [
-      ...profile.roles.map((role) => ({
-        name: role.role.name,
-        id: role.roleId,
-        delegatedAccount: false,
-      })),
-    ];
-  }, [profile]);
-
-  const handleSwitchUser = () => {
-    const role = profile.roles.find((_role) => _role.roleId === rowSelected);
-    updateCurrentRoleMyProfile({
-      roleName: role.role.name,
-    });
+  const handleSwitchUser = (type: 'role' | 'delegate') => {
+    if (type === 'role') {
+      const role = profile.roles.find((_role) => _role.roleId === rowSelected);
+      updateCurrentRoleMyProfile({
+        roleName: role.role.name,
+      });
+    } else if (type === 'delegate') {
+      Toastify.info('Delegate clicked');
+    } else {
+    }
   };
 
   const { getMyProfile, handleInvalidateProfile } = useProfile();
@@ -60,7 +49,7 @@ const SwitchUser: React.FC<Props> = ({ onSetUpdatedCurrentRoleStatus }) => {
       handleInvalidateProfile();
       getMyProfile();
       Toastify.info(
-        `You are now logged in as: ${currentProfile.fullName} - ${getRoleName(variables.roleName)}`
+        `You are now logged in as: ${profile.fullName} - ${getRoleName(variables.roleName)}`
       );
       onSetUpdatedCurrentRoleStatus(true);
       setRowSelected(true);
@@ -80,9 +69,9 @@ const SwitchUser: React.FC<Props> = ({ onSetUpdatedCurrentRoleStatus }) => {
           <Typography variant="body1">
             Currently signed in as:{' '}
             <b>
-              {currentProfile.fullName} ({currentProfile.username})
+              {profile.fullName} ({profile.username})
             </b>{' '}
-            - {currentProfile.roleName} - Financial
+            - {getRoleName(profile.currentRole)} - Financial
           </Typography>
 
           <Box my={2}>
@@ -96,30 +85,30 @@ const SwitchUser: React.FC<Props> = ({ onSetUpdatedCurrentRoleStatus }) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {isEmpty(rows) ? (
+                  {isEmpty(roleRows) ? (
                     <StyledTableRow>
                       <StyledTableCell>
                         <Box minHeight={'150px'}>&nbsp;</Box>
                       </StyledTableCell>
                     </StyledTableRow>
                   ) : (
-                    rows.map((row) => (
+                    roleRows.map((row, index) => (
                       <StyledTableRow
-                        key={row.id}
+                        key={`${row.roleId}-${row.createdAt}-${index}`}
                         onClick={() => {
-                          setRowSelected(row.id);
+                          setRowSelected(row.roleId);
                         }}
                         className="cursor-pointer"
-                        {...(rowSelected === row.id && {
+                        {...(rowSelected === row.roleId && {
                           sx: {
                             bgcolor: `#DFEDF7 !important`,
                           },
                         })}
                       >
-                        <StyledTableCell>{currentProfile.fullName}</StyledTableCell>
-                        <StyledTableCell>{getRoleName(row.name)}</StyledTableCell>
+                        <StyledTableCell>{profile.fullName}</StyledTableCell>
+                        <StyledTableCell>{row.role.displayName}</StyledTableCell>
                         <StyledTableCell>Financial</StyledTableCell>
-                        <StyledTableCell>{row.delegatedAccount ? 'Y' : ''}</StyledTableCell>
+                        <StyledTableCell>&nbsp;</StyledTableCell>
                       </StyledTableRow>
                     ))
                   )}
@@ -131,23 +120,43 @@ const SwitchUser: React.FC<Props> = ({ onSetUpdatedCurrentRoleStatus }) => {
             <Button
               isLoading={loading}
               disabled={isEmpty(rowSelected) || loading}
-              onClick={handleSwitchUser}
+              onClick={() => handleSwitchUser('role')}
             >
               Switch to Selected User Account
             </Button>
           </Stack>
         </Box>
+
+        <Accordion title={`Raw data (${profile.username} - ${profile.id})`}>
+          {profile && (
+            <ReactJson
+              src={{
+                username: profile.username,
+                fullName: profile.fullName,
+                defaultUserType: profile.defaultUserType,
+                currentRole: profile.currentRole,
+                roles: profile.roles.map((role) => ({
+                  userId: role.userId,
+                  roleId: role.roleId,
+                  role: {
+                    id: role.role.id,
+                    name: role.role.name,
+                    displayName: role.role.displayName,
+                  },
+                })),
+              }}
+            />
+          )}
+        </Accordion>
       </Container>
     </Box>
   );
 };
 
-type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
-
-const mapStateToProps = (state: IRootState) => ({});
+type Props = typeof mapDispatchToProps;
 
 const mapDispatchToProps = {
   onSetUpdatedCurrentRoleStatus: setIsUpdatedCurrentRole,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SwitchUser);
+export default connect(undefined, mapDispatchToProps)(SwitchUser);
