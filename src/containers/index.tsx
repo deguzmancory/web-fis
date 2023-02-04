@@ -10,7 +10,7 @@ import { Navigator, TenantService } from 'src/services';
 import Dev from './Dev';
 
 import AuthContainer from './StartupContainers/AuthContainer';
-import ContentContainer from './StartupContainers/ContentContainer';
+// import ContentContainer from './StartupContainers/ContentContainer';
 import DialogContainer from './StartupContainers/DialogContainer';
 import NotFound from './StartupContainers/NotFound';
 import SplashScreen from './StartupContainers/SplashScreen';
@@ -71,7 +71,7 @@ const Routing: React.FC<{ location: Location }> = (props) => {
 
       <AuthContainer />
 
-      <ContentContainer />
+      {/* <ContentContainer /> */}
       <DialogContainer />
       <ToastContainer />
       <ScrollToTop />

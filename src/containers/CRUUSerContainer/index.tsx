@@ -201,7 +201,7 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
     enableReinitialize: true,
   });
 
-  // console.log('values: ', values);
+  console.log('values: ', values);
   // console.log('errors: ', errors);
 
   const formikProps: CRUUserFormikProps = {

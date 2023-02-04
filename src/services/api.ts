@@ -21,7 +21,7 @@ import {
   User,
 } from 'src/queries/Users/types';
 import { newCancelToken, stringify } from 'src/utils';
-import { TokenService, XApiKeyService } from '.';
+import { DelegationKeyService, TokenService, XApiKeyService } from '.';
 
 axios.defaults.withCredentials = true;
 
@@ -30,6 +30,8 @@ const create = (baseURL = appConfig.API_URL) => {
   // Create and configure an apisauce-based api object.
   //
 
+  const delegationKey = DelegationKeyService.getDelegationKey();
+
   const api = apisauce.create({
     baseURL,
     headers: {
@@ -37,6 +39,9 @@ const create = (baseURL = appConfig.API_URL) => {
       Pragma: 'no-cache',
       Expires: 0,
       Accept: 'application/json',
+      ...(delegationKey && {
+        'x-delegation-token': delegationKey,
+      }),
     },
     timeout: appConfig.CONNECTION_TIMEOUT,
   });
@@ -89,6 +94,10 @@ const create = (baseURL = appConfig.API_URL) => {
 
   const updateCurrentRoleMyProfile = (body: { roleName: string }) =>
     api.put(`/account-svc/v1/me/current-role`, body, newCancelToken());
+
+  const getDelegationAccesses = () => {
+    return api.get('/account-svc/v1/delegation-accesses', {}, newCancelToken());
+  };
 
   // ====================== Content ======================
   const getContents = () => api.get('/account-svc/v1/contents', {}, newCancelToken());
@@ -214,6 +223,7 @@ const create = (baseURL = appConfig.API_URL) => {
     // updateMyProfile,
     updateMyProfile,
     updateCurrentRoleMyProfile,
+    getDelegationAccesses,
 
     // ====================== System Accounts ======================
     getMyPermissions,

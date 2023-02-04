@@ -1,5 +1,6 @@
 export { default as API } from './api';
 export { default as ContentService } from './content';
+export { default as DelegationKeyService } from './delegation';
 export { default as ErrorService } from './error';
 export { default as FileCache } from './fileCache';
 export { default as LanguageService } from './language';

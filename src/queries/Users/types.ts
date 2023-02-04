@@ -223,39 +223,3 @@ export type DelegatedAccess = {
 export type UpdateUserLastPasswordChangedParams = {
   username: User['username'];
 };
-
-export type GrantedAccesses = MyAccesses & {
-  delegatedUser: {
-    id: string;
-    fullName: string;
-    email: string;
-    username: string;
-  };
-};
-
-export type MyAccesses = {
-  id: string;
-  userId: string;
-  delegatedUserId: string;
-  roleId: string;
-  startDate: string;
-  endDate: string;
-  isAllProjects: boolean;
-  projectNumber: string;
-  user: {
-    id: string;
-    fullName: string;
-    email: string;
-    username: string;
-  };
-  userRole: {
-    userId: string;
-    roleId: string;
-    createdAt: string;
-    updatedAt: string;
-    role: {
-      id: string;
-      name: string;
-    };
-  };
-};

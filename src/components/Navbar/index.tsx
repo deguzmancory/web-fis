@@ -16,7 +16,7 @@ import UserMenu from './UserMenu';
 const Navbar: React.FC<Props> = () => {
   const { showNavbar } = useSelector((state: IRootState) => state.common);
   const { profile } = useProfile();
-  const { fullName, defaultUserType } = profile || {};
+  const { fullName, currentRole } = profile || {};
   const [isClickedLogout, setIsClickedLogout] = React.useState(false);
 
   if (!showNavbar) return null;
@@ -40,7 +40,7 @@ const Navbar: React.FC<Props> = () => {
             </Box>
 
             <Stack flexDirection={'row'}>
-              <MainMenu userRole={defaultUserType} />
+              <MainMenu userRole={currentRole} />
             </Stack>
 
             <Box sx={{ transform: 'translateY(7px)' }}>

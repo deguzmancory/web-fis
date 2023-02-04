@@ -48,3 +48,44 @@ export interface ProfilePayload {
 export type UpdateCurrentRoleProfilePayload = {
   roleName: string;
 };
+
+export type GrantedAccesses = MyAccesses & {
+  delegatedUser: {
+    id: string;
+    fullName: string;
+    email: string;
+    username: string;
+  };
+};
+
+export type MyAccesses = {
+  id: string;
+  userId: string;
+  delegatedUserId: string;
+  roleId: string;
+  startDate: string;
+  endDate: string;
+  isAllProjects: boolean;
+  projectNumber: string;
+  user: {
+    id: string;
+    fullName: string;
+    email: string;
+    username: string;
+  };
+  userRole: {
+    userId: string;
+    roleId: string;
+    createdAt: string;
+    updatedAt: string;
+    role: {
+      id: string;
+      name: string;
+    };
+  };
+};
+
+export type DelegationAccessResponse = {
+  grantedAccesses: GrantedAccesses[];
+  myAccesses: MyAccesses[];
+};

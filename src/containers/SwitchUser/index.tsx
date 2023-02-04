@@ -13,9 +13,9 @@ import React from 'react';
 import ReactJson from 'react-json-view';
 import { connect } from 'react-redux';
 import { COLOR_CODE } from 'src/appConfig/constants';
-import { Accordion, Button } from 'src/components/common';
+import { Accordion, Button, LoadingCommon } from 'src/components/common';
 import { StyledTableCell, StyledTableRow } from 'src/components/CustomTable';
-import { useProfile, useUpdateCurrentRoleProfile } from 'src/queries';
+import { useGetDelegationAccesses, useProfile, useUpdateCurrentRoleProfile } from 'src/queries';
 import { getRoleName } from 'src/queries/Profile/helpers';
 import { setIsUpdatedCurrentRole } from 'src/redux/auth/authSlice';
 import { Toastify } from 'src/services';
@@ -25,25 +25,39 @@ import './styles.scss';
 
 const SwitchUser: React.FC<Props> = ({ onSetUpdatedCurrentRoleStatus }) => {
   const { profile } = useProfile();
-  const [rowSelected, setRowSelected] = React.useState(null);
+  const [rowSelected, setRowSelected] = React.useState<{
+    id: string;
+    type: 'role' | 'delegate' | '';
+  }>({
+    id: '',
+    type: '',
+  });
+  // console.log('rowSelected: ', rowSelected);
 
-  const roleRows = React.useMemo(() => {
-    return [...profile.roles];
-  }, [profile]);
+  const { getMyProfile, handleInvalidateProfile } = useProfile();
 
-  const handleSwitchUser = (type: 'role' | 'delegate') => {
-    if (type === 'role') {
-      const role = profile.roles.find((_role) => _role.roleId === rowSelected);
+  const handleSwitchUser = () => {
+    if (rowSelected.type === 'role') {
+      const role = profile.roles.find((_role) => _role.roleId === rowSelected.id);
       updateCurrentRoleMyProfile({
         roleName: role.role.name,
       });
-    } else if (type === 'delegate') {
-      Toastify.info('Delegate clicked');
+    } else if (rowSelected.type === 'delegate') {
+      Toastify.info(`Delegate to ${rowSelected.id} clicked`);
     } else {
+      Toastify.error('Error when switch user, Please refresh page and try again!');
     }
   };
 
-  const { getMyProfile, handleInvalidateProfile } = useProfile();
+  // Switch Role
+  const roleRows = React.useMemo(() => {
+    if (profile) {
+      return [...profile.roles];
+    } else {
+      return [];
+    }
+  }, [profile]);
+
   const { updateCurrentRoleMyProfile, isLoading } = useUpdateCurrentRoleProfile({
     onSuccess(data, variables, context) {
       handleInvalidateProfile();
@@ -52,9 +66,33 @@ const SwitchUser: React.FC<Props> = ({ onSetUpdatedCurrentRoleStatus }) => {
         `You are now logged in as: ${profile.fullName} - ${getRoleName(variables.roleName)}`
       );
       onSetUpdatedCurrentRoleStatus(true);
-      setRowSelected(true);
+      setRowSelected({
+        id: '',
+        type: '',
+      });
     },
   });
+
+  // End Switch Role
+
+  // Switch Delegation Access
+  const { getDelegationAccesses, receivedAccesses } = useGetDelegationAccesses();
+
+  const myAccessesRows = React.useMemo(() => {
+    if (receivedAccesses) {
+      return [...receivedAccesses.myAccesses];
+    } else {
+      return [];
+    }
+  }, [receivedAccesses]);
+
+  React.useEffect(() => {
+    if (isEmpty(receivedAccesses)) {
+      getDelegationAccesses();
+    }
+  }, [getDelegationAccesses, receivedAccesses]);
+
+  // End Switch Delegation Access
 
   const loading = React.useMemo(() => {
     return isLoading;
@@ -96,10 +134,13 @@ const SwitchUser: React.FC<Props> = ({ onSetUpdatedCurrentRoleStatus }) => {
                       <StyledTableRow
                         key={`${row.roleId}-${row.createdAt}-${index}`}
                         onClick={() => {
-                          setRowSelected(row.roleId);
+                          setRowSelected({
+                            id: row.roleId,
+                            type: 'role',
+                          });
                         }}
                         className="cursor-pointer"
-                        {...(rowSelected === row.roleId && {
+                        {...(rowSelected.id === row.roleId && {
                           sx: {
                             bgcolor: `#DFEDF7 !important`,
                           },
@@ -112,6 +153,36 @@ const SwitchUser: React.FC<Props> = ({ onSetUpdatedCurrentRoleStatus }) => {
                       </StyledTableRow>
                     ))
                   )}
+                  {isEmpty(myAccessesRows) ? (
+                    <StyledTableRow>
+                      <StyledTableCell>
+                        <LoadingCommon />
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  ) : (
+                    myAccessesRows.map((row, index) => (
+                      <StyledTableRow
+                        key={`${row.userId}-${row.id}-${index}`}
+                        onClick={() => {
+                          setRowSelected({
+                            id: row.id,
+                            type: 'delegate',
+                          });
+                        }}
+                        className="cursor-pointer"
+                        {...(rowSelected.id === row.id && {
+                          sx: {
+                            bgcolor: `#DFEDF7 !important`,
+                          },
+                        })}
+                      >
+                        <StyledTableCell>{row.user.fullName}</StyledTableCell>
+                        <StyledTableCell>{getRoleName(row.userRole.role.name)}</StyledTableCell>
+                        <StyledTableCell>Financial</StyledTableCell>
+                        <StyledTableCell>Y</StyledTableCell>
+                      </StyledTableRow>
+                    ))
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -119,15 +190,18 @@ const SwitchUser: React.FC<Props> = ({ onSetUpdatedCurrentRoleStatus }) => {
           <Stack flexDirection={'row'} justifyContent="flex-end">
             <Button
               isLoading={loading}
-              disabled={isEmpty(rowSelected) || loading}
-              onClick={() => handleSwitchUser('role')}
+              disabled={isEmpty(rowSelected.id) || loading}
+              onClick={() => handleSwitchUser()}
             >
               Switch to Selected User Account
             </Button>
           </Stack>
         </Box>
 
-        <Accordion title={`Raw data (${profile.username} - ${profile.id})`}>
+        <Accordion
+          title={`Raw data profile (${profile.username} - ${profile.id})`}
+          className="mb-16"
+        >
           {profile && (
             <ReactJson
               src={{
@@ -147,6 +221,10 @@ const SwitchUser: React.FC<Props> = ({ onSetUpdatedCurrentRoleStatus }) => {
               }}
             />
           )}
+        </Accordion>
+
+        <Accordion title={`Raw data delegation accesses`}>
+          {receivedAccesses && <ReactJson src={receivedAccesses} />}
         </Accordion>
       </Container>
     </Box>
