@@ -18,6 +18,9 @@ export const PATHS = {
   userManagements: '/miscellaneous/user-managements',
   addUser: '/miscellaneous/user-managements/add',
   userDetail: '/miscellaneous/user-managements/user-detail',
+
+  // miscellaneous / Global settings
+  globalSettings: '/global-settings',
 };
 
 export const PATH_HEADERS = {

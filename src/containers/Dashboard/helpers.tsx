@@ -281,7 +281,7 @@ export const dashboardItems: DashboardItem[] = [
       },
       {
         title: 'Global Settings',
-        url: '#',
+        url: PATHS.globalSettings,
         isExternalUrl: false,
         roles: [ROLE_NAME.CU],
       },

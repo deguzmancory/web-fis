@@ -18,7 +18,7 @@ const Footer: React.FC<Props> = () => {
           backgroundSize: 'contain',
         }}
       >
-        <Container maxWidth="md">
+        <Container maxWidth="lg">
           <Grid flexDirection={'row'} container spacing={1} pt={3}>
             <Box width={'260px'}>
               <TypoTitle text={'General Inquiries Email'} />
@@ -49,28 +49,30 @@ const Footer: React.FC<Props> = () => {
                     type={'location'}
                   />
                 </Grid>
-                <Grid item xs={6}>
-                  <TypoTitle text={'Disbursing / Procurement'} />
-                  <TypoDescription text={'808.956.3608'} type={'phone'} />
-                  <TypoDescription
-                    text={'2800 Woodlawn Drive, Suite 200 | Honolulu, HI 96822'}
-                    type={'location'}
-                  />
-
-                  <TypoDescription text={' '} type="" />
-
-                  <Box
-                    sx={{
-                      transform: 'translateY(16px)',
-                    }}
-                  >
-                    <TypoTitle text={`Executive Director's Office`} />
-                    <TypoDescription text={'808.988.8311'} type={'phone'} />
+                <Grid item xs={6} container justifyContent={'flex-end'}>
+                  <Grid item xs={11}>
+                    <TypoTitle text={'Disbursing / Procurement'} />
+                    <TypoDescription text={'808.956.3608'} type={'phone'} />
                     <TypoDescription
                       text={'2800 Woodlawn Drive, Suite 200 | Honolulu, HI 96822'}
                       type={'location'}
                     />
-                  </Box>
+
+                    <TypoDescription text={' '} type="" />
+
+                    <Box
+                      sx={{
+                        transform: 'translateY(16px)',
+                      }}
+                    >
+                      <TypoTitle text={`Executive Director's Office`} />
+                      <TypoDescription text={'808.988.8311'} type={'phone'} />
+                      <TypoDescription
+                        text={'2800 Woodlawn Drive, Suite 200 | Honolulu, HI 96822'}
+                        type={'location'}
+                      />
+                    </Box>
+                  </Grid>
                 </Grid>
               </Grid>
             </Box>

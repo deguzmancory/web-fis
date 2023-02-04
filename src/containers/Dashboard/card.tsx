@@ -1,4 +1,4 @@
-import { Icon, Link as MuiLink, Stack, Typography } from '@mui/material';
+import { Link as MuiLink, Stack, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -16,15 +16,14 @@ const CardDashboard: React.FC<Props> = ({ card, userRole }) => {
     >
       <Box>
         <Stack flexDirection={'row'} justifyContent={'center'}>
-          <Icon
-            sx={{
-              fontSize: 75,
-              mb: 2,
+          <i
+            style={{
+              fontSize: '75',
+              color: COLOR_CODE.INFO,
             }}
-            color="info"
           >
             {card.icon}
-          </Icon>
+          </i>
         </Stack>
         <Typography variant="h2" textAlign={'center'} color={COLOR_CODE.INFO}>
           {card.title}

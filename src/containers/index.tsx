@@ -26,6 +26,7 @@ const Dashboard = React.lazy(() => import('./Dashboard'));
 const UsersManagement = React.lazy(() => import('./UsersManagement'));
 const CRUUSerContainer = React.lazy(() => import('./CRUUSerContainer'));
 const SwitchUser = React.lazy(() => import('./SwitchUser'));
+const GlobalSettings = React.lazy(() => import('./GlobalSettings'));
 
 const Routing: React.FC<{ location: Location }> = (props) => {
   Navigator.setTopHistory(useHistory());
@@ -59,6 +60,7 @@ const Routing: React.FC<{ location: Location }> = (props) => {
             {/* Users */}
 
             <CustomRoute pageRequiredAuth path={PATHS.switchUser} component={SwitchUser} />
+            <CustomRoute pageRequiredAuth path={PATHS.globalSettings} component={GlobalSettings} />
 
             <Route path={PATHS.dev} component={Dev} />
             <CustomRoute path={PATHS.dev} component={Dev} />
