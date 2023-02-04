@@ -13,7 +13,7 @@ import React from 'react';
 import ReactJson from 'react-json-view';
 import { connect } from 'react-redux';
 import { COLOR_CODE } from 'src/appConfig/constants';
-import { Accordion, Button, LoadingCommon } from 'src/components/common';
+import { Accordion, Button } from 'src/components/common';
 import { StyledTableCell, StyledTableRow } from 'src/components/CustomTable';
 import { useGetDelegationAccesses, useProfile, useUpdateCurrentRoleProfile } from 'src/queries';
 import { getRoleName } from 'src/queries/Profile/helpers';
@@ -154,11 +154,7 @@ const SwitchUser: React.FC<Props> = ({ onSetUpdatedCurrentRoleStatus }) => {
                     ))
                   )}
                   {isEmpty(myAccessesRows) ? (
-                    <StyledTableRow>
-                      <StyledTableCell>
-                        <LoadingCommon />
-                      </StyledTableCell>
-                    </StyledTableRow>
+                    <></>
                   ) : (
                     myAccessesRows.map((row, index) => (
                       <StyledTableRow
