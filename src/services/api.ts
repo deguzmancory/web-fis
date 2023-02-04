@@ -188,6 +188,11 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.put(url, undefined, options);
   };
 
+  // Global Settings
+  const getAllGlobalSettings = () => {
+    return api.get('/financial-svc/v1/global-settings', {}, newCancelToken());
+  };
+
   //
   // Return back a collection of functions that we would consider our
   // interface.  Most of the time it'll be just the list of all the
@@ -238,6 +243,9 @@ const create = (baseURL = appConfig.API_URL) => {
     searchProjects,
     getUrlExportUsers,
     updateUserLastPasswordChanged,
+
+    // Global Settings
+    getAllGlobalSettings,
   };
 };
 
