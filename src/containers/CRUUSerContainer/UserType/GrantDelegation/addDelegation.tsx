@@ -51,6 +51,7 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
       delegateAccess.unshift(payload);
 
       setFieldValueFormik(CRUUSER_KEY.DELEGATE_ACCESS, delegateAccess);
+      setFieldValueFormik(CRUUSER_KEY.TEMP_DELEGATE_ACCESS, delegateAccess);
 
       setTimeout(() => {
         resetForm();

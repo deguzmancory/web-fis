@@ -23,13 +23,13 @@ const DatePickerEdit: React.FC<Props> = ({
   const [date, setDate] = React.useState(_keyValue);
 
   const handleDatePickerChange = (name, value: Date) => {
-    setDate(value.toISOString());
+    setDate(value.toUTCString());
 
     const rows = values.tempDelegateAccess.map((row, index) => {
       return rowIndex === index
         ? {
             ...row,
-            [`${keyValue}Temp`]: value.toISOString(),
+            [`${keyValue}Temp`]: value.toUTCString(),
           }
         : row;
     });

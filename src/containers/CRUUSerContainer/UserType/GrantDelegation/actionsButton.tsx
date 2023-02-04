@@ -47,7 +47,10 @@ const ActionsButton: React.FC<Props> = ({
             ...row,
             isEdit: isEdit,
           }
-        : row;
+        : {
+            ...row,
+            isEdit: false,
+          };
     });
     setFieldValue(fieldName, rows);
   };
