@@ -135,12 +135,13 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
               }}
               required
               hideSearchIcon
-              isClearable={false}
+              isClearable={true}
               optionWithSubLabel
               onChange={(name, value) => {
                 setFieldValue(name, value);
                 setFieldValue(ADD_DELEGATION_KEY.USER_TYPE, '');
               }}
+              onBlur={setFieldTouched}
               errorMessage={_getErrorMessage(ADD_DELEGATION_KEY.EXISTING_USER_ACCOUNT)}
             />
           </Grid>
@@ -161,7 +162,7 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
               }
               hideSearchIcon
               required
-              isClearable={false}
+              isClearable={true}
               isDisabled={isEmpty(values.existingUserAccount)}
               value={values.userType}
               name={ADD_DELEGATION_KEY.USER_TYPE}
@@ -169,6 +170,7 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
                 setFieldValue(name, value);
                 setFieldValue(ADD_DELEGATION_KEY.PROJECT_NUMBER, '');
               }}
+              onBlur={setFieldTouched}
               errorMessage={_getErrorMessage(ADD_DELEGATION_KEY.USER_TYPE)}
             />
           </Grid>

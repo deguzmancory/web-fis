@@ -91,7 +91,7 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
     },
     onError(error, variables, context) {
       if (error.message === 'An account with this username already existed.') {
-        setFieldError(CRUUSER_KEY.USERNAME, error.message);
+        setFieldError(CRUUSER_KEY.USERNAME, 'The username specified already exists.');
         handleScrollToTopError();
       }
       handleShowErrorMsg(error);

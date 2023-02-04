@@ -27,7 +27,7 @@ export const initialAddDelegationFormValue: AddDelegationFormValue = {
 };
 
 export const addDelegationFormSchema = Yup.object().shape({
-  existingUserAccount: Yup.string().required(),
+  existingUserAccount: Yup.string().required().nullable(),
   userType: Yup.string().required(),
   projectNumber: Yup.string(),
   startDate: Yup.date().nullable(),

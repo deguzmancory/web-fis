@@ -90,6 +90,24 @@ yup.addMethod<yup.StringSchema>(yup.string, 'username', function (message) {
     //      length: 3-100
     //    not allow
     //      space
+    if (value.includes(' ')) {
+      return createError({
+        path,
+        message: message ?? 'Space character is not allowed. Please remove it',
+      });
+    }
+    if (value.length < 3) {
+      return createError({
+        path,
+        message: message ?? 'This field must be at least 3 characters',
+      });
+    }
+    if (value.length > 100) {
+      return createError({
+        path,
+        message: message ?? 'You have reached the maximum length of 100 characters',
+      });
+    }
     const re = /^([a-zA-Z0-9_.-]){3,100}$/;
 
     if (!re.test(value)) {
