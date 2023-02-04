@@ -89,3 +89,7 @@ export type DelegationAccessResponse = {
   grantedAccesses: GrantedAccesses[];
   myAccesses: MyAccesses[];
 };
+
+export type GetTokenDelegationPayload = {
+  accessId: string;
+};

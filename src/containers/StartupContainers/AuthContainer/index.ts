@@ -9,7 +9,7 @@ import { useComponentDidMount } from 'src/hooks';
 import { MyProfile, useLogout, useProfile, useUpdateCurrentRoleProfile } from 'src/queries';
 import { setAuthenticated, setIsUpdatedCurrentRole, setProfile } from 'src/redux/auth/authSlice';
 import { IRootState } from 'src/redux/rootReducer';
-import { Navigator, Toastify, TokenService } from 'src/services';
+import { DelegationKeyService, Navigator, Toastify, TokenService } from 'src/services';
 
 const AuthContainer: React.FC<Props> = ({
   history,
@@ -110,6 +110,7 @@ const AuthContainer: React.FC<Props> = ({
   const clearAuth = () => {
     onSetAuth(false);
     Navigator.jumpToWebIdentity(PATHS.signIn);
+    DelegationKeyService.clearDelegationKey();
   };
 
   const authenticate = () => {

@@ -15,7 +15,12 @@ import { connect } from 'react-redux';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import { Accordion, Button } from 'src/components/common';
 import { StyledTableCell, StyledTableRow } from 'src/components/CustomTable';
-import { useGetDelegationAccesses, useProfile, useUpdateCurrentRoleProfile } from 'src/queries';
+import {
+  useGetDelegationAccesses,
+  useGetTokenDelegation,
+  useProfile,
+  useUpdateCurrentRoleProfile,
+} from 'src/queries';
 import { getRoleName } from 'src/queries/Profile/helpers';
 import { setIsUpdatedCurrentRole } from 'src/redux/auth/authSlice';
 import { Toastify } from 'src/services';
@@ -43,7 +48,9 @@ const SwitchUser: React.FC<Props> = ({ onSetUpdatedCurrentRoleStatus }) => {
         roleName: role.role.name,
       });
     } else if (rowSelected.type === 'delegate') {
-      Toastify.info(`Delegate to ${rowSelected.id} clicked`);
+      getTokenDelegation({
+        accessId: rowSelected.id,
+      });
     } else {
       Toastify.error('Error when switch user, Please refresh page and try again!');
     }
@@ -77,6 +84,7 @@ const SwitchUser: React.FC<Props> = ({ onSetUpdatedCurrentRoleStatus }) => {
 
   // Switch Delegation Access
   const { getDelegationAccesses, receivedAccesses } = useGetDelegationAccesses();
+  const { getTokenDelegation, isLoading: isLoadingGetTokenDelegation } = useGetTokenDelegation();
 
   const myAccessesRows = React.useMemo(() => {
     if (receivedAccesses) {
@@ -95,8 +103,8 @@ const SwitchUser: React.FC<Props> = ({ onSetUpdatedCurrentRoleStatus }) => {
   // End Switch Delegation Access
 
   const loading = React.useMemo(() => {
-    return isLoading;
-  }, [isLoading]);
+    return isLoading || isLoadingGetTokenDelegation;
+  }, [isLoading, isLoadingGetTokenDelegation]);
 
   return (
     <Box py={4} minHeight={'60vh'}>

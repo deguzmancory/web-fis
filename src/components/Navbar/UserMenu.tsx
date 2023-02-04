@@ -6,7 +6,7 @@ import { PATHS } from 'src/appConfig/paths';
 import { useLogout, useProfile } from 'src/queries';
 import { getRoleName } from 'src/queries/Profile/helpers';
 import { Callback } from 'src/redux/types';
-import { Navigator, TokenService } from 'src/services';
+import { DelegationKeyService, Navigator, TokenService } from 'src/services';
 
 type Props = {
   fullName: string;
@@ -25,6 +25,7 @@ const UserMenu: React.FC<Props> = ({ fullName, setIsClickedLogout }) => {
     setIsClickedLogout(true);
     logout();
     TokenService.clearToken();
+    DelegationKeyService.clearDelegationKey();
   }, [logout, setIsClickedLogout]);
 
   const handleToggleMenu = () => {

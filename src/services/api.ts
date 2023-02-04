@@ -2,7 +2,7 @@ import apisauce from 'apisauce';
 import { Auth } from 'aws-amplify';
 import axios from 'axios';
 import appConfig from 'src/appConfig';
-import { ProfilePayload } from 'src/queries';
+import { GetTokenDelegationPayload, ProfilePayload } from 'src/queries';
 import { GetPresignedPayload, UploadFilePayload } from 'src/queries/File/types';
 import {
   ChangePasswordPayload,
@@ -97,6 +97,10 @@ const create = (baseURL = appConfig.API_URL) => {
 
   const getDelegationAccesses = () => {
     return api.get('/account-svc/v1/delegation-accesses', {}, newCancelToken());
+  };
+
+  const getTokenDelegation = (body: GetTokenDelegationPayload) => {
+    return api.post('/account-svc/v1/me/switch-user', body, newCancelToken());
   };
 
   // ====================== Content ======================
@@ -229,6 +233,7 @@ const create = (baseURL = appConfig.API_URL) => {
     updateMyProfile,
     updateCurrentRoleMyProfile,
     getDelegationAccesses,
+    getTokenDelegation,
 
     // ====================== System Accounts ======================
     getMyPermissions,
