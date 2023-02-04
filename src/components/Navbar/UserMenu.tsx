@@ -61,15 +61,26 @@ const UserMenu: React.FC<Props> = ({ fullName, setIsClickedLogout }) => {
             cursor: 'pointer',
           }}
         >
-          <Typography variant="subtitle1" sx={{ color: COLOR_CODE.WHITE, textAlign: 'right' }}>
-            {fullName || 'Anonymous'}
+          <Stack flexDirection={'row'} alignItems="center">
+            <Typography
+              variant="subtitle1"
+              sx={{
+                color: COLOR_CODE.WHITE,
+                textAlign: 'right',
+                whiteSpace: 'nowrap',
+                width: '150px',
+                overflow: 'hidden',
+              }}
+            >
+              {fullName || 'Anonymous'}
+            </Typography>
             <ArrowDropDown
               fontSize="small"
               sx={{
-                transform: 'translateY(7px)',
+                transform: 'translateX(5px)',
               }}
             />
-          </Typography>
+          </Stack>
 
           <Box>
             <Typography variant="body2" sx={{ color: COLOR_CODE.PRIMARY_500, textAlign: 'right' }}>
@@ -90,8 +101,18 @@ const UserMenu: React.FC<Props> = ({ fullName, setIsClickedLogout }) => {
           <Paper sx={{ background: COLOR_CODE.PRIMARY_800 }}>
             <MenuList>
               {menuOptions.map((item) => (
-                <MenuItem onClick={item.onClick} key={item.title}>
-                  <Typography color={COLOR_CODE.WHITE}>{item.title}</Typography>
+                <MenuItem
+                  onClick={item.onClick}
+                  key={item.title}
+                  sx={{
+                    '&:hover': {
+                      bgcolor: COLOR_CODE.PRIMARY_700,
+                    },
+                  }}
+                >
+                  <Typography color={COLOR_CODE.WHITE} variant="body2">
+                    {item.title}
+                  </Typography>
                 </MenuItem>
               ))}
             </MenuList>
