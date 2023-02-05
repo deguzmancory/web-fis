@@ -150,9 +150,9 @@ const SwitchUser: React.FC<Props> = ({
           <Typography variant="body1">
             Currently signed in as:{' '}
             <b>
-              {profile.fullName} ({profile.username})
+              {userProfile?.fullName} ({userProfile?.username})
             </b>{' '}
-            - {getRoleName(profile.currentRole)} - Financial
+            - {getRoleName(userProfile?.currentRole)} - Financial
           </Typography>
 
           <Box my={2}>
