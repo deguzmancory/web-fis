@@ -1,7 +1,6 @@
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { FormikProps, useFormik } from 'formik';
 import React, { Suspense } from 'react';
-import ReactJson from 'react-json-view';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
@@ -273,13 +272,6 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
                   Save
                 </Button>
               </Stack>
-
-              {isViewMode && (
-                <Accordion title={'Raw Data'}>
-                  <Typography>{userId}</Typography>
-                  {user && <ReactJson src={user} />}
-                </Accordion>
-              )}
             </>
           )}
         </Suspense>
