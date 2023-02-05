@@ -19,3 +19,8 @@ export type GlobalSetting = {
 };
 
 export type GlobalSettings = GlobalSetting[];
+
+export enum GLOBAL_SETTING_KEY {
+  PASSWORD_RESET_MONTHS = 'PasswordResetMonths', //pragma: allowlist secret
+  TEMP_PASSWORD_VALID_HOURS = 'TempPasswordValidHours', //pragma: allowlist secret
+}

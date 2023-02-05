@@ -21,12 +21,14 @@ import Footer from 'src/components/Footer';
 import { useComponentDidMount } from 'src/hooks';
 import LoadingContainer from './StartupContainers/LoadingContainer';
 import ScrollToTop from './StartupContainers/ScrollToTop';
+import CheckPasswordExpiredContainer from './UAMContainer/ChangePasswordExpired/container';
 
 const Dashboard = React.lazy(() => import('./Dashboard'));
 const UsersManagement = React.lazy(() => import('./UsersManagement'));
 const CRUUSerContainer = React.lazy(() => import('./CRUUSerContainer'));
 const SwitchUser = React.lazy(() => import('./SwitchUser'));
 const GlobalSettings = React.lazy(() => import('./GlobalSettings'));
+const EmptyScreen = React.lazy(() => import('./UAMContainer/ChangePasswordExpired/emptyScreen'));
 
 const Routing: React.FC<{ location: Location }> = (props) => {
   Navigator.setTopHistory(useHistory());
@@ -60,7 +62,10 @@ const Routing: React.FC<{ location: Location }> = (props) => {
             {/* Users */}
 
             <CustomRoute pageRequiredAuth path={PATHS.switchUser} component={SwitchUser} />
+
+            {/* Global Settings */}
             <CustomRoute pageRequiredAuth path={PATHS.globalSettings} component={GlobalSettings} />
+            <CustomRoute pageRequiredAuth path={PATHS.expiredPassword} component={EmptyScreen} />
 
             <Route path={PATHS.dev} component={Dev} />
             <CustomRoute path={PATHS.dev} component={Dev} />
@@ -77,6 +82,7 @@ const Routing: React.FC<{ location: Location }> = (props) => {
       <DialogContainer />
       <ToastContainer />
       <ScrollToTop />
+      <CheckPasswordExpiredContainer />
     </Box>
   );
 };

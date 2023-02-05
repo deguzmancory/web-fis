@@ -21,6 +21,7 @@ export const PATHS = {
 
   // miscellaneous / Global settings
   globalSettings: '/global-settings',
+  expiredPassword: '/expired-password',
 };
 
 export const PATH_HEADERS = {

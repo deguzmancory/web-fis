@@ -3,7 +3,7 @@ import { QueryFunction, useQuery, useQueryClient, UseQueryOptions } from 'react-
 import apiClient from '../apiClient';
 import { ApiResponseType, responseWrapper } from '../helpers';
 import { API_QUERIES } from '../keys';
-import { GlobalSettings } from './types';
+import { GlobalSettings, GLOBAL_SETTING_KEY } from './types';
 
 export function useGlobalSettings(
   options?: UseQueryOptions<ApiResponseType<{ settings: GlobalSettings }>, Error, GlobalSettings>
@@ -42,10 +42,10 @@ export function useGlobalSettings(
     globalSettings: React.useMemo(() => {
       if (!data) return null;
       const passwordResetMonths = data.find(
-        (setting) => setting.settingName === 'PasswordResetMonths'
+        (setting) => setting.settingName === GLOBAL_SETTING_KEY.PASSWORD_RESET_MONTHS
       );
       const tempPasswordValidHours = data.find(
-        (setting) => setting.settingName === 'TempPasswordValidHours'
+        (setting) => setting.settingName === GLOBAL_SETTING_KEY.TEMP_PASSWORD_VALID_HOURS
       );
       const response: GlobalSettings = [passwordResetMonths, tempPasswordValidHours];
       return response;

@@ -6,7 +6,7 @@ import { PATHS } from 'src/appConfig/paths';
 import { useLogout } from 'src/queries';
 import { getRoleName } from 'src/queries/Profile/helpers';
 import { Callback } from 'src/redux/types';
-import { DelegationKeyService, Navigator, TokenService } from 'src/services';
+import { Navigator } from 'src/services';
 
 const UserMenu: React.FC<Props> = ({ setIsClickedLogout, currentRole, fullName }) => {
   const anchorRef = React.useRef(null);
@@ -17,8 +17,6 @@ const UserMenu: React.FC<Props> = ({ setIsClickedLogout, currentRole, fullName }
   const handleLogout = React.useCallback(() => {
     setIsClickedLogout(true);
     logout();
-    TokenService.clearToken();
-    DelegationKeyService.clearDelegationKey();
   }, [logout, setIsClickedLogout]);
 
   const handleToggleMenu = () => {

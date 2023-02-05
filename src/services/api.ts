@@ -74,8 +74,9 @@ const create = (baseURL = appConfig.API_URL) => {
   const submitForgotPassword = (body: SubmitForgotPasswordPayload) =>
     Auth.forgotPasswordSubmit(body.email, body.token, body.password);
 
-  const changePassword = (body: ChangePasswordPayload) =>
-    Auth.changePassword(body.user, body.currentPassword, body.newPassword);
+  const changePassword = (body: ChangePasswordPayload) => {
+    return Auth.changePassword(body.user, body.currentPassword, body.newPassword);
+  };
 
   const confirmSignIn = (body: ConfirmSignInPayload) =>
     Auth.sendCustomChallengeAnswer(body.user, body.code);
