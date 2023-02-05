@@ -10,25 +10,31 @@ import {
   Typography,
 } from '@mui/material';
 import React from 'react';
-import ReactJson from 'react-json-view';
 import { connect } from 'react-redux';
 import { COLOR_CODE } from 'src/appConfig/constants';
-import { Accordion, Button } from 'src/components/common';
+import { Button } from 'src/components/common';
 import { StyledTableCell, StyledTableRow } from 'src/components/CustomTable';
 import {
+  MyProfile,
   useGetDelegationAccesses,
   useGetTokenDelegation,
   useProfile,
   useUpdateCurrentRoleProfile,
 } from 'src/queries';
 import { getRoleName } from 'src/queries/Profile/helpers';
-import { setIsUpdatedCurrentRole } from 'src/redux/auth/authSlice';
-import { Toastify } from 'src/services';
+import { setIsUpdatedCurrentRole, setProfile } from 'src/redux/auth/authSlice';
+import { IRootState } from 'src/redux/store';
+import { DelegationKeyService, Toastify } from 'src/services';
 import { isEmpty } from 'src/validations';
+import { handleShowErrorMsg } from '../UsersManagement/helpers';
 
 import './styles.scss';
 
-const SwitchUser: React.FC<Props> = ({ onSetUpdatedCurrentRoleStatus }) => {
+const SwitchUser: React.FC<Props> = ({
+  onSetUpdatedCurrentRoleStatus,
+  userProfile,
+  onSetProfile,
+}) => {
   const { profile } = useProfile();
   const [rowSelected, setRowSelected] = React.useState<{
     id: string;
@@ -48,8 +54,12 @@ const SwitchUser: React.FC<Props> = ({ onSetUpdatedCurrentRoleStatus }) => {
         roleName: role.role.name,
       });
     } else if (rowSelected.type === 'delegate') {
+      const user = myAccessesRows.find((row) => row.id === rowSelected.id);
       getTokenDelegation({
         accessId: rowSelected.id,
+        fullName: user.user.fullName,
+        username: user.user.username,
+        roleName: user.userRole.role.name,
       });
     } else {
       Toastify.error('Error when switch user, Please refresh page and try again!');
@@ -70,13 +80,15 @@ const SwitchUser: React.FC<Props> = ({ onSetUpdatedCurrentRoleStatus }) => {
       handleInvalidateProfile();
       getMyProfile();
       Toastify.info(
-        `You are now logged in as: ${profile.fullName} - ${getRoleName(variables.roleName)}`
+        `You are now logged in as: ${profile.username} - ${getRoleName(variables.roleName)}`
       );
       onSetUpdatedCurrentRoleStatus(true);
       setRowSelected({
         id: '',
         type: '',
       });
+
+      DelegationKeyService.clearDelegationKey();
     },
   });
 
@@ -84,7 +96,30 @@ const SwitchUser: React.FC<Props> = ({ onSetUpdatedCurrentRoleStatus }) => {
 
   // Switch Delegation Access
   const { getDelegationAccesses, receivedAccesses } = useGetDelegationAccesses();
-  const { getTokenDelegation, isLoading: isLoadingGetTokenDelegation } = useGetTokenDelegation();
+  const { getTokenDelegation, isLoading: isLoadingGetTokenDelegation } = useGetTokenDelegation({
+    onSuccess(data, variables, context) {
+      const jwt = data?.data.data?.jwt;
+      if (jwt) {
+        DelegationKeyService.setDelegationKey(jwt);
+        Toastify.info(
+          `You are now logged in as: ${variables.username} - ${getRoleName(variables.roleName)}.`
+        );
+
+        const formatNewProfile: MyProfile = {
+          ...userProfile,
+          fullName: `${profile.fullName.match(/\b(\w)/g)} as ${variables.fullName}`,
+          username: variables.username,
+          currentRole: variables.roleName,
+        };
+        onSetProfile(formatNewProfile);
+      } else {
+        Toastify.error('Fail to switch user, please try again');
+      }
+    },
+    onError(error, variables, context) {
+      handleShowErrorMsg(error);
+    },
+  });
 
   const myAccessesRows = React.useMemo(() => {
     if (receivedAccesses) {
@@ -201,44 +236,20 @@ const SwitchUser: React.FC<Props> = ({ onSetUpdatedCurrentRoleStatus }) => {
             </Button>
           </Stack>
         </Box>
-
-        <Accordion
-          title={`Raw data profile (${profile.username} - ${profile.id})`}
-          className="mb-16"
-        >
-          {profile && (
-            <ReactJson
-              src={{
-                username: profile.username,
-                fullName: profile.fullName,
-                defaultUserType: profile.defaultUserType,
-                currentRole: profile.currentRole,
-                roles: profile.roles.map((role) => ({
-                  userId: role.userId,
-                  roleId: role.roleId,
-                  role: {
-                    id: role.role.id,
-                    name: role.role.name,
-                    displayName: role.role.displayName,
-                  },
-                })),
-              }}
-            />
-          )}
-        </Accordion>
-
-        <Accordion title={`Raw data delegation accesses`}>
-          {receivedAccesses && <ReactJson src={receivedAccesses} />}
-        </Accordion>
       </Container>
     </Box>
   );
 };
 
-type Props = typeof mapDispatchToProps;
+type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+
+const mapStateToProps = (state: IRootState) => ({
+  userProfile: state.auth.user,
+});
 
 const mapDispatchToProps = {
   onSetUpdatedCurrentRoleStatus: setIsUpdatedCurrentRole,
+  onSetProfile: setProfile,
 };
 
-export default connect(undefined, mapDispatchToProps)(SwitchUser);
+export default connect(mapStateToProps, mapDispatchToProps)(SwitchUser);

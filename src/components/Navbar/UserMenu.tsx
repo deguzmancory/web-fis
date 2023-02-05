@@ -3,22 +3,15 @@ import { Box, Divider, MenuItem, MenuList, Paper, Popover, Stack, Typography } f
 import * as React from 'react';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import { PATHS } from 'src/appConfig/paths';
-import { useLogout, useProfile } from 'src/queries';
+import { useLogout } from 'src/queries';
 import { getRoleName } from 'src/queries/Profile/helpers';
 import { Callback } from 'src/redux/types';
 import { DelegationKeyService, Navigator, TokenService } from 'src/services';
 
-type Props = {
-  fullName: string;
-  setIsClickedLogout: Callback;
-};
-
-const UserMenu: React.FC<Props> = ({ fullName, setIsClickedLogout }) => {
+const UserMenu: React.FC<Props> = ({ setIsClickedLogout, currentRole, fullName }) => {
   const anchorRef = React.useRef(null);
   const [openPopover, setOpenPopover] = React.useState(false);
 
-  const { profile } = useProfile();
-  const { currentRole } = profile || {};
   const { logout } = useLogout();
 
   const handleLogout = React.useCallback(() => {
@@ -122,6 +115,12 @@ const UserMenu: React.FC<Props> = ({ fullName, setIsClickedLogout }) => {
       </Stack>
     </>
   );
+};
+
+type Props = {
+  fullName: string;
+  currentRole: string;
+  setIsClickedLogout: Callback;
 };
 
 export default UserMenu;

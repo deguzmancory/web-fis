@@ -30,7 +30,8 @@ const create = (baseURL = appConfig.API_URL) => {
   // Create and configure an apisauce-based api object.
   //
 
-  const delegationKey = DelegationKeyService.getDelegationKey();
+  // const delegationKey = DelegationKeyService.getDelegationKey();
+  // console.log('delegationKey: ', delegationKey);
 
   const api = apisauce.create({
     baseURL,
@@ -39,9 +40,9 @@ const create = (baseURL = appConfig.API_URL) => {
       Pragma: 'no-cache',
       Expires: 0,
       Accept: 'application/json',
-      ...(delegationKey && {
-        'x-delegation-token': delegationKey,
-      }),
+      // ...(delegationKey && {
+      // 'x-delegation-token': delegationKey ? delegationKey : null,
+      // }),
     },
     timeout: appConfig.CONNECTION_TIMEOUT,
   });
@@ -50,6 +51,11 @@ const create = (baseURL = appConfig.API_URL) => {
     return TokenService.getToken()
       .then((token) => {
         config.headers.Authorization = 'Bearer ' + token;
+
+        const delegationKey = DelegationKeyService.getDelegationKey();
+        if (delegationKey) {
+          config.headers['x-delegation-token'] = delegationKey;
+        }
         return Promise.resolve(config);
       })
       .catch(() => {
@@ -100,7 +106,13 @@ const create = (baseURL = appConfig.API_URL) => {
   };
 
   const getTokenDelegation = (body: GetTokenDelegationPayload) => {
-    return api.post('/account-svc/v1/me/switch-user', body, newCancelToken());
+    return api.post(
+      '/account-svc/v1/me/switch-user',
+      {
+        accessId: body.accessId,
+      },
+      newCancelToken()
+    );
   };
 
   // ====================== Content ======================

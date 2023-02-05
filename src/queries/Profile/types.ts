@@ -92,4 +92,7 @@ export type DelegationAccessResponse = {
 
 export type GetTokenDelegationPayload = {
   accessId: string;
+  fullName: string;
+  username: string;
+  roleName: string;
 };

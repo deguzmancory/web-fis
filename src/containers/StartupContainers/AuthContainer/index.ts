@@ -125,6 +125,10 @@ const AuthContainer: React.FC<Props> = ({
     }
   };
 
+  window.addEventListener('beforeunload', (e) => {
+    DelegationKeyService.clearDelegationKey();
+  });
+
   return null;
 };
 

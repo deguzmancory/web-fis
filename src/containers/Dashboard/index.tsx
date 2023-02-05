@@ -8,9 +8,9 @@ import { dashboardItems } from './helpers';
 import SkeletonDashboard from './skeleton';
 import './styles.scss';
 
-const Dashboard: React.FC<Props> = () => {
-  const { profile, loading } = useProfile();
-  const { currentRole, fullName } = profile || {};
+const Dashboard: React.FC<Props> = ({ userProfile }) => {
+  const { loading } = useProfile();
+  const { currentRole, fullName } = userProfile || {};
 
   return (
     <Box py={4}>
@@ -40,7 +40,9 @@ const Dashboard: React.FC<Props> = () => {
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const mapStateToProps = (state: IRootState) => ({});
+const mapStateToProps = (state: IRootState) => ({
+  userProfile: state.auth.user,
+});
 
 const mapDispatchToProps = {};
 
