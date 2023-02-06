@@ -8,7 +8,7 @@ export enum GLOBAL_SETTING_TYPE {
 export type GlobalSetting = {
   settingId: number | string;
   settingName: string;
-  settingValue: string | boolean;
+  settingValue: string;
   settingType: GLOBAL_SETTING_TYPE;
   settingSortOrder: number;
   settingGroup: {
@@ -16,6 +16,7 @@ export type GlobalSetting = {
     settingGroupSortOrder: number;
   };
   settingSubGroup: any;
+  isEdit?: boolean;
 };
 
 export type GlobalSettings = GlobalSetting[];

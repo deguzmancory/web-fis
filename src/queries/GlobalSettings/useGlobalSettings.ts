@@ -1,9 +1,8 @@
-import React from 'react';
 import { QueryFunction, useQuery, useQueryClient, UseQueryOptions } from 'react-query';
 import apiClient from '../apiClient';
 import { ApiResponseType, responseWrapper } from '../helpers';
 import { API_QUERIES } from '../keys';
-import { GlobalSettings, GLOBAL_SETTING_KEY } from './types';
+import { GlobalSettings } from './types';
 
 export function useGlobalSettings(
   options?: UseQueryOptions<ApiResponseType<{ settings: GlobalSettings }>, Error, GlobalSettings>
@@ -39,17 +38,18 @@ export function useGlobalSettings(
     queryClient.invalidateQueries([API_QUERIES.GLOBAL_SETTINGS]);
 
   return {
-    globalSettings: React.useMemo(() => {
-      if (!data) return null;
-      const passwordResetMonths = data.find(
-        (setting) => setting.settingName === GLOBAL_SETTING_KEY.PASSWORD_RESET_MONTHS
-      );
-      const tempPasswordValidHours = data.find(
-        (setting) => setting.settingName === GLOBAL_SETTING_KEY.TEMP_PASSWORD_VALID_HOURS
-      );
-      const response: GlobalSettings = [passwordResetMonths, tempPasswordValidHours];
-      return response;
-    }, [data]),
+    // globalSettings: React.useMemo(() => {
+    //   if (!data) return null;
+    //   const passwordResetMonths = data.find(
+    //     (setting) => setting.settingName === GLOBAL_SETTING_KEY.PASSWORD_RESET_MONTHS
+    //   );
+    //   const tempPasswordValidHours = data.find(
+    //     (setting) => setting.settingName === GLOBAL_SETTING_KEY.TEMP_PASSWORD_VALID_HOURS
+    //   );
+    //   const response: GlobalSettings = [passwordResetMonths, tempPasswordValidHours];
+    //   return response;
+    // }, [data]),
+    globalSettings: data,
     error,
     isError,
     loading: isFetching,
