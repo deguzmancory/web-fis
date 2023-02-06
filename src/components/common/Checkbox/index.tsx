@@ -33,6 +33,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
           type="checkbox"
           className={cn('cmp-checkbox__input')}
           style={{ display: 'none' }}
+          checked={!!props.value}
           {...props}
         />
         <label

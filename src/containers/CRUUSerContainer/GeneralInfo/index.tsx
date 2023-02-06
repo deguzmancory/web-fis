@@ -111,15 +111,17 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, isLoading }) => {
             </>
           )}
         </Grid>
-        <Grid item container spacing={3}>
-          <Grid item xs={4}>
-            <Checkbox.Item
-              label="Login Disabled"
-              {...getFieldProps(CRUUSER_KEY.STATUS)}
-              disabled={isLoading}
-            />
+        {values.isViewMode && (
+          <Grid item container spacing={3}>
+            <Grid item xs={4}>
+              <Checkbox.Item
+                label="Login Disabled"
+                {...getFieldProps(CRUUSER_KEY.STATUS)}
+                disabled={isLoading}
+              />
+            </Grid>
           </Grid>
-        </Grid>
+        )}
       </Grid>
     </Box>
   );
