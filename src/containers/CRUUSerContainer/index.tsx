@@ -109,8 +109,13 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
         getMyProfile();
       }
     },
-    onError(error, variables, context) {
-      handleShowErrorMsg(error);
+    onError(error: Error, variables, context) {
+      if (error['error']?.includes('Already found an entry for the provided username')) {
+        setFieldError(CRUUSER_KEY.USERNAME, 'The username specified already exists.');
+        window.scrollTo(0, 0);
+      } else {
+        handleShowErrorMsg(error);
+      }
     },
   });
 
