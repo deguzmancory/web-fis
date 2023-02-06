@@ -12,6 +12,7 @@ import {
   useLogout,
   useProfile,
 } from 'src/queries';
+import { useUpdateProfilePasswordResetRequired } from 'src/queries/Profile/useUpdateProfilePasswordResetRequired';
 import { useUpdateUserLastPasswordChanged } from 'src/queries/Users';
 import { ErrorService } from 'src/services';
 import {
@@ -43,18 +44,24 @@ const ChangePasswordExpired: React.FC<Props> = () => {
   const [isPasswordUpdated, setIsPasswordUpdated] = React.useState(false);
 
   const { updateUserLastPasswordChanged } = useUpdateUserLastPasswordChanged();
+  const { updateProfilePasswordResetRequired, isLoading: isLoadingPasswordResetRequired } =
+    useUpdateProfilePasswordResetRequired({
+      onSuccess(data, variables, context) {
+        setIsPasswordUpdated(true);
+      },
+    });
   const { changePassword, isLoading: isLoadingChangePassword } = useChangePassword({
     onSuccess() {
-      setIsPasswordUpdated(true);
       updateUserLastPasswordChanged({ username: profile.username });
-
-      // TODO: tin_pham add logic PUT /me update value passwordResetRequired = false
+      updateProfilePasswordResetRequired({});
     },
     onError(error) {
       if (error) {
         handleError(error);
       } else {
-        setIsPasswordUpdated(true);
+        // TODO: tin_pham fix, change password return 200, but it still run into onError, with error undefined
+        updateUserLastPasswordChanged({ username: profile.username });
+        updateProfilePasswordResetRequired({});
       }
     },
   });
@@ -126,8 +133,18 @@ const ChangePasswordExpired: React.FC<Props> = () => {
   };
 
   const loading = React.useMemo(() => {
-    return isLoadingGlobalSettings || isLoadingProfile || isLoadingChangePassword;
-  }, [isLoadingGlobalSettings, isLoadingProfile, isLoadingChangePassword]);
+    return (
+      isLoadingGlobalSettings ||
+      isLoadingProfile ||
+      isLoadingChangePassword ||
+      isLoadingPasswordResetRequired
+    );
+  }, [
+    isLoadingGlobalSettings,
+    isLoadingProfile,
+    isLoadingChangePassword,
+    isLoadingPasswordResetRequired,
+  ]);
 
   return (
     <Box>

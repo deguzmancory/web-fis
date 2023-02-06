@@ -102,6 +102,9 @@ const create = (baseURL = appConfig.API_URL) => {
   const updateCurrentRoleMyProfile = (body: { roleName: string }) =>
     api.put(`/account-svc/v1/me/current-role`, body, newCancelToken());
 
+  const updateProfilePasswordResetRequired = () =>
+    api.put(`/account-svc/v1/me/password-reset-required`, {}, newCancelToken());
+
   const getDelegationAccesses = () => {
     return api.get('/account-svc/v1/delegation-accesses', {}, newCancelToken());
   };
@@ -244,6 +247,7 @@ const create = (baseURL = appConfig.API_URL) => {
     getMyProfile,
     // updateMyProfile,
     updateMyProfile,
+    updateProfilePasswordResetRequired,
     updateCurrentRoleMyProfile,
     getDelegationAccesses,
     getTokenDelegation,
