@@ -1,11 +1,10 @@
 import { Snackbar } from '@mui/material';
-import dayjs from 'dayjs';
 import React from 'react';
 import { FaDownload } from 'react-icons/fa';
 import { Button, LoadingCommon } from 'src/components/common';
 import { useGetUrlExportUsers } from 'src/queries/Users';
 import { pollAndDownloadFile, Toastify } from 'src/services';
-import { DateFormat } from 'src/utils/momentUtils';
+import { DateFormatDisplayShort, localTimeToHawaii } from 'src/utils/momentUtils';
 import { handleShowErrorMsg } from '../helpers';
 
 const DownloadAllUsers: React.FC<Props> = ({ isLoading }) => {
@@ -22,7 +21,7 @@ const DownloadAllUsers: React.FC<Props> = ({ isLoading }) => {
       pollAndDownloadFile({
         get: response.get,
         head: response.head,
-        fileName: `Users_${dayjs().format(DateFormat)}.csv`,
+        fileName: `Users_${localTimeToHawaii(new Date(), DateFormatDisplayShort)}.csv`,
         fileType: `text/csv`,
         onSuccess: () => {
           setIsOpenSnackbar(false);

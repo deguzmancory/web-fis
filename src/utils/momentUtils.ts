@@ -33,9 +33,9 @@ export const getTimeDisplay = (value: string) => {
 
 /// dayjs has many cases incorrect format with timezone so using moment-timezone for this case
 /// Reference issues : https://github.com/iamkun/dayjs/issues/1827
-export const localTimeToHawaii = (dateTime) => {
+export const localTimeToHawaii = (dateTime, format = DateFormatDisplayMinute) => {
   const date = momentTz(dateTime).format(DateFormatWithHour);
-  return momentTz(date, DateFormatWithHour).utcOffset('-1000').format(DateFormatDisplayMinute);
+  return momentTz(date, DateFormatWithHour).utcOffset('-1000').format(format);
 };
 
 export const formatDateUtc = (value: Date | string) => {
