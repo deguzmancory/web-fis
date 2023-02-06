@@ -81,7 +81,7 @@ const SelectCmp = ({
         }}
       >
         <div>{data.label}</div>
-        <div>{data?.subLabel}</div>
+        <div style={{ textAlign: 'right' }}>{data?.subLabel}</div>
       </div>
     );
     return <components.Option {...props} children={children} />;

@@ -55,17 +55,13 @@ export const getDelegateUserTypeOptions = (
     };
   };
 
-  if (
-    currentUserTypes.includes(ROLE_NAME.PI) &&
-    (userExistedTypes.includes(ROLE_NAME.PI) || userExistedTypes.includes(ROLE_NAME.SU))
-  ) {
-    options.push(getOption(ROLE_NAME.PI));
-  }
-  if (
-    currentUserTypes.includes(ROLE_NAME.SU) &&
-    (userExistedTypes.includes(ROLE_NAME.PI) || userExistedTypes.includes(ROLE_NAME.SU))
-  ) {
-    options.push(getOption(ROLE_NAME.SU));
+  if (currentUserTypes.includes(ROLE_NAME.PI) || currentUserTypes.includes(ROLE_NAME.SU)) {
+    if (userExistedTypes.includes(ROLE_NAME.PI)) {
+      options.push(getOption(ROLE_NAME.PI));
+    }
+    if (userExistedTypes.includes(ROLE_NAME.SU)) {
+      options.push(getOption(ROLE_NAME.SU));
+    }
   }
   if (currentUserTypes.includes(ROLE_NAME.FA) && userExistedTypes.includes(ROLE_NAME.FA)) {
     options.push(getOption(ROLE_NAME.FA));

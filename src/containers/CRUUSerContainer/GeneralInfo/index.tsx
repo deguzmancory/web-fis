@@ -25,28 +25,45 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, isLoading }) => {
               disabled={isLoading}
             />
           </Grid>
-          <Grid item xs={4} container spacing={3}>
-            <Grid item xs={8}>
-              <Input
-                label={'Last Name'}
-                required
-                errorMessage={_getErrorMessage(CRUUSER_KEY.LAST_NAME)}
-                {...getFieldProps(CRUUSER_KEY.LAST_NAME)}
-                disabled={isLoading}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <Input
-                label={'MI'}
-                maxLength={5}
-                infoToolTipWithArrow
-                infoTooltipMessage="Middle Initial"
-                infoTooltipPlacement="right-end"
-                errorMessage={_getErrorMessage(CRUUSER_KEY.MIDDLE_NAME)}
-                {...getFieldProps(CRUUSER_KEY.MIDDLE_NAME)}
-                disabled={isLoading}
-              />
-            </Grid>
+          <Grid item xs={4}>
+            <Input
+              label={'Last Name'}
+              required
+              errorMessage={_getErrorMessage(CRUUSER_KEY.LAST_NAME)}
+              {...getFieldProps(CRUUSER_KEY.LAST_NAME)}
+              disabled={isLoading}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <Input
+              label={'MI'}
+              maxLength={5}
+              infoToolTipWithArrow
+              infoTooltipMessage="Middle Initial"
+              infoTooltipPlacement="right-end"
+              errorMessage={_getErrorMessage(CRUUSER_KEY.MIDDLE_NAME)}
+              {...getFieldProps(CRUUSER_KEY.MIDDLE_NAME)}
+              disabled={isLoading}
+            />
+          </Grid>
+
+          <Grid item xs={4}>
+            <Input
+              label={'Username'}
+              required
+              errorMessage={_getErrorMessage(CRUUSER_KEY.USERNAME)}
+              {...getFieldProps(CRUUSER_KEY.USERNAME)}
+              disabled={isLoading}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <Input
+              label={'Email'}
+              required
+              errorMessage={_getErrorMessage(CRUUSER_KEY.EMAIL)}
+              {...getFieldProps(CRUUSER_KEY.EMAIL)}
+              disabled={isLoading}
+            />
           </Grid>
           <Grid item xs={4}>
             <Select
@@ -68,24 +85,6 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, isLoading }) => {
                   : 'Please select the user types available to this user below.'
               }
               infoToolTipWithArrow
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <Input
-              label={'Username'}
-              required
-              errorMessage={_getErrorMessage(CRUUSER_KEY.USERNAME)}
-              {...getFieldProps(CRUUSER_KEY.USERNAME)}
-              disabled={isLoading}
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <Input
-              label={'Email'}
-              required
-              errorMessage={_getErrorMessage(CRUUSER_KEY.EMAIL)}
-              {...getFieldProps(CRUUSER_KEY.EMAIL)}
-              disabled={isLoading}
             />
           </Grid>
           {values.isViewMode && (

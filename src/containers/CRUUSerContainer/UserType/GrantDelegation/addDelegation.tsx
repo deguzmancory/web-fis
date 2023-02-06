@@ -119,9 +119,9 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
               options={
                 users
                   ? users.map((user) => ({
-                      label: user.fullName,
+                      label: user.username,
                       value: user.id,
-                      subLabel: user.username,
+                      subLabel: user.fullName,
                     }))
                   : []
               }
