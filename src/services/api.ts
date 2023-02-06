@@ -2,7 +2,7 @@ import apisauce from 'apisauce';
 import { Auth } from 'aws-amplify';
 import axios from 'axios';
 import appConfig from 'src/appConfig';
-import { GetTokenDelegationPayload, ProfilePayload } from 'src/queries';
+import { GetTokenDelegationPayload, ProfilePayload, UpdateGlobalSettingPayload } from 'src/queries';
 import { GetPresignedPayload, UploadFilePayload } from 'src/queries/File/types';
 import {
   ChangePasswordPayload,
@@ -213,6 +213,17 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.get('/financial-svc/v1/global-settings', {}, newCancelToken());
   };
 
+  const updateGlobalSetting = (body: UpdateGlobalSettingPayload) => {
+    const url = `/financial-svc/v1/global-setting/${body.settingId}`;
+    return api.put(
+      url,
+      {
+        settingValue: body.value,
+      },
+      newCancelToken()
+    );
+  };
+
   //
   // Return back a collection of functions that we would consider our
   // interface.  Most of the time it'll be just the list of all the
@@ -268,6 +279,7 @@ const create = (baseURL = appConfig.API_URL) => {
 
     // Global Settings
     getAllGlobalSettings,
+    updateGlobalSetting,
   };
 };
 

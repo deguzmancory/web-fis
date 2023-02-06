@@ -1,16 +1,20 @@
 import { Box, Container, Grid, Typography } from '@mui/material';
 import React from 'react';
-import ReactJson from 'react-json-view';
 import { connect } from 'react-redux';
 import { COLOR_CODE } from 'src/appConfig/constants';
-import { Accordion, Button, Input, Loading } from 'src/components/common';
+import { Button, Input, InputMask, Loading } from 'src/components/common';
 import Refetch from 'src/components/Refetch';
-import { useGlobalSettings } from 'src/queries';
+import { useGlobalSettings, useUpdateGlobalSetting } from 'src/queries';
 import { isCU } from 'src/queries/Profile/helpers';
 import { IRootState } from 'src/redux/store';
 import { Toastify } from 'src/services';
+import { handleShowErrorMsg } from '../UsersManagement/helpers';
 import BreadcrumbsGlobalSettings from './breadcrumbs';
-import { getFormatGlobalSettingsResponse, GlobalSettingFormatted } from './helpers';
+import {
+  getFormatGlobalSettingsResponse,
+  GlobalSettingFormatted,
+  updateSettingValue,
+} from './helpers';
 import './styles.scss';
 
 const NoPermission = React.lazy(() => import('src/components/NoPermission'));
@@ -33,13 +37,93 @@ const GlobalSettings: React.FC<Props> = ({ userCurrentRole }) => {
 
   const [settings, setSettings] = React.useState<GlobalSettingFormatted[]>([]);
 
-  const loading = React.useMemo(() => {
-    return isLoadingGlobalSettings;
-  }, [isLoadingGlobalSettings]);
-
   const isError = React.useMemo(() => {
     return isErrorGlobalSettings;
   }, [isErrorGlobalSettings]);
+
+  const handleEditButton = React.useCallback(
+    (groupIndex: number, itemIndex: number, settingValue: string) => {
+      setSettings((prevSettings) => {
+        return updateSettingValue({
+          currentSetting: prevSettings,
+          groupIndex,
+          itemIndex,
+          properties: {
+            isEdit: true,
+            tempSettingValue: settingValue,
+          },
+        });
+      });
+    },
+    []
+  );
+
+  const handleCancelButton = React.useCallback((groupIndex: number, itemIndex: number) => {
+    setSettings((prevSettings) => {
+      return updateSettingValue({
+        currentSetting: prevSettings,
+        groupIndex,
+        itemIndex,
+        properties: {
+          isEdit: false,
+          tempSettingValue: null,
+        },
+      });
+    });
+  }, []);
+
+  const handleOnChangeValue = (groupIndex: number, itemIndex: number, value: string) => {
+    setSettings((prevSettings) => {
+      return updateSettingValue({
+        currentSetting: prevSettings,
+        groupIndex,
+        itemIndex,
+        properties: {
+          tempSettingValue: value,
+        },
+      });
+    });
+  };
+
+  const { updateGlobalSetting, isLoading: isLoadingUpdateGlobalSetting } = useUpdateGlobalSetting({
+    onSuccess(data, variables, context) {
+      Toastify.success(`Update ${variables.settingName} successfully.`);
+      setSettings((prevSettings) => {
+        return updateSettingValue({
+          currentSetting: prevSettings,
+          groupIndex: variables.groupIndex,
+          itemIndex: variables.itemIndex,
+          properties: {
+            settingValue: variables.value,
+            isEdit: false,
+            tempSettingValue: null,
+          },
+        });
+      });
+    },
+    onError(error, variables, context) {
+      handleShowErrorMsg(error);
+    },
+  });
+  const handleSaveButton = ({ groupIndex, itemIndex, settingId, settingName }) => {
+    // eslint-disable-next-line security/detect-object-injection
+    const tempSettingValue = settings[groupIndex].items[itemIndex]?.tempSettingValue;
+    if (tempSettingValue) {
+      updateGlobalSetting({
+        settingId,
+        settingName,
+        value: tempSettingValue,
+        groupIndex,
+        itemIndex,
+      });
+    } else {
+      Toastify.error('Error when update setting, please try again.');
+    }
+  };
+
+  const loading = React.useMemo(() => {
+    return isLoadingGlobalSettings || isLoadingUpdateGlobalSetting;
+  }, [isLoadingGlobalSettings, isLoadingUpdateGlobalSetting]);
 
   if (!isCU(userCurrentRole)) return <NoPermission />;
   return (
@@ -94,42 +178,89 @@ const GlobalSettings: React.FC<Props> = ({ userCurrentRole }) => {
 
             {/* Group */}
             <Box>
-              {settings.map((setting, index) => (
-                <React.Fragment key={`${setting.title}-${index}`}>
+              {settings.map((setting, groupIndex) => (
+                <React.Fragment key={`${setting.title}-${groupIndex}`}>
                   {/* Group Title */}
                   <Box px={2} py={1} bgcolor={COLOR_CODE.PRIMARY_200}>
                     <Typography variant="h5">{setting.title}</Typography>
                   </Box>
 
+                  {/* Group Items */}
                   <Box p={3} bgcolor={COLOR_CODE.WHITE}>
-                    {setting.items.map((settingItem, settingItemIndex) => (
+                    {setting.items.map((settingItem, itemIndex) => (
                       <Box
-                        key={`${settingItem.settingId}-${settingItemIndex}`}
+                        key={`${settingItem.settingId}-${itemIndex}`}
                         sx={{
                           '&:not(:last-child)': {
                             mb: 2,
                           },
                         }}
                       >
+                        {/* Group Item */}
                         <Grid container spacing={0}>
-                          <Grid item xs={4}>
+                          <Grid item xs={4} sx={{ my: 'auto' }}>
                             <Typography variant="body1">{settingItem.settingName}</Typography>
                           </Grid>
                           <Grid item xs={4}>
-                            {/* TODO: tin_pham return component input depend of settingItem.settingType */}
-                            <Input value={settingItem.settingValue} disabled />
+                            {settingItem?.isEdit ? (
+                              <InputMask
+                                value={settingItem?.tempSettingValue || ''}
+                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                  const value = event.target.value;
+                                  handleOnChangeValue(groupIndex, itemIndex, value);
+                                }}
+                                mask={'9999'}
+                                disabled={!settingItem?.isEdit}
+                              />
+                            ) : (
+                              <Input value={settingItem.settingValue} disabled />
+                            )}
                           </Grid>
                           <Grid item xs={4}>
                             <Box ml={3}>
-                              <Button
-                                onClick={() => {
-                                  Toastify.info(
-                                    `${settingItem.settingName} (id: ${settingItem.settingId}) clicked`
-                                  );
-                                }}
-                              >
-                                Edit
-                              </Button>
+                              {settingItem?.isEdit ? (
+                                <>
+                                  <Button
+                                    onClick={() => {
+                                      handleSaveButton({
+                                        groupIndex,
+                                        itemIndex,
+                                        settingId: settingItem.settingId,
+                                        settingName: settingItem.settingName,
+                                      });
+                                    }}
+                                    isLoading={loading}
+                                    disabled={loading}
+                                  >
+                                    Save
+                                  </Button>
+                                  <Button
+                                    className="ml-16"
+                                    variant="outline"
+                                    onClick={() => {
+                                      handleCancelButton(groupIndex, itemIndex);
+                                    }}
+                                    isLoading={loading}
+                                    disabled={loading}
+                                  >
+                                    Cancel
+                                  </Button>
+                                </>
+                              ) : (
+                                <Button
+                                  onClick={() => {
+                                    handleEditButton(
+                                      groupIndex,
+                                      itemIndex,
+                                      settingItem.settingValue
+                                    );
+                                  }}
+                                  isLoading={loading}
+                                  disabled={loading}
+                                >
+                                  Edit
+                                </Button>
+                              )}
                             </Box>
                           </Grid>
                         </Grid>
@@ -143,15 +274,6 @@ const GlobalSettings: React.FC<Props> = ({ userCurrentRole }) => {
             {/* End Group */}
           </Box>
         )}
-
-        <Box>
-          <Accordion title={`Raw data settings`} className="mb-16">
-            {settings && <ReactJson src={settings} />}
-          </Accordion>
-          <Accordion title={`Raw data globalSettings`}>
-            {globalSettings && <ReactJson src={globalSettings} />}
-          </Accordion>
-        </Box>
       </Container>
     </Box>
   );

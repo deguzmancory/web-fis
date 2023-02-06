@@ -6,7 +6,7 @@ export enum GLOBAL_SETTING_TYPE {
 }
 
 export type GlobalSetting = {
-  settingId: number | string;
+  settingId: number;
   settingName: string;
   settingValue: string;
   settingType: GLOBAL_SETTING_TYPE;
@@ -17,6 +17,7 @@ export type GlobalSetting = {
   };
   settingSubGroup: any;
   isEdit?: boolean;
+  tempSettingValue?: string;
 };
 
 export type GlobalSettings = GlobalSetting[];
@@ -25,3 +26,11 @@ export enum GLOBAL_SETTING_KEY {
   PASSWORD_RESET_MONTHS = 'PasswordResetMonths', //pragma: allowlist secret
   TEMP_PASSWORD_VALID_HOURS = 'TempPasswordValidHours', //pragma: allowlist secret
 }
+
+export type UpdateGlobalSettingPayload = {
+  settingId: number;
+  settingName?: string;
+  value: string;
+  groupIndex?: number;
+  itemIndex?: number;
+};

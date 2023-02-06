@@ -34,3 +34,23 @@ export const getFormatGlobalSettingsResponse = (globalSettings: GlobalSettings) 
       return group;
     });
 };
+
+export const updateSettingValue = ({ currentSetting, groupIndex, itemIndex, properties }) => {
+  return currentSetting.map((group, i) => {
+    if (i === groupIndex) {
+      return {
+        ...group,
+        items: group.items.map((item, j) => {
+          if (j === itemIndex) {
+            return {
+              ...item,
+              ...properties,
+            };
+          }
+          return item;
+        }),
+      };
+    }
+    return group;
+  });
+};
