@@ -84,6 +84,7 @@ const UserMenu: React.FC<Props> = ({ setIsClickedLogout, currentRole, fullName }
         <Popover
           open={openPopover}
           onClose={handleToggleMenu}
+          onMouseLeave={handleToggleMenu}
           anchorEl={anchorRef.current}
           anchorOrigin={{
             vertical: 'bottom',
@@ -102,18 +103,13 @@ const UserMenu: React.FC<Props> = ({ setIsClickedLogout, currentRole, fullName }
                   sx={{
                     '&:hover': {
                       bgcolor: COLOR_CODE.PRIMARY_700,
+                      '& *': {
+                        color: COLOR_CODE.INFO,
+                      },
                     },
                   }}
                 >
-                  <Typography
-                    sx={{
-                      '&:hover': {
-                        color: '#0088cc',
-                      },
-                    }}
-                    color={COLOR_CODE.WHITE}
-                    variant="body2"
-                  >
+                  <Typography color={COLOR_CODE.WHITE} variant="body2">
                     {item.title}
                   </Typography>
                 </MenuItem>
