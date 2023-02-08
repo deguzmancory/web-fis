@@ -45,7 +45,7 @@ export function useGlobalSettings(
         (setting) => setting.settingName === GLOBAL_SETTING_KEY.PASSWORD_RESET_MONTHS
       );
       const tempPasswordValidHours = data.find(
-        (setting) => setting.settingName === GLOBAL_SETTING_KEY.TEMP_PASSWORD_VALID_HOURS
+        (setting) => setting.settingName === GLOBAL_SETTING_KEY.FIRST_TIME_LOGIN_VALID_HOURS
       );
       const response: GlobalSettings = [passwordResetMonths, tempPasswordValidHours];
       return response;
