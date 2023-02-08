@@ -108,8 +108,10 @@ const GlobalSettings: React.FC<Props> = ({ userCurrentRole }) => {
   const handleSaveButton = ({ groupIndex, itemIndex, settingId, settingName }) => {
     // eslint-disable-next-line security/detect-object-injection
     const tempSettingValue = settings[groupIndex].items[itemIndex]?.tempSettingValue;
-    if (tempSettingValue) {
-      updateGlobalSetting({
+    if (tempSettingValue && Number(tempSettingValue) < 1) {
+      return Toastify.error('Please input positive number');
+    } else if (tempSettingValue) {
+      return updateGlobalSetting({
         settingId,
         settingName,
         value: tempSettingValue,
@@ -117,7 +119,7 @@ const GlobalSettings: React.FC<Props> = ({ userCurrentRole }) => {
         itemIndex,
       });
     } else {
-      Toastify.error('Error when update setting, please try again.');
+      return Toastify.error('Error when update setting, please try again.');
     }
   };
 
@@ -209,6 +211,7 @@ const GlobalSettings: React.FC<Props> = ({ userCurrentRole }) => {
                                   const value = event.target.value;
                                   handleOnChangeValue(groupIndex, itemIndex, value);
                                 }}
+                                min={1}
                                 mask={'9999'}
                                 disabled={!settingItem?.isEdit}
                               />
