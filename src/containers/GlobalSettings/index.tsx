@@ -25,12 +25,14 @@ const GlobalSettings: React.FC<Props> = ({ userCurrentRole }) => {
     globalSettings,
     loading: isLoadingGlobalSettings,
     isError: isErrorGlobalSettings,
-  } = useGlobalSettings();
+  } = useGlobalSettings({
+    onError(err) {
+      handleShowErrorMsg(err);
+    },
+  });
 
   React.useEffect(() => {
-    if (!globalSettings) {
-      getAllGlobalSettings();
-    } else {
+    if (globalSettings) {
       setSettings(getFormatGlobalSettingsResponse(globalSettings));
     }
   }, [getAllGlobalSettings, globalSettings]);

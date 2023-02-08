@@ -23,12 +23,11 @@ export function useGlobalSettings(
     [API_QUERIES.GLOBAL_SETTINGS],
     {
       queryFn: handleGetAllGlobalSettings,
-      refetchOnMount: false,
       select(data) {
         return data.data.settings;
       },
-      enabled: false,
-      notifyOnChangeProps: ['data'],
+      enabled: true,
+      notifyOnChangeProps: ['data', 'isError', 'isFetching'],
       ...options,
     }
   );
