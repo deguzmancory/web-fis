@@ -48,7 +48,7 @@ const UserMenu: React.FC<Props> = ({ setIsClickedLogout, currentRole, fullName }
       <Stack width={162} height={32}>
         <Box
           ref={anchorRef}
-          onClick={handleToggleMenu}
+          onMouseEnter={handleToggleMenu}
           sx={{
             cursor: 'pointer',
           }}
@@ -90,7 +90,10 @@ const UserMenu: React.FC<Props> = ({ setIsClickedLogout, currentRole, fullName }
             horizontal: 'right',
           }}
         >
-          <Paper sx={{ background: COLOR_CODE.PRIMARY_800 }}>
+          <Paper
+            onMouseLeave={handleToggleMenu}
+            sx={{ background: COLOR_CODE.PRIMARY_700, width: 177 }}
+          >
             <MenuList>
               {menuOptions.map((item) => (
                 <MenuItem
@@ -102,7 +105,15 @@ const UserMenu: React.FC<Props> = ({ setIsClickedLogout, currentRole, fullName }
                     },
                   }}
                 >
-                  <Typography color={COLOR_CODE.WHITE} variant="body2">
+                  <Typography
+                    sx={{
+                      '&:hover': {
+                        color: '#0088cc',
+                      },
+                    }}
+                    color={COLOR_CODE.WHITE}
+                    variant="body2"
+                  >
                     {item.title}
                   </Typography>
                 </MenuItem>
