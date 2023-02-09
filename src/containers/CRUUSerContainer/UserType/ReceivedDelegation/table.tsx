@@ -1,19 +1,12 @@
 import { Check } from '@mui/icons-material';
-import {
-  Box,
-  IconButton,
-  Table,
-  TableBody,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from '@mui/material';
+import { IconButton, Table, TableBody, TableContainer, TableHead, TableRow } from '@mui/material';
 import dayjs from 'dayjs';
 import React from 'react';
 import { StyledTableCell, StyledTableRow } from 'src/components/CustomTable';
 import { DateFormat } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
 import { CRUUserFormikProps } from '../../helper';
+import { EmptyTableDelegation } from '../helpers';
 
 const TableGrantDelegation: React.FC<Props> = ({ formikProps }) => {
   const { values } = formikProps;
@@ -34,11 +27,7 @@ const TableGrantDelegation: React.FC<Props> = ({ formikProps }) => {
         </TableHead>
         <TableBody>
           {isEmpty(rows) ? (
-            <StyledTableRow>
-              <StyledTableCell>
-                <Box minHeight={'150px'}>&nbsp;</Box>
-              </StyledTableCell>
-            </StyledTableRow>
+            <EmptyTableDelegation />
           ) : (
             rows.map((row) => (
               <StyledTableRow key={row.id}>

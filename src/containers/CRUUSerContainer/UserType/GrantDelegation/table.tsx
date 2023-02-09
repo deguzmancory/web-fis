@@ -1,4 +1,4 @@
-import { Box, Table, TableBody, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Table, TableBody, TableContainer, TableHead, TableRow } from '@mui/material';
 
 import dayjs from 'dayjs';
 import React from 'react';
@@ -8,6 +8,7 @@ import { getRoleName, ROLE_NAME } from 'src/queries/Profile/helpers';
 import { USER_KEY } from 'src/queries/Users/types';
 import { isEmpty } from 'src/validations';
 import { CRUUserFormikProps } from '../../helper';
+import { EmptyTableDelegation } from '../helpers';
 import ActionsButton from './actionsButton';
 import DatePickerEdit from './datePickerEdit';
 
@@ -43,11 +44,7 @@ const TableGrantDelegation: React.FC<Props> = ({ formikProps }) => {
         </TableHead>
         <TableBody>
           {isEmpty(rows) ? (
-            <StyledTableRow>
-              <StyledTableCell>
-                <Box minHeight={'150px'}>&nbsp;</Box>
-              </StyledTableCell>
-            </StyledTableRow>
+            <EmptyTableDelegation />
           ) : (
             rows.map((row, index) => (
               <StyledTableRow key={`${row.delegatedUserId}-${row.username}-${index}`}>
