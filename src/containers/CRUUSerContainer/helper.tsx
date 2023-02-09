@@ -1,9 +1,10 @@
+import dayjs from 'dayjs';
 import { FieldInputProps, FormikErrors, FormikTouched } from 'formik';
 import { getRoleNamePayload } from 'src/queries/Profile/helpers';
 import { DelegatedAccess, UserDetail, USER_STATUS } from 'src/queries/Users/types';
 import { ErrorService, Yup } from 'src/services';
 import { getTitleCase } from 'src/utils';
-import { formatDateUtc } from 'src/utils/momentUtils';
+import { DateFormatWithYear } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
 
 export enum CRUUSER_KEY {
@@ -163,8 +164,8 @@ const getPayloadDelegateAccess = (delegateAccess: CRUUserFormValue['delegateAcce
   return delegateAccess.map((item) => ({
     delegatedUserId: item.delegatedUserId,
     roleName: getRoleNamePayload(item.roleName),
-    startDate: formatDateUtc(item.startDate),
-    endDate: formatDateUtc(item.endDate),
+    startDate: !isEmpty(item.startDate) ? dayjs(item.startDate).format(DateFormatWithYear) : null,
+    endDate: !isEmpty(item.endDate) ? dayjs(item.endDate).format(DateFormatWithYear) : null,
     isAllProjects: false,
     projectNumber: item.projectNumber,
   }));
