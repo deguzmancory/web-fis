@@ -18,11 +18,11 @@ import { localTimeToHawaii } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
 import { handleShowErrorMsg } from '../UsersManagement/helpers';
 import BreadcrumbsUserDetail from './breadcrumbs';
+import { CRUUSER_KEY, USER_MODE } from './enums';
 import {
   CRUUserFormikProps,
   cRUUserFormSchema,
   CRUUserFormValue,
-  CRUUSER_KEY,
   formatPayloadSubmit,
   formatPayloadUpdate,
   getValueRoles,
@@ -43,7 +43,7 @@ const clsPrefix = 'ctn-cruuser';
 
 const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideAllDialog }) => {
   const { userId } = useParams<{ userId: string }>();
-  const [isViewMode] = React.useState(!isEmpty(userId));
+  const [isEditUserMode] = React.useState(!isEmpty(userId));
   const [isErrorWhenFetchUser, setIsErrorWhenFetchUser] = React.useState(false);
 
   const {
@@ -83,12 +83,12 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
   const { handleInvalidateAllUser } = useGetAllUsers();
   const { profile, handleInvalidateProfile, getMyProfile } = useProfile();
   const { createUser, isLoading: isLoadingCreateUser } = useCreateUser({
-    onSuccess(data, variables, context) {
+    onSuccess(_data, variables, _context) {
       Toastify.success(`Add User ${variables.username} successfully.`);
       handleInvalidateAllUser();
       Navigator.navigate(PATHS.userManagements);
     },
-    onError(error, variables, context) {
+    onError(error, _variables, _context) {
       if (error.message === 'An account with this username already existed.') {
         setFieldError(CRUUSER_KEY.USERNAME, 'The username specified already exists.');
         handleScrollToTopError();
@@ -120,7 +120,7 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
   });
 
   const handleFormSubmit = (values: CRUUserFormValue) => {
-    if (isViewMode) {
+    if (isEditUserMode) {
       const payload = formatPayloadUpdate(values, user);
       updateUser(payload);
     } else {
@@ -136,7 +136,7 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
       if (!date) return '';
       return localTimeToHawaii(date);
     };
-    if (isViewMode && !isEmpty(user)) {
+    if (isEditUserMode && !isEmpty(user)) {
       const delegateAccess = user.delegateAccesses.map((item) => ({
         isEdit: false,
         delegatedUserId: item.delegatedUserId,
@@ -156,7 +156,7 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
 
       return {
         ...initialCRUUserFormValue,
-        isViewMode: isViewMode,
+        mode: USER_MODE.EDIT_USER,
         firstName: user.firstName,
         lastName: user.lastName,
         middleName: user.middleName || '',
@@ -175,10 +175,10 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
     } else {
       return {
         ...initialCRUUserFormValue,
-        isViewMode: isViewMode,
+        mode: USER_MODE.ADD_USER,
       };
     }
-  }, [isViewMode, user]);
+  }, [isEditUserMode, user]);
 
   const loading = isLoadingGetUser || isLoadingCreateUser || isLoadingUpdateUser;
 
@@ -190,29 +190,26 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
 
   const {
     values,
-    setFieldValue,
     errors,
     touched,
+    setFieldValue,
     getFieldProps,
     setFieldTouched,
     handleSubmit,
     setFieldError,
   } = useFormik<CRUUserFormValue>({
     initialValues: initialFormValue,
-    onSubmit: handleFormSubmit,
     validationSchema: cRUUserFormSchema,
     innerRef: formRef,
     enableReinitialize: true,
+    onSubmit: handleFormSubmit,
   });
-
-  // console.log('values: ', values);
-  // console.log('errors: ', errors);
 
   const formikProps: CRUUserFormikProps = {
     values,
-    setFieldValue,
     errors,
     touched,
+    setFieldValue,
     getFieldProps,
     setFieldTouched,
   };
@@ -220,9 +217,9 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
   return (
     <Box className={`${clsPrefix}`} py={2} minHeight={'50vh'}>
       <Container maxWidth="lg">
-        <BreadcrumbsUserDetail isViewMode={isViewMode} />
+        <BreadcrumbsUserDetail isViewMode={isEditUserMode} />
         <Typography mt={2} variant="h2">
-          {isViewMode ? 'Edit' : 'Add'} User
+          {isEditUserMode ? 'Edit' : 'Add'} User
         </Typography>
         <Suspense fallback={<LoadingCommon />}>
           {!isCU(profile.currentRole) ? (
@@ -244,7 +241,7 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
               <Layout>
                 <InternalComments formikProps={formikProps} isLoading={loading} />
               </Layout>
-              {isViewMode && (
+              {isEditUserMode && (
                 <Suspense fallback={<LoadingCommon />}>
                   <Accordion title="Audit Information" className="mt-16">
                     <AuditInformation

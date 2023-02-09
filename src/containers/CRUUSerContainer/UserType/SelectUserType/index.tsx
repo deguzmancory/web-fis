@@ -2,10 +2,12 @@ import { Box, Grid } from '@mui/material';
 import React from 'react';
 import { Checkbox } from 'src/components/common';
 import { userTypeOptions } from 'src/containers/UsersManagement/TableList/CustomFilter/helpers';
-import { CRUUserFormikProps, CRUUSER_KEY, getErrorMessage } from '../../helper';
+import { CRUUSER_KEY } from '../../enums';
+import { CRUUserFormikProps, getErrorMessage, isEditProfileMode } from '../../helper';
 
 const SelectUserType: React.FC<Props> = ({ formikProps, isLoading }) => {
-  const { errors, touched, getFieldProps, setFieldValue } = formikProps;
+  const { values, errors, touched, getFieldProps, setFieldValue } = formikProps;
+  const isInEditProfileMode = isEditProfileMode(values.mode);
 
   const _getErrorMessage = (fieldName: CRUUSER_KEY) => {
     return getErrorMessage(fieldName, { touched, errors });
@@ -26,7 +28,7 @@ const SelectUserType: React.FC<Props> = ({ formikProps, isLoading }) => {
             {...getFieldProps(CRUUSER_KEY.ROLES)}
             onChange={handleCheckboxChange}
             errorMessage={_getErrorMessage(CRUUSER_KEY.ROLES)}
-            disabled={isLoading}
+            disabled={isInEditProfileMode || isLoading}
           />
         </Grid>
       </Grid>

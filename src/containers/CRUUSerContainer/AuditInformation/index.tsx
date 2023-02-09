@@ -7,7 +7,7 @@ import { isEmpty } from 'src/validations';
 import { CRUUserFormikProps } from '../helper';
 
 const AuditInformation: React.FC<Props> = ({ formikProps, userAuditTrails, isLoading }) => {
-  const audits = userAuditTrails.sort((cur, next) => {
+  const audits = userAuditTrails.slice().sort((cur, next) => {
     return cur.createdAt < next.createdAt ? 1 : -1;
   });
 

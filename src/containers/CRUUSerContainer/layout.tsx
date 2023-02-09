@@ -1,5 +1,4 @@
 import { Box } from '@mui/material';
-import React from 'react';
 import { COLOR_CODE } from 'src/appConfig/constants';
 
 const Layout = ({ children }) => {

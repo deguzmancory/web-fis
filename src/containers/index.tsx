@@ -28,6 +28,7 @@ const UsersManagement = React.lazy(() => import('./UsersManagement'));
 const CRUUSerContainer = React.lazy(() => import('./CRUUSerContainer'));
 const SwitchUser = React.lazy(() => import('./SwitchUser'));
 const GlobalSettings = React.lazy(() => import('./GlobalSettings'));
+const EditProfile = React.lazy(() => import('./EditProfile'));
 const EmptyScreen = React.lazy(() => import('./UAMContainer/ChangePasswordExpired/emptyScreen'));
 
 const Routing: React.FC<{ location: Location }> = (props) => {
@@ -62,6 +63,7 @@ const Routing: React.FC<{ location: Location }> = (props) => {
             {/* Users */}
 
             <CustomRoute pageRequiredAuth path={PATHS.switchUser} component={SwitchUser} />
+            <CustomRoute pageRequiredAuth path={PATHS.myProfile} component={EditProfile} />
 
             {/* Global Settings */}
             <CustomRoute pageRequiredAuth path={PATHS.globalSettings} component={GlobalSettings} />

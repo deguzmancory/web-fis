@@ -1,34 +1,16 @@
 import dayjs from 'dayjs';
-import { FieldInputProps, FormikErrors, FormikTouched } from 'formik';
+import { MyProfile } from 'src/queries';
 import { getRoleNamePayload } from 'src/queries/Profile/helpers';
 import { DelegatedAccess, UserDetail, USER_STATUS } from 'src/queries/Users/types';
 import { ErrorService, Yup } from 'src/services';
 import { getTitleCase } from 'src/utils';
+import { CommonFormikProps } from 'src/utils/commonTypes';
 import { DateFormatWithYear } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
+import { USER_MODE } from './enums';
 
-export enum CRUUSER_KEY {
-  FIRST_NAME = 'firstName',
-  LAST_NAME = 'lastName',
-  MIDDLE_NAME = 'middleName',
-  DEFAULT_USER_TYPE = 'defaultUserType',
-  USERNAME = 'username',
-  EMAIL = 'email',
-  LAST_LOGIN_DATE = 'lastLoginDate',
-  PASSWORD_SET_DATE = 'passwordSetDate', //pragma: allowlist secret
-  STATUS = 'status',
-
-  // User Type
-  DELEGATE_ACCESS = 'delegateAccess',
-  TEMP_DELEGATE_ACCESS = 'tempDelegateAccess',
-  DELEGATED_ACCESS = 'delegatedAccess',
-  ROLES = 'roles',
-
-  // Comments
-  COMMENTS = 'comments',
-}
-
-type DelegateAccessFormValue = {
+/*** Types & Interfaces ***/
+export type DelegateAccessFormValue = {
   isEdit: boolean;
   delegatedUserId: string;
   username: string;
@@ -42,8 +24,8 @@ type DelegateAccessFormValue = {
   isAllProjects: boolean;
 }[];
 
-export type CRUUserFormValue = {
-  isViewMode: boolean;
+export interface CRUUserFormValue {
+  mode: USER_MODE;
 
   // General Info
   firstName: UserDetail['firstName'];
@@ -54,6 +36,8 @@ export type CRUUserFormValue = {
   email: UserDetail['email'];
   lastLoginDate: UserDetail['lastLoginDate'];
   passwordSetDate: UserDetail['passwordSetDate'];
+  currentPassword?: string;
+  newPassword?: string;
   status: boolean;
 
   // User Type
@@ -65,10 +49,13 @@ export type CRUUserFormValue = {
 
   // Comments
   comments: UserDetail['comments'];
-};
+}
 
-export const initialCRUUserFormValue = {
-  isViewMode: null,
+export type CRUUserFormikProps = CommonFormikProps<CRUUserFormValue>;
+
+/*** Constants ***/
+export const initialCRUUserFormValue: CRUUserFormValue = {
+  mode: null,
 
   // General Info
   firstName: '',
@@ -79,6 +66,8 @@ export const initialCRUUserFormValue = {
   email: '',
   lastLoginDate: '',
   passwordSetDate: '',
+  newPassword: '',
+  currentPassword: '',
   status: false,
 
   // User Type
@@ -111,23 +100,7 @@ export const cRUUserFormSchema = Yup.object().shape({
   comment: Yup.string().nullable(),
 });
 
-export type CRUUserFormikProps = {
-  values: CRUUserFormValue;
-  setFieldValue: (
-    field: string,
-    value: any,
-    shouldValidate?: boolean
-  ) => Promise<void> | Promise<FormikErrors<CRUUserFormValue>>;
-  errors: FormikErrors<CRUUserFormValue>;
-  touched: FormikTouched<CRUUserFormValue>;
-  getFieldProps: (nameOrOptions: any) => FieldInputProps<any>;
-  setFieldTouched: (
-    field: string,
-    touched?: boolean,
-    shouldValidate?: boolean
-  ) => Promise<void> | Promise<FormikErrors<CRUUserFormValue>>;
-};
-
+/*** Functions ***/
 export const getErrorMessage = (fieldName: string, { touched, errors }) => {
   // eslint-disable-next-line security/detect-object-injection
   return touched[fieldName] && errors[fieldName] ? errors[fieldName] : '';
@@ -155,11 +128,11 @@ export const getPayloadUserStatus = (status: boolean) => {
   }
 };
 
-export const getValueRoles = (roles: UserDetail['roles']) => {
-  return roles.map((role) => role.role.domain);
+export const getValueRoles = (roles: UserDetail['roles'] | MyProfile['roles']) => {
+  return roles.map((role) => role.role.name);
 };
 
-const getPayloadDelegateAccess = (delegateAccess: CRUUserFormValue['delegateAccess']) => {
+export const getPayloadDelegateAccess = (delegateAccess: CRUUserFormValue['delegateAccess']) => {
   if (isEmpty(delegateAccess)) return [];
   return delegateAccess.map((item) => ({
     delegatedUserId: item.delegatedUserId,
@@ -182,10 +155,12 @@ export const formatPayloadSubmit = (values: CRUUserFormValue) => {
     delegateAccess: getPayloadDelegateAccess(values.delegateAccess),
   };
 
-  delete payload.isViewMode;
+  delete payload.mode;
   delete payload.lastLoginDate;
   delete payload.passwordSetDate;
   delete payload.tempDelegateAccess;
+  delete payload.newPassword;
+  delete payload.currentPassword;
 
   return payload;
 };
@@ -205,11 +180,23 @@ export const formatPayloadUpdate = (values: CRUUserFormValue, user: UserDetail) 
     delegateAccess: getPayloadDelegateAccess(values.delegateAccess),
   };
 
-  delete payload.isViewMode;
+  delete payload.mode;
   delete payload.tempDelegateAccess;
   delete payload.lastLoginDate;
   delete payload.passwordSetDate;
   delete payload.fullName;
+  delete payload.newPassword;
+  delete payload.currentPassword;
 
   return payload;
+};
+
+export const isEditUserMode = (mode: USER_MODE) => {
+  return mode === USER_MODE.EDIT_USER;
+};
+export const isAddUserMode = (mode: USER_MODE) => {
+  return mode === USER_MODE.ADD_USER;
+};
+export const isEditProfileMode = (mode: USER_MODE) => {
+  return mode === USER_MODE.EDIT_PROFILE;
 };

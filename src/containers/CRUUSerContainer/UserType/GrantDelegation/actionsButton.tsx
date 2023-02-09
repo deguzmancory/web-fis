@@ -4,7 +4,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
-import { CRUUserFormikProps, CRUUSER_KEY } from '../../helper';
+import { CRUUSER_KEY } from '../../enums';
+import { CRUUserFormikProps } from '../../helper';
 
 const ActionsButton: React.FC<Props> = ({
   data,

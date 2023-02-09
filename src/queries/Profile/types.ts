@@ -1,3 +1,12 @@
+import {
+  AuditInformation,
+  DelegateAccess,
+  DelegatedAccess,
+  User,
+  USER_STATUS,
+} from '../Users/types';
+
+/*** General ***/
 export interface MyProfile {
   allowMaintenanceModeLogin: boolean;
   comments: string;
@@ -6,9 +15,9 @@ export interface MyProfile {
   defaultUserType: string;
   email: string;
   firstName: string;
-  fisFaInfo: any; //TODO: tin_pham update type
-  fisPiInfo: any; //TODO: tin_pham update type
-  fisSuInfo: any; //TODO: tin_pham update type
+  fisFaInfo: FisFAInfo; //TODO: tin_pham update type
+  fisPiInfo: FisFIInfo; //TODO: tin_pham update type
+  fisSuInfo: FisFUInfo; //TODO: tin_pham update type
   fullName: string;
   id: string;
   isDhUser: boolean;
@@ -18,37 +27,85 @@ export interface MyProfile {
   passwordResetRequired: boolean;
   passwordSetDate: string;
 
-  roles: {
-    userId: string;
-    roleId: string;
-    createdAt: string;
-    updatedAt: string;
-    role: {
-      id: string;
-      name: string;
-      displayName: string;
-      description: string;
-    };
-  }[];
-  status: string;
   updatedAt: string;
   username: string;
+
+  roles: {
+    userId: User['id'];
+    roleId: ProfileRole['id'];
+    createdAt: string;
+    updatedAt: string;
+    role: ProfileRole;
+  }[];
+  status: USER_STATUS;
+  delegateAccesses: DelegateAccess[];
+  delegatedAccesses: DelegatedAccess[];
+  userAuditTrails: AuditInformation[];
 }
 
-export interface ProfilePayload {
+export interface ProfileRole {
+  description: string;
+  displayName: string;
+  id: string;
+  name: string;
+}
+
+export interface FisFAInfo {
+  faCode: string;
+  sendInvoiceTo: string;
+  sendInvoiceToEmail: string;
+  department: string;
+  addressStreet: string;
+  addressCity: string;
+  addressState: string;
+  addressZip: string;
+  addressZip4: string;
+  addressCountry: string;
+  remittanceName: string;
+  remittancePhoneNumber: string;
+}
+
+export interface FisFIInfo {
+  piCode: string;
+  directInquiriesTo: string;
   phoneNumber: string;
-  mailingAddress: string;
-  country: string;
-  zipCode: string;
-  city: string;
-  state: string;
-  careOf: string;
+  faStaffToReview: string;
+  sendInvoiceTo: string;
+  sendInvoiceToEmail: string;
+  department: string;
+  addressStreet: string;
+  addressCity: string;
+  addressState: string;
+  addressZip: string;
+  addressZip4: string;
+  addressCountry: string;
+  remittanceName: string;
+  remittancePhoneNumber: string;
 }
 
+export interface FisFUInfo {
+  directInquiriesTo: string;
+  faStaffToReview: string;
+  sendInvoiceTo: string;
+  sendInvoiceToEmail: string;
+  phoneNumber: string;
+  department: string;
+  addressStreet: string;
+  addressCity: string;
+  addressState: string;
+  addressZip: string;
+  addressZip4: string;
+  addressCountry: string;
+  remittanceName: string;
+  remittancePhoneNumber: string;
+}
+
+/*** Update Current Role Profile ***/
 export type UpdateCurrentRoleProfilePayload = {
   roleName: string;
 };
 
+/*** Get Delegation Accesses ***/
 export type GrantedAccesses = MyAccesses & {
   delegatedUser: {
     id: string;
@@ -96,3 +153,23 @@ export type GetTokenDelegationPayload = {
   username: string;
   roleName: string;
 };
+
+/*** Update profile ***/
+export interface UpdateProfilePayload {
+  firstName: MyProfile['firstName'];
+  lastName: MyProfile['lastName'];
+  middleName: MyProfile['middleName'];
+  email: MyProfile['email'];
+  comments: MyProfile['comments'];
+  defaultUserType: MyProfile['defaultUserType'];
+  isDhUser: MyProfile['isDhUser'];
+  status: MyProfile['status'];
+  password: string;
+  newPassword: string;
+  currentPassword: string;
+  roles: string[];
+  delegateAccess: DelegateAccess[];
+  fisFaInfo: FisFAInfo;
+  fisPiInfo: FisFIInfo;
+  fisSuInfo: FisFUInfo;
+}

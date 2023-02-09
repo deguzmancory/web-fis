@@ -27,7 +27,10 @@ const UserMenu: React.FC<Props> = ({ setIsClickedLogout, currentRole, fullName }
     return [
       {
         title: 'Edit My Profile',
-        onClick: () => {},
+        onClick: () => {
+          Navigator.navigate(PATHS.myProfile);
+          handleToggleMenu();
+        },
       },
       {
         title: 'Switch User',

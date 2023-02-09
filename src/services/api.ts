@@ -2,7 +2,11 @@ import apisauce from 'apisauce';
 import { Auth } from 'aws-amplify';
 import axios from 'axios';
 import appConfig from 'src/appConfig';
-import { GetTokenDelegationPayload, ProfilePayload, UpdateGlobalSettingPayload } from 'src/queries';
+import {
+  GetTokenDelegationPayload,
+  UpdateGlobalSettingPayload,
+  UpdateProfilePayload,
+} from 'src/queries';
 import { GetPresignedPayload, UploadFilePayload } from 'src/queries/File/types';
 import {
   ChangePasswordPayload,
@@ -96,7 +100,7 @@ const create = (baseURL = appConfig.API_URL) => {
   // ====================== Profile ======================
   const getMyProfile = () => api.get('/account-svc/v1/me', {}, newCancelToken());
 
-  const updateMyProfile = (body: ProfilePayload) =>
+  const updateMyProfile = (body: UpdateProfilePayload) =>
     api.put(`/account-svc/v1/me`, body, newCancelToken());
 
   const updateCurrentRoleMyProfile = (body: { roleName: string }) =>

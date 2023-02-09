@@ -1,7 +1,8 @@
 import { Box, Grid } from '@mui/material';
 import React from 'react';
 import { TextArea } from 'src/components/common';
-import { CRUUserFormikProps, CRUUSER_KEY, getErrorMessage } from '../helper';
+import { CRUUSER_KEY } from '../enums';
+import { CRUUserFormikProps, getErrorMessage } from '../helper';
 
 const InternalComments: React.FC<Props> = ({ formikProps, isLoading }) => {
   const { errors, touched, getFieldProps } = formikProps;
