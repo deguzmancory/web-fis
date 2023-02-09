@@ -10,6 +10,10 @@
   transition: $default-transition;
   font-size: $body-size;
 
+  &[type='password'] {
+    padding-right: 36px !important;
+  }
+
   &--icon {
     padding-right: 36px;
 

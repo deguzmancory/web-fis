@@ -18,11 +18,12 @@
 
     &__control {
       height: $input-small;
+      min-height: $input-small;
       border: $default-border;
-      border-color: $color-white;
+      border-color: #0088cc;
       background-color: $color-white;
       transition: $default-transition;
-      border-radius: $input-border-radius;
+      border-radius: 4px;
       font-size: $body-size;
 
       &--is-disabled {
@@ -41,7 +42,6 @@
       }
 
       &:active &--is-focused {
-        border-color: $color-primary-500;
         background-color: $color-primary-500;
         box-shadow: none;
       }
@@ -52,7 +52,7 @@
     }
 
     &__value-container {
-      padding: 0 28px 0 10px;
+      padding: 0px 0px 0px 8px;
     }
 
     &__indicator-separator {
@@ -82,4 +82,8 @@
       }
     }
   }
+}
+
+.cmp-select-rows-per-page__indicators {
+  height: 28px;
 }
