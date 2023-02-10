@@ -13,7 +13,7 @@ const ActionsButton: React.FC<Props> = ({
   onHideDialog,
   rowIndex,
   formikProps,
-  fieldName = CRUUSER_KEY.TEMP_DELEGATE_ACCESS,
+  fieldName = CRUUSER_KEY.DELEGATE_ACCESS,
 }) => {
   const { setFieldValue, values } = formikProps;
 
@@ -28,10 +28,10 @@ const ActionsButton: React.FC<Props> = ({
         onOk: () => {
           onHideDialog();
           const newRows = [
-            ...values.tempDelegateAccess.slice(0, rowIndex),
-            ...values.tempDelegateAccess.slice(rowIndex + 1, values.tempDelegateAccess.length),
+            ...values.delegateAccess.slice(0, rowIndex),
+            ...values.delegateAccess.slice(rowIndex + 1, values.delegateAccess.length),
           ];
-          setFieldValue(CRUUSER_KEY.DELEGATE_ACCESS, newRows);
+          // setFieldValue(CRUUSER_KEY.DELEGATE_ACCESS, newRows);
           setFieldValue(fieldName, newRows);
         },
         onCancel: () => {
@@ -41,34 +41,52 @@ const ActionsButton: React.FC<Props> = ({
     });
   };
 
-  const handleChangeEditRow = (isEdit: boolean) => {
-    const rows = values.tempDelegateAccess.map((row, index) => {
+  const updateRows = (rows, rowIndex, data) =>
+    rows.map((row, index) => {
       return rowIndex === index
         ? {
             ...row,
-            isEdit: isEdit,
-          }
-        : {
-            ...row,
-            isEdit: false,
-          };
-    });
-    setFieldValue(fieldName, rows);
-  };
-
-  const handleConfirmEdit = () => {
-    const newRows = values.tempDelegateAccess.map((row, index) => {
-      return rowIndex === index
-        ? {
-            ...row,
-            isEdit: false,
-            startDate: data.startDateTemp,
-            endDate: data.endDateTemp,
+            isEdit: data.isEdit !== undefined ? data.isEdit : row.isEdit,
+            startDate: data.startDate !== undefined ? data.startDate : row.startDate,
+            endDate: data.endDate !== undefined ? data.endDate : row.endDate,
+            startDateTemp:
+              data.startDateTemp !== undefined ? data.startDateTemp : row.startDateTemp,
+            endDateTemp: data.endDateTemp !== undefined ? data.endDateTemp : row.endDateTemp,
           }
         : row;
     });
-    setFieldValue(CRUUSER_KEY.DELEGATE_ACCESS, newRows);
-    setFieldValue(fieldName, newRows);
+
+  const handleEditRow = () => {
+    setFieldValue(
+      fieldName,
+      updateRows(values.delegateAccess, rowIndex, {
+        isEdit: true,
+        startDateTemp: data.startDate,
+        endDateTemp: data.endDate,
+      })
+    );
+  };
+
+  const handleCancelEditRow = () => {
+    setFieldValue(
+      fieldName,
+      updateRows(values.delegateAccess, rowIndex, {
+        isEdit: false,
+        startDateTemp: null,
+        endDateTemp: null,
+      })
+    );
+  };
+
+  const handleConfirmEdit = () => {
+    setFieldValue(
+      fieldName,
+      updateRows(values.delegateAccess, rowIndex, {
+        isEdit: false,
+        startDate: data.startDateTemp,
+        endDate: data.endDateTemp,
+      })
+    );
   };
 
   return (
@@ -94,7 +112,7 @@ const ActionsButton: React.FC<Props> = ({
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              handleChangeEditRow(false);
+              handleCancelEditRow();
             }}
             sx={{
               p: 0,
@@ -110,7 +128,7 @@ const ActionsButton: React.FC<Props> = ({
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              handleChangeEditRow(true);
+              handleEditRow();
             }}
             sx={{
               p: 0,

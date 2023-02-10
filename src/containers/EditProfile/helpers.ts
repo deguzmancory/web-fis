@@ -76,14 +76,12 @@ export const formatEditProfilePayload = (
     delegateAccess: getPayloadDelegateAccess(values.delegateAccess),
     newPassword: values.newPassword || undefined,
     currentPassword: values.currentPassword || undefined,
-    password: values.newPassword || undefined, //TODO: huy_dang confirm payload
     fisFaInfo: null, //TODO: huy_dang implement during tabs sections
     fisPiInfo: null, //TODO: huy_dang implement during tabs sections
     fisSuInfo: null, //TODO: huy_dang implement during tabs sections
   };
 
   delete payload.mode;
-  delete payload.tempDelegateAccess;
   delete payload.lastLoginDate;
   delete payload.passwordSetDate;
   delete payload.fullName;

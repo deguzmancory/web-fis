@@ -14,7 +14,6 @@ export enum CRUUSER_KEY {
 
   // User Type
   DELEGATE_ACCESS = 'delegateAccess',
-  TEMP_DELEGATE_ACCESS = 'tempDelegateAccess',
   DELEGATED_ACCESS = 'delegatedAccess',
   ROLES = 'roles',
 

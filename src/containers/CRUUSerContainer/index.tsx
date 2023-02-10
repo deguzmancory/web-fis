@@ -145,13 +145,14 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
         roleName: item.userRole.role.displayName,
         projectNumber: item.projectNumber,
         startDate: item.startDate,
-        startDateTemp: item.startDate,
+        startDateTemp: null,
         endDate: item.endDate,
-        endDateTemp: item.endDate,
+        endDateTemp: null,
         isAllProjects: item.isAllProjects,
         userId: item.userId,
         roleId: item.roleId,
         delegatedUser: item.delegatedUser,
+        id: item.id,
       }));
 
       return {
@@ -169,7 +170,6 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
         roles: getValueRoles(user.roles),
         comments: user.comments,
         delegateAccess: delegateAccess,
-        tempDelegateAccess: delegateAccess,
         delegatedAccess: user.delegatedAccesses,
       };
     } else {

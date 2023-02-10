@@ -19,7 +19,7 @@ const UserType: React.FC<Props> = ({ formikProps, isLoading }) => {
       </Box>
 
       <Box>
-        <Accordion title={'Delegation'}>
+        <Accordion title={'Delegation'} isExpanded>
           <GrantDelegation formikProps={formikProps} />
           <ReceivedDelegation formikProps={formikProps} />
         </Accordion>

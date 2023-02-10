@@ -9,7 +9,9 @@ export enum USER_KEY {
   SYSTEM = 'system',
   PROJECT_NUMBER = 'projectNumber',
   START_DATE = 'startDate',
+  START_DATE_TEMP = 'startDateTemp',
   END_DATE = 'endDate',
+  END_DATE_TEMP = 'endDateTemp',
   DEFAULT_USER_TYPE = 'defaultUserType',
 }
 
@@ -35,6 +37,7 @@ export type GetPropertiesParams = TableParams & {
 };
 
 export type DelegateAccess = {
+  id: string;
   delegatedUserId: User['id'];
   roleName: string;
   startDate: string;

@@ -22,6 +22,7 @@ export type DelegateAccessFormValue = {
   endDate: string;
   endDateTemp: string;
   isAllProjects: boolean;
+  id?: string;
 }[];
 
 export interface CRUUserFormValue {
@@ -42,7 +43,6 @@ export interface CRUUserFormValue {
 
   // User Type
   delegateAccess: DelegateAccessFormValue;
-  tempDelegateAccess: DelegateAccessFormValue;
 
   delegatedAccess: DelegatedAccess[];
   roles: string[];
@@ -72,7 +72,6 @@ export const initialCRUUserFormValue: CRUUserFormValue = {
 
   // User Type
   delegateAccess: [],
-  tempDelegateAccess: [],
   delegatedAccess: [],
   roles: [],
 
@@ -141,6 +140,7 @@ export const getPayloadDelegateAccess = (delegateAccess: CRUUserFormValue['deleg
     endDate: !isEmpty(item.endDate) ? dayjs(item.endDate).format(DateFormatWithYear) : null,
     isAllProjects: false,
     projectNumber: item.projectNumber,
+    id: item.id || undefined,
   }));
 };
 
@@ -158,7 +158,6 @@ export const formatPayloadSubmit = (values: CRUUserFormValue) => {
   delete payload.mode;
   delete payload.lastLoginDate;
   delete payload.passwordSetDate;
-  delete payload.tempDelegateAccess;
   delete payload.newPassword;
   delete payload.currentPassword;
 
@@ -181,7 +180,6 @@ export const formatPayloadUpdate = (values: CRUUserFormValue, user: UserDetail) 
   };
 
   delete payload.mode;
-  delete payload.tempDelegateAccess;
   delete payload.lastLoginDate;
   delete payload.passwordSetDate;
   delete payload.fullName;

@@ -1,9 +1,9 @@
 import { Box, Grid, Stack } from '@mui/material';
-import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import { debounce } from 'lodash';
 import React from 'react';
 import { Button, DatePicker, Select } from 'src/components/common';
+import { getRoleNamePayload } from 'src/queries/Profile/helpers';
 import { useSearchProjects, useSearchUsers } from 'src/queries/Users';
 import { formatDateUtc } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
@@ -13,6 +13,7 @@ import {
   addDelegationFormSchema,
   AddDelegationFormValue,
   ADD_DELEGATION_KEY,
+  getAfterDate,
   getDelegateUserTypeOptions,
   initialAddDelegationFormValue,
 } from './helpers';
@@ -29,11 +30,14 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
   const handleAddDelegation = (values: AddDelegationFormValue) => {
     const user = users.find((user) => user.id === values.existingUserAccount);
 
-    if (valuesFormik.delegateAccess.findIndex((row) => row.delegatedUserId === user?.id) > -1) {
-      setFieldError(
-        ADD_DELEGATION_KEY.EXISTING_USER_ACCOUNT,
-        'Access has been granted to current user.'
-      );
+    if (
+      valuesFormik.delegateAccess.some((row) => {
+        return (
+          row.delegatedUserId === user?.id && values.userType === getRoleNamePayload(row.roleName)
+        );
+      })
+    ) {
+      setFieldError(ADD_DELEGATION_KEY.USER_TYPE, 'Access has been granted to current user type.');
     } else {
       const payload = {
         isEdit: false,
@@ -52,7 +56,6 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
       delegateAccess.unshift(payload);
 
       setFieldValueFormik(CRUUSER_KEY.DELEGATE_ACCESS, delegateAccess);
-      setFieldValueFormik(CRUUSER_KEY.TEMP_DELEGATE_ACCESS, delegateAccess);
 
       setTimeout(() => {
         resetForm();
@@ -76,19 +79,9 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
     validationSchema: addDelegationFormSchema,
     enableReinitialize: true,
   });
-  // console.log('values: ', values);
-  // console.log('errors: ', errors);
 
   const _getErrorMessage = (fieldName: ADD_DELEGATION_KEY) => {
     return getErrorMessage(fieldName, { touched, errors });
-  };
-
-  const getAfterDate = (value: Date, currentDate: Date) => {
-    if (dayjs(value).isAfter(dayjs(currentDate))) {
-      return value;
-    } else {
-      return currentDate;
-    }
   };
 
   const [searchUsers, setSearchUsers] = React.useState('');

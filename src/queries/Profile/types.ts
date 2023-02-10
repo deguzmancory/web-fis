@@ -164,7 +164,6 @@ export interface UpdateProfilePayload {
   defaultUserType: MyProfile['defaultUserType'];
   isDhUser: MyProfile['isDhUser'];
   status: MyProfile['status'];
-  password: string;
   newPassword: string;
   currentPassword: string;
   roles: string[];

@@ -11,11 +11,12 @@ import { CRUUserFormikProps } from '../../helper';
 import { EmptyTableDelegation } from '../helpers';
 import ActionsButton from './actionsButton';
 import DatePickerEdit from './datePickerEdit';
+import { getAfterDate } from './helpers';
 
 const TableGrantDelegation: React.FC<Props> = ({ formikProps }) => {
   const { values } = formikProps;
 
-  const rows = values.tempDelegateAccess;
+  const rows = values.delegateAccess;
 
   const displayRoleName = (value: string) => {
     if (
@@ -56,7 +57,8 @@ const TableGrantDelegation: React.FC<Props> = ({ formikProps }) => {
                   <DatePickerEdit
                     data={row}
                     rowIndex={index}
-                    keyValue={USER_KEY.START_DATE}
+                    tempValue={USER_KEY.START_DATE_TEMP}
+                    value={USER_KEY.START_DATE}
                     maxDate={dayjs(row.endDateTemp).toDate()}
                     formikProps={formikProps}
                   />
@@ -65,8 +67,9 @@ const TableGrantDelegation: React.FC<Props> = ({ formikProps }) => {
                   <DatePickerEdit
                     data={row}
                     rowIndex={index}
-                    keyValue={USER_KEY.END_DATE}
-                    minDate={dayjs(row.startDateTemp).toDate()}
+                    tempValue={USER_KEY.END_DATE_TEMP}
+                    value={USER_KEY.END_DATE}
+                    minDate={getAfterDate(row.startDateTemp, new Date())}
                     formikProps={formikProps}
                   />
                 </StyledTableCell>

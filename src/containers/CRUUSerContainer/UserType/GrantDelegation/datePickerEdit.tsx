@@ -3,50 +3,35 @@ import dayjs from 'dayjs';
 import React from 'react';
 import { DatePicker } from 'src/components/common';
 import { DateFormat } from 'src/utils/momentUtils';
-import { isEmpty } from 'src/validations';
 import { CRUUSER_KEY } from '../../enums';
 import { CRUUserFormikProps } from '../../helper';
 
 const DatePickerEdit: React.FC<Props> = ({
   data,
   rowIndex,
-  keyValue,
+  value,
+  tempValue,
   minDate,
   maxDate,
   formikProps,
-  fieldName = CRUUSER_KEY.TEMP_DELEGATE_ACCESS,
 }) => {
-  const { setFieldValue, values } = formikProps;
+  const { setFieldValue } = formikProps;
 
   // eslint-disable-next-line security/detect-object-injection
-  const _keyValue = data[keyValue];
+  const _keyValue = data[tempValue] || data[value];
 
-  const [date, setDate] = React.useState(_keyValue);
-
-  const handleDatePickerChange = (name, value: Date) => {
-    setDate(value.toUTCString());
-
-    const rows = values.tempDelegateAccess.map((row, index) => {
-      return rowIndex === index
-        ? {
-            ...row,
-            [`${keyValue}Temp`]: value.toUTCString(),
-          }
-        : row;
-    });
-    setFieldValue(fieldName, rows);
+  const handleDatePickerChange = (_name, value: Date) => {
+    setFieldValue(`${CRUUSER_KEY.DELEGATE_ACCESS}[${rowIndex}].${tempValue}`, value);
   };
 
   return data.isEdit ? (
-    <>
-      <DatePicker
-        label={null}
-        selected={isEmpty(date) ? null : new Date(date)}
-        onChange={handleDatePickerChange}
-        minDate={minDate}
-        maxDate={maxDate}
-      />
-    </>
+    <DatePicker
+      label={null}
+      selected={_keyValue ? new Date(_keyValue) : null}
+      onChange={handleDatePickerChange}
+      minDate={minDate}
+      maxDate={maxDate}
+    />
   ) : (
     <Typography variant="body2">
       {_keyValue ? dayjs(_keyValue).format(DateFormat) : '--'}
@@ -57,10 +42,10 @@ const DatePickerEdit: React.FC<Props> = ({
 type Props = {
   data: any;
   rowIndex: number;
-  keyValue: string;
+  value: string;
+  tempValue: string;
   minDate?: Date;
   maxDate?: Date;
   formikProps: CRUUserFormikProps;
-  fieldName?: CRUUSER_KEY;
 };
 export default DatePickerEdit;

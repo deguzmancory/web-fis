@@ -13,7 +13,7 @@ import { Navigator, Toastify } from 'src/services';
 import { deepKeys, scrollToTopError } from 'src/utils';
 import { localTimeToHawaii } from 'src/utils/momentUtils';
 import AuditInformation from '../CRUUSerContainer/AuditInformation';
-import { USER_MODE } from '../CRUUSerContainer/enums';
+import { CRUUSER_KEY, USER_MODE } from '../CRUUSerContainer/enums';
 import GeneralInfo from '../CRUUSerContainer/GeneralInfo';
 import {
   getValueRoles,
@@ -30,14 +30,21 @@ import { useUpdateProfile } from 'src/queries/Profile/useUpdateProfile';
 import { handleShowErrorMsg } from '../UsersManagement/helpers';
 
 const EditProfile: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideAllDialog }) => {
-  const { profile } = useProfile();
+  const { profile, handleInvalidateProfile } = useProfile();
   const formRef = useRef<FormikProps<CRUUserFormValue>>(null);
   const { isLoading: loading, updateProfile } = useUpdateProfile({
     onSuccess(_data, _variables, _context) {
-      Toastify.success(`User saved.`);
+      Toastify.success(`Profile updated successfully.`);
+      handleInvalidateProfile();
+      window.scrollTo(0, 0);
     },
     onError(error, _variables, _context) {
-      handleShowErrorMsg(error);
+      if (error.message?.includes('Current password is incorrect')) {
+        setFieldError(CRUUSER_KEY.CURRENT_PASSWORD, 'Current password is incorrect');
+        window.scrollTo(0, 0);
+      } else {
+        handleShowErrorMsg(error);
+      }
     },
   });
   const initialFormValue = useMemo(() => {
@@ -49,13 +56,14 @@ const EditProfile: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideAllDia
       roleName: item.userRole.role.displayName,
       projectNumber: item.projectNumber,
       startDate: item.startDate,
-      startDateTemp: item.startDate,
+      startDateTemp: null,
       endDate: item.endDate,
-      endDateTemp: item.endDate,
+      endDateTemp: null,
       isAllProjects: item.isAllProjects,
       userId: item.userId,
       roleId: item.roleId,
       delegatedUser: item.delegatedUser,
+      id: item.id || '',
     }));
 
     return {
@@ -73,7 +81,6 @@ const EditProfile: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideAllDia
       roles: getValueRoles(profile.roles),
       comments: profile.comments,
       delegateAccess: delegateAccess,
-      tempDelegateAccess: delegateAccess,
       delegatedAccess: profile.delegatedAccesses,
     };
   }, [profile]);
@@ -84,14 +91,22 @@ const EditProfile: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideAllDia
     updateProfile(payload);
   };
 
-  const { values, errors, touched, setFieldValue, getFieldProps, setFieldTouched, handleSubmit } =
-    useFormik<CRUUserFormValue>({
-      initialValues: initialFormValue,
-      validationSchema: editProfileFormSchema,
-      innerRef: formRef,
-      enableReinitialize: true,
-      onSubmit: handleFormSubmit,
-    });
+  const {
+    values,
+    errors,
+    touched,
+    setFieldValue,
+    getFieldProps,
+    setFieldTouched,
+    handleSubmit,
+    setFieldError,
+  } = useFormik<CRUUserFormValue>({
+    initialValues: initialFormValue,
+    validationSchema: editProfileFormSchema,
+    innerRef: formRef,
+    enableReinitialize: true,
+    onSubmit: handleFormSubmit,
+  });
 
   const formikProps: CRUUserFormikProps = {
     values,

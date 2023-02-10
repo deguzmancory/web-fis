@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { getRoleName, ROLE_NAME } from 'src/queries/Profile/helpers';
 import { Yup } from 'src/services';
 import { isEmpty } from 'src/validations';
@@ -67,4 +68,15 @@ export const getDelegateUserTypeOptions = (
     options.push(getOption(ROLE_NAME.FA));
   }
   return options;
+};
+
+export const getAfterDate = (
+  value: string | number | Date | dayjs.Dayjs,
+  currentDate: string | number | Date | dayjs.Dayjs
+): Date => {
+  if (dayjs(value).isAfter(dayjs(currentDate))) {
+    return dayjs(value).toDate();
+  } else {
+    return dayjs(currentDate).toDate();
+  }
 };

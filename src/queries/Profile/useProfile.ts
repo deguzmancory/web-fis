@@ -19,8 +19,8 @@ export function useProfile(
     queryFn: handleGetProfile,
     refetchOnMount: false,
     select: getResponseData,
-    enabled: false,
-    notifyOnChangeProps: ['data'],
+    enabled: true,
+    notifyOnChangeProps: ['data', 'isFetching'],
     ...options,
   });
 
