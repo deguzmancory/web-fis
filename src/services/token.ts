@@ -18,7 +18,12 @@ const getToken = () => {
   });
 };
 
+const forceRefreshToken = async () => {
+  return await Auth.currentAuthenticatedUser({ bypassCache: true });
+};
+
 export default {
   clearToken,
   getToken,
+  forceRefreshToken,
 };

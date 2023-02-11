@@ -12,7 +12,7 @@ import { useUpdateUser } from 'src/queries/Users/useUpdateUser';
 import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { IRootState } from 'src/redux/rootReducer';
-import { Navigator, Toastify } from 'src/services';
+import { Navigator, Toastify, TokenService } from 'src/services';
 import { deepKeys, scrollToTopError } from 'src/utils';
 import { localTimeToHawaii } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
@@ -98,7 +98,7 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
   });
 
   const { updateUser, isLoading: isLoadingUpdateUser } = useUpdateUser({
-    onSuccess(data, variables, context) {
+    onSuccess(_data, variables, _context) {
       Toastify.success(`Update User ${variables.username} successfully.`);
       handleInvalidateUser();
       handleInvalidateAllUser();
@@ -106,10 +106,11 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
       const isMyProfile = userId === profile.id;
       if (isMyProfile) {
         handleInvalidateProfile();
+        TokenService.forceRefreshToken();
         getMyProfile();
       }
     },
-    onError(error: Error, variables, context) {
+    onError(error: Error, _variables, _context) {
       if (error['error']?.includes('Already found an entry for the provided username')) {
         setFieldError(CRUUSER_KEY.USERNAME, 'The username specified already exists.');
         window.scrollTo(0, 0);

@@ -9,6 +9,7 @@ export function useProfile(
 ) {
   const handleGetProfile: QueryFunction<ApiResponseType<MyProfile>, API_QUERIES> = () =>
     responseWrapper<ApiResponseType<MyProfile>>(apiClient.getMyProfile);
+
   const {
     data,
     error,

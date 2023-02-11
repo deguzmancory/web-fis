@@ -31,7 +31,6 @@ const ActionsButton: React.FC<Props> = ({
             ...values.delegateAccess.slice(0, rowIndex),
             ...values.delegateAccess.slice(rowIndex + 1, values.delegateAccess.length),
           ];
-          // setFieldValue(CRUUSER_KEY.DELEGATE_ACCESS, newRows);
           setFieldValue(fieldName, newRows);
         },
         onCancel: () => {
