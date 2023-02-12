@@ -1,11 +1,11 @@
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { FormikProps, useFormik } from 'formik';
 import { Suspense, useMemo, useRef } from 'react';
-import ReactJson from 'react-json-view';
 import { connect } from 'react-redux';
 import { PATHS } from 'src/appConfig/paths';
 import { Accordion, Button, LoadingCommon } from 'src/components/common';
 import { useProfile } from 'src/queries';
+import { useUpdateProfile } from 'src/queries/Profile/useUpdateProfile';
 import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { IRootState } from 'src/redux/store';
@@ -16,18 +16,18 @@ import AuditInformation from '../CRUUSerContainer/AuditInformation';
 import { CRUUSER_KEY, USER_MODE } from '../CRUUSerContainer/enums';
 import GeneralInfo from '../CRUUSerContainer/GeneralInfo';
 import {
+  CRUUserFormikProps,
+  CRUUserFormValue,
   getValueRoles,
   getValueUserStatus,
   initialCRUUserFormValue,
 } from '../CRUUSerContainer/helper';
 import InternalComments from '../CRUUSerContainer/InternalComments';
 import Layout from '../CRUUSerContainer/layout';
-import { CRUUserFormikProps, CRUUserFormValue } from '../CRUUSerContainer/helper';
 import UserType from '../CRUUSerContainer/UserType';
+import { handleShowErrorMsg } from '../UsersManagement/helpers';
 import BreadcrumbsEditProfile from './breadcrumbs';
 import { editProfileFormSchema, formatEditProfilePayload } from './helpers';
-import { useUpdateProfile } from 'src/queries/Profile/useUpdateProfile';
-import { handleShowErrorMsg } from '../UsersManagement/helpers';
 
 const EditProfile: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideAllDialog }) => {
   const { profile, handleInvalidateProfile } = useProfile();
@@ -194,11 +194,6 @@ const EditProfile: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideAllDia
             </Button>
           </Stack>
         </Suspense>
-        <Box>
-          <Accordion isExpanded title="profile">
-            {profile && <ReactJson src={values} />}
-          </Accordion>
-        </Box>
       </Container>
     </Box>
   );

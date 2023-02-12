@@ -12,6 +12,7 @@ const Accordion: React.FC<Props> = ({
   isExpanded = false,
   subTitle,
   onToggle,
+  disabled,
   ...props
 }) => {
   const [expanded, setExpanded] = useState<boolean>(isExpanded);
@@ -21,7 +22,7 @@ const Accordion: React.FC<Props> = ({
   }, [isExpanded]);
 
   const handleToggle = () => {
-    // if (disabledExpand) return;
+    if (disabled) return;
     if (!!onToggle) {
       onToggle(!expanded);
     } else {
@@ -48,7 +49,8 @@ const Accordion: React.FC<Props> = ({
           className={cn(
             'cmp-accordion-item__header',
             { 'cmp-accordion-item__header--expanded': expanded === true },
-            { 'cmp-accordion-item__header--collapsed': expanded === false }
+            { 'cmp-accordion-item__header--collapsed': expanded === false },
+            { 'cmp-accordion-item__header--disabled': disabled === true }
           )}
         >
           <View isRow align="center">
@@ -61,9 +63,11 @@ const Accordion: React.FC<Props> = ({
             ) : (
               title
             )}
-            <Text size={14} className="ml-16">
-              Click here to {expanded ? 'Collapse' : 'Expand'}
-            </Text>
+            {!disabled && (
+              <Text size={14} className="ml-16">
+                Click here to {expanded ? 'Collapse' : 'Expand'}
+              </Text>
+            )}
           </View>
           <View isRow justify="flex-end" align="center">
             {subTitle && <View className="mr-16">{subTitle}</View>}
@@ -97,6 +101,7 @@ type Props = MotionProps & {
   isExpanded?: boolean;
   customIcon?: ReactSVGElement;
   onToggle?: (value: boolean) => void;
+  disabled?: boolean;
 };
 
 export default Accordion;

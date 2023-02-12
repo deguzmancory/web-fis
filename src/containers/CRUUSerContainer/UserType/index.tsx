@@ -9,8 +9,6 @@ import SelectUserType from './SelectUserType';
 const UserType: React.FC<Props> = ({ formikProps, isLoading }) => {
   const { values } = formikProps;
 
-  if (isAddUserMode(values.mode)) return null;
-
   return (
     <Box>
       <Typography variant="h3">User Type</Typography>
@@ -19,7 +17,7 @@ const UserType: React.FC<Props> = ({ formikProps, isLoading }) => {
       </Box>
 
       <Box>
-        <Accordion title={'Delegation'}>
+        <Accordion title={'Delegation'} disabled={isAddUserMode(values.mode)}>
           <GrantDelegation formikProps={formikProps} />
           <ReceivedDelegation formikProps={formikProps} />
         </Accordion>
