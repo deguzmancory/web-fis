@@ -39,35 +39,45 @@ export const getDelegateUserTypeOptions = (
   userExistedTypes: string[],
   currentUserTypes: string[]
 ) => {
-  // PI >> PI/SU
-  // SU >> PI/SU
+  // currentUserTypes >> userExistedTypes >> option
+  // PI >> SU >> PI
+  // SU >> PI >> SU
   // FA >> FA
 
   if (isEmpty(userExistedTypes) || isEmpty(currentUserTypes)) {
     return [];
   }
 
-  let options = [];
+  const options = [];
 
-  const getOption = (role: ROLE_NAME) => {
-    return {
+  const addOption = (role: ROLE_NAME) => {
+    options.push({
       label: getRoleName(role),
       value: role,
-    };
+    });
   };
 
-  if (currentUserTypes.includes(ROLE_NAME.PI) || currentUserTypes.includes(ROLE_NAME.SU)) {
+  if (currentUserTypes.includes(ROLE_NAME.PI) && userExistedTypes.includes(ROLE_NAME.SU)) {
+    addOption(ROLE_NAME.PI);
+  } else if (currentUserTypes.includes(ROLE_NAME.SU) && userExistedTypes.includes(ROLE_NAME.PI)) {
+    addOption(ROLE_NAME.SU);
+  } else if (
+    (currentUserTypes.includes(ROLE_NAME.PI) || currentUserTypes.includes(ROLE_NAME.SU)) &&
+    (userExistedTypes.includes(ROLE_NAME.PI) || userExistedTypes.includes(ROLE_NAME.SU))
+  ) {
     if (userExistedTypes.includes(ROLE_NAME.PI)) {
-      options.push(getOption(ROLE_NAME.PI));
-    }
-    if (userExistedTypes.includes(ROLE_NAME.SU)) {
-      options.push(getOption(ROLE_NAME.SU));
+      addOption(ROLE_NAME.PI);
+    } else {
+      addOption(ROLE_NAME.SU);
     }
   }
   if (currentUserTypes.includes(ROLE_NAME.FA) && userExistedTypes.includes(ROLE_NAME.FA)) {
-    options.push(getOption(ROLE_NAME.FA));
+    addOption(ROLE_NAME.FA);
   }
   return options;
+  // return options.filter((option, index, arr) => {
+  //   return arr.findIndex((opt) => opt.value === option.value) === index;
+  // });
 };
 
 export const getAfterDate = (
