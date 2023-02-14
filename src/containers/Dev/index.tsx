@@ -22,7 +22,7 @@ import RadioButton from 'src/components/common/RadioButton';
 import Signature from 'src/components/common/Signature';
 import './styles.scss';
 
-import { Container, Tooltip } from '@mui/material';
+import { Container, Divider, Tooltip } from '@mui/material';
 import { Location } from 'history';
 import { DateRange } from 'src/components/common/DateRangePicker';
 import { Toastify } from 'src/services';
@@ -31,6 +31,9 @@ import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSl
 import { IRootState } from 'src/redux/store';
 import { connect } from 'react-redux';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
+import TabsBar from 'src/components/common/TabsBar';
+import { getRoleName } from 'src/queries/Profile/helpers';
+import { useHistory, useLocation } from 'react-router-dom';
 
 const Dev: React.FC<Props> = ({ location, onShowDialog, onHideDialog, onHideAllDialog }) => {
   const [files, setFiles] = useState<File[]>();
@@ -42,6 +45,10 @@ const Dev: React.FC<Props> = ({ location, onShowDialog, onHideDialog, onHideAllD
   const [radio, setRadio] = useState<string>('');
   const [select, setSelect] = useState<string[]>([]);
   const [source, setSource] = useState<string>(null);
+  const [tab, setTab] = useState(null);
+  const currentLocation = useLocation();
+  const history = useHistory();
+  const query = new URLSearchParams(currentLocation.search);
 
   const handleCodeFieldChange = (value: string) => {
     console.log('value', value);
@@ -174,6 +181,36 @@ const Dev: React.FC<Props> = ({ location, onShowDialog, onHideDialog, onHideAllD
 
   return (
     <Container maxWidth="md">
+      <View className="mb-32 mt-32">
+        <TabsBar
+          tabsList={[
+            {
+              label: getRoleName('SU'),
+              value: 'SU',
+            },
+            {
+              label: getRoleName('PI'),
+              value: ' PI',
+            },
+            {
+              label: getRoleName('FA'),
+              value: 'FA',
+            },
+            {
+              label: getRoleName('CU'),
+              value: 'CU',
+            },
+          ]}
+          value={tab}
+          onChange={(e, value) => {
+            setTab(value);
+            query.set('tab', value);
+            history.push({ search: query.toString() });
+          }}
+        />
+        <Divider />
+      </View>
+
       <View className="mb-32">
         <h2>Banner</h2>
         <Banner

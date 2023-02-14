@@ -26,3 +26,7 @@ export enum USER_MODE {
   EDIT_PROFILE,
   ADD_USER,
 }
+
+export enum USER_TYPE_KEY {
+  TAB = 'tab',
+}

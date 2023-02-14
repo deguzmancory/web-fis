@@ -1,19 +1,20 @@
-import { Tab, Tabs } from '@mui/material';
+import { Box, Tab, Tabs } from '@mui/material';
 import React from 'react';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import { Text, View } from 'src/components/common';
 import { Callback } from 'src/redux/types';
 import './styles.scss';
 
-interface TabList {
+export interface TabList {
   label: string;
   value: string;
+  hidden?: boolean;
   count?: number;
 }
 
-const TabsBar: React.FC<Props> = ({ value, onChange, tabsList, buttons, color = 'primary' }) => {
+const TabsBar: React.FC<Props> = ({ value, tabsList, buttons, color = 'primary', onChange }) => {
   return (
-    <View isRow justify="space-between" className={`react-mui-tabs`}>
+    <Box display={'flex'} justifyContent={'space-between'}>
       <Tabs
         value={value}
         indicatorColor={color}
@@ -21,11 +22,17 @@ const TabsBar: React.FC<Props> = ({ value, onChange, tabsList, buttons, color = 
         onChange={onChange}
         variant="scrollable"
         scrollButtons="auto"
-        classes={{
-          indicator: `react-mui-tabs__indicator`,
+        sx={{
+          maxWidth: '92vw',
+        }}
+        TabIndicatorProps={{
+          sx: {
+            display: 'none',
+          },
         }}
       >
-        {tabsList.map((tab, index) => {
+        {tabsList.map((tab, _index) => {
+          if (tab.hidden) return <></>;
           return (
             <Tab
               label={
@@ -39,7 +46,16 @@ const TabsBar: React.FC<Props> = ({ value, onChange, tabsList, buttons, color = 
                 )
               }
               value={tab.value}
-              classes={{ root: `react-mui-tabs__tab`, selected: `react-mui-tabs__tab--selected` }}
+              sx={{
+                fontSize: '16px',
+                textTransform: 'capitalize',
+                padding: '16px 12px',
+                fontWeight: 'bold',
+                '&.Mui-selected': {
+                  color: COLOR_CODE.WHITE,
+                  bgcolor: COLOR_CODE.PRIMARY,
+                },
+              }}
               key={tab.value}
             />
           );
@@ -47,7 +63,7 @@ const TabsBar: React.FC<Props> = ({ value, onChange, tabsList, buttons, color = 
       </Tabs>
 
       {buttons}
-    </View>
+    </Box>
   );
 };
 
@@ -63,11 +79,11 @@ const tagStyles = {
 
 type Props = {
   value: string;
-  onChange: Callback;
   tabsList: TabList[];
   buttons?: React.ReactNode;
   color?: 'primary' | 'secondary';
   dataLength?: number;
+  onChange: Callback;
 };
 
 export default TabsBar;

@@ -32,7 +32,8 @@
     "Hawai",
     "noopener",
     "noreferrer",
-    "mrkdwn"
+    "mrkdwn",
+    "CRUUSER"
   ],
   "files.exclude": {
     "bin": true,
