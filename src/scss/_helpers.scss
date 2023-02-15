@@ -271,3 +271,9 @@ $fontFizes: 12, 14, 16, 18, 20, 22, 24, 32, 36, 40, 56;
 .full-height {
   height: 100% !important;
 }
+
+.element-title-bold {
+  & p {
+    font-weight: bold !important;
+  }
+}

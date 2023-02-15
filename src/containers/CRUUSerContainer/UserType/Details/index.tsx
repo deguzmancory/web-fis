@@ -62,13 +62,13 @@ const UserTypeDetails: React.FC<Props> = ({ formikProps }) => {
         case ROLE_NAME.FA:
           return <FADetails />;
         case ROLE_NAME.CU:
-          return <CUDetails />;
+          return <CUDetails formikProps={formikProps} />;
         default:
           return null;
       }
     }
     return null;
-  }, [tab, hasPermission]);
+  }, [hasPermission, tab, formikProps]);
 
   if (isEmpty(userRoles)) return null;
 
@@ -82,7 +82,9 @@ const UserTypeDetails: React.FC<Props> = ({ formikProps }) => {
       <Divider />
       {tabComponent && (
         <Box>
-          <AnimatedTabPanel uniqKey={`userType-${tab}`}>{tabComponent}</AnimatedTabPanel>
+          <AnimatedTabPanel uniqKey={`userType-${tab}`} transitionTime={0.2}>
+            {tabComponent}
+          </AnimatedTabPanel>
         </Box>
       )}
     </Layout>

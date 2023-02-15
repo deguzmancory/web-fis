@@ -71,7 +71,7 @@ const Group: React.FC<RadioGroupProps> = ({
       className={containerClassName}
       required={required}
     >
-      <View isRow align="center" className="py-8">
+      <View isRow align="center" className="pb-8">
         {options?.map((option, index) => (
           <RadioButton
             key={`radio-${name}-${index}`}
