@@ -2,6 +2,9 @@ import {
   AuditInformation,
   DelegateAccess,
   DelegatedAccess,
+  FADetail,
+  PIDetail,
+  SUDetail,
   User,
   USER_STATUS,
 } from '../Users/types';
@@ -15,9 +18,9 @@ export interface MyProfile {
   defaultUserType: string;
   email: string;
   firstName: string;
-  fisFaInfo: FisFAInfo; //TODO: tin_pham update type
-  fisPiInfo: FisFIInfo; //TODO: tin_pham update type
-  fisSuInfo: FisFUInfo; //TODO: tin_pham update type
+  fisFaInfo: FADetail;
+  fisPiInfo: PIDetail;
+  fisSuInfo: SUDetail;
   fullName: string;
   id: string;
   isDhUser: boolean;
@@ -48,56 +51,6 @@ export interface ProfileRole {
   displayName: string;
   id: string;
   name: string;
-}
-
-export interface FisFAInfo {
-  faCode: string;
-  sendInvoiceTo: string;
-  sendInvoiceToEmail: string;
-  department: string;
-  addressStreet: string;
-  addressCity: string;
-  addressState: string;
-  addressZip: string;
-  addressZip4: string;
-  addressCountry: string;
-  remittanceName: string;
-  remittancePhoneNumber: string;
-}
-
-export interface FisFIInfo {
-  piCode: string;
-  directInquiriesTo: string;
-  phoneNumber: string;
-  faStaffToReview: string;
-  sendInvoiceTo: string;
-  sendInvoiceToEmail: string;
-  department: string;
-  addressStreet: string;
-  addressCity: string;
-  addressState: string;
-  addressZip: string;
-  addressZip4: string;
-  addressCountry: string;
-  remittanceName: string;
-  remittancePhoneNumber: string;
-}
-
-export interface FisFUInfo {
-  directInquiriesTo: string;
-  faStaffToReview: string;
-  sendInvoiceTo: string;
-  sendInvoiceToEmail: string;
-  phoneNumber: string;
-  department: string;
-  addressStreet: string;
-  addressCity: string;
-  addressState: string;
-  addressZip: string;
-  addressZip4: string;
-  addressCountry: string;
-  remittanceName: string;
-  remittancePhoneNumber: string;
 }
 
 /*** Update Current Role Profile ***/
@@ -168,7 +121,7 @@ export interface UpdateProfilePayload {
   currentPassword: string;
   roles: string[];
   delegateAccess: DelegateAccess[];
-  fisFaInfo: FisFAInfo;
-  fisPiInfo: FisFIInfo;
-  fisSuInfo: FisFUInfo;
+  fisFaInfo: FADetail;
+  fisPiInfo: PIDetail;
+  fisSuInfo: SUDetail;
 }

@@ -13,3 +13,5 @@ export { default as Toastify } from './toastify';
 export { default as TokenService } from './token';
 export { default as XApiKeyService } from './xApiKey';
 export { default as Yup } from './yup';
+export { default as ZipCodeService } from './zipCode';
+export { default as StateService } from './states';

@@ -85,6 +85,9 @@ export type AddUserPayload = {
   defaultUserType: UserDetail['defaultUserType'];
   roles: string[];
   delegateAccess: DelegateAccess[];
+  fisFaInfo: FADetail;
+  fisPiInfo: PIDetail;
+  fisSuInfo: SUDetail;
 };
 
 export type UpdateUserPayload = {
@@ -102,6 +105,9 @@ export type UpdateUserPayload = {
   isDhUser: UserDetail['isDhUser'];
   status: UserDetail['status'];
   delegateAccess: DelegateAccess[];
+  fisFaInfo: FADetail;
+  fisPiInfo: PIDetail;
+  fisSuInfo: SUDetail;
 };
 
 export type UserRole = {
@@ -143,8 +149,9 @@ export type UserDetail = {
   }[];
   delegateAccesses: DelegateAccess[];
   delegatedAccesses: DelegatedAccess[];
-  fisFaInfo: any; //TODO: tin_pham update type
-  fisPiInfo: any; //TODO: tin_pham update type
+  fisFaInfo: FADetail;
+  fisPiInfo: PIDetail;
+  fisSuInfo: SUDetail;
 
   // Audit info
   userAuditTrails: AuditInformation[];
@@ -223,6 +230,37 @@ export type DelegatedAccess = {
     };
   };
 };
+
+export interface SharedUserTypeDetails {
+  sendInvoiceTo: string;
+  sendInvoiceToEmail: string;
+  department: string;
+  addressStreet: string;
+  addressCity: string;
+  addressState: string;
+  addressZip: string;
+  addressZip4: string;
+  addressCountry: string;
+  remittanceName: string;
+  remittancePhoneNumber: string;
+}
+
+export interface FADetail extends SharedUserTypeDetails {
+  faCode: string;
+}
+
+export interface PIDetail extends SharedUserTypeDetails {
+  piCode: string;
+  directInquiriesTo: string;
+  phoneNumber: string;
+  faStaffToReview: string;
+}
+
+export interface SUDetail extends SharedUserTypeDetails {
+  directInquiriesTo: string;
+  phoneNumber: string;
+  faStaffToReview: string;
+}
 
 export type UpdateUserLastPasswordChangedParams = {
   username: User['username'];

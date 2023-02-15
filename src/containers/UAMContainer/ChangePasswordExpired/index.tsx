@@ -128,7 +128,6 @@ const ChangePasswordExpired: React.FC<Props> = () => {
 
   const { logout, isLoggingOut } = useLogout();
   const handleBackToLogin = () => {
-    console.log('values: ', values);
     logout();
   };
 
@@ -201,7 +200,7 @@ const ChangePasswordExpired: React.FC<Props> = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <Button type="submit" isLoading={loading} isFull>
+                <Button type="submit" isLoading={loading} isFull className="mb-8">
                   Submit
                 </Button>
                 <Button

@@ -5,8 +5,6 @@ import AddDelegation from './addDelegation';
 import TableGrantDelegation from './table';
 
 const GrantDelegation: React.FC<Props> = ({ formikProps }) => {
-  // const { values } = formikProps;
-
   return (
     <Box>
       <Typography variant="body1" mb={2}>

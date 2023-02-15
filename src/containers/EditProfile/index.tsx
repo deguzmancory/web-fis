@@ -20,6 +20,7 @@ import GeneralInfo from '../CRUUSerContainer/GeneralInfo';
 import {
   CRUUserFormikProps,
   CRUUserFormValue,
+  getUncontrolledInputFieldProps,
   getValueRoles,
   getValueUserStatus,
   initialCRUUserFormValue,
@@ -126,6 +127,11 @@ const EditProfile: React.FC<Props> = ({
     setFieldValue,
     getFieldProps,
     setFieldTouched,
+    getUncontrolledFieldProps: getUncontrolledInputFieldProps({
+      values,
+      setFieldTouched,
+      setFieldValue,
+    }),
   };
 
   const handleScrollToTopError = () => {

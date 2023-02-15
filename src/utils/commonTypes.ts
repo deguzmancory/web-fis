@@ -15,4 +15,5 @@ export type CommonFormikProps<T> = {
     touched?: boolean,
     shouldValidate?: boolean
   ) => Promise<void> | Promise<FormikErrors<T>>;
+  getUncontrolledFieldProps?: (name: string, options?: { onBlur: (name, values) => void }) => any;
 };

@@ -26,6 +26,7 @@ import {
   CRUUserFormValue,
   formatPayloadSubmit,
   formatPayloadUpdate,
+  getUncontrolledInputFieldProps,
   getValueRoles,
   getValueUserStatus,
   initialCRUUserFormValue,
@@ -183,6 +184,9 @@ const CRUUserContainer: React.FC<Props> = ({
         comments: user.comments,
         delegateAccess: delegateAccess,
         delegatedAccess: user.delegatedAccesses,
+        fisFaInfo: user.fisFaInfo,
+        fisPiInfo: user.fisPiInfo,
+        fisSuInfo: user.fisSuInfo,
       };
     } else {
       return {
@@ -224,6 +228,11 @@ const CRUUserContainer: React.FC<Props> = ({
     setFieldValue,
     getFieldProps,
     setFieldTouched,
+    getUncontrolledFieldProps: getUncontrolledInputFieldProps({
+      values,
+      setFieldTouched,
+      setFieldValue,
+    }),
   };
 
   return (

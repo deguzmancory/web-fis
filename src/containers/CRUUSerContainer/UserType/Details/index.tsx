@@ -13,7 +13,7 @@ import FADetails from './FADetails';
 import PIDetails from './PIDetails';
 import SUDetails from './SUDetails';
 
-const UserTypeDetails: React.FC<Props> = ({ formikProps }) => {
+const UserTypeDetails: React.FC<Props> = ({ formikProps, isLoading }) => {
   const location = useLocation();
   const history = useHistory();
 
@@ -56,11 +56,11 @@ const UserTypeDetails: React.FC<Props> = ({ formikProps }) => {
     if (hasPermission(tab)) {
       switch (tab) {
         case ROLE_NAME.SU:
-          return <SUDetails />;
+          return <SUDetails formikProps={formikProps} isLoading={isLoading} />;
         case ROLE_NAME.PI:
-          return <PIDetails />;
+          return <PIDetails formikProps={formikProps} isLoading={isLoading} />;
         case ROLE_NAME.FA:
-          return <FADetails />;
+          return <FADetails formikProps={formikProps} isLoading={isLoading} />;
         case ROLE_NAME.CU:
           return <CUDetails formikProps={formikProps} />;
         default:
@@ -68,7 +68,7 @@ const UserTypeDetails: React.FC<Props> = ({ formikProps }) => {
       }
     }
     return null;
-  }, [hasPermission, tab, formikProps]);
+  }, [hasPermission, tab, formikProps, isLoading]);
 
   if (isEmpty(userRoles)) return null;
 
@@ -93,5 +93,6 @@ const UserTypeDetails: React.FC<Props> = ({ formikProps }) => {
 
 type Props = {
   formikProps: CRUUserFormikProps;
+  isLoading: boolean;
 };
 export default UserTypeDetails;

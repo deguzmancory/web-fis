@@ -26,7 +26,14 @@ import {
   User,
 } from 'src/queries/Users/types';
 import { newCancelToken, stringify } from 'src/utils';
-import { DelegationKeyService, RoleService, Toastify, TokenService, XApiKeyService } from '.';
+import {
+  DelegationKeyService,
+  RoleService,
+  Toastify,
+  TokenService,
+  XApiKeyService,
+  ZipCodeService,
+} from '.';
 
 axios.defaults.withCredentials = true;
 
@@ -35,9 +42,6 @@ const create = (baseURL = appConfig.API_URL) => {
   // Create and configure an apisauce-based api object.
   //
 
-  // const delegationKey = DelegationKeyService.getDelegationKey();
-  // console.log('delegationKey: ', delegationKey);
-
   const api = apisauce.create({
     baseURL,
     headers: {
@@ -45,9 +49,6 @@ const create = (baseURL = appConfig.API_URL) => {
       Pragma: 'no-cache',
       Expires: 0,
       Accept: 'application/json',
-      // ...(delegationKey && {
-      // 'x-delegation-token': delegationKey ? delegationKey : null,
-      // }),
     },
     timeout: appConfig.CONNECTION_TIMEOUT,
   });
@@ -170,6 +171,7 @@ const create = (baseURL = appConfig.API_URL) => {
 
   // ====================== Content ======================
   const getContents = () => api.get('/account-svc/v1/contents', {}, newCancelToken());
+  const getCityStateByZipCode = (params) => ZipCodeService.getPopulatedCityStateFromZipCode(params);
 
   // ====================== File ======================
   const getPresignedUserServiceUrl = (params: GetPresignedPayload) => {
@@ -302,6 +304,7 @@ const create = (baseURL = appConfig.API_URL) => {
 
     // ====================== Content ======================
     getContents,
+    getCityStateByZipCode,
 
     // ====================== Profile ======================
     getMyProfile,

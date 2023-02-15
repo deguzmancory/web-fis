@@ -38,7 +38,7 @@ export default ({
         <PhoneInput
           international
           defaultCountry={defaultCountryCode}
-          className={cn({
+          className={cn('cmp-phoneinput__input', {
             'cmp-phoneinput__input--error': !isEmpty(errorMessage),
           })}
           onChange={handleChange}

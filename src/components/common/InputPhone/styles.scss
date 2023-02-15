@@ -2,6 +2,16 @@
 @use 'src/scss/mixin' as *;
 
 .cmp-phoneinput {
+  &__input {
+    height: $input-small;
+
+    input {
+      height: $input-small;
+      font-size: $body-size;
+      padding-top: 2px;
+    }
+  }
+
   &__input--error {
     .PhoneInputCountry,
     input {
@@ -13,7 +23,6 @@
     .PhoneInputCountry,
     input {
       border-color: $color-danger;
-      // box-shadow: $error-shadow;
     }
   }
 }

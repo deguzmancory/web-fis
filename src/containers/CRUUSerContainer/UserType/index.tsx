@@ -25,7 +25,7 @@ const UserType: React.FC<Props> = ({ formikProps, isLoading }) => {
       </Box>
 
       <Box>
-        <UserTypeDetails formikProps={formikProps} />
+        <UserTypeDetails formikProps={formikProps} isLoading={isLoading} />
       </Box>
     </Box>
   );

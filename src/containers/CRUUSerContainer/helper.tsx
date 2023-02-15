@@ -1,7 +1,16 @@
 import dayjs from 'dayjs';
+import { get } from 'lodash';
 import { MyProfile } from 'src/queries';
 import { getRoleNamePayload } from 'src/queries/Profile/helpers';
-import { DelegatedAccess, UserDetail, USER_STATUS } from 'src/queries/Users/types';
+import {
+  DelegatedAccess,
+  FADetail,
+  PIDetail,
+  SharedUserTypeDetails,
+  SUDetail,
+  UserDetail,
+  USER_STATUS,
+} from 'src/queries/Users/types';
 import { ErrorService, Yup } from 'src/services';
 import { getTitleCase } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
@@ -10,20 +19,6 @@ import { isEmpty } from 'src/validations';
 import { USER_MODE } from './enums';
 
 /*** Types & Interfaces ***/
-export type DelegateAccessFormValue = {
-  isEdit: boolean;
-  delegatedUserId: string;
-  username: string;
-  fullName: string;
-  roleName: string;
-  projectNumber: string;
-  startDate: string;
-  startDateTemp: string;
-  endDate: string;
-  endDateTemp: string;
-  isAllProjects: boolean;
-  id?: string;
-}[];
 
 export interface CRUUserFormValue {
   mode: USER_MODE;
@@ -43,17 +38,48 @@ export interface CRUUserFormValue {
 
   // User Type
   delegateAccess: DelegateAccessFormValue;
-
   delegatedAccess: DelegatedAccess[];
   roles: string[];
+  fisSuInfo: SUDetail;
+  fisPiInfo: PIDetail;
+  fisFaInfo: FADetail;
 
   // Comments
   comments: UserDetail['comments'];
 }
 
+export type DelegateAccessFormValue = {
+  isEdit: boolean;
+  delegatedUserId: string;
+  username: string;
+  fullName: string;
+  roleName: string;
+  projectNumber: string;
+  startDate: string;
+  startDateTemp: string;
+  endDate: string;
+  endDateTemp: string;
+  isAllProjects: boolean;
+  id?: string;
+}[];
+
 export type CRUUserFormikProps = CommonFormikProps<CRUUserFormValue>;
 
 /*** Constants ***/
+const initialSharedUserTypeFormValue: SharedUserTypeDetails = {
+  sendInvoiceTo: '',
+  sendInvoiceToEmail: '',
+  department: '',
+  addressStreet: '',
+  addressCity: '',
+  addressState: '',
+  addressZip: '',
+  addressZip4: '',
+  addressCountry: '',
+  remittanceName: '',
+  remittancePhoneNumber: '',
+};
+
 export const initialCRUUserFormValue: CRUUserFormValue = {
   mode: null,
 
@@ -75,8 +101,40 @@ export const initialCRUUserFormValue: CRUUserFormValue = {
   delegatedAccess: [],
   roles: [],
 
+  fisFaInfo: {
+    ...initialSharedUserTypeFormValue,
+    faCode: '',
+  },
+  fisPiInfo: {
+    ...initialSharedUserTypeFormValue,
+    piCode: '',
+    directInquiriesTo: '',
+    phoneNumber: '',
+    faStaffToReview: '',
+  },
+  fisSuInfo: {
+    ...initialSharedUserTypeFormValue,
+    directInquiriesTo: '',
+    phoneNumber: '',
+    faStaffToReview: '',
+  },
+
   // Comments
   comments: '',
+};
+
+export const sharedUserDetailFormSchema = {
+  sendInvoiceTo: Yup.string().nullable().optional(),
+  sendInvoiceToEmail: Yup.string().notTrimmable().email().nullable().optional(),
+  department: Yup.string().nullable().optional(),
+  addressStreet: Yup.string().nullable().optional(),
+  addressCity: Yup.string().nullable().optional(),
+  addressState: Yup.string().nullable().optional(),
+  addressZip: Yup.string().nullable().optional(),
+  addressZip4: Yup.string().nullable().optional(),
+  addressCountry: Yup.string().nullable().optional(),
+  remittanceName: Yup.string().nullable().optional(),
+  remittancePhoneNumber: Yup.string().nullable().optional(),
 };
 
 export const cRUUserFormSchema = Yup.object().shape({
@@ -95,14 +153,44 @@ export const cRUUserFormSchema = Yup.object().shape({
     .of(Yup.string().required().typeError(ErrorService.MESSAGES.required))
     .min(1, 'Please select at least 1 user type'),
 
+  fisFaInfo: Yup.object()
+    .nullable()
+    .shape({
+      ...sharedUserDetailFormSchema,
+      faCode: Yup.string().nullable().optional(),
+    }),
+  fisPiInfo: Yup.object()
+    .nullable()
+    .shape({
+      ...sharedUserDetailFormSchema,
+      piCode: Yup.string().nullable().optional(),
+      directInquiriesTo: Yup.string().nullable().optional(),
+      phoneNumber: Yup.string().nullable().optional(),
+      faStaffToReview: Yup.string().nullable().optional(),
+    }),
+  fisSuInfo: Yup.object()
+    .nullable()
+    .shape({
+      ...sharedUserDetailFormSchema,
+      directInquiriesTo: Yup.string().nullable().optional(),
+      phoneNumber: Yup.string().nullable().optional(),
+      faStaffToReview: Yup.string().nullable().optional(),
+    }),
+
   // Comments
   comment: Yup.string().nullable(),
 });
 
 /*** Functions ***/
 export const getErrorMessage = (fieldName: string, { touched, errors }) => {
+  if (!fieldName || !touched || !errors) return '';
+
+  const error = get(errors, fieldName);
+
+  return get(touched, fieldName) && error ? error : '';
+
   // eslint-disable-next-line security/detect-object-injection
-  return touched[fieldName] && errors[fieldName] ? errors[fieldName] : '';
+  // return touched[fieldName] && errors[fieldName] ? errors[fieldName] : '';
 };
 
 export const getValueUserStatus = (status: UserDetail['status']) => {
@@ -153,6 +241,9 @@ export const formatPayloadSubmit = (values: CRUUserFormValue) => {
     username: values.username.toLowerCase(),
     status: getPayloadUserStatus(values.status),
     delegateAccess: getPayloadDelegateAccess(values.delegateAccess),
+    fisFaInfo: values.fisFaInfo,
+    fisPiInfo: values.fisPiInfo,
+    fisSuInfo: values.fisSuInfo,
   };
 
   delete payload.mode;
@@ -177,6 +268,9 @@ export const formatPayloadUpdate = (values: CRUUserFormValue, user: UserDetail) 
     isDhUser: values.email.includes('datahouse.com') ? true : false,
     status: getPayloadUserStatus(values.status),
     delegateAccess: getPayloadDelegateAccess(values.delegateAccess),
+    fisFaInfo: values.fisFaInfo,
+    fisPiInfo: values.fisPiInfo,
+    fisSuInfo: values.fisSuInfo,
   };
 
   delete payload.mode;
@@ -198,3 +292,22 @@ export const isAddUserMode = (mode: USER_MODE) => {
 export const isEditProfileMode = (mode: USER_MODE) => {
   return mode === USER_MODE.EDIT_PROFILE;
 };
+
+export const getUncontrolledInputFieldProps =
+  ({ values, setFieldTouched, setFieldValue }) =>
+  (name: string, options: { onBlur: (name, values) => void }) => {
+    return {
+      name,
+      defaultValue: get(values, name),
+      onBlur: (event) => {
+        const value = event.target.value;
+
+        if (options && options.onBlur) {
+          return options.onBlur(name, value);
+        }
+
+        setFieldTouched(name, true);
+        setFieldValue(name, value);
+      },
+    };
+  };

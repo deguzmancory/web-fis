@@ -6,6 +6,7 @@ import {
   CRUUserFormValue,
   getPayloadDelegateAccess,
   getPayloadUserStatus,
+  sharedUserDetailFormSchema,
 } from '../CRUUSerContainer/helper';
 
 export const editProfileFormSchema = Yup.object().shape(
@@ -49,6 +50,24 @@ export const editProfileFormSchema = Yup.object().shape(
       .of(Yup.string().required().typeError(ErrorService.MESSAGES.required))
       .min(1, 'Please select at least 1 user type'),
 
+    fisFaInfo: Yup.object().shape({
+      ...sharedUserDetailFormSchema,
+      faCode: Yup.string().nullable().optional(),
+    }),
+    fisPiInfo: Yup.object().shape({
+      ...sharedUserDetailFormSchema,
+      piCode: Yup.string().nullable().optional(),
+      directInquiriesTo: Yup.string().nullable().optional(),
+      phoneNumber: Yup.string().nullable().optional(),
+      faStaffToReview: Yup.string().nullable().optional(),
+    }),
+    fisSuInfo: Yup.object().shape({
+      ...sharedUserDetailFormSchema,
+      directInquiriesTo: Yup.string().nullable().optional(),
+      phoneNumber: Yup.string().nullable().optional(),
+      faStaffToReview: Yup.string().nullable().optional(),
+    }),
+
     // Comments
     comment: Yup.string().nullable(),
   },
@@ -76,9 +95,9 @@ export const formatEditProfilePayload = (
     delegateAccess: getPayloadDelegateAccess(values.delegateAccess),
     newPassword: values.newPassword || undefined,
     currentPassword: values.currentPassword || undefined,
-    fisFaInfo: null, //TODO: huy_dang implement during tabs sections
-    fisPiInfo: null, //TODO: huy_dang implement during tabs sections
-    fisSuInfo: null, //TODO: huy_dang implement during tabs sections
+    fisFaInfo: values.fisFaInfo,
+    fisPiInfo: values.fisPiInfo,
+    fisSuInfo: values.fisSuInfo,
   };
 
   delete payload.mode;

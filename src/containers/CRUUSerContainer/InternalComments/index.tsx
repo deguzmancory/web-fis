@@ -5,7 +5,7 @@ import { CRUUSER_KEY } from '../enums';
 import { CRUUserFormikProps, getErrorMessage } from '../helper';
 
 const InternalComments: React.FC<Props> = ({ formikProps, isLoading }) => {
-  const { errors, touched, getFieldProps } = formikProps;
+  const { errors, touched, getUncontrolledFieldProps } = formikProps;
 
   const _getErrorMessage = (fieldName: CRUUSER_KEY) => {
     return getErrorMessage(fieldName, { touched, errors });
@@ -18,7 +18,7 @@ const InternalComments: React.FC<Props> = ({ formikProps, isLoading }) => {
           <TextArea
             label={'Internal Comments'}
             errorMessage={_getErrorMessage(CRUUSER_KEY.COMMENTS)}
-            {...getFieldProps(CRUUSER_KEY.COMMENTS)}
+            {...getUncontrolledFieldProps(CRUUSER_KEY.COMMENTS)}
             disabled={isLoading}
           />
         </Grid>

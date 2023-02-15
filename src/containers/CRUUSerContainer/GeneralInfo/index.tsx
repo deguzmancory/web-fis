@@ -7,7 +7,15 @@ import { CRUUSER_KEY } from '../enums';
 import { CRUUserFormikProps, getErrorMessage, isEditProfileMode, isEditUserMode } from '../helper';
 
 const GeneralInfo: React.FC<Props> = ({ formikProps, isLoading }) => {
-  const { values, errors, touched, getFieldProps, setFieldValue, setFieldTouched } = formikProps;
+  const {
+    values,
+    errors,
+    touched,
+    getFieldProps,
+    setFieldValue,
+    setFieldTouched,
+    getUncontrolledFieldProps,
+  } = formikProps;
 
   const isInEditUserMode = isEditUserMode(values.mode);
   const isInEditProfileMode = isEditProfileMode(values.mode);
@@ -25,7 +33,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, isLoading }) => {
               label={'First Name'}
               required
               errorMessage={_getErrorMessage(CRUUSER_KEY.FIRST_NAME)}
-              {...getFieldProps(CRUUSER_KEY.FIRST_NAME)}
+              {...getUncontrolledFieldProps(CRUUSER_KEY.FIRST_NAME)}
               disabled={isLoading}
             />
           </Grid>
@@ -34,7 +42,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, isLoading }) => {
               label={'Last Name'}
               required
               errorMessage={_getErrorMessage(CRUUSER_KEY.LAST_NAME)}
-              {...getFieldProps(CRUUSER_KEY.LAST_NAME)}
+              {...getUncontrolledFieldProps(CRUUSER_KEY.LAST_NAME)}
               disabled={isLoading}
             />
           </Grid>
@@ -46,7 +54,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, isLoading }) => {
               infoTooltipMessage="Middle Initial"
               infoTooltipPlacement="right-end"
               errorMessage={_getErrorMessage(CRUUSER_KEY.MIDDLE_NAME)}
-              {...getFieldProps(CRUUSER_KEY.MIDDLE_NAME)}
+              {...getUncontrolledFieldProps(CRUUSER_KEY.MIDDLE_NAME)}
               disabled={isLoading}
             />
           </Grid>
@@ -56,7 +64,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, isLoading }) => {
               label={'Username'}
               required
               errorMessage={_getErrorMessage(CRUUSER_KEY.USERNAME)}
-              {...getFieldProps(CRUUSER_KEY.USERNAME)}
+              {...getUncontrolledFieldProps(CRUUSER_KEY.USERNAME)}
               disabled={isInEditProfileMode || isLoading}
             />
           </Grid>
@@ -65,7 +73,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, isLoading }) => {
               label={'Email'}
               required
               errorMessage={_getErrorMessage(CRUUSER_KEY.EMAIL)}
-              {...getFieldProps(CRUUSER_KEY.EMAIL)}
+              {...getUncontrolledFieldProps(CRUUSER_KEY.EMAIL)}
               disabled={isLoading}
             />
           </Grid>
@@ -99,7 +107,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, isLoading }) => {
                   autoComplete="current-password"
                   placeholder="Current Password"
                   errorMessage={_getErrorMessage(CRUUSER_KEY.CURRENT_PASSWORD)}
-                  {...getFieldProps(CRUUSER_KEY.CURRENT_PASSWORD)}
+                  {...getUncontrolledFieldProps(CRUUSER_KEY.CURRENT_PASSWORD)}
                 />
               </Grid>
               <Grid item xs={4}>
@@ -120,16 +128,15 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, isLoading }) => {
                   label={'Password Changed'}
                   // required
                   errorMessage={_getErrorMessage(CRUUSER_KEY.PASSWORD_SET_DATE)}
-                  {...getFieldProps(CRUUSER_KEY.PASSWORD_SET_DATE)}
+                  {...getUncontrolledFieldProps(CRUUSER_KEY.PASSWORD_SET_DATE)}
                   disabled
                 />
               </Grid>
               <Grid item xs={4}>
                 <Input
                   label={'Last Login'}
-                  // required
                   errorMessage={_getErrorMessage(CRUUSER_KEY.LAST_LOGIN_DATE)}
-                  {...getFieldProps(CRUUSER_KEY.LAST_LOGIN_DATE)}
+                  {...getUncontrolledFieldProps(CRUUSER_KEY.LAST_LOGIN_DATE)}
                   disabled
                 />
               </Grid>
