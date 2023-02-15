@@ -76,7 +76,6 @@ export const getDelegateUserTypeOptions = (
 
   if (currentUserTypes.includes(ROLE_NAME.FA) && userExistedTypes.includes(ROLE_NAME.FA)) {
     addOption(ROLE_NAME.FA);
-    console.log('e');
   }
 
   return options;

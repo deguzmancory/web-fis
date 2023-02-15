@@ -1,6 +1,7 @@
 import apisauce from 'apisauce';
 import { Auth } from 'aws-amplify';
 import axios from 'axios';
+import { delay } from 'lodash';
 import appConfig from 'src/appConfig';
 import {
   GetTokenDelegationPayload,
@@ -25,7 +26,7 @@ import {
   User,
 } from 'src/queries/Users/types';
 import { newCancelToken, stringify } from 'src/utils';
-import { DelegationKeyService, TokenService, XApiKeyService } from '.';
+import { DelegationKeyService, Toastify, TokenService, XApiKeyService } from '.';
 
 axios.defaults.withCredentials = true;
 
@@ -66,6 +67,44 @@ const create = (baseURL = appConfig.API_URL) => {
         return Promise.resolve(config);
       });
   });
+
+  api.axiosInstance.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    async (error) => {
+      const originalRequest = error.config;
+
+      //handle 401 error
+      //force refresh token & retry to calling api
+      if (error.response.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
+
+        await TokenService.forceRefreshToken();
+
+        //re-call api here will trigger the interception.request again => interceptors.response
+        const response = await api.axiosInstance(originalRequest);
+
+        return response;
+      } else if (error.response.status === 401 && originalRequest._retry) {
+        Toastify.error('Token cannot be refreshed. Please try to login again.');
+
+        delay(() => {
+          signOut();
+          TokenService.clearToken();
+          DelegationKeyService.clearDelegationKey();
+        }, 2000);
+
+        return;
+      }
+
+      //handle other errors code here
+      //
+
+      return Promise.reject(error);
+    }
+  );
+
   const getRoot = () => api.get('');
 
   // ====================== Auth ======================
