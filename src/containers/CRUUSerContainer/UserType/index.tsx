@@ -2,7 +2,6 @@ import { Box, Typography } from '@mui/material';
 import React from 'react';
 import { Accordion } from 'src/components/common';
 import { CRUUserFormikProps, isAddUserMode } from '../helper';
-import Layout from '../layout';
 import UserTypeDetails from './Details';
 import GrantDelegation from './GrantDelegation';
 import ReceivedDelegation from './ReceivedDelegation';
@@ -25,13 +24,9 @@ const UserType: React.FC<Props> = ({ formikProps, isLoading }) => {
         </Accordion>
       </Box>
 
-      <Layout
-        sx={{
-          padding: '0 0 16px 0',
-        }}
-      >
+      <Box>
         <UserTypeDetails formikProps={formikProps} />
-      </Layout>
+      </Box>
     </Box>
   );
 };

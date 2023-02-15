@@ -16,7 +16,7 @@ const TabsBar: React.FC<Props> = ({ value, tabsList, buttons, color = 'primary',
   return (
     <Box display={'flex'} justifyContent={'space-between'}>
       <Tabs
-        value={value}
+        value={value || false}
         indicatorColor={color}
         textColor={color}
         onChange={onChange}
@@ -32,7 +32,7 @@ const TabsBar: React.FC<Props> = ({ value, tabsList, buttons, color = 'primary',
         }}
       >
         {tabsList.map((tab, _index) => {
-          if (tab.hidden) return <></>;
+          if (tab.hidden) return null;
           return (
             <Tab
               label={

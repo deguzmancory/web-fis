@@ -4,8 +4,10 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { AnimatedTabPanel } from 'src/components/common';
 import TabsBar, { TabList } from 'src/components/common/TabsBar';
 import { getRoleName, ROLE_NAME } from 'src/queries/Profile/helpers';
+import { isEmpty } from 'src/validations';
 import { USER_TYPE_KEY } from '../../enums';
 import { CRUUserFormikProps } from '../../helper';
+import Layout from '../../layout';
 import CUDetails from './CUDetails';
 import FADetails from './FADetails';
 import PIDetails from './PIDetails';
@@ -17,13 +19,13 @@ const UserTypeDetails: React.FC<Props> = ({ formikProps }) => {
 
   const query = new URLSearchParams(location.search);
   const tab = (query.get(USER_TYPE_KEY.TAB) as ROLE_NAME) || '';
+  const userRoles = formikProps.values.roles;
 
   const onChangeTab = (_e, value) => {
     query.set(USER_TYPE_KEY.TAB, value);
     history.push({ search: query.toString() });
   };
 
-  const userRoles = formikProps.values.roles;
   const hasPermission = useCallback(
     (role: ROLE_NAME | '') => userRoles.includes(role),
     [userRoles]
@@ -68,14 +70,22 @@ const UserTypeDetails: React.FC<Props> = ({ formikProps }) => {
     return null;
   }, [tab, hasPermission]);
 
+  if (isEmpty(userRoles)) return null;
+
   return (
-    <Box>
+    <Layout
+      sx={{
+        padding: '0 0 16px 0',
+      }}
+    >
       <TabsBar tabsList={tabListOptions} value={tab} onChange={onChangeTab} />
       <Divider />
-      <Box>
-        <AnimatedTabPanel key={`userType-${tab}`}>{tabComponent}</AnimatedTabPanel>
-      </Box>
-    </Box>
+      {tabComponent && (
+        <Box>
+          <AnimatedTabPanel uniqKey={`userType-${tab}`}>{tabComponent}</AnimatedTabPanel>
+        </Box>
+      )}
+    </Layout>
   );
 };
 
