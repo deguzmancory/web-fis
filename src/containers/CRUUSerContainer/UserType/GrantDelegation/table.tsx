@@ -36,11 +36,19 @@ const TableGrantDelegation: React.FC<Props> = ({ formikProps }) => {
       <Table>
         <TableHead>
           <TableRow>
-            {['Username', 'Full Name', 'User Type', 'Project #', 'Start Date', 'End Date', ' '].map(
-              (item) => (
-                <StyledTableCell key={item}>{item}</StyledTableCell>
-              )
-            )}
+            {[
+              { title: 'Username', width: '15%' },
+              { title: 'Full Name', width: '15%' },
+              { title: 'User Type', width: '20%' },
+              { title: 'Project #', width: '10%' },
+              { title: 'Start Date', width: '15%' },
+              { title: 'End Date', width: '15%' },
+              { title: ' ', width: '5%' },
+            ].map((item) => (
+              <StyledTableCell key={item.title} width={item.width}>
+                {item.title}
+              </StyledTableCell>
+            ))}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -49,11 +57,11 @@ const TableGrantDelegation: React.FC<Props> = ({ formikProps }) => {
           ) : (
             rows.map((row, index) => (
               <StyledTableRow key={`${row.delegatedUserId}-${row.username}-${index}`}>
-                <StyledTableCell>{row.username}</StyledTableCell>
-                <StyledTableCell>{row.fullName}</StyledTableCell>
-                <StyledTableCell>{displayRoleName(row.roleName)}</StyledTableCell>
-                <StyledTableCell>{row.projectNumber}</StyledTableCell>
-                <StyledTableCell>
+                <StyledTableCell width={'15%'}>{row.username}</StyledTableCell>
+                <StyledTableCell width={'15%'}>{row.fullName}</StyledTableCell>
+                <StyledTableCell width={'20%'}>{displayRoleName(row.roleName)}</StyledTableCell>
+                <StyledTableCell width={'10%'}>{row.projectNumber}</StyledTableCell>
+                <StyledTableCell width={'15%'}>
                   <DatePickerEdit
                     data={row}
                     rowIndex={index}
@@ -63,7 +71,7 @@ const TableGrantDelegation: React.FC<Props> = ({ formikProps }) => {
                     formikProps={formikProps}
                   />
                 </StyledTableCell>
-                <StyledTableCell>
+                <StyledTableCell width={'15%'}>
                   <DatePickerEdit
                     data={row}
                     rowIndex={index}

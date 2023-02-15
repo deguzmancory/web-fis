@@ -7,7 +7,7 @@
 
   &--show &__item {
     text-align: left;
-    height: 1.8rem;
+    height: auto;
 
     @include mobileScreen {
       height: 2.8rem;
@@ -23,7 +23,7 @@
       align-items: flex-start;
     }
 
-    >i {
+    > i {
       font-size: 18px;
       font-weight: 700;
     }

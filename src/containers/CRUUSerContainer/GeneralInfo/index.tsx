@@ -110,9 +110,6 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, isLoading }) => {
                   errorMessage={_getErrorMessage(CRUUSER_KEY.NEW_PASSWORD)}
                   {...getFieldProps(CRUUSER_KEY.NEW_PASSWORD)}
                 />
-                {values.newPassword && (
-                  <ValidatePassword className="" password={values.newPassword} />
-                )}
               </Grid>
             </>
           )}
@@ -137,6 +134,17 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, isLoading }) => {
                 />
               </Grid>
             </>
+          )}
+          {isInEditProfileMode && values.newPassword && (
+            <Grid item xs={4}>
+              <Box
+                sx={{
+                  transform: 'translateY(-24px)',
+                }}
+              >
+                <ValidatePassword className="" password={values.newPassword} />
+              </Box>
+            </Grid>
           )}
         </Grid>
         {isInEditUserMode && (
