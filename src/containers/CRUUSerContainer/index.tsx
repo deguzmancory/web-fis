@@ -41,7 +41,12 @@ const NoPermission = React.lazy(() => import('src/components/NoPermission'));
 
 const clsPrefix = 'ctn-cruuser';
 
-const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideAllDialog }) => {
+const CRUUserContainer: React.FC<Props> = ({
+  currentRole,
+  onShowDialog,
+  onHideDialog,
+  onHideAllDialog,
+}) => {
   const { userId } = useParams<{ userId: string }>();
   const [isEditUserMode] = React.useState(!isEmpty(userId));
   const [isErrorWhenFetchUser, setIsErrorWhenFetchUser] = React.useState(false);
@@ -223,7 +228,7 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
           {isEditUserMode ? 'Edit' : 'Add'} User
         </Typography>
         <Suspense fallback={<LoadingCommon />}>
-          {!isCU(profile.currentRole) ? (
+          {!isCU(currentRole) ? (
             <Layout>
               <NoPermission />
             </Layout>
@@ -285,7 +290,9 @@ const CRUUserContainer: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideA
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const mapStateToProps = (state: IRootState) => ({});
+const mapStateToProps = (state: IRootState) => ({
+  currentRole: state.auth.currentRole,
+});
 
 const mapDispatchToProps = {
   onShowDialog: showDialog,

@@ -3,7 +3,6 @@ import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import { LoadingCommon } from 'src/components/common';
-import { useProfile } from 'src/queries';
 import { isCU } from 'src/queries/Profile/helpers';
 import { IRootState } from 'src/redux/rootReducer';
 import BreadcrumbsUserManagement from './breadcrumbs';
@@ -12,8 +11,7 @@ import './styles.scss';
 const NoPermission = React.lazy(() => import('src/components/NoPermission'));
 const TableList = React.lazy(() => import('./TableList'));
 
-const UsersManagementContainers: React.FC<Props> = () => {
-  const { profile } = useProfile();
+const UsersManagementContainers: React.FC<Props> = ({ currentRole }) => {
   return (
     <Box py={2} minHeight={'50vh'}>
       <Container maxWidth="lg">
@@ -29,7 +27,7 @@ const UsersManagementContainers: React.FC<Props> = () => {
           borderRadius={1}
         >
           <Suspense fallback={<LoadingCommon />}>
-            {isCU(profile.currentRole) ? <TableList /> : <NoPermission />}
+            {isCU(currentRole) ? <TableList /> : <NoPermission />}
           </Suspense>
         </Box>
       </Container>
@@ -39,7 +37,9 @@ const UsersManagementContainers: React.FC<Props> = () => {
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const mapStateToProps = (state: IRootState) => ({});
+const mapStateToProps = (state: IRootState) => ({
+  currentRole: state.auth.currentRole,
+});
 
 const mapDispatchToProps = {};
 

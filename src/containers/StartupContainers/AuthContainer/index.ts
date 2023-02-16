@@ -6,18 +6,18 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import { useComponentDidMount } from 'src/hooks';
-import { MyProfile, useLogout, useProfile, useUpdateCurrentRoleProfile } from 'src/queries';
-import { setAuthenticated, setIsUpdatedCurrentRole, setProfile } from 'src/redux/auth/authSlice';
+import { MyProfile, useLogout, useProfile } from 'src/queries';
+import { ROLE_NAME } from 'src/queries/Profile/helpers';
+import { setAuthenticated, setCurrentRole, setProfile } from 'src/redux/auth/authSlice';
 import { IRootState } from 'src/redux/rootReducer';
-import { DelegationKeyService, Navigator, Toastify, TokenService } from 'src/services';
+import { DelegationKeyService, Navigator, RoleService, Toastify, TokenService } from 'src/services';
 
 const AuthContainer: React.FC<Props> = ({
   history,
   isAuthenticated,
   onSetAuth,
   onSetProfile,
-  isUpdatedCurrentRole,
-  onSetUpdatedCurrentRoleStatus,
+  onSetCurrentRole,
 }) => {
   const { logout } = useLogout();
 
@@ -31,16 +31,24 @@ const AuthContainer: React.FC<Props> = ({
     TokenService.clearToken();
   };
 
-  const { getMyProfile, handleInvalidateProfile } = useProfile({
+  const { getMyProfile } = useProfile({
     onSuccess(data) {
       if (data) {
-        if (data.defaultUserType === data.currentRole) {
-          handleSetAuthenticated(data);
-        } else if (!isUpdatedCurrentRole) {
-          updateCurrentRoleMyProfile({ roleName: data.defaultUserType });
-        } else if (isUpdatedCurrentRole) {
-          handleSetAuthenticated(data);
+        handleSetAuthenticated(data);
+
+        const currentRoleLocalStorage = RoleService.getCurrentRole();
+        let _currentRole = '';
+        if (
+          currentRoleLocalStorage &&
+          data.roles.some((role) => role.role.name === currentRoleLocalStorage)
+        ) {
+          _currentRole = currentRoleLocalStorage;
+        } else {
+          RoleService.setCurrentRole(data.defaultUserType as ROLE_NAME);
+          _currentRole = data.defaultUserType;
         }
+
+        onSetCurrentRole(_currentRole as ROLE_NAME);
       }
     },
     onError(error) {
@@ -61,14 +69,6 @@ const AuthContainer: React.FC<Props> = ({
           handleLogout();
         }, 3000);
       }
-    },
-  });
-
-  const { updateCurrentRoleMyProfile } = useUpdateCurrentRoleProfile({
-    onSuccess(data, variables, context) {
-      handleInvalidateProfile();
-      getMyProfile();
-      onSetUpdatedCurrentRoleStatus(true);
     },
   });
 
@@ -136,13 +136,12 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & { 
 
 const mapStateToProps = (state: IRootState) => ({
   isAuthenticated: state.auth.isAuthenticated,
-  isUpdatedCurrentRole: state.auth.isUpdatedCurrentRole,
 });
 
 const mapDispatchToProps = {
   onSetAuth: setAuthenticated,
   onSetProfile: setProfile,
-  onSetUpdatedCurrentRoleStatus: setIsUpdatedCurrentRole,
+  onSetCurrentRole: setCurrentRole,
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AuthContainer));

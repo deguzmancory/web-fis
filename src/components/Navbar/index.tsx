@@ -12,9 +12,9 @@ import MainMenu from './mainMenu';
 import './styles.scss';
 import UserMenu from './UserMenu';
 
-const Navbar: React.FC<Props> = ({ userProfile }) => {
+const Navbar: React.FC<Props> = ({ userProfile, currentRole }) => {
   const { showNavbar } = useSelector((state: IRootState) => state.common);
-  const { fullName, currentRole } = userProfile || {};
+  const { fullName } = userProfile || {};
   const [isClickedLogout, setIsClickedLogout] = React.useState(false);
 
   if (!showNavbar) return null;
@@ -59,6 +59,7 @@ type Props = ReturnType<typeof mapStateToProps> & {};
 
 const mapStateToProps = (state: IRootState) => ({
   userProfile: state.auth.user,
+  currentRole: state.auth.currentRole,
 });
 
 export default connect(mapStateToProps, undefined)(Navbar);

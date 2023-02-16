@@ -19,21 +19,21 @@ import {
   useGetDelegationAccesses,
   useGetTokenDelegation,
   useProfile,
-  useUpdateCurrentRoleProfile,
 } from 'src/queries';
-import { getRoleName } from 'src/queries/Profile/helpers';
-import { setIsUpdatedCurrentRole, setProfile } from 'src/redux/auth/authSlice';
+import { getRoleName, ROLE_NAME } from 'src/queries/Profile/helpers';
+import { setCurrentRole, setIsUpdatedCurrentRole, setProfile } from 'src/redux/auth/authSlice';
 import { IRootState } from 'src/redux/store';
-import { DelegationKeyService, Toastify } from 'src/services';
+import { DelegationKeyService, RoleService, Toastify } from 'src/services';
 import { isEmpty } from 'src/validations';
 import { handleShowErrorMsg } from '../UsersManagement/helpers';
 
 import './styles.scss';
 
 const SwitchUser: React.FC<Props> = ({
-  onSetUpdatedCurrentRoleStatus,
+  currentRole,
   userProfile,
   onSetProfile,
+  onSetCurrentRole,
 }) => {
   const { profile } = useProfile();
   const [rowSelected, setRowSelected] = React.useState<{
@@ -43,16 +43,20 @@ const SwitchUser: React.FC<Props> = ({
     id: '',
     type: '',
   });
-  // console.log('rowSelected: ', rowSelected);
-
-  const { getMyProfile, handleInvalidateProfile } = useProfile();
 
   const handleSwitchUser = () => {
     if (rowSelected.type === 'role') {
       const role = profile.roles.find((_role) => _role.roleId === rowSelected.id);
-      updateCurrentRoleMyProfile({
-        roleName: role.role.name,
+      const roleName = role.role.name;
+
+      Toastify.info(`You are now logged in as: ${profile.username} - ${getRoleName(roleName)}`);
+      setRowSelected({
+        id: '',
+        type: '',
       });
+      DelegationKeyService.clearDelegationKey();
+      RoleService.setCurrentRole(roleName as ROLE_NAME);
+      onSetCurrentRole(roleName as ROLE_NAME);
     } else if (rowSelected.type === 'delegate') {
       const user = myAccessesRows.find((row) => row.id === rowSelected.id);
       getTokenDelegation({
@@ -75,29 +79,12 @@ const SwitchUser: React.FC<Props> = ({
     }
   }, [profile]);
 
-  const { updateCurrentRoleMyProfile, isLoading } = useUpdateCurrentRoleProfile({
-    onSuccess(data, variables, context) {
-      handleInvalidateProfile();
-      getMyProfile();
-      Toastify.info(
-        `You are now logged in as: ${profile.username} - ${getRoleName(variables.roleName)}`
-      );
-      onSetUpdatedCurrentRoleStatus(true);
-      setRowSelected({
-        id: '',
-        type: '',
-      });
-
-      DelegationKeyService.clearDelegationKey();
-    },
-  });
-
   // End Switch Role
 
   // Switch Delegation Access
   const { getDelegationAccesses, receivedAccesses } = useGetDelegationAccesses();
   const { getTokenDelegation, isLoading: isLoadingGetTokenDelegation } = useGetTokenDelegation({
-    onSuccess(data, variables, context) {
+    onSuccess(data, variables, _context) {
       const jwt = data?.data.data?.jwt;
       if (jwt) {
         DelegationKeyService.setDelegationKey(jwt);
@@ -116,7 +103,7 @@ const SwitchUser: React.FC<Props> = ({
         Toastify.error('Fail to switch user, please try again');
       }
     },
-    onError(error, variables, context) {
+    onError(error, _variables, _context) {
       handleShowErrorMsg(error);
     },
   });
@@ -137,10 +124,6 @@ const SwitchUser: React.FC<Props> = ({
 
   // End Switch Delegation Access
 
-  const loading = React.useMemo(() => {
-    return isLoading || isLoadingGetTokenDelegation;
-  }, [isLoading, isLoadingGetTokenDelegation]);
-
   return (
     <Box py={4} minHeight={'60vh'}>
       <Container maxWidth="lg">
@@ -152,7 +135,7 @@ const SwitchUser: React.FC<Props> = ({
             <b>
               {userProfile?.fullName} ({userProfile?.username})
             </b>{' '}
-            - {getRoleName(userProfile?.currentRole)} - Financial
+            - {getRoleName(currentRole)} - Financial
           </Typography>
 
           <Box my={2}>
@@ -228,8 +211,8 @@ const SwitchUser: React.FC<Props> = ({
           </Box>
           <Stack flexDirection={'row'} justifyContent="flex-end">
             <Button
-              isLoading={loading}
-              disabled={isEmpty(rowSelected.id) || loading}
+              isLoading={isLoadingGetTokenDelegation}
+              disabled={isEmpty(rowSelected.id) || isLoadingGetTokenDelegation}
               onClick={() => handleSwitchUser()}
             >
               Switch to Selected User Account
@@ -245,11 +228,13 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 const mapStateToProps = (state: IRootState) => ({
   userProfile: state.auth.user,
+  currentRole: state.auth.currentRole,
 });
 
 const mapDispatchToProps = {
   onSetUpdatedCurrentRoleStatus: setIsUpdatedCurrentRole,
   onSetProfile: setProfile,
+  onSetCurrentRole: setCurrentRole,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SwitchUser);

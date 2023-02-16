@@ -1,10 +1,12 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { MyProfile } from 'src/queries';
+import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { IRootState } from '../store';
 
 export interface IAuthState {
   isAuthenticated?: boolean;
   user: MyProfile;
+  currentRole: ROLE_NAME;
   isPasswordVerify: boolean;
   isWelcomeScreen: boolean;
   isUpdatedCurrentRole: boolean;
@@ -13,6 +15,7 @@ export interface IAuthState {
 const initialState: IAuthState = {
   isAuthenticated: null,
   user: null,
+  currentRole: null,
   isPasswordVerify: false,
   isWelcomeScreen: false,
   isUpdatedCurrentRole: false,
@@ -44,6 +47,9 @@ export const authSlice = createSlice({
     setProfile: (state, action: PayloadAction<MyProfile>) => {
       state.user = action.payload;
     },
+    setCurrentRole: (state, action: PayloadAction<ROLE_NAME>) => {
+      state.currentRole = action.payload;
+    },
   },
 });
 
@@ -54,6 +60,7 @@ export const {
   setPasswordVerify,
   setIsWelcomeScreen,
   setIsUpdatedCurrentRole,
+  setCurrentRole,
 } = authSlice.actions;
 
 export const authState = authSlice.getInitialState();
