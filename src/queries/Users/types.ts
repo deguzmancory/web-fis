@@ -192,8 +192,9 @@ export type SearchProject = {
   id: string;
   createdAt: string;
   updatedAt: string;
-  referenceId: number;
-  referenceTable: string;
+  fisFaInfoId: any; //TODO: tin_pham update type
+  fisPiInfoId: any; //TODO: tin_pham update type
+  fisSuInfoId: any; //TODO: tin_pham update type
   projectNumber: string;
 };
 

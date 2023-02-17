@@ -287,7 +287,7 @@ const GlobalSettings: React.FC<Props> = ({ userCurrentRole }) => {
 type Props = ReturnType<typeof mapStateToProps>;
 
 const mapStateToProps = (state: IRootState) => ({
-  userCurrentRole: state.auth.user.currentRole,
+  userCurrentRole: state.auth.currentRole,
 });
 
 export default connect(mapStateToProps, undefined)(GlobalSettings);
