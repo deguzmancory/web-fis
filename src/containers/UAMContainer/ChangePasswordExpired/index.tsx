@@ -204,6 +204,18 @@ const ChangePasswordExpired: React.FC<Props> = () => {
                 <Button type="submit" isLoading={loading} isFull>
                   Submit
                 </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  isLoading={loading}
+                  className="mt-16"
+                  isFull
+                  onClick={() => {
+                    handleBackToLogin();
+                  }}
+                >
+                  Back to Login
+                </Button>
               </Grid>
             </Grid>
           </Form>
