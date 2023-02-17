@@ -6,13 +6,14 @@ import { useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import { Accordion, Button, LoadingCommon } from 'src/components/common';
 import { useProfile } from 'src/queries';
-import { isCU } from 'src/queries/Profile/helpers';
+import { isCU, ROLE_NAME } from 'src/queries/Profile/helpers';
 import { useCreateUser, useGetAllUsers, useGetUser } from 'src/queries/Users';
 import { useUpdateUser } from 'src/queries/Users/useUpdateUser';
+import { setCurrentRole } from 'src/redux/auth/authSlice';
 import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { IRootState } from 'src/redux/rootReducer';
-import { Navigator, Toastify, TokenService } from 'src/services';
+import { Navigator, RoleService, Toastify, TokenService } from 'src/services';
 import { deepKeys, scrollToTopError } from 'src/utils';
 import { localTimeToHawaii } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
@@ -46,6 +47,7 @@ const CRUUserContainer: React.FC<Props> = ({
   onShowDialog,
   onHideDialog,
   onHideAllDialog,
+  onSetCurrentRole,
 }) => {
   const { userId } = useParams<{ userId: string }>();
   const [isEditUserMode] = React.useState(!isEmpty(userId));
@@ -110,6 +112,10 @@ const CRUUserContainer: React.FC<Props> = ({
       window.scrollTo(0, 0);
       const isMyProfile = userId === profile.id;
       if (isMyProfile) {
+        const updatedDefaultRole = variables.defaultUserType as ROLE_NAME;
+
+        RoleService.setCurrentRole(updatedDefaultRole);
+        onSetCurrentRole(updatedDefaultRole);
         handleInvalidateProfile();
         TokenService.forceRefreshToken();
         getMyProfile();
@@ -298,6 +304,7 @@ const mapDispatchToProps = {
   onShowDialog: showDialog,
   onHideDialog: hideDialog,
   onHideAllDialog: hideAllDialog,
+  onSetCurrentRole: setCurrentRole,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CRUUserContainer);

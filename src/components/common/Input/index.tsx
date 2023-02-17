@@ -20,13 +20,13 @@ const Input: React.FC<InputProps> = ({
   iconComponent,
   iconPosition = 'right',
   subLabel,
-  onIconClick,
   required,
   hideIconError = false,
   infoTooltipMessage,
   infoTooltipPlacement,
   infoToolTipWithArrow,
   customIcon = null,
+  onIconClick,
   ...props
 }) => {
   const id = useRef<string>(`input-${getRandomId()}`);

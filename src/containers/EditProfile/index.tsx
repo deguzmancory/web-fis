@@ -5,11 +5,13 @@ import { connect } from 'react-redux';
 import { PATHS } from 'src/appConfig/paths';
 import { Accordion, Button, LoadingCommon } from 'src/components/common';
 import { useProfile } from 'src/queries';
+import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { useUpdateProfile } from 'src/queries/Profile/useUpdateProfile';
+import { setCurrentRole } from 'src/redux/auth/authSlice';
 import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { IRootState } from 'src/redux/store';
-import { Navigator, Toastify } from 'src/services';
+import { Navigator, RoleService, Toastify } from 'src/services';
 import { deepKeys, scrollToTopError } from 'src/utils';
 import { localTimeToHawaii } from 'src/utils/momentUtils';
 import AuditInformation from '../CRUUSerContainer/AuditInformation';
@@ -29,12 +31,21 @@ import { handleShowErrorMsg } from '../UsersManagement/helpers';
 import BreadcrumbsEditProfile from './breadcrumbs';
 import { editProfileFormSchema, formatEditProfilePayload } from './helpers';
 
-const EditProfile: React.FC<Props> = ({ onShowDialog, onHideDialog, onHideAllDialog }) => {
+const EditProfile: React.FC<Props> = ({
+  onShowDialog,
+  onHideDialog,
+  onHideAllDialog,
+  onSetCurrentRole,
+}) => {
   const { profile, handleInvalidateProfile } = useProfile();
   const formRef = useRef<FormikProps<CRUUserFormValue>>(null);
   const { isLoading: loading, updateProfile } = useUpdateProfile({
-    onSuccess(_data, _variables, _context) {
+    onSuccess(_data, variables, _context) {
+      const updatedDefaultRole = variables.defaultUserType as ROLE_NAME;
+
       Toastify.success(`Profile updated successfully.`);
+      RoleService.setCurrentRole(updatedDefaultRole);
+      onSetCurrentRole(updatedDefaultRole);
       handleInvalidateProfile();
       window.scrollTo(0, 0);
     },
@@ -207,6 +218,7 @@ const mapDispatchToProps = {
   onShowDialog: showDialog,
   onHideDialog: hideDialog,
   onHideAllDialog: hideAllDialog,
+  onSetCurrentRole: setCurrentRole,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProfile);

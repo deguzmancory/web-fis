@@ -26,7 +26,7 @@ import {
   User,
 } from 'src/queries/Users/types';
 import { newCancelToken, stringify } from 'src/utils';
-import { DelegationKeyService, Toastify, TokenService, XApiKeyService } from '.';
+import { DelegationKeyService, RoleService, Toastify, TokenService, XApiKeyService } from '.';
 
 axios.defaults.withCredentials = true;
 
@@ -110,7 +110,13 @@ const create = (baseURL = appConfig.API_URL) => {
   // ====================== Auth ======================
   const signIn = (body: SignInPayload) => Auth.signIn(body.username, body.password);
 
-  const signOut = () => Auth.signOut();
+  const signOut = () => {
+    TokenService.clearToken();
+    DelegationKeyService.clearDelegationKey();
+    RoleService.clearCurrentRole();
+
+    return Auth.signOut();
+  };
 
   const forgotPassword = (body: ForgotPasswordPayload) => Auth.forgotPassword(body.username);
 

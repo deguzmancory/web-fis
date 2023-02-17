@@ -52,7 +52,7 @@ const AuthContainer: React.FC<Props> = ({
       }
     },
     onError(error) {
-      if (error['message'].includes('User is not active')) {
+      if (error?.['message'].includes('User is not active')) {
         Toastify.error(
           'Your account is deactivated. Please contact to your administrator to reactivate your account.'
         );
