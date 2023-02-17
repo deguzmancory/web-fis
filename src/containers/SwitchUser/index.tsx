@@ -57,6 +57,12 @@ const SwitchUser: React.FC<Props> = ({
       DelegationKeyService.clearDelegationKey();
       RoleService.setCurrentRole(roleName as ROLE_NAME);
       onSetCurrentRole(roleName as ROLE_NAME);
+      const formatNewProfile: MyProfile = {
+        ...userProfile,
+        fullName: `${profile.fullName}`,
+        username: `${profile.username}`,
+      };
+      onSetProfile(formatNewProfile);
     } else if (rowSelected.type === 'delegate') {
       const user = myAccessesRows.find((row) => row.id === rowSelected.id);
       getTokenDelegation({
@@ -96,7 +102,6 @@ const SwitchUser: React.FC<Props> = ({
           ...userProfile,
           fullName: `${profile.fullName.match(/\b(\w)/g)} as ${variables.fullName}`,
           username: variables.username,
-          currentRole: variables.roleName,
         };
         onSetProfile(formatNewProfile);
       } else {
