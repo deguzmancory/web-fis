@@ -48,6 +48,7 @@ const Group: React.FC<RadioGroupProps> = ({
   isTrueFalseOptions = false,
 }) => {
   const [data, setData] = useState<any>(value);
+  console.log('value: ', value);
 
   useEffect(() => {
     onChange(name, data);

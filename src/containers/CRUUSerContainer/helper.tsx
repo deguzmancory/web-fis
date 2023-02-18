@@ -3,6 +3,7 @@ import { get } from 'lodash';
 import { MyProfile } from 'src/queries';
 import { getRoleNamePayload } from 'src/queries/Profile/helpers';
 import {
+  CUPermission,
   DelegatedAccess,
   FADetail,
   PIDetail,
@@ -43,6 +44,9 @@ export interface CRUUserFormValue {
   fisSuInfo: SUDetail;
   fisPiInfo: PIDetail;
   fisFaInfo: FADetail;
+
+  // Permissions -- CU
+  permissions: CUPermission[];
 
   // Comments
   comments: UserDetail['comments'];
@@ -118,6 +122,9 @@ export const initialCRUUserFormValue: CRUUserFormValue = {
     phoneNumber: '',
     faStaffToReview: '',
   },
+
+  // Permissions -- CU
+  permissions: [],
 
   // Comments
   comments: '',
@@ -244,6 +251,10 @@ export const formatPayloadSubmit = (values: CRUUserFormValue) => {
     fisFaInfo: values.fisFaInfo,
     fisPiInfo: values.fisPiInfo,
     fisSuInfo: values.fisSuInfo,
+
+    permissions: !isEmpty(values.permissions)
+      ? values.permissions.map((permission) => permission.permissionId)
+      : [],
   };
 
   delete payload.mode;
@@ -271,6 +282,10 @@ export const formatPayloadUpdate = (values: CRUUserFormValue, user: UserDetail) 
     fisFaInfo: values.fisFaInfo,
     fisPiInfo: values.fisPiInfo,
     fisSuInfo: values.fisSuInfo,
+
+    permissions: !isEmpty(values.permissions)
+      ? values.permissions.map((permission) => permission.permissionId)
+      : [],
   };
 
   delete payload.mode;

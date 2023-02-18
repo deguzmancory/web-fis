@@ -153,6 +153,8 @@ export type UserDetail = {
   fisPiInfo: PIDetail;
   fisSuInfo: SUDetail;
 
+  permissions: CUPermission[];
+
   // Audit info
   userAuditTrails: AuditInformation[];
 };
@@ -264,4 +266,11 @@ export interface SUDetail extends SharedUserTypeDetails {
 
 export type UpdateUserLastPasswordChangedParams = {
   username: User['username'];
+};
+
+export type CUPermission = {
+  createdAt?: string;
+  permissionId: number;
+  updatedAt?: string;
+  userId?: string;
 };

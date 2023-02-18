@@ -187,6 +187,9 @@ const CRUUserContainer: React.FC<Props> = ({
         fisFaInfo: user.fisFaInfo,
         fisPiInfo: user.fisPiInfo,
         fisSuInfo: user.fisSuInfo,
+        permissions: user.permissions.map((permission) => ({
+          permissionId: permission.permissionId,
+        })),
       };
     } else {
       return {

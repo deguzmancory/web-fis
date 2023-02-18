@@ -3,7 +3,10 @@ import { UseQueryOptions } from 'react-query';
 export enum API_QUERIES {
   CONTENT = '/content',
   ZIP_CODE = '/zip-code',
+
+  // Permissions
   PERMISSIONS = '/permissions',
+  PERMISSION_CU = '/permissions/cu',
 
   // Profile
   PROFILE = '/me',

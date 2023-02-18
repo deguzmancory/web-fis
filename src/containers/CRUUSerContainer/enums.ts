@@ -20,6 +20,9 @@ export enum CRUUSER_KEY {
   FIS_PI_INFO = 'fisPiInfo',
   FIS_FA_INFO = 'fisFaInfo',
 
+  // Permissions
+  PERMISSIONS = 'permissions',
+
   // Comments
   COMMENTS = 'comments',
 }

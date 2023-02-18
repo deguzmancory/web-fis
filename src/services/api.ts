@@ -191,9 +191,12 @@ const create = (baseURL = appConfig.API_URL) => {
       },
     });
 
-  // ====================== System Accounts ======================
+  // ====================== Permissions ======================
   const getMyPermissions = () => api.get('/account-svc/v1/permissions/me', {}, newCancelToken());
 
+  const getPermissionCu = () => {
+    return api.get('/account-svc/v1/permissions/cu', {}, newCancelToken());
+  };
   // ====================== Users Management ======================
   const getAllUsers = (params: GetPropertiesParams) => {
     const queryString = stringify(params);
@@ -315,8 +318,9 @@ const create = (baseURL = appConfig.API_URL) => {
     getDelegationAccesses,
     getTokenDelegation,
 
-    // ====================== System Accounts ======================
+    // ====================== Permissions ======================
     getMyPermissions,
+    getPermissionCu,
 
     // ====================== Users Management ======================
     getAllUsers,
