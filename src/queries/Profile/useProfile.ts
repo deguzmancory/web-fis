@@ -1,14 +1,14 @@
 import { QueryFunction, useQuery, useQueryClient, UseQueryOptions } from 'react-query';
 import apiClient from '../apiClient';
-import { ApiResponseType, getResponseData, responseWrapper } from '../helpers';
+import { ApiResponseType, responseWrapper } from '../helpers';
 import { API_QUERIES } from '../keys';
 import { MyProfile } from './types';
 
 export function useProfile(
-  options?: UseQueryOptions<ApiResponseType<MyProfile>, Error, MyProfile>
+  options?: UseQueryOptions<ApiResponseType<{ data: MyProfile }>, Error, MyProfile>
 ) {
-  const handleGetProfile: QueryFunction<ApiResponseType<MyProfile>, API_QUERIES> = () =>
-    responseWrapper<ApiResponseType<MyProfile>>(apiClient.getMyProfile);
+  const handleGetProfile: QueryFunction<ApiResponseType<{ data: MyProfile }>, API_QUERIES> = () =>
+    responseWrapper<ApiResponseType<{ data: MyProfile }>>(apiClient.getMyProfile);
 
   const {
     data,
@@ -16,10 +16,10 @@ export function useProfile(
     isError,
     isFetching,
     refetch: getMyProfile,
-  } = useQuery<ApiResponseType<MyProfile>, Error, MyProfile>([API_QUERIES.PROFILE], {
+  } = useQuery<ApiResponseType<{ data: MyProfile }>, Error, MyProfile>([API_QUERIES.PROFILE], {
     queryFn: handleGetProfile,
     refetchOnMount: false,
-    select: getResponseData,
+    select: (data) => data.data.data,
     enabled: true,
     notifyOnChangeProps: ['data', 'isFetching'],
     ...options,
