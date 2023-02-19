@@ -174,7 +174,11 @@ const EditProfile: React.FC<Props> = ({
             <GeneralInfo formikProps={formikProps} isLoading={loading} />
           </Layout>
           <Layout>
-            <UserType formikProps={formikProps} isLoading={loading} />
+            <UserType
+              initialPIInfo={profile.fisPiInfo}
+              formikProps={formikProps}
+              isLoading={loading}
+            />
           </Layout>
           <Layout>
             <InternalComments formikProps={formikProps} isLoading={loading} />

@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import { get } from 'lodash';
 import { MyProfile } from 'src/queries';
+import { FACode, PICode } from 'src/queries/Contents/types';
 import { getRoleNamePayload } from 'src/queries/Profile/helpers';
 import {
   CUPermission,
@@ -41,15 +42,27 @@ export interface CRUUserFormValue {
   delegateAccess: DelegateAccessFormValue;
   delegatedAccess: DelegatedAccess[];
   roles: string[];
-  fisSuInfo: SUDetail;
-  fisPiInfo: PIDetail;
-  fisFaInfo: FADetail;
+  fisSuInfo: SUDetailFormValue;
+  fisPiInfo: PIDetailFormValue;
+  fisFaInfo: FADetailFormValue;
 
   // Permissions -- CU
   permissions: CUPermission[];
 
   // Comments
   comments: UserDetail['comments'];
+}
+
+export interface PIDetailFormValue extends PIDetail {
+  useExistingPICode: boolean;
+}
+
+export interface SUDetailFormValue extends SUDetail {
+  currentPICode: PICode;
+}
+
+export interface FADetailFormValue extends FADetail {
+  currentFACode: string;
 }
 
 export type DelegateAccessFormValue = {
@@ -107,20 +120,31 @@ export const initialCRUUserFormValue: CRUUserFormValue = {
 
   fisFaInfo: {
     ...initialSharedUserTypeFormValue,
-    faCode: '',
+    faCode: null,
+    userFisCodes: [],
+    userFisProjects: [],
+
+    currentFACode: null,
   },
   fisPiInfo: {
     ...initialSharedUserTypeFormValue,
-    piCode: '',
+    piCode: null,
     directInquiriesTo: '',
     phoneNumber: '',
     faStaffToReview: '',
+    userFisProjects: [],
+
+    useExistingPICode: false,
   },
   fisSuInfo: {
     ...initialSharedUserTypeFormValue,
     directInquiriesTo: '',
     phoneNumber: '',
     faStaffToReview: '',
+    userFisCodes: [],
+    userFisProjects: [],
+
+    currentPICode: null,
   },
 
   // Permissions -- CU
@@ -326,3 +350,31 @@ export const getUncontrolledInputFieldProps =
       },
     };
   };
+
+export const getPICodeOptions = ({
+  piCodes,
+  fullObjectValue = false,
+}: {
+  piCodes: PICode[];
+  fullObjectValue: boolean;
+}) => {
+  if (isEmpty(piCodes)) return [];
+
+  return piCodes.map((piCode) => {
+    return {
+      label: `${piCode.code}, ${piCode.piName}`,
+      value: fullObjectValue ? piCode : piCode.code,
+    };
+  });
+};
+
+export const getFACodeOptions = (faCodes: FACode[]) => {
+  if (isEmpty(faCodes)) return [];
+
+  return faCodes.map((faCode) => {
+    return {
+      label: `${faCode.code}`,
+      value: faCode.code,
+    };
+  });
+};

@@ -1,13 +1,14 @@
 import { Box, Typography } from '@mui/material';
 import React from 'react';
 import { Accordion } from 'src/components/common';
+import { PIDetail } from 'src/queries/Users/types';
 import { CRUUserFormikProps, isAddUserMode } from '../helper';
 import UserTypeDetails from './Details';
 import GrantDelegation from './GrantDelegation';
 import ReceivedDelegation from './ReceivedDelegation';
 import SelectUserType from './SelectUserType';
 
-const UserType: React.FC<Props> = ({ formikProps, isLoading }) => {
+const UserType: React.FC<Props> = ({ initialPIInfo, formikProps, isLoading }) => {
   const { values } = formikProps;
 
   return (
@@ -25,7 +26,11 @@ const UserType: React.FC<Props> = ({ formikProps, isLoading }) => {
       </Box>
 
       <Box>
-        <UserTypeDetails formikProps={formikProps} isLoading={isLoading} />
+        <UserTypeDetails
+          formikProps={formikProps}
+          isLoading={isLoading}
+          initialPIInfo={initialPIInfo}
+        />
       </Box>
     </Box>
   );
@@ -33,5 +38,6 @@ const UserType: React.FC<Props> = ({ formikProps, isLoading }) => {
 type Props = {
   formikProps: CRUUserFormikProps;
   isLoading: boolean;
+  initialPIInfo: PIDetail;
 };
 export default UserType;

@@ -172,6 +172,8 @@ const create = (baseURL = appConfig.API_URL) => {
   // ====================== Content ======================
   const getContents = () => api.get('/account-svc/v1/contents', {}, newCancelToken());
   const getCityStateByZipCode = (params) => ZipCodeService.getPopulatedCityStateFromZipCode(params);
+  const getPICodes = () => api.get('/account-svc/v1/pi-codes', {}, newCancelToken());
+  const getFACodes = () => api.get('/account-svc/v1/fa-codes', {}, newCancelToken());
 
   // ====================== File ======================
   const getPresignedUserServiceUrl = (params: GetPresignedPayload) => {
@@ -308,6 +310,8 @@ const create = (baseURL = appConfig.API_URL) => {
     // ====================== Content ======================
     getContents,
     getCityStateByZipCode,
+    getPICodes,
+    getFACodes,
 
     // ====================== Profile ======================
     getMyProfile,

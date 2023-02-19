@@ -28,6 +28,7 @@ export enum CRUUSER_KEY {
 }
 
 export enum CRUUSER_USER_TYPE_KEY {
+  //fields & payloads
   DIRECT_INQUIRIES_TO = 'directInquiriesTo',
   FA_STAFF_TO_REVIEW = 'faStaffToReview',
   SEND_INVOICE_TO = 'sendInvoiceTo',
@@ -42,6 +43,15 @@ export enum CRUUSER_USER_TYPE_KEY {
   ADDRESS_COUNTRY = 'addressCountry',
   REMITTANCE_NAME = 'remittanceName',
   REMITTANCE_PHONE_NUMBER = 'remittancePhoneNumber',
+  PI_CODE = 'piCode',
+  FA_CODE = 'faCode',
+  USER_FIS_PROJECTS = 'userFisProjects',
+  USER_FIS_CODES = 'userFisCodes',
+
+  //fields only
+  USE_EXISTING_PI_CODE = 'useExistingPICode',
+  CURRENT_PI_CODE = 'currentPICode',
+  CURRENT_FA_CODE = 'currentFACode',
 }
 
 export enum USER_MODE {

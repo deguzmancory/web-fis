@@ -7,6 +7,8 @@ export enum API_QUERIES {
   // Permissions
   PERMISSIONS = '/permissions',
   PERMISSION_CU = '/permissions/cu',
+  PI_CODES = '/pi-codes',
+  FA_CODES = '/fa-codes',
 
   // Profile
   PROFILE = '/me',

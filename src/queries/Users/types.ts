@@ -233,6 +233,18 @@ export type DelegatedAccess = {
   };
 };
 
+export interface UserFisCode {
+  id: string;
+  code: string;
+  codeType: string;
+
+  piName?: string;
+}
+
+export interface UserFisProject {
+  id: string;
+  projectNumber: string;
+}
 export interface SharedUserTypeDetails {
   sendInvoiceTo: string;
   sendInvoiceToEmail: string;
@@ -249,6 +261,8 @@ export interface SharedUserTypeDetails {
 
 export interface FADetail extends SharedUserTypeDetails {
   faCode: string;
+  userFisCodes: UserFisCode[];
+  userFisProjects: UserFisProject[];
 }
 
 export interface PIDetail extends SharedUserTypeDetails {
@@ -256,12 +270,15 @@ export interface PIDetail extends SharedUserTypeDetails {
   directInquiriesTo: string;
   phoneNumber: string;
   faStaffToReview: string;
+  userFisProjects: UserFisProject[];
 }
 
 export interface SUDetail extends SharedUserTypeDetails {
   directInquiriesTo: string;
   phoneNumber: string;
   faStaffToReview: string;
+  userFisCodes: UserFisCode[];
+  userFisProjects: UserFisProject[];
 }
 
 export type UpdateUserLastPasswordChangedParams = {

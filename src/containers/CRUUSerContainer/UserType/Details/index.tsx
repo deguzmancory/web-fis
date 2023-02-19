@@ -4,6 +4,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { AnimatedTabPanel } from 'src/components/common';
 import TabsBar, { TabList } from 'src/components/common/TabsBar';
 import { getRoleName, ROLE_NAME } from 'src/queries/Profile/helpers';
+import { PIDetail } from 'src/queries/Users/types';
 import { isEmpty } from 'src/validations';
 import { USER_TYPE_KEY } from '../../enums';
 import { CRUUserFormikProps } from '../../helper';
@@ -13,7 +14,7 @@ import FADetails from './FADetails';
 import PIDetails from './PIDetails';
 import SUDetails from './SUDetails';
 
-const UserTypeDetails: React.FC<Props> = ({ formikProps, isLoading }) => {
+const UserTypeDetails: React.FC<Props> = ({ initialPIInfo, formikProps, isLoading }) => {
   const location = useLocation();
   const history = useHistory();
 
@@ -56,7 +57,13 @@ const UserTypeDetails: React.FC<Props> = ({ formikProps, isLoading }) => {
     if (hasPermission(tab)) {
       switch (tab) {
         case ROLE_NAME.SU:
-          return <SUDetails formikProps={formikProps} isLoading={isLoading} />;
+          return (
+            <SUDetails
+              initialPIInfo={initialPIInfo}
+              formikProps={formikProps}
+              isLoading={isLoading}
+            />
+          );
         case ROLE_NAME.PI:
           return <PIDetails formikProps={formikProps} isLoading={isLoading} />;
         case ROLE_NAME.FA:
@@ -68,7 +75,7 @@ const UserTypeDetails: React.FC<Props> = ({ formikProps, isLoading }) => {
       }
     }
     return null;
-  }, [hasPermission, tab, formikProps, isLoading]);
+  }, [hasPermission, tab, formikProps, isLoading, initialPIInfo]);
 
   if (isEmpty(userRoles)) return null;
 
@@ -94,5 +101,6 @@ const UserTypeDetails: React.FC<Props> = ({ formikProps, isLoading }) => {
 type Props = {
   formikProps: CRUUserFormikProps;
   isLoading: boolean;
+  initialPIInfo: PIDetail;
 };
 export default UserTypeDetails;

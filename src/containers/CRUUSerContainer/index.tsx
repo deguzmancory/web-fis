@@ -184,9 +184,9 @@ const CRUUserContainer: React.FC<Props> = ({
         comments: user.comments,
         delegateAccess: delegateAccess,
         delegatedAccess: user.delegatedAccesses,
-        fisFaInfo: user.fisFaInfo,
-        fisPiInfo: user.fisPiInfo,
-        fisSuInfo: user.fisSuInfo,
+        fisFaInfo: { ...user.fisFaInfo, currentFACode: null },
+        fisPiInfo: { ...user.fisPiInfo, useExistingPICode: false },
+        fisSuInfo: { ...user.fisSuInfo, currentPICode: null },
         permissions: user.permissions.map((permission) => ({
           permissionId: permission.permissionId,
         })),
@@ -260,7 +260,11 @@ const CRUUserContainer: React.FC<Props> = ({
                 <GeneralInfo formikProps={formikProps} isLoading={loading} />
               </Layout>
               <Layout>
-                <UserType formikProps={formikProps} isLoading={loading} />
+                <UserType
+                  formikProps={formikProps}
+                  isLoading={loading}
+                  initialPIInfo={user.fisPiInfo}
+                />
               </Layout>
               <Layout>
                 <InternalComments formikProps={formikProps} isLoading={loading} />
