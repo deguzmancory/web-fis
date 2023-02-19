@@ -22,6 +22,7 @@ import { useComponentDidMount } from 'src/hooks';
 import LoadingContainer from './StartupContainers/LoadingContainer';
 import ScrollToTop from './StartupContainers/ScrollToTop';
 import CheckPasswordExpiredContainer from './UAMContainer/ChangePasswordExpired/container';
+import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundary';
 
 const Dashboard = React.lazy(() => import('./Dashboard'));
 const UsersManagement = React.lazy(() => import('./UsersManagement'));
@@ -110,7 +111,11 @@ const CRouting: React.FC<Props> = ({ isAuthenticated, pageRequiredAuth, componen
     return <Redirect {...redirectProps} />;
   };
 
-  return <Route {...rest} render={renderRoute(component)} />;
+  return (
+    <CustomErrorBoundary showErrorMessage>
+      <Route {...rest} render={renderRoute(component)} />;
+    </CustomErrorBoundary>
+  );
 };
 
 type Props = ReturnType<typeof mapStateToProps> &
