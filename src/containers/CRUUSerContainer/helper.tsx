@@ -255,8 +255,8 @@ export const getPayloadDelegateAccess = (delegateAccess: CRUUserFormValue['deleg
   return delegateAccess.map((item) => ({
     delegatedUserId: item.delegatedUserId,
     roleName: getRoleNamePayload(item.roleName),
-    startDate: !isEmpty(item.startDate) ? dayjs(item.startDate).format(DateFormatWithYear) : null,
-    endDate: !isEmpty(item.endDate) ? dayjs(item.endDate).format(DateFormatWithYear) : null,
+    startDate: item.startDate ? dayjs(item.startDate).format(DateFormatWithYear) : null,
+    endDate: item.endDate ? dayjs(item.endDate).format(DateFormatWithYear) : null,
     isAllProjects: false,
     projectNumber: item.projectNumber,
     id: item.id || undefined,
@@ -272,9 +272,10 @@ export const formatPayloadSubmit = (values: CRUUserFormValue) => {
     username: values.username.toLowerCase(),
     status: getPayloadUserStatus(values.status),
     delegateAccess: getPayloadDelegateAccess(values.delegateAccess),
-    fisFaInfo: values.fisFaInfo,
-    fisPiInfo: values.fisPiInfo,
-    fisSuInfo: values.fisSuInfo,
+
+    fisFaInfo: null, // TODO: tin_pham update payload
+    fisPiInfo: null, // TODO: tin_pham update payload
+    fisSuInfo: null, // TODO: tin_pham update payload
 
     permissions: !isEmpty(values.permissions)
       ? values.permissions.map((permission) => permission.permissionId)
@@ -286,11 +287,6 @@ export const formatPayloadSubmit = (values: CRUUserFormValue) => {
   delete payload.passwordSetDate;
   delete payload.newPassword;
   delete payload.currentPassword;
-
-  // TODO: tin_pham update payload
-  delete payload.fisFaInfo;
-  delete payload.fisPiInfo;
-  delete payload.fisSuInfo;
 
   return payload;
 };
@@ -308,9 +304,10 @@ export const formatPayloadUpdate = (values: CRUUserFormValue, user: UserDetail) 
     isDhUser: values.email.includes('datahouse.com') ? true : false,
     status: getPayloadUserStatus(values.status),
     delegateAccess: getPayloadDelegateAccess(values.delegateAccess),
-    fisFaInfo: values.fisFaInfo,
-    fisPiInfo: values.fisPiInfo,
-    fisSuInfo: values.fisSuInfo,
+
+    fisFaInfo: null, // TODO: tin_pham update payload
+    fisPiInfo: null, // TODO: tin_pham update payload
+    fisSuInfo: null, // TODO: tin_pham update payload
 
     permissions: !isEmpty(values.permissions)
       ? values.permissions.map((permission) => permission.permissionId)
@@ -323,11 +320,6 @@ export const formatPayloadUpdate = (values: CRUUserFormValue, user: UserDetail) 
   delete payload.fullName;
   delete payload.newPassword;
   delete payload.currentPassword;
-
-  // TODO: tin_pham update payload
-  delete payload.fisFaInfo;
-  delete payload.fisPiInfo;
-  delete payload.fisSuInfo;
 
   return payload;
 };

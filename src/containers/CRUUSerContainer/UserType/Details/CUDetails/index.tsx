@@ -1,17 +1,16 @@
 import { Box, Grid, Typography } from '@mui/material';
+import _ from 'lodash';
 import React from 'react';
-import { Accordion, Checkbox, RadioButton } from 'src/components/common';
+import { Checkbox, RadioButton } from 'src/components/common';
+import { CRUUSER_KEY } from 'src/containers/CRUUSerContainer/enums';
 import { CRUUserFormikProps } from 'src/containers/CRUUSerContainer/helper';
 import { useGetPermissionCu } from 'src/queries/Permissions';
-import ReactJson from 'react-json-view';
+import { CUPermission } from 'src/queries/Users/types';
 import {
   optionsPermissionCuUserManagement,
   PERMISSION_CU_LABEL,
   PERMISSION_CU_VALUE,
 } from './helpers';
-import { CUPermission } from 'src/queries/Users/types';
-import _ from 'lodash';
-import { CRUUSER_KEY } from 'src/containers/CRUUSerContainer/enums';
 const CUDetails: React.FC<Props> = ({ formikProps }) => {
   const { values, setFieldValue } = formikProps;
   const permissions = values?.permissions;
@@ -247,9 +246,6 @@ const CUDetails: React.FC<Props> = ({ formikProps }) => {
           />
         </Grid>
       </Grid>
-      <Accordion title="Permission CU Lists" isExpanded>
-        {permissionsCu && <ReactJson src={permissionsCu} />}
-      </Accordion>
     </Box>
   );
 };

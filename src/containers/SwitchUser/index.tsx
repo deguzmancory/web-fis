@@ -104,6 +104,7 @@ const SwitchUser: React.FC<Props> = ({
           username: variables.username,
         };
         onSetProfile(formatNewProfile);
+        onSetCurrentRole(variables.roleName as ROLE_NAME);
       } else {
         Toastify.error('Fail to switch user, please try again');
       }
