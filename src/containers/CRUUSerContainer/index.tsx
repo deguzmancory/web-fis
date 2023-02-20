@@ -263,7 +263,7 @@ const CRUUserContainer: React.FC<Props> = ({
                 <UserType
                   formikProps={formikProps}
                   isLoading={loading}
-                  initialPIInfo={user.fisPiInfo}
+                  initialPIInfo={user?.fisPiInfo}
                 />
               </Layout>
               <Layout>

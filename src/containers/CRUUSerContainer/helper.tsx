@@ -287,6 +287,11 @@ export const formatPayloadSubmit = (values: CRUUserFormValue) => {
   delete payload.newPassword;
   delete payload.currentPassword;
 
+  // TODO: tin_pham update payload
+  delete payload.fisFaInfo;
+  delete payload.fisPiInfo;
+  delete payload.fisSuInfo;
+
   return payload;
 };
 
@@ -318,6 +323,11 @@ export const formatPayloadUpdate = (values: CRUUserFormValue, user: UserDetail) 
   delete payload.fullName;
   delete payload.newPassword;
   delete payload.currentPassword;
+
+  // TODO: tin_pham update payload
+  delete payload.fisFaInfo;
+  delete payload.fisPiInfo;
+  delete payload.fisSuInfo;
 
   return payload;
 };

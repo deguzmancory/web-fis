@@ -18,9 +18,9 @@ const UserTypeDetails: React.FC<Props> = ({ initialPIInfo, formikProps, isLoadin
   const location = useLocation();
   const history = useHistory();
 
-  const query = new URLSearchParams(location.search);
-  const tab = (query.get(USER_TYPE_KEY.TAB) as ROLE_NAME) || '';
   const userRoles = formikProps.values.roles;
+  const query = new URLSearchParams(location.search);
+  const tab = (query.get(USER_TYPE_KEY.TAB) as ROLE_NAME) || (userRoles[0] as ROLE_NAME) || '';
 
   const onChangeTab = (_e, value) => {
     query.set(USER_TYPE_KEY.TAB, value);

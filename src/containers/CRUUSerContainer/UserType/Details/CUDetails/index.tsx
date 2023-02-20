@@ -14,7 +14,6 @@ import _ from 'lodash';
 import { CRUUSER_KEY } from 'src/containers/CRUUSerContainer/enums';
 const CUDetails: React.FC<Props> = ({ formikProps }) => {
   const { values, setFieldValue } = formikProps;
-  console.log('values: ', values);
   const permissions = values?.permissions;
 
   const { permissionsCu, loading } = useGetPermissionCu({
@@ -76,16 +75,137 @@ const CUDetails: React.FC<Props> = ({ formikProps }) => {
   };
 
   const valueRadioUserManagement = React.useCallback(() => {
-    // return All
-    // return non cu
-    // return view only
-    return PERMISSION_CU_VALUE.ALL;
+    const isHavePermissionMap = new Map();
+    const isHavePermission = (permissionName) => {
+      if (!permissions || !permissionsCu) return false;
+      if (isHavePermissionMap.has(permissionName)) {
+        return isHavePermissionMap.get(permissionName);
+      }
+      const permissionCuId = permissionsCu.find(
+        (permission) => permission.displayName === permissionName
+      )?.id;
+      const result = permissions
+        .map((permission) => permission.permissionId)
+        .includes(permissionCuId);
+      isHavePermissionMap.set(permissionName, result);
+      return result;
+    };
+    if (
+      isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_CREATE_A_USER) &&
+      isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_READ_A_USER) &&
+      isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_UPDATE_A_USER) &&
+      isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_DELETE_A_USER) &&
+      isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_UPDATE_A_CU_USER)
+    ) {
+      return PERMISSION_CU_VALUE.ALL;
+    } else if (
+      isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_CREATE_A_USER) &&
+      isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_READ_A_USER) &&
+      isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_UPDATE_A_USER) &&
+      isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_DELETE_A_USER) &&
+      !isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_UPDATE_A_CU_USER)
+    ) {
+      return PERMISSION_CU_VALUE.NON_CENTRAL_USERS;
+    } else if (isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_READ_A_USER)) {
+      return PERMISSION_CU_VALUE.VIEW_ONLY;
+    } else {
+      return PERMISSION_CU_VALUE.ALL;
+    }
+  }, [permissions, permissionsCu]);
+
+  const getPermissionIds = React.useCallback(
+    (permissions: PERMISSION_CU_VALUE[]) => {
+      if (!permissionsCu) return new Set([]);
+
+      const permissionIds: number[] = [];
+      permissions.forEach((permission) => {
+        const permissionCu = permissionsCu.find((p) => p.displayName === permission);
+        if (permissionCu) permissionIds.push(permissionCu.id);
+      });
+      return new Set(permissionIds);
+    },
+    [permissionsCu]
+  );
+
+  const permissionUserManagementIds = React.useMemo(() => {
+    return {
+      [PERMISSION_CU_VALUE.ALL]: getPermissionIds([
+        PERMISSION_CU_VALUE.ALLOW_TO_CREATE_A_USER,
+        PERMISSION_CU_VALUE.ALLOW_TO_READ_A_USER,
+        PERMISSION_CU_VALUE.ALLOW_TO_UPDATE_A_USER,
+        PERMISSION_CU_VALUE.ALLOW_TO_UPDATE_A_CU_USER,
+        PERMISSION_CU_VALUE.ALLOW_TO_DELETE_A_USER,
+      ]),
+      [PERMISSION_CU_VALUE.NON_CENTRAL_USERS]: getPermissionIds([
+        PERMISSION_CU_VALUE.ALLOW_TO_CREATE_A_USER,
+        PERMISSION_CU_VALUE.ALLOW_TO_READ_A_USER,
+        PERMISSION_CU_VALUE.ALLOW_TO_UPDATE_A_USER,
+        PERMISSION_CU_VALUE.ALLOW_TO_DELETE_A_USER,
+      ]),
+      [PERMISSION_CU_VALUE.VIEW_ONLY]: getPermissionIds([PERMISSION_CU_VALUE.ALLOW_TO_READ_A_USER]),
+    };
+  }, [getPermissionIds]);
+
+  const permissionsUserManagementWithRole = React.useMemo(() => {
+    return {
+      [PERMISSION_CU_VALUE.ALL]: [
+        PERMISSION_CU_VALUE.ALLOW_TO_CREATE_A_USER,
+        PERMISSION_CU_VALUE.ALLOW_TO_READ_A_USER,
+        PERMISSION_CU_VALUE.ALLOW_TO_UPDATE_A_USER,
+        PERMISSION_CU_VALUE.ALLOW_TO_UPDATE_A_CU_USER,
+        PERMISSION_CU_VALUE.ALLOW_TO_DELETE_A_USER,
+      ],
+      [PERMISSION_CU_VALUE.NON_CENTRAL_USERS]: [
+        PERMISSION_CU_VALUE.ALLOW_TO_CREATE_A_USER,
+        PERMISSION_CU_VALUE.ALLOW_TO_READ_A_USER,
+        PERMISSION_CU_VALUE.ALLOW_TO_UPDATE_A_USER,
+        PERMISSION_CU_VALUE.ALLOW_TO_DELETE_A_USER,
+      ],
+      [PERMISSION_CU_VALUE.VIEW_ONLY]: [PERMISSION_CU_VALUE.ALLOW_TO_READ_A_USER],
+    };
   }, []);
 
-  const handleRadioButtonChange = (value: boolean) => {
-    console.log('value: ', value);
-    // setFieldValue(CRUUSER_KEY.PERMISSIONS, updatedPermissions);
-  };
+  const getListsIdFromPermissionType = React.useCallback(
+    (arr: PERMISSION_CU_VALUE[]) => {
+      if (!permissionsCu) return [];
+      return permissionsCu
+        .filter((permissionCu) => arr.includes(permissionCu.displayName as PERMISSION_CU_VALUE))
+        .map((permissionCu) => ({ permissionId: permissionCu.id }));
+    },
+    [permissionsCu]
+  );
+
+  const handleRadioButtonChange = React.useCallback(
+    (value: PERMISSION_CU_VALUE) => {
+      if (!permissionsCu || !permissions) return null;
+
+      let before: CUPermission[] = [...permissions];
+      let updatedPermissions: CUPermission[] = before.filter(
+        (permission) =>
+          !permissionUserManagementIds[PERMISSION_CU_VALUE.ALL].has(permission.permissionId)
+      );
+      const uniquePermissions = () => {
+        return _.uniqBy(
+          [
+            ...updatedPermissions,
+            ...getListsIdFromPermissionType(permissionsUserManagementWithRole[`${value}`]),
+          ],
+          'permissionId'
+        );
+      };
+
+      const newPermissions = uniquePermissions();
+      return setFieldValue(CRUUSER_KEY.PERMISSIONS, newPermissions);
+    },
+    [
+      permissionsCu,
+      permissions,
+      setFieldValue,
+      permissionUserManagementIds,
+      getListsIdFromPermissionType,
+      permissionsUserManagementWithRole,
+    ]
+  );
 
   return (
     <Box p={2}>
@@ -123,7 +243,7 @@ const CUDetails: React.FC<Props> = ({ formikProps }) => {
             onChange={(name, value) => {
               return handleRadioButtonChange(value);
             }}
-            // {...getFieldProps(CRUUSER_KEY.STATUS)}
+            disabled={isLoading}
           />
         </Grid>
       </Grid>

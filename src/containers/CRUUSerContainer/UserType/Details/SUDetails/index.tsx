@@ -4,7 +4,7 @@ import { CRUUSER_KEY } from 'src/containers/CRUUSerContainer/enums';
 import { CRUUserFormikProps } from 'src/containers/CRUUSerContainer/helper';
 import UserTypeInfoForm from '../shared/UserTypeInfoForm';
 import { PIDetail } from 'src/queries/Users/types';
-import SelectPICodes from '../CUDetails/SelectPICodes';
+import SelectPICodes from './SelectPICodes';
 
 const SUDetails: React.FC<Props> = ({ formikProps, isLoading }) => {
   return (
