@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import { Accordion, Button, LoadingCommon } from 'src/components/common';
+import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundary';
 import { useProfile } from 'src/queries';
 import { isCU, ROLE_NAME } from 'src/queries/Profile/helpers';
 import { useCreateUser, useGetAllUsers, useGetUser } from 'src/queries/Users';
@@ -20,6 +21,7 @@ import { isEmpty } from 'src/validations';
 import { handleShowErrorMsg } from '../UsersManagement/helpers';
 import BreadcrumbsUserDetail from './breadcrumbs';
 import { CRUUSER_KEY, USER_MODE } from './enums';
+import ErrorWrapperCRUUser from './error';
 import {
   CRUUserFormikProps,
   cRUUserFormSchema,
@@ -34,7 +36,6 @@ import {
 import Layout from './layout';
 import './styles.scss';
 
-const RefetchUser = React.lazy(() => import('./refetchUser'));
 const AuditInformation = React.lazy(() => import('./AuditInformation'));
 const UserType = React.lazy(() => import('./UserType'));
 const InternalComments = React.lazy(() => import('./InternalComments'));
@@ -52,19 +53,14 @@ const CRUUserContainer: React.FC<Props> = ({
 }) => {
   const { userId } = useParams<{ userId: string }>();
   const [isEditUserMode] = React.useState(!isEmpty(userId));
-  const [isErrorWhenFetchUser, setIsErrorWhenFetchUser] = React.useState(false);
 
   const {
     user,
-    onGetUserById,
     isLoading: isLoadingGetUser,
     handleInvalidateUser,
   } = useGetUser({
     userId: userId || null,
-    onError(err: Error) {
-      handleShowErrorMsg(err, 'Error when fetch data user');
-      setIsErrorWhenFetchUser(true);
-    },
+    suspense: true,
   });
 
   const handleCancelButton = () => {
@@ -250,10 +246,6 @@ const CRUUserContainer: React.FC<Props> = ({
             <Layout>
               <NoPermission />
             </Layout>
-          ) : isErrorWhenFetchUser ? (
-            <Layout>
-              <RefetchUser onGetUserById={onGetUserById} isLoading={isLoadingGetUser} />
-            </Layout>
           ) : (
             <>
               <Layout>
@@ -323,4 +315,14 @@ const mapDispatchToProps = {
   onSetCurrentRole: setCurrentRole,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CRUUserContainer);
+const ConnectCRUUserContainer = connect(mapStateToProps, mapDispatchToProps)(CRUUserContainer);
+
+const CRUUserContainerWrapper = () => {
+  return (
+    <CustomErrorBoundary fallback={<ErrorWrapperCRUUser />}>
+      <ConnectCRUUserContainer />
+    </CustomErrorBoundary>
+  );
+};
+
+export default CRUUserContainerWrapper;
