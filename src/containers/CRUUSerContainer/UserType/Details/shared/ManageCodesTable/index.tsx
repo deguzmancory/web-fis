@@ -12,7 +12,9 @@ const ManageCodesTable: React.FC<Props> = ({ rows, type, onDeleteCode }) => {
   return (
     <TableContainer
       sx={{
-        minHeight: '300px',
+        minHeight: '200px',
+        maxHeight: '200px',
+        overflow: 'auto',
         border: `${COLOR_CODE.DEFAULT_BORDER}`,
         '.MuiTableCell-body': {
           padding: '4px 8px !important',

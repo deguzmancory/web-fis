@@ -98,6 +98,7 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
   const { projects, isLoading: isLoadingSearchProjects } = useSearchProjects({
     projectNumber: searchProjects,
   });
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceSearchProjectsValue = React.useCallback(debounce(setSearchProjects, 200), []);
 

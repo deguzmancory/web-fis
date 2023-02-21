@@ -1,4 +1,5 @@
 import { TableParams } from 'src/redux/types';
+import { ROLE_NAME } from '../Profile/helpers';
 export enum USER_KEY {
   USERNAME = 'username',
   EMAIL = 'email',
@@ -35,6 +36,13 @@ export interface User {
 export type GetPropertiesParams = TableParams & {
   [key: string]: string | number | string[];
 };
+
+export interface GetSearchFinancialProjectsParams {
+  search: string;
+  roleType: ROLE_NAME;
+  excludeCode: string;
+  excludeProject: string;
+}
 
 export type DelegateAccess = {
   id: string;
@@ -206,6 +214,18 @@ export type SearchProject = {
   fisSuInfoId: any; //TODO: tin_pham update type
   projectNumber: string;
 };
+
+export interface SearchFinancialProject {
+  id: string;
+  name: string;
+  number: string;
+  ac: string;
+  faCode: string;
+  piCode: string;
+  inActive: boolean;
+  startDate: string;
+  endDate: string;
+}
 
 export type UrlExportUser = {
   head: string;

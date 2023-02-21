@@ -8,6 +8,7 @@ import {
   DelegatedAccess,
   FADetail,
   PIDetail,
+  SearchFinancialProject,
   SharedUserTypeDetails,
   SUDetail,
   UserDetail,
@@ -55,14 +56,17 @@ export interface CRUUserFormValue {
 
 export interface PIDetailFormValue extends PIDetail {
   useExistingPICode: boolean;
+  currentSearchProject: SearchFinancialProject;
 }
 
 export interface SUDetailFormValue extends SUDetail {
   currentPICode: PICode;
+  currentSearchProject: SearchFinancialProject;
 }
 
 export interface FADetailFormValue extends FADetail {
   currentFACode: string;
+  currentSearchProject: SearchFinancialProject;
 }
 
 export type DelegateAccessFormValue = {
@@ -125,6 +129,7 @@ export const initialCRUUserFormValue: CRUUserFormValue = {
     userFisProjects: [],
 
     currentFACode: null,
+    currentSearchProject: null,
   },
   fisPiInfo: {
     ...initialSharedUserTypeFormValue,
@@ -135,6 +140,7 @@ export const initialCRUUserFormValue: CRUUserFormValue = {
     userFisProjects: [],
 
     useExistingPICode: false,
+    currentSearchProject: null,
   },
   fisSuInfo: {
     ...initialSharedUserTypeFormValue,
@@ -145,6 +151,7 @@ export const initialCRUUserFormValue: CRUUserFormValue = {
     userFisProjects: [],
 
     currentPICode: null,
+    currentSearchProject: null,
   },
 
   // Permissions -- CU

@@ -21,6 +21,9 @@ export enum API_QUERIES {
   EXPORT_USERS = 'users/export',
   SEARCH_PROJECTS = 'projects/search',
 
+  // Financial
+  SEARCH_FINANCIAL_PROJECTS = '/financial-svc/v1/projects/search',
+
   // Global Settings
   GLOBAL_SETTINGS = 'global-settings',
 }

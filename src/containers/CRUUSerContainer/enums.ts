@@ -52,6 +52,7 @@ export enum CRUUSER_USER_TYPE_KEY {
   USE_EXISTING_PI_CODE = 'useExistingPICode',
   CURRENT_PI_CODE = 'currentPICode',
   CURRENT_FA_CODE = 'currentFACode',
+  CURRENT_SEARCH_PROJECT = 'currentSearchProject',
 }
 
 export enum USER_MODE {

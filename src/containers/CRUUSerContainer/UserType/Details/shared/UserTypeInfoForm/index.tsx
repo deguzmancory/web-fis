@@ -77,7 +77,7 @@ const UserTypeInfoForm: React.FC<Props> = ({
                   `${prefix}.${CRUUSER_USER_TYPE_KEY.DIRECT_INQUIRIES_TO}`
                 )}
                 {...getUncontrolledFieldProps(
-                  `${prefix}${CRUUSER_USER_TYPE_KEY.DIRECT_INQUIRIES_TO}`
+                  `${prefix}.${CRUUSER_USER_TYPE_KEY.DIRECT_INQUIRIES_TO}`
                 )}
                 disabled={isLoading}
               />
@@ -98,7 +98,7 @@ const UserTypeInfoForm: React.FC<Props> = ({
                   `${prefix}.${CRUUSER_USER_TYPE_KEY.FA_STAFF_TO_REVIEW}`
                 )}
                 {...getUncontrolledFieldProps(
-                  `${prefix}${CRUUSER_USER_TYPE_KEY.FA_STAFF_TO_REVIEW}`
+                  `${prefix}.${CRUUSER_USER_TYPE_KEY.FA_STAFF_TO_REVIEW}`
                 )}
                 disabled={isLoading}
               />
@@ -117,16 +117,18 @@ const UserTypeInfoForm: React.FC<Props> = ({
             <Grid item xs={12} sm={6} md={4}>
               <Input
                 label={'Name'}
-                errorMessage={_getErrorMessage(`${prefix}${CRUUSER_USER_TYPE_KEY.SEND_INVOICE_TO}`)}
-                {...getUncontrolledFieldProps(`${prefix}${CRUUSER_USER_TYPE_KEY.SEND_INVOICE_TO}`)}
+                errorMessage={_getErrorMessage(
+                  `${prefix}.${CRUUSER_USER_TYPE_KEY.SEND_INVOICE_TO}`
+                )}
+                {...getUncontrolledFieldProps(`${prefix}.${CRUUSER_USER_TYPE_KEY.SEND_INVOICE_TO}`)}
                 disabled={isLoading}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
               <Input
                 label={'Department'}
-                errorMessage={_getErrorMessage(`${prefix}${CRUUSER_USER_TYPE_KEY.DEPARTMENT}`)}
-                {...getUncontrolledFieldProps(`${prefix}${CRUUSER_USER_TYPE_KEY.DEPARTMENT}`)}
+                errorMessage={_getErrorMessage(`${prefix}.${CRUUSER_USER_TYPE_KEY.DEPARTMENT}`)}
+                {...getUncontrolledFieldProps(`${prefix}.${CRUUSER_USER_TYPE_KEY.DEPARTMENT}`)}
                 disabled={isLoading}
               />
             </Grid>
@@ -137,7 +139,7 @@ const UserTypeInfoForm: React.FC<Props> = ({
                   `${prefix}.${CRUUSER_USER_TYPE_KEY.SEND_INVOICE_TO_EMAIL}`
                 )}
                 {...getUncontrolledFieldProps(
-                  `${prefix}${CRUUSER_USER_TYPE_KEY.SEND_INVOICE_TO_EMAIL}`
+                  `${prefix}.${CRUUSER_USER_TYPE_KEY.SEND_INVOICE_TO_EMAIL}`
                 )}
                 disabled={isLoading}
               />
@@ -145,16 +147,18 @@ const UserTypeInfoForm: React.FC<Props> = ({
             <Grid item xs={12}>
               <Input
                 label={'Address (number, street, and apt. or suite no.)'}
-                errorMessage={_getErrorMessage(`${prefix}${CRUUSER_USER_TYPE_KEY.ADDRESS_STREET}`)}
-                {...getUncontrolledFieldProps(`${prefix}${CRUUSER_USER_TYPE_KEY.ADDRESS_STREET}`)}
+                errorMessage={_getErrorMessage(`${prefix}.${CRUUSER_USER_TYPE_KEY.ADDRESS_STREET}`)}
+                {...getUncontrolledFieldProps(`${prefix}.${CRUUSER_USER_TYPE_KEY.ADDRESS_STREET}`)}
                 disabled={isLoading}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
               <Input
                 label={'Country'}
-                errorMessage={_getErrorMessage(`${prefix}${CRUUSER_USER_TYPE_KEY.ADDRESS_COUNTRY}`)}
-                {...getUncontrolledFieldProps(`${prefix}${CRUUSER_USER_TYPE_KEY.ADDRESS_COUNTRY}`)}
+                errorMessage={_getErrorMessage(
+                  `${prefix}.${CRUUSER_USER_TYPE_KEY.ADDRESS_COUNTRY}`
+                )}
+                {...getUncontrolledFieldProps(`${prefix}.${CRUUSER_USER_TYPE_KEY.ADDRESS_COUNTRY}`)}
                 disabled={isLoading}
               />
             </Grid>
@@ -216,8 +220,8 @@ const UserTypeInfoForm: React.FC<Props> = ({
             <Grid item xs={12} sm={6} md={2}>
               <Input
                 label={'City'}
-                errorMessage={_getErrorMessage(`${prefix}${CRUUSER_USER_TYPE_KEY.ADDRESS_CITY}`)}
-                {...getUncontrolledFieldProps(`${prefix}${CRUUSER_USER_TYPE_KEY.ADDRESS_CITY}`)}
+                errorMessage={_getErrorMessage(`${prefix}.${CRUUSER_USER_TYPE_KEY.ADDRESS_CITY}`)}
+                {...getUncontrolledFieldProps(`${prefix}.${CRUUSER_USER_TYPE_KEY.ADDRESS_CITY}`)}
                 disabled={isLoading}
               />
             </Grid>
@@ -234,8 +238,10 @@ const UserTypeInfoForm: React.FC<Props> = ({
             <Grid item xs={12} sm={6} md={4}>
               <Input
                 label={'Remittance Advice Name'}
-                errorMessage={_getErrorMessage(`${prefix}${CRUUSER_USER_TYPE_KEY.REMITTANCE_NAME}`)}
-                {...getUncontrolledFieldProps(`${prefix}${CRUUSER_USER_TYPE_KEY.REMITTANCE_NAME}`)}
+                errorMessage={_getErrorMessage(
+                  `${prefix}.${CRUUSER_USER_TYPE_KEY.REMITTANCE_NAME}`
+                )}
+                {...getUncontrolledFieldProps(`${prefix}.${CRUUSER_USER_TYPE_KEY.REMITTANCE_NAME}`)}
                 disabled={isLoading}
               />
             </Grid>

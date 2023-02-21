@@ -1,4 +1,5 @@
 import cn from 'classnames';
+import { isEqual } from 'lodash';
 import { useCallback, useRef } from 'react';
 import { FiSearch } from 'react-icons/fi';
 import { IoCaretDownOutline } from 'react-icons/io5';
@@ -30,14 +31,12 @@ const ControlNoSearchIcon = ({ children, ...props }) => (
 
 const SelectCmp = ({
   options,
-  onChange,
   label,
   className = '',
   value,
   errorMessage = '',
   placeholder = 'Select',
   containerClassName = '',
-  onBlur,
   name = '',
   required = false,
   infoTooltipMessage = '',
@@ -48,8 +47,11 @@ const SelectCmp = ({
   isDisabled = false,
   isMulti = false,
   menuPosition = 'fixed',
-  onInputChange = (value) => {},
   optionWithSubLabel = false,
+  isLoading = false,
+  onChange = (name, value) => {},
+  onBlur = (e) => {},
+  onInputChange = (value) => {},
   ...props
 }) => {
   const id = useRef(`select-${getRandomId()}`);
@@ -66,7 +68,7 @@ const SelectCmp = ({
 
   const selectedOption = isMulti
     ? options?.filter((option) => value.includes(option.value)) || null
-    : options?.find((option) => option.value === value) || null;
+    : options?.find((option) => isEqual(option.value, value)) || null;
   // For custom select, follow this link:
   // https://react-select.com/styles#using-classnames
 
@@ -80,13 +82,25 @@ const SelectCmp = ({
           alignItems: 'center',
         }}
       >
-        <div>{data.label}</div>
+        <div>
+          {data.prefix && (
+            <span
+              style={{
+                marginRight: '12px',
+              }}
+            >
+              {data?.prefix}
+            </span>
+          )}
+          {data.label}
+        </div>
         <div style={{ textAlign: 'right' }}>{data?.subLabel}</div>
       </div>
     );
     return <components.Option {...props} children={children} />;
   }, []);
 
+  console.log('options: ', options);
   return (
     <Element
       id={id.current}
@@ -116,6 +130,7 @@ const SelectCmp = ({
           menuPlacement="auto"
           onBlur={handleSelectBlur}
           name={name}
+          isLoading={isLoading}
           theme={(theme) => ({
             ...theme,
             colors: {

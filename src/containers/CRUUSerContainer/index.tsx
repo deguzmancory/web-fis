@@ -180,9 +180,9 @@ const CRUUserContainer: React.FC<Props> = ({
         comments: user.comments,
         delegateAccess: delegateAccess,
         delegatedAccess: user.delegatedAccesses,
-        fisFaInfo: { ...user.fisFaInfo, currentFACode: null },
-        fisPiInfo: { ...user.fisPiInfo, useExistingPICode: false },
-        fisSuInfo: { ...user.fisSuInfo, currentPICode: null },
+        fisFaInfo: { ...user.fisFaInfo, currentFACode: null, currentSearchProject: null },
+        fisPiInfo: { ...user.fisPiInfo, useExistingPICode: false, currentSearchProject: null },
+        fisSuInfo: { ...user.fisSuInfo, currentPICode: null, currentSearchProject: null },
         permissions: user.permissions.map((permission) => ({
           permissionId: permission.permissionId,
         })),

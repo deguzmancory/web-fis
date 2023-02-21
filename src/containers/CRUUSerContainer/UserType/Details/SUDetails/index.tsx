@@ -2,8 +2,10 @@ import { Box, Grid } from '@mui/material';
 import React from 'react';
 import { CRUUSER_KEY } from 'src/containers/CRUUSerContainer/enums';
 import { CRUUserFormikProps } from 'src/containers/CRUUSerContainer/helper';
-import UserTypeInfoForm from '../shared/UserTypeInfoForm';
+import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { PIDetail } from 'src/queries/Users/types';
+import SearchProjects from '../shared/SearchProjects';
+import UserTypeInfoForm from '../shared/UserTypeInfoForm';
 import SelectPICodes from './SelectPICodes';
 
 const SUDetails: React.FC<Props> = ({ formikProps, isLoading }) => {
@@ -15,8 +17,14 @@ const SUDetails: React.FC<Props> = ({ formikProps, isLoading }) => {
             <></>
           </Grid>
           <Grid item xs={12} sm={10}>
-            <p>Search</p>
+            <SearchProjects
+              prefix={`${CRUUSER_KEY.FIS_SU_INFO}`}
+              isLoading={isLoading}
+              formikProps={formikProps}
+              type={ROLE_NAME.SU}
+            />
           </Grid>
+
           <Grid item xs={12} sm={2}>
             <SelectPICodes
               prefix={`${CRUUSER_KEY.FIS_SU_INFO}`}
