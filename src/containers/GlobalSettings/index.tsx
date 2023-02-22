@@ -3,13 +3,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import { Button, Input, InputMask, Loading } from 'src/components/common';
-import Refetch from 'src/components/Refetch';
+import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundary';
 import { useGlobalSettings, useUpdateGlobalSetting } from 'src/queries';
 import { isCU } from 'src/queries/Profile/helpers';
 import { IRootState } from 'src/redux/store';
 import { Toastify } from 'src/services';
 import { handleShowErrorMsg } from '../UsersManagement/helpers';
 import BreadcrumbsGlobalSettings from './breadcrumbs';
+import ErrorWrapperGlobalSettings from './error';
 import {
   getFormatGlobalSettingsResponse,
   GlobalSettingFormatted,
@@ -24,11 +25,8 @@ const GlobalSettings: React.FC<Props> = ({ userCurrentRole }) => {
     getAllGlobalSettings,
     globalSettings,
     loading: isLoadingGlobalSettings,
-    isError: isErrorGlobalSettings,
   } = useGlobalSettings({
-    onError(err) {
-      handleShowErrorMsg(err);
-    },
+    suspense: true,
   });
 
   React.useEffect(() => {
@@ -38,10 +36,6 @@ const GlobalSettings: React.FC<Props> = ({ userCurrentRole }) => {
   }, [getAllGlobalSettings, globalSettings]);
 
   const [settings, setSettings] = React.useState<GlobalSettingFormatted[]>([]);
-
-  const isError = React.useMemo(() => {
-    return isErrorGlobalSettings;
-  }, [isErrorGlobalSettings]);
 
   const handleEditButton = React.useCallback(
     (groupIndex: number, itemIndex: number, settingValue: string) => {
@@ -138,24 +132,11 @@ const GlobalSettings: React.FC<Props> = ({ userCurrentRole }) => {
           RCUH Application-Wide Global Settings
         </Typography>
 
-        {isError ? (
-          <Box p={4} m={4} bgcolor={COLOR_CODE.WHITE}>
-            <Refetch
-              isLoading={loading}
-              onClick={() => {
-                getAllGlobalSettings();
-              }}
-            />
-          </Box>
-        ) : !globalSettings ? (
+        {!globalSettings ? (
           <Box p={4} m={4} bgcolor={COLOR_CODE.WHITE}>
             <Loading variant="primary" />
           </Box>
         ) : (
-          <></>
-        )}
-
-        {globalSettings && (
           <Box my={2}>
             {/* Title */}
             <Box px={2} py={1} bgcolor={COLOR_CODE.PRIMARY_500}>
@@ -290,4 +271,14 @@ const mapStateToProps = (state: IRootState) => ({
   userCurrentRole: state.auth.currentRole,
 });
 
-export default connect(mapStateToProps, undefined)(GlobalSettings);
+const ConnectGlobalSettings = connect(mapStateToProps, undefined)(GlobalSettings);
+
+const ErrorBoundaryGlobalSettings = () => {
+  return (
+    <CustomErrorBoundary showErrorMessage fallback={<ErrorWrapperGlobalSettings />}>
+      <ConnectGlobalSettings />
+    </CustomErrorBoundary>
+  );
+};
+
+export default ErrorBoundaryGlobalSettings;
