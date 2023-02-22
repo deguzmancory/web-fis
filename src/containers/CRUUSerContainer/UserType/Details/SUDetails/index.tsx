@@ -5,6 +5,7 @@ import { CRUUserFormikProps } from 'src/containers/CRUUSerContainer/helper';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { PIDetail } from 'src/queries/Users/types';
 import SearchProjects from '../shared/SearchProjects';
+import TableProjects from '../shared/TableProjects';
 import UserTypeInfoForm from '../shared/UserTypeInfoForm';
 import SelectPICodes from './SelectPICodes';
 
@@ -33,7 +34,12 @@ const SUDetails: React.FC<Props> = ({ formikProps, isLoading }) => {
             />
           </Grid>
           <Grid item xs={12} sm={10}>
-            <p>Table</p>
+            <TableProjects
+              prefix={`${CRUUSER_KEY.FIS_SU_INFO}`}
+              isLoading={isLoading}
+              formikProps={formikProps}
+              type={ROLE_NAME.SU}
+            />
           </Grid>
         </Grid>
       </Box>

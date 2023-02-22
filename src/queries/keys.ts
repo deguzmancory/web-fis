@@ -22,6 +22,7 @@ export enum API_QUERIES {
   SEARCH_PROJECTS = 'projects/search',
 
   // Financial
+  GET_FINANCIAL_PROJECTS = '/financial-svc/v1/projects',
   SEARCH_FINANCIAL_PROJECTS = '/financial-svc/v1/projects/search',
 
   // Global Settings

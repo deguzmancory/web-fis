@@ -71,7 +71,7 @@ type Props = {
   showErrorMessage?: boolean; //works with default error fallback only
   fallback?: React.ReactNode;
   children?: React.ReactNode;
-  FallbackComponent?: React.ComponentType<FallbackProps>;
+  FallbackComponent?: any & React.ComponentType<Partial<FallbackProps>>;
   onReset?: Callback; // reset the state of your app so the error doesn't happen again
 };
 

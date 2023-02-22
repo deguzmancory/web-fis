@@ -245,9 +245,9 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.get(`/account-svc/v1/projects?${queryString}`, {}, newCancelToken());
   };
 
-  const searchFinancialProjects = (params: GetPropertiesParams) => {
+  const getFinancialProjects = (params: GetPropertiesParams) => {
     const queryString = stringify(params);
-    return api.get(`/financial-svc/v1/projects/search?${queryString}`, {}, newCancelToken());
+    return api.get(`/financial-svc/v1/projects?${queryString}`, {}, newCancelToken());
   };
 
   const getUrlExportUsers = () => {
@@ -338,8 +338,8 @@ const create = (baseURL = appConfig.API_URL) => {
     updateUser,
     deleteUser,
     searchUsers,
+    getFinancialProjects,
     searchProjects,
-    searchFinancialProjects,
     getUrlExportUsers,
     updateUserLastPasswordChanged,
 

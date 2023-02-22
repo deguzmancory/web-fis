@@ -11,7 +11,8 @@ import { useGetAllUsers } from 'src/queries/Users';
 import { GetPropertiesParams } from 'src/queries/Users/types';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator } from 'src/services';
-import { handleShowErrorMsg, QUERY_KEY } from '../helpers';
+import { handleShowErrorMsg } from 'src/utils';
+import { QUERY_KEY } from '../helpers';
 import { allColumns } from './allColumns';
 import {
   FILTER_USERS_INDEX,
@@ -26,7 +27,7 @@ const TableList: React.FC<Props> = () => {
   const query = new URLSearchParams(location.search);
   const filter = query.getAll(QUERY_KEY.filter) as string[];
 
-  const { users, totalItems, setParams, isFetching, onGetAllUsers } = useGetAllUsers({
+  const { users, totalRecords, setParams, isFetching, onGetAllUsers } = useGetAllUsers({
     onError: (error) => handleShowErrorMsg(error),
   });
 
@@ -53,7 +54,7 @@ const TableList: React.FC<Props> = () => {
 
   const tableOptions: MUIDataTableOptions = React.useMemo(
     () => ({
-      count: totalItems,
+      count: totalRecords,
       onRowClick: handleViewAccountDetail,
       rowHover: true,
       filter: false,
@@ -62,7 +63,7 @@ const TableList: React.FC<Props> = () => {
       search: false,
       tableBodyMaxHeight: isTabletScreen ? '100%' : 'calc(100vh - 366px)', // content height
     }),
-    [handleViewAccountDetail, isTabletScreen, totalItems]
+    [handleViewAccountDetail, isTabletScreen, totalRecords]
   );
 
   const columns = React.useMemo(() => allColumns(), []);

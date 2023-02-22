@@ -1,5 +1,4 @@
-import { Grid, Typography } from '@mui/material';
-import { Stack } from '@mui/system';
+import { Grid, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { Button, IconSuccess } from 'src/components/common';
 import { Callback } from 'src/redux/types';

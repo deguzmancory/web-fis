@@ -1,6 +1,7 @@
 import { Grid } from '@mui/material';
 import { get } from 'lodash';
 import React from 'react';
+import { useHistory, useLocation } from 'react-router';
 import { Checkbox, Select } from 'src/components/common';
 import { CRUUSER_KEY, CRUUSER_USER_TYPE_KEY } from 'src/containers/CRUUSerContainer/enums';
 import {
@@ -17,6 +18,10 @@ const SelectPICode: React.FC<Props> = ({
   formikProps,
   isLoading,
 }) => {
+  const history = useHistory();
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+
   const { piCodes } = useGetPICode();
 
   const piOptions = React.useMemo(
@@ -37,9 +42,11 @@ const SelectPICode: React.FC<Props> = ({
     //TODO: confirm the logic
     if (value === true) {
       setFieldValue(`${prefix}.${CRUUSER_USER_TYPE_KEY.PI_CODE}`, existingPICode);
+      setFieldValue(`${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`, [value]);
     }
 
     setFieldValue(`${prefix}.${CRUUSER_USER_TYPE_KEY.USE_EXISTING_PI_CODE}`, value);
+    history.push({ search: query.toString() });
   };
 
   return (
@@ -57,7 +64,11 @@ const SelectPICode: React.FC<Props> = ({
           }
           {...getFieldProps(`${prefix}.${CRUUSER_USER_TYPE_KEY.PI_CODE}`)}
           errorMessage={_getErrorMessage(`${prefix}.${CRUUSER_USER_TYPE_KEY.PI_CODE}`)}
-          onChange={setFieldValue}
+          onChange={(name, value) => {
+            setFieldValue(name, value);
+            setFieldValue(`${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`, [value]);
+            history.push({ search: query.toString() });
+          }}
         />
       </Grid>
       <Grid item xs={12}>

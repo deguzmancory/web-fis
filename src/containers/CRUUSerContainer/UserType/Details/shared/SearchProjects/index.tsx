@@ -2,41 +2,68 @@ import { Grid } from '@mui/material';
 import dayjs from 'dayjs';
 import { debounce, get } from 'lodash';
 import React from 'react';
+import { useHistory, useLocation } from 'react-router';
 import { Button, Select } from 'src/components/common';
 import { CRUUSER_USER_TYPE_KEY } from 'src/containers/CRUUSerContainer/enums';
 import { CRUUserFormikProps } from 'src/containers/CRUUSerContainer/helper';
 import { UserFICode } from 'src/queries/Contents/types';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
-import { SearchFinancialProject } from 'src/queries/Users/types';
-import { useSearchFinancialProjects } from 'src/queries/Users/useSearchFinancialProjects';
+import { FinancialProject } from 'src/queries/Users/types';
+import { useGetFinancialProjects } from 'src/queries/Users/useGetFinancialProjects';
 import { isEmpty } from 'src/validations';
 
 const SearchProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoading }) => {
   const { values, setFieldValue, getFieldProps } = formikProps;
   const [searchProjects, setSearchProjects] = React.useState('');
+  const history = useHistory();
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
 
-  const userFisCodes: UserFICode[] =
-    get(values, `${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`) || [];
-  const userFisProjects = get(values, `${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_PROJECTS}`) || [];
+  const userFisCodes: UserFICode[] = React.useMemo(
+    () => get(values, `${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`) || [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [get(values, `${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`)]
+  );
+  const userFisProjects = React.useMemo(
+    () => get(values, `${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_PROJECTS}`) || [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [get(values, `${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_PROJECTS}`)]
+  );
 
-  const { financialProjects, isLoading: isLoadingSearchProjects } = useSearchFinancialProjects({
-    search: searchProjects,
-    roleType: type,
-    excludeCode: userFisCodes.map((code) => code.code).join(','),
-    excludeProject: userFisProjects.map((project) => project.projectNumber).join(','),
-  });
+  const {
+    financialProjects,
+    isLoading: isLoadingSearchProjects,
+    setParams,
+  } = useGetFinancialProjects();
+
+  React.useEffect(() => {
+    if (!searchProjects) return;
+
+    setParams({
+      search: searchProjects,
+      userType: type,
+      excludeCodes: userFisCodes.map((code) => code.code).join(','),
+      excludeProjects: userFisProjects.map((project) => project.projectNumber).join(','),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchProjects]);
 
   const handleAddProject = () => {
-    const currentSearchProject: SearchFinancialProject = get(
+    if (!searchProjects) return;
+
+    const currentSearchProject: FinancialProject = get(
       values,
       `${prefix}.${CRUUSER_USER_TYPE_KEY.CURRENT_SEARCH_PROJECT}`
     );
-    const currentProjects: SearchFinancialProject[] =
+    const currentProjects: FinancialProject[] =
       get(values, `${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_PROJECTS}`) || [];
     const newProjects = [...currentProjects, currentSearchProject];
 
     setFieldValue(`${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_PROJECTS}`, newProjects);
     setFieldValue(`${prefix}.${CRUUSER_USER_TYPE_KEY.CURRENT_SEARCH_PROJECT}`, null);
+    setSearchProjects('');
+
+    history.push({ search: query.toString() });
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -49,7 +76,6 @@ const SearchProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoa
           {...getFieldProps(`${prefix}.${CRUUSER_USER_TYPE_KEY.CURRENT_SEARCH_PROJECT}`)}
           label="Comprehensive Project Search"
           placeholder={'Search'}
-          value={values.fisSuInfo.currentSearchProject}
           options={
             financialProjects
               ? financialProjects.map((project) => ({
@@ -63,12 +89,10 @@ const SearchProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoa
           }
           isLoading={isLoadingSearchProjects}
           onInputChange={(value: string) => {
-            console.log('value: ', value);
             if (!isEmpty(value)) {
               debounceSearchProjectsValue(value);
             }
           }}
-          required
           hideSearchIcon
           isClearable={true}
           onChange={setFieldValue}
@@ -89,10 +113,12 @@ const SearchProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoa
     </Grid>
   );
 };
+
 type Props = {
   formikProps: CRUUserFormikProps;
   isLoading: boolean;
   prefix: string;
   type: ROLE_NAME;
 };
+
 export default SearchProjects;

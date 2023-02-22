@@ -3,7 +3,6 @@ import { Auth } from 'aws-amplify';
 import { useFormik } from 'formik';
 import React from 'react';
 import { Button, Form, Input, InputPassword, ValidatePassword } from 'src/components/common';
-import { handleShowErrorMsg } from 'src/containers/UsersManagement/helpers';
 import {
   ChangePasswordPayload,
   GLOBAL_SETTING_KEY,
@@ -15,6 +14,7 @@ import {
 import { useUpdateProfilePasswordResetRequired } from 'src/queries/Profile/useUpdateProfilePasswordResetRequired';
 import { useUpdateUserLastPasswordChanged } from 'src/queries/Users';
 import { ErrorService } from 'src/services';
+import { handleShowErrorMsg } from 'src/utils';
 import {
   changePasswordFormSchema,
   ChangePasswordFormValue,

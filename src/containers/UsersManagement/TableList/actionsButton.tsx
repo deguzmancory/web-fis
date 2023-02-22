@@ -6,7 +6,8 @@ import { User } from 'src/queries/Users/types';
 import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { Toastify } from 'src/services';
-import { handleShowErrorMsg } from '../helpers';
+import { handleShowErrorMsg } from 'src/utils';
+
 const ActionsButton: React.FC<Props> = ({ data, onShowDialog, onHideDialog }) => {
   const { handleInvalidateAllUser, isFetching } = useGetAllUsers();
   const { deleteUser, isLoading } = useDeleteUser({

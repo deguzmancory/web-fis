@@ -200,7 +200,6 @@ const UserTypeInfoForm: React.FC<Props> = ({
                       `${prefix}.${CRUUSER_USER_TYPE_KEY.ADDRESS_ZIP_4}`
                     )}
                     {...getFieldProps(`${prefix}.${CRUUSER_USER_TYPE_KEY.ADDRESS_ZIP_4}`)}
-                    onChange={handleChangeZipCode}
                     min={1}
                     mask={'9999'}
                     disabled={isLoading}
@@ -214,6 +213,7 @@ const UserTypeInfoForm: React.FC<Props> = ({
                 label={'State'}
                 errorMessage={_getErrorMessage(`${prefix}.${CRUUSER_USER_TYPE_KEY.ADDRESS_STATE}`)}
                 {...getFieldProps(`${prefix}.${CRUUSER_USER_TYPE_KEY.ADDRESS_STATE}`)}
+                onChange={setFieldValue}
                 disabled={isLoading}
               />
             </Grid>

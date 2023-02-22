@@ -1,5 +1,4 @@
-import { Link as MuiLink, Stack, Typography } from '@mui/material';
-import { Box } from '@mui/system';
+import { Box, Link as MuiLink, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { COLOR_CODE, NO_OPENER } from 'src/appConfig/constants';

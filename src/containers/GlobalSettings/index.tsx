@@ -8,7 +8,7 @@ import { useGlobalSettings, useUpdateGlobalSetting } from 'src/queries';
 import { isCU } from 'src/queries/Profile/helpers';
 import { IRootState } from 'src/redux/store';
 import { Toastify } from 'src/services';
-import { handleShowErrorMsg } from '../UsersManagement/helpers';
+import { handleShowErrorMsg } from 'src/utils';
 import BreadcrumbsGlobalSettings from './breadcrumbs';
 import ErrorWrapperGlobalSettings from './error';
 import {

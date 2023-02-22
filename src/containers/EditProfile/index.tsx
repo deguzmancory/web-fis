@@ -12,7 +12,7 @@ import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSl
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { IRootState } from 'src/redux/store';
 import { Navigator, RoleService, Toastify } from 'src/services';
-import { deepKeys, scrollToTopError } from 'src/utils';
+import { deepKeys, handleShowErrorMsg, scrollToTopError } from 'src/utils';
 import { localTimeToHawaii } from 'src/utils/momentUtils';
 import AuditInformation from '../CRUUSerContainer/AuditInformation';
 import { CRUUSER_KEY, USER_MODE } from '../CRUUSerContainer/enums';
@@ -28,7 +28,6 @@ import {
 import InternalComments from '../CRUUSerContainer/InternalComments';
 import Layout from '../CRUUSerContainer/layout';
 import UserType from '../CRUUSerContainer/UserType';
-import { handleShowErrorMsg } from '../UsersManagement/helpers';
 import BreadcrumbsEditProfile from './breadcrumbs';
 import { editProfileFormSchema, formatEditProfilePayload } from './helpers';
 

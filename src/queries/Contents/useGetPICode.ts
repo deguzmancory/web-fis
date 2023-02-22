@@ -1,11 +1,11 @@
 import { useQuery, useQueryClient, UseQueryOptions } from 'react-query';
 import apiClient from '../apiClient';
-import { ApiResponseType, authResponseWrapper } from '../helpers';
+import { ApiResponseType, authResponseWrapper, PaginationResponseType } from '../helpers';
 import { API_QUERIES } from '../keys';
-import { GetPICodesResponse, PICode } from './types';
+import { PICode } from './types';
 
 export function useGetPICode(
-  options?: UseQueryOptions<ApiResponseType<{ data: GetPICodesResponse }>, Error, PICode[]>
+  options?: UseQueryOptions<ApiResponseType<PaginationResponseType<PICode>>, Error, PICode[]>
 ) {
   const {
     data: piCodes,
@@ -13,16 +13,16 @@ export function useGetPICode(
     isError,
     isFetching: isLoading,
     refetch: onGetPICodes,
-  } = useQuery<ApiResponseType<{ data: GetPICodesResponse }>, Error, PICode[]>(
+  } = useQuery<ApiResponseType<PaginationResponseType<PICode>>, Error, PICode[]>(
     [API_QUERIES.PI_CODES],
     {
       queryFn: (_query) => {
-        return authResponseWrapper<ApiResponseType<{ data: GetPICodesResponse }>>(
+        return authResponseWrapper<ApiResponseType<PaginationResponseType<PICode>>>(
           apiClient.getPICodes
         );
       },
       select(data) {
-        return data.data?.data?.piCodes || [];
+        return data.data.data || [];
       },
       refetchOnMount: false,
       notifyOnChangeProps: ['data'],

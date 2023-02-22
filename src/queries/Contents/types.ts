@@ -20,15 +20,9 @@ export interface UserFICode {
 }
 
 // get PI codes
-export interface GetPICodesResponse {
-  piCodes: PICode[];
-}
 export interface PICode extends UserFICode {
   piName: string;
 }
 
 // get FA codes
-export interface GetFACodesResponse {
-  faCodes: FACode[];
-}
 export interface FACode extends UserFICode {}

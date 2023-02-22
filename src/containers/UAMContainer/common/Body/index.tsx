@@ -1,5 +1,4 @@
-import { Box, Container, Link, Paper, Typography } from '@mui/material';
-import { Stack } from '@mui/system';
+import { Box, Container, Link, Paper, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { IMAGES } from 'src/appConfig/images';
 import { Image } from 'src/components/common';

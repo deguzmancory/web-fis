@@ -24,8 +24,8 @@ import { getRoleName, ROLE_NAME } from 'src/queries/Profile/helpers';
 import { setCurrentRole, setIsUpdatedCurrentRole, setProfile } from 'src/redux/auth/authSlice';
 import { IRootState } from 'src/redux/store';
 import { DelegationKeyService, RoleService, Toastify } from 'src/services';
+import { handleShowErrorMsg } from 'src/utils';
 import { isEmpty } from 'src/validations';
-import { handleShowErrorMsg } from '../UsersManagement/helpers';
 
 import './styles.scss';
 

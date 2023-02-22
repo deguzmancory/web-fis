@@ -15,10 +15,9 @@ import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSl
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, RoleService, Toastify, TokenService } from 'src/services';
-import { deepKeys, scrollToTopError } from 'src/utils';
+import { deepKeys, handleShowErrorMsg, scrollToTopError } from 'src/utils';
 import { localTimeToHawaii } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
-import { handleShowErrorMsg } from '../UsersManagement/helpers';
 import BreadcrumbsUserDetail from './breadcrumbs';
 import { CRUUSER_KEY, USER_MODE } from './enums';
 import ErrorWrapperCRUUser from './error';

@@ -1,5 +1,6 @@
 import { Grid, Stack } from '@mui/material';
 import React from 'react';
+import { useHistory, useLocation } from 'react-router';
 import { Button, Select } from 'src/components/common';
 import { CRUUSER_KEY, CRUUSER_USER_TYPE_KEY } from 'src/containers/CRUUSerContainer/enums';
 import {
@@ -14,6 +15,10 @@ import { UserFisCode } from 'src/queries/Users/types';
 import ManageCodesTable from '../../shared/ManageCodesTable';
 
 const SelectPICodes: React.FC<Props> = ({ formikProps, isLoading }) => {
+  const history = useHistory();
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+
   const { piCodes } = useGetPICode();
 
   const piOptions = React.useMemo(
@@ -46,6 +51,8 @@ const SelectPICodes: React.FC<Props> = ({ formikProps, isLoading }) => {
       ];
 
       setFieldValue(`${CRUUSER_KEY.FIS_SU_INFO}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`, newRows);
+
+      history.push({ search: query.toString() });
     }
 
     setFieldValue(`${CRUUSER_KEY.FIS_SU_INFO}.${CRUUSER_USER_TYPE_KEY.CURRENT_PI_CODE}`, null);
@@ -59,8 +66,11 @@ const SelectPICodes: React.FC<Props> = ({ formikProps, isLoading }) => {
         `${CRUUSER_KEY.FIS_SU_INFO}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`,
         updatedRow
       );
+
+      history.push({ search: query.toString() });
     },
-    [piCodeRows, setFieldValue]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [history, piCodeRows, setFieldValue]
   );
 
   return (

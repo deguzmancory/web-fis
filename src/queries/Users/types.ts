@@ -1,5 +1,4 @@
 import { TableParams } from 'src/redux/types';
-import { ROLE_NAME } from '../Profile/helpers';
 export enum USER_KEY {
   USERNAME = 'username',
   EMAIL = 'email',
@@ -14,6 +13,17 @@ export enum USER_KEY {
   END_DATE = 'endDate',
   END_DATE_TEMP = 'endDateTemp',
   DEFAULT_USER_TYPE = 'defaultUserType',
+}
+
+export enum FINANCIAL_PROJECT_KEY {
+  PI_CODE = 'piCode',
+  FA_CODE = 'faCode',
+  PROJECT_NUMBER = 'number',
+  PROJECT_NAME = 'name',
+  INACTIVATE = 'inactive',
+  PROJECT_DATE = 'projectDate',
+  START_DATE = 'startDate',
+  END_DATE = 'endDate',
 }
 
 export enum USER_STATUS {
@@ -36,13 +46,6 @@ export interface User {
 export type GetPropertiesParams = TableParams & {
   [key: string]: string | number | string[];
 };
-
-export interface GetSearchFinancialProjectsParams {
-  search: string;
-  roleType: ROLE_NAME;
-  excludeCode: string;
-  excludeProject: string;
-}
 
 export type DelegateAccess = {
   id: string;
@@ -215,16 +218,19 @@ export type SearchProject = {
   projectNumber: string;
 };
 
-export interface SearchFinancialProject {
+export interface FinancialProject {
   id: string;
   name: string;
   number: string;
+  campus: string;
   ac: string;
   faCode: string;
   piCode: string;
-  inActive: boolean;
+  type: string;
   startDate: string;
   endDate: string;
+  classification: string;
+  inactive: boolean;
 }
 
 export type UrlExportUser = {
@@ -277,12 +283,12 @@ export interface SharedUserTypeDetails {
   addressCountry: string;
   remittanceName: string;
   remittancePhoneNumber: string;
+  userFisCodes: UserFisCode[];
+  userFisProjects: UserFisProject[];
 }
 
 export interface FADetail extends SharedUserTypeDetails {
   faCode: string;
-  userFisCodes: UserFisCode[];
-  userFisProjects: UserFisProject[];
 }
 
 export interface PIDetail extends SharedUserTypeDetails {
@@ -290,15 +296,12 @@ export interface PIDetail extends SharedUserTypeDetails {
   directInquiriesTo: string;
   phoneNumber: string;
   faStaffToReview: string;
-  userFisProjects: UserFisProject[];
 }
 
 export interface SUDetail extends SharedUserTypeDetails {
   directInquiriesTo: string;
   phoneNumber: string;
   faStaffToReview: string;
-  userFisCodes: UserFisCode[];
-  userFisProjects: UserFisProject[];
 }
 
 export type UpdateUserLastPasswordChangedParams = {

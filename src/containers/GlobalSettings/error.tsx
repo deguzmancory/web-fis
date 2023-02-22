@@ -2,7 +2,7 @@ import { Box, Container } from '@mui/material';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import Refetch from 'src/components/Refetch';
 import { useGlobalSettings } from 'src/queries';
-import { handleShowErrorMsg } from '../UsersManagement/helpers';
+import { handleShowErrorMsg } from 'src/utils';
 import BreadcrumbsGlobalSettings from './breadcrumbs';
 
 const ErrorWrapperGlobalSettings = () => {

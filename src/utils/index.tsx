@@ -13,6 +13,7 @@ import appConfig from 'src/appConfig';
 import { isEmpty } from 'src/validations';
 import { Location } from 'history';
 import _ from 'lodash';
+import { ErrorService, Toastify } from 'src/services';
 
 export const handleGetError = (touched, errors, prefix) =>
   _.get(touched, prefix) ? _.get(errors, prefix) : '';
@@ -255,4 +256,16 @@ export const removeSpecialCharacterFromString = (value: string) => {
 export const formatStringToNumber = (value: string) => {
   if (isEmpty(value)) return null;
   return Number(value);
+};
+
+export const handleShowErrorMsg = (error: Error, prefix: string = '') => {
+  let errorMessage = ErrorService.MESSAGES.unknown;
+  if (!isEmpty(error)) {
+    if (typeof error?.message === 'string') {
+      errorMessage = error?.message;
+    } else {
+      errorMessage = error?.message[0];
+    }
+    Toastify.error(`${!isEmpty(prefix) ? `${prefix}: ` : ''}${errorMessage}`);
+  }
 };

@@ -39,13 +39,13 @@ export function useGetAllUsers(
   const handleInvalidateAllUser = () => queryClient.invalidateQueries(API_QUERIES.USERS);
 
   const { data } = allUsersResponse || {};
-  const { data: users, hasNext, payloadSize, totalItems } = data || {};
+  const { data: users, hasNext, payloadSize, totalRecords } = data || {};
 
   return {
     users,
     hasNext,
     payloadSize,
-    totalItems,
+    totalRecords,
     error,
     isError,
     isFetching,

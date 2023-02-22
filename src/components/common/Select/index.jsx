@@ -100,7 +100,6 @@ const SelectCmp = ({
     return <components.Option {...props} children={children} />;
   }, []);
 
-  console.log('options: ', options);
   return (
     <Element
       id={id.current}

@@ -2,7 +2,7 @@ import { Box, Container } from '@mui/material';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetUser } from 'src/queries/Users';
-import { handleShowErrorMsg } from '../UsersManagement/helpers';
+import { handleShowErrorMsg } from 'src/utils';
 import BreadcrumbsUserDetail from './breadcrumbs';
 import Layout from './layout';
 const RefetchUser = React.lazy(() => import('./refetchUser'));

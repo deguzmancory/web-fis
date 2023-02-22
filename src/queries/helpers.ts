@@ -45,5 +45,6 @@ export interface PaginationResponseType<T> {
   data: T[];
   payloadSize?: number;
   hasNext?: boolean;
-  totalItems?: number;
+  skippedRecords?: number;
+  totalRecords?: number;
 }

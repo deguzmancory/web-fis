@@ -1,11 +1,11 @@
 import { useQuery, useQueryClient, UseQueryOptions } from 'react-query';
 import apiClient from '../apiClient';
-import { ApiResponseType, authResponseWrapper } from '../helpers';
+import { ApiResponseType, authResponseWrapper, PaginationResponseType } from '../helpers';
 import { API_QUERIES } from '../keys';
-import { FACode, GetFACodesResponse } from './types';
+import { FACode } from './types';
 
 export function useGetFACode(
-  options?: UseQueryOptions<ApiResponseType<{ data: GetFACodesResponse }>, Error, FACode[]>
+  options?: UseQueryOptions<ApiResponseType<PaginationResponseType<FACode>>, Error, FACode[]>
 ) {
   const {
     data: faCodes,
@@ -13,16 +13,16 @@ export function useGetFACode(
     isError,
     isFetching: isLoading,
     refetch: onGetFACodes,
-  } = useQuery<ApiResponseType<{ data: GetFACodesResponse }>, Error, FACode[]>(
+  } = useQuery<ApiResponseType<PaginationResponseType<FACode>>, Error, FACode[]>(
     [API_QUERIES.FA_CODES],
     {
       queryFn: (_query) => {
-        return authResponseWrapper<ApiResponseType<{ data: GetFACodesResponse }>>(
+        return authResponseWrapper<ApiResponseType<PaginationResponseType<FACode>>>(
           apiClient.getFACodes
         );
       },
       select(data) {
-        return data.data?.data?.faCodes || [];
+        return data.data.data || [];
       },
       refetchOnMount: false,
       notifyOnChangeProps: ['data'],
@@ -38,7 +38,7 @@ export function useGetFACode(
     error,
     isError,
     isLoading,
-    onGetPICodes: onGetFACodes,
+    onGetFACodes,
     handleInvalidatePICode: handleInvalidateFACode,
   };
 }
