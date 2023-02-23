@@ -14,6 +14,7 @@ import {
 const CUDetails: React.FC<Props> = ({ formikProps }) => {
   const { values, setFieldValue } = formikProps;
   const permissions = values?.permissions;
+  console.log('CUDetails');
 
   const { permissionsCu, loading } = useGetPermissionCu({
     onSuccess(data) {},
@@ -58,7 +59,12 @@ const CUDetails: React.FC<Props> = ({ formikProps }) => {
     [permissions, permissionsCu, valueCheckbox]
   );
 
-  const renderCheckbox = (name: PERMISSION_CU_LABEL) => {
+  const renderCheckbox = (
+    name: PERMISSION_CU_LABEL,
+    options?: {
+      disabled: boolean;
+    }
+  ) => {
     return (
       <Checkbox.Item
         label={name}
@@ -68,7 +74,7 @@ const CUDetails: React.FC<Props> = ({ formikProps }) => {
           const value = event.target.checked;
           return handleCheckboxChange(value, valueCheckbox(name));
         }}
-        disabled={isLoading}
+        disabled={isLoading || options?.disabled}
       />
     );
   };
@@ -229,7 +235,9 @@ const CUDetails: React.FC<Props> = ({ formikProps }) => {
           <Box mb={2} />
 
           {renderCheckbox(PERMISSION_CU_LABEL.VIEW_VENDOR_LIST)}
-          {renderCheckbox(PERMISSION_CU_LABEL.VIEW_VENDOR_MASTER_RECORDS)}
+          {renderCheckbox(PERMISSION_CU_LABEL.VIEW_VENDOR_MASTER_RECORDS, {
+            disabled: !!valueCheckbox(PERMISSION_CU_LABEL.VIEW_VENDOR_LIST),
+          })}
           {renderCheckbox(PERMISSION_CU_LABEL.EDIT_VENDOR_MASTER_RECORDS)}
         </Grid>
         <Grid item xs={4}>
@@ -252,4 +260,9 @@ const CUDetails: React.FC<Props> = ({ formikProps }) => {
 type Props = {
   formikProps: CRUUserFormikProps;
 };
-export default CUDetails;
+
+export default React.memo(CUDetails, (prevProps, nextProps) => {
+  const prevPermissionsValues = prevProps.formikProps.values.permissions;
+  const nextPermissionsValues = nextProps.formikProps.values.permissions;
+  return prevPermissionsValues?.length === nextPermissionsValues?.length;
+});

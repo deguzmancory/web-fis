@@ -1,6 +1,6 @@
 import { QueryFunction, useQuery, useQueryClient, UseQueryOptions } from 'react-query';
 import apiClient from '../apiClient';
-import { ApiResponseType, responseWrapper } from '../helpers';
+import { ApiResponseType, getResponseData, responseWrapper } from '../helpers';
 import { API_QUERIES } from '../keys';
 import { PermissionCu, PermissionCuResponse } from './types';
 
@@ -23,7 +23,7 @@ export function useGetPermissionCu(
     {
       queryFn: handleGetPermissionCu,
       refetchOnMount: false,
-      select: (data) => data.data.data,
+      select: getResponseData,
       enabled: true,
       notifyOnChangeProps: ['data', 'isFetching'],
       ...options,
