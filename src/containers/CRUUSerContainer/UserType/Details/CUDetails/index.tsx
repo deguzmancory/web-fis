@@ -219,7 +219,7 @@ const CUDetails: React.FC<Props> = ({ formikProps }) => {
 
   const handleRadioButtonChange = React.useCallback(
     (value: PERMISSION_CU_VALUE) => {
-      if (!permissionsCu || !permissions) return null;
+      if (!permissionsCu || !permissions || !value) return null;
 
       let before: CUPermission[] = [...permissions];
       let updatedPermissions: CUPermission[] = before.filter(
