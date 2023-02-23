@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { get } from 'lodash';
 import { MyProfile } from 'src/queries';
 import { FACode, PICode } from 'src/queries/Contents/types';
-import { getRoleNamePayload } from 'src/queries/Profile/helpers';
+import { getRoleNamePayload, isPI, ROLE_NAME } from 'src/queries/Profile/helpers';
 import {
   CUPermission,
   DelegatedAccess,
@@ -13,6 +13,7 @@ import {
   SUDetail,
   UserDetail,
   USER_STATUS,
+  AddUserPayload,
 } from 'src/queries/Users/types';
 import { ErrorService, Yup } from 'src/services';
 import { getTitleCase } from 'src/utils';
@@ -267,7 +268,25 @@ export const getPayloadDelegateAccess = (delegateAccess: CRUUserFormValue['deleg
   }));
 };
 
-export const formatPayloadSubmit = (values: CRUUserFormValue) => {
+export const getShareUserTypeDetailsPayload = <T extends SharedUserTypeDetails>(fisInfo: T) => {
+  return {
+    sendInvoiceTo: fisInfo.sendInvoiceTo,
+    sendInvoiceToEmail: fisInfo.sendInvoiceToEmail,
+    department: fisInfo.department,
+    addressStreet: fisInfo.addressStreet,
+    addressCity: fisInfo.addressCity,
+    addressState: fisInfo.addressState,
+    addressZip: fisInfo.addressZip,
+    addressZip4: fisInfo.addressZip4,
+    addressCountry: fisInfo.addressCountry,
+    remittanceName: fisInfo.remittanceName,
+    remittancePhoneNumber: fisInfo.remittancePhoneNumber,
+    userFisCodes: fisInfo.userFisCodes,
+    userFisProjects: fisInfo.userFisProjects,
+  };
+};
+
+export const formatPayloadAddNew = (values: CRUUserFormValue): AddUserPayload => {
   const payload = {
     ...values,
     firstName: getTitleCase(values.firstName),
@@ -277,9 +296,23 @@ export const formatPayloadSubmit = (values: CRUUserFormValue) => {
     status: getPayloadUserStatus(values.status),
     delegateAccess: getPayloadDelegateAccess(values.delegateAccess),
 
-    fisFaInfo: null, // TODO: tin_pham update payload
-    fisPiInfo: null, // TODO: tin_pham update payload
-    fisSuInfo: null, // TODO: tin_pham update payload
+    fisFaInfo: {
+      ...getShareUserTypeDetailsPayload(values.fisFaInfo),
+      faCode: '', //TODO: check
+    },
+    fisPiInfo: {
+      ...getShareUserTypeDetailsPayload(values.fisPiInfo),
+      piCode: values.fisPiInfo.piCode,
+      directInquiriesTo: values.fisPiInfo.directInquiriesTo,
+      phoneNumber: values.fisPiInfo.phoneNumber,
+      faStaffToReview: values.fisPiInfo.faStaffToReview,
+    },
+    fisSuInfo: {
+      ...getShareUserTypeDetailsPayload(values.fisSuInfo),
+      directInquiriesTo: values.fisSuInfo.directInquiriesTo,
+      phoneNumber: values.fisSuInfo.phoneNumber,
+      faStaffToReview: values.fisSuInfo.faStaffToReview,
+    },
 
     permissions: !isEmpty(values.permissions)
       ? values.permissions.map((permission) => permission.permissionId)
@@ -309,9 +342,23 @@ export const formatPayloadUpdate = (values: CRUUserFormValue, user: UserDetail) 
     status: getPayloadUserStatus(values.status),
     delegateAccess: getPayloadDelegateAccess(values.delegateAccess),
 
-    fisFaInfo: null, // TODO: tin_pham update payload
-    fisPiInfo: null, // TODO: tin_pham update payload
-    fisSuInfo: null, // TODO: tin_pham update payload
+    fisFaInfo: {
+      ...getShareUserTypeDetailsPayload(values.fisFaInfo),
+      faCode: '', //TODO: check
+    },
+    fisPiInfo: {
+      ...getShareUserTypeDetailsPayload(values.fisPiInfo),
+      piCode: values.fisPiInfo.piCode,
+      directInquiriesTo: values.fisPiInfo.directInquiriesTo,
+      phoneNumber: values.fisPiInfo.phoneNumber,
+      faStaffToReview: values.fisPiInfo.faStaffToReview,
+    },
+    fisSuInfo: {
+      ...getShareUserTypeDetailsPayload(values.fisSuInfo),
+      directInquiriesTo: values.fisSuInfo.directInquiriesTo,
+      phoneNumber: values.fisSuInfo.phoneNumber,
+      faStaffToReview: values.fisSuInfo.faStaffToReview,
+    },
 
     permissions: !isEmpty(values.permissions)
       ? values.permissions.map((permission) => permission.permissionId)
@@ -357,30 +404,34 @@ export const getUncontrolledInputFieldProps =
     };
   };
 
-export const getPICodeOptions = ({
-  piCodes,
+export const getFisCodeOptions = <T extends Partial<PICode & FACode>>({
+  code,
   fullObjectValue = false,
+  codeType,
+  excludeCodes,
 }: {
-  piCodes: PICode[];
-  fullObjectValue: boolean;
-}) => {
-  if (isEmpty(piCodes)) return [];
+  code: T[];
+  codeType: ROLE_NAME.PI | ROLE_NAME.FA;
+  fullObjectValue?: boolean;
+  excludeCodes?: string[];
+}): { label: string; value: any }[] => {
+  if (isEmpty(code)) return [];
 
-  return piCodes.map((piCode) => {
-    return {
-      label: `${piCode.code}, ${piCode.piName}`,
-      value: fullObjectValue ? piCode : piCode.code,
-    };
-  });
-};
+  const hasExcludeCodes = !isEmpty(excludeCodes);
 
-export const getFACodeOptions = (faCodes: FACode[]) => {
-  if (isEmpty(faCodes)) return [];
+  return code.reduce((output, currentCode) => {
+    if (hasExcludeCodes && excludeCodes.includes(currentCode.code)) {
+      return output;
+    }
 
-  return faCodes.map((faCode) => {
-    return {
-      label: `${faCode.code}`,
-      value: faCode.code,
-    };
-  });
+    return [
+      ...output,
+      {
+        label: isPI(codeType)
+          ? `${currentCode.code}, ${currentCode.piName}`
+          : `${currentCode.code}`,
+        value: fullObjectValue ? currentCode : currentCode.code,
+      },
+    ];
+  }, []);
 };

@@ -1,11 +1,11 @@
 import { useQuery, UseQueryOptions } from 'react-query';
 import apiClient from '../apiClient';
-import { ApiResponseType, responseWrapper } from '../helpers';
+import { ApiResponseType, getResponseData, responseWrapper } from '../helpers';
 import { API_QUERIES } from '../keys';
 import { SearchUser } from './types';
 
 export function useSearchUsers(
-  options?: UseQueryOptions<ApiResponseType<{ data: SearchUser[] }>, Error, SearchUser[]> & {
+  options?: UseQueryOptions<ApiResponseType<SearchUser[]>, Error, SearchUser[]> & {
     name: string;
     exclude?: string;
   }
@@ -16,20 +16,15 @@ export function useSearchUsers(
     isError,
     isFetching: isLoading,
     refetch: onSearchUsers,
-  } = useQuery<ApiResponseType<{ data: SearchUser[] }>, Error, SearchUser[]>(
+  } = useQuery<ApiResponseType<SearchUser[]>, Error, SearchUser[]>(
     [API_QUERIES.SEARCH_USER, { name: options.name, exclude: options.exclude }],
     {
       queryFn: (query) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [_, ...params] = query.queryKey;
-        return responseWrapper<ApiResponseType<{ data: SearchUser[] }>>(
-          apiClient.searchUsers,
-          params
-        );
+        return responseWrapper<ApiResponseType<SearchUser[]>>(apiClient.searchUsers, params);
       },
-      select(data) {
-        return data.data.data;
-      },
+      select: getResponseData,
       enabled: !!options.name,
       ...options,
     }

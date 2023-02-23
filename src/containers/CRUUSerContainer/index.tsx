@@ -25,7 +25,7 @@ import {
   CRUUserFormikProps,
   cRUUserFormSchema,
   CRUUserFormValue,
-  formatPayloadSubmit,
+  formatPayloadAddNew,
   formatPayloadUpdate,
   getUncontrolledInputFieldProps,
   getValueRoles,
@@ -132,7 +132,7 @@ const CRUUserContainer: React.FC<Props> = ({
       const payload = formatPayloadUpdate(values, user);
       updateUser(payload);
     } else {
-      const payload = formatPayloadSubmit(values);
+      const payload = formatPayloadAddNew(values);
       createUser(payload);
     }
   };

@@ -48,3 +48,4 @@ export enum BOOLEAN {
 }
 
 export const NO_OPENER = 'noopener noreferrer';
+export const PARAMS_SPLITTER = ';';

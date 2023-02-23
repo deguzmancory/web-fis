@@ -3,20 +3,23 @@ import { Box, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import { MUIDataTableColumn, MUIDataTableMeta } from 'mui-datatables';
 import { Button } from 'src/components/common';
-import { UserFICode } from 'src/queries/Contents/types';
+import { UserFiCode } from 'src/queries/Contents/types';
+import { isFA, ROLE_NAME } from 'src/queries/Profile/helpers';
 import { FinancialProject, FINANCIAL_PROJECT_KEY } from 'src/queries/Users/types';
 import { Callback } from 'src/redux/types';
 
 export const allColumns = ({
   onRowDelete,
   userFisCodes,
+  userType,
 }: {
   onRowDelete: Callback;
-  userFisCodes: UserFICode[];
+  userFisCodes: UserFiCode[];
+  userType: ROLE_NAME;
 }): MUIDataTableColumn[] => [
   {
-    name: FINANCIAL_PROJECT_KEY.PI_CODE,
-    label: 'PI Code',
+    name: isFA(userType) ? FINANCIAL_PROJECT_KEY.FA_CODE : FINANCIAL_PROJECT_KEY.PI_CODE,
+    label: isFA(userType) ? 'FA Code' : 'PI Code',
     options: {
       filter: false,
       sort: true,
@@ -104,7 +107,8 @@ export const allColumns = ({
           | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: FinancialProject[] })
       ) => {
         const rowData = meta.tableData[meta.rowIndex] as FinancialProject;
-        const isUnlinkProject = userFisCodes.every((code) => code.code !== rowData.piCode);
+        const targetCode = isFA(userType) ? rowData.faCode : rowData.piCode;
+        const isUnlinkProject = userFisCodes.every((code) => code.code !== targetCode);
 
         if (!isUnlinkProject) return null;
 

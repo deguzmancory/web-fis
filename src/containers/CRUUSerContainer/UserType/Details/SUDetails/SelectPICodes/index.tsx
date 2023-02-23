@@ -6,31 +6,36 @@ import { CRUUSER_KEY, CRUUSER_USER_TYPE_KEY } from 'src/containers/CRUUSerContai
 import {
   CRUUserFormikProps,
   getErrorMessage,
-  getPICodeOptions,
+  getFisCodeOptions,
 } from 'src/containers/CRUUSerContainer/helper';
 import { useGetPICode } from 'src/queries';
 import { PICode } from 'src/queries/Contents/types';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { UserFisCode } from 'src/queries/Users/types';
-import ManageCodesTable from '../../shared/ManageCodesTable';
+import TableCodes from '../../shared/TableCodes';
 
 const SelectPICodes: React.FC<Props> = ({ formikProps, isLoading }) => {
   const history = useHistory();
   const location = useLocation();
-  const query = new URLSearchParams(location.search);
-
-  const { piCodes } = useGetPICode();
-
-  const piOptions = React.useMemo(
-    () => getPICodeOptions({ piCodes, fullObjectValue: true }),
-    [piCodes]
-  );
+  const query = React.useMemo(() => new URLSearchParams(location.search), [location.search]);
 
   const { values, errors, touched, getFieldProps, setFieldValue } = formikProps;
+  const { piCodes } = useGetPICode();
 
   const piCodeRows: UserFisCode[] = React.useMemo(
     () => values.fisSuInfo.userFisCodes || [],
     [values.fisSuInfo.userFisCodes]
+  );
+
+  const piOptions = React.useMemo(
+    () =>
+      getFisCodeOptions<PICode>({
+        code: piCodes,
+        fullObjectValue: true,
+        codeType: ROLE_NAME.PI,
+        excludeCodes: piCodeRows.map((code) => code.code),
+      }),
+    [piCodes, piCodeRows]
   );
 
   const _getErrorMessage = (fieldName) => {
@@ -52,6 +57,7 @@ const SelectPICodes: React.FC<Props> = ({ formikProps, isLoading }) => {
 
       setFieldValue(`${CRUUSER_KEY.FIS_SU_INFO}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`, newRows);
 
+      //reset data in <TableProjects />
       history.push({ search: query.toString() });
     }
 
@@ -67,16 +73,16 @@ const SelectPICodes: React.FC<Props> = ({ formikProps, isLoading }) => {
         updatedRow
       );
 
+      //reset data in <TableProjects />
       history.push({ search: query.toString() });
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [history, piCodeRows, setFieldValue]
+    [history, piCodeRows, setFieldValue, query]
   );
 
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>
-        <ManageCodesTable type={ROLE_NAME.PI} rows={piCodeRows} onDeleteCode={handleDeleteCode} />
+        <TableCodes type={ROLE_NAME.PI} rows={piCodeRows} onDeleteCode={handleDeleteCode} />
       </Grid>
       <Grid item xs={12}>
         <Select
@@ -103,7 +109,6 @@ const SelectPICodes: React.FC<Props> = ({ formikProps, isLoading }) => {
 };
 
 type Props = {
-  prefix?: string;
   formikProps: CRUUserFormikProps;
   isLoading: boolean;
 };

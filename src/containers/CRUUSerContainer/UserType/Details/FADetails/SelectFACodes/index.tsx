@@ -1,27 +1,40 @@
 import { Grid, Stack } from '@mui/material';
 import React from 'react';
+import { useHistory, useLocation } from 'react-router';
 import { Button, Select } from 'src/components/common';
 import { CRUUSER_KEY, CRUUSER_USER_TYPE_KEY } from 'src/containers/CRUUSerContainer/enums';
 import {
   CRUUserFormikProps,
   getErrorMessage,
-  getFACodeOptions,
+  getFisCodeOptions,
 } from 'src/containers/CRUUSerContainer/helper';
 import { useGetFACode } from 'src/queries';
+import { FACode } from 'src/queries/Contents/types';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { UserFisCode } from 'src/queries/Users/types';
-import ManageCodesTable from '../../shared/ManageCodesTable';
+import TableCodes from '../../shared/TableCodes';
 
 const SelectFACodes: React.FC<Props> = ({ formikProps, isLoading }) => {
-  const { faCodes } = useGetFACode();
-
-  const piOptions = React.useMemo(() => getFACodeOptions(faCodes), [faCodes]);
+  const history = useHistory();
+  const location = useLocation();
+  const query = React.useMemo(() => new URLSearchParams(location.search), [location.search]);
 
   const { values, errors, touched, getFieldProps, setFieldValue } = formikProps;
+  const { faCodes } = useGetFACode();
 
   const faCodeRows: UserFisCode[] = React.useMemo(
     () => values.fisFaInfo.userFisCodes || [],
     [values.fisFaInfo.userFisCodes]
+  );
+
+  const piOptions = React.useMemo(
+    () =>
+      getFisCodeOptions<FACode>({
+        code: faCodes,
+        codeType: ROLE_NAME.FA,
+        excludeCodes: faCodeRows.map((code) => code.code),
+      }),
+    [faCodes, faCodeRows]
   );
 
   const _getErrorMessage = (fieldName) => {
@@ -41,6 +54,9 @@ const SelectFACodes: React.FC<Props> = ({ formikProps, isLoading }) => {
       ];
 
       setFieldValue(`${CRUUSER_KEY.FIS_FA_INFO}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`, newRows);
+
+      //reset data in <TableProjects />
+      history.push({ search: query.toString() });
     }
 
     setFieldValue(`${CRUUSER_KEY.FIS_FA_INFO}.${CRUUSER_USER_TYPE_KEY.CURRENT_FA_CODE}`, null);
@@ -54,14 +70,17 @@ const SelectFACodes: React.FC<Props> = ({ formikProps, isLoading }) => {
         `${CRUUSER_KEY.FIS_FA_INFO}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`,
         updatedRow
       );
+
+      //reset data in <TableProjects />
+      history.push({ search: query.toString() });
     },
-    [faCodeRows, setFieldValue]
+    [history, faCodeRows, setFieldValue, query]
   );
 
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>
-        <ManageCodesTable type={ROLE_NAME.FA} rows={faCodeRows} onDeleteCode={handleDeleteCode} />
+        <TableCodes type={ROLE_NAME.FA} rows={faCodeRows} onDeleteCode={handleDeleteCode} />
       </Grid>
       <Grid item xs={12}>
         <Select

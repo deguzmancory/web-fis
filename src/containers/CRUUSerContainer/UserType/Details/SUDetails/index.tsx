@@ -27,11 +27,7 @@ const SUDetails: React.FC<Props> = ({ formikProps, isLoading }) => {
           </Grid>
 
           <Grid item xs={12} sm={2}>
-            <SelectPICodes
-              prefix={`${CRUUSER_KEY.FIS_SU_INFO}`}
-              isLoading={isLoading}
-              formikProps={formikProps}
-            />
+            <SelectPICodes isLoading={isLoading} formikProps={formikProps} />
           </Grid>
           <Grid item xs={12} sm={10}>
             <TableProjects

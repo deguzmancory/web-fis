@@ -2,7 +2,7 @@ import { Box, Stack, Typography, useMediaQuery } from '@mui/material';
 import { MUIDataTableOptions } from 'mui-datatables';
 import React from 'react';
 import { connect } from 'react-redux';
-import { muiResponsive } from 'src/appConfig/constants';
+import { muiResponsive, PARAMS_SPLITTER } from 'src/appConfig/constants';
 import { Table } from 'src/components/common';
 import EmptyTable from 'src/components/EmptyTable';
 import { FinancialProject, GetPropertiesParams } from 'src/queries/Users/types';
@@ -12,15 +12,21 @@ import { useGetFinancialProjects } from 'src/queries/Users/useGetFinancialProjec
 import { CRUUserFormikProps } from 'src/containers/CRUUSerContainer/helper';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { get } from 'lodash';
-import { UserFICode } from 'src/queries/Contents/types';
+import { UserFiCode } from 'src/queries/Contents/types';
 import { CRUUSER_USER_TYPE_KEY } from 'src/containers/CRUUSerContainer/enums';
 import { handleShowErrorMsg } from 'src/utils';
+import { useHistory, useLocation } from 'react-router';
+import { isEmpty } from 'src/validations';
 
 const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoading }) => {
-  const { values } = formikProps;
+  const history = useHistory();
+  const location = useLocation();
+  const query = React.useMemo(() => new URLSearchParams(location.search), [location.search]);
+
+  const { values, setFieldValue } = formikProps;
   const isTabletScreen = useMediaQuery(muiResponsive.TABLET);
 
-  const userFisCodes: UserFICode[] = React.useMemo(
+  const userFisCodes: UserFiCode[] = React.useMemo(
     () => get(values, `${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`) || [],
     [prefix, values]
   );
@@ -37,16 +43,26 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
     setParams,
   } = useGetFinancialProjects({
     onError: (error) => handleShowErrorMsg(error),
-    // enabled: !isEmpty(userFisCodes) || !isEmpty(userFisProjects),
+    enabled: !isEmpty(userFisCodes) || !isEmpty(userFisProjects),
   });
 
-  const handleGetAccounts = React.useCallback(
+  const filteredFinancialProjects = React.useMemo(() => {
+    if (isEmpty(userFisCodes) && isEmpty(userFisProjects)) {
+      return [];
+    }
+
+    return financialProjects;
+  }, [financialProjects, userFisCodes, userFisProjects]);
+
+  const handleRefetchFinancialProjects = React.useCallback(
     (params: GetPropertiesParams) => {
       const newParams = {
         ...params,
         userType: type,
-        codes: userFisCodes.map((code) => code.code).join(','),
-        projectNumbers: userFisProjects.map((project) => project.projectNumber).join(','),
+        codes: userFisCodes.map((code) => code.code).join(PARAMS_SPLITTER),
+        projectNumbers: userFisProjects
+          .map((project) => project.projectNumber)
+          .join(PARAMS_SPLITTER),
       };
 
       setParams(newParams);
@@ -67,24 +83,37 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
     [isTabletScreen, totalRecords]
   );
 
-  const handleRowDelete = (rowData: FinancialProject) => {};
+  const handleRowDelete = React.useCallback(
+    (rowData: FinancialProject) => {
+      const updatedFisProjects = userFisProjects.filter(
+        (project) => project.projectNumber !== rowData.number
+      );
+
+      setFieldValue(`${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_PROJECTS}`, updatedFisProjects);
+
+      //reset data in <TableProjects />
+      history.push({ search: query.toString() });
+    },
+    [prefix, setFieldValue, userFisProjects, history, query]
+  );
 
   const columns = React.useMemo(
     () =>
       allColumns({
         onRowDelete: (rowData) => handleRowDelete(rowData),
         userFisCodes,
+        userType: type,
       }),
-    [userFisCodes]
+    [userFisCodes, type, handleRowDelete]
   );
 
   return (
     <Box>
       <Table
         title={''}
-        onAction={handleGetAccounts}
+        onAction={handleRefetchFinancialProjects}
         isLoading={isLoading || isLoadingGetProjects}
-        data={financialProjects}
+        data={filteredFinancialProjects}
         tableOptions={tableOptions}
         columns={columns}
         emptyComponent={<EmptyTable />}

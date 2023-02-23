@@ -7,9 +7,11 @@ import { CRUUSER_KEY, CRUUSER_USER_TYPE_KEY } from 'src/containers/CRUUSerContai
 import {
   CRUUserFormikProps,
   getErrorMessage,
-  getPICodeOptions,
+  getFisCodeOptions,
 } from 'src/containers/CRUUSerContainer/helper';
+import { PICode } from 'src/queries/Contents/types';
 import { useGetPICode } from 'src/queries/Contents/useGetPICode';
+import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { PIDetail } from 'src/queries/Users/types';
 
 const SelectPICode: React.FC<Props> = ({
@@ -25,7 +27,8 @@ const SelectPICode: React.FC<Props> = ({
   const { piCodes } = useGetPICode();
 
   const piOptions = React.useMemo(
-    () => getPICodeOptions({ piCodes, fullObjectValue: false }),
+    () =>
+      getFisCodeOptions<PICode>({ code: piCodes, fullObjectValue: false, codeType: ROLE_NAME.PI }),
     [piCodes]
   );
 
@@ -35,6 +38,19 @@ const SelectPICode: React.FC<Props> = ({
     return getErrorMessage(fieldName, { touched, errors });
   };
 
+  const handleSelectPICode = (name, value) => {
+    setFieldValue(name, value);
+
+    //set "userFisCodes" field to able to reuse this field in shared components <TableProjects /> and <SearchProjects />
+    setFieldValue(
+      `${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`,
+      value ? [{ code: value }] : []
+    );
+
+    //reset data in <TableProjects />
+    history.push({ search: query.toString() });
+  };
+
   const handleUseExistingPICodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.checked;
     const existingPICode = initialPIInfo?.piCode || null;
@@ -42,11 +58,16 @@ const SelectPICode: React.FC<Props> = ({
     //TODO: confirm the logic
     if (value === true) {
       setFieldValue(`${prefix}.${CRUUSER_USER_TYPE_KEY.PI_CODE}`, existingPICode);
-      setFieldValue(`${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`, [value]);
+      setFieldValue(
+        `${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`,
+        existingPICode ? [{ code: existingPICode }] : []
+      );
+
+      //reset data in <TableProjects />
+      history.push({ search: query.toString() });
     }
 
     setFieldValue(`${prefix}.${CRUUSER_USER_TYPE_KEY.USE_EXISTING_PI_CODE}`, value);
-    history.push({ search: query.toString() });
   };
 
   return (
@@ -64,11 +85,7 @@ const SelectPICode: React.FC<Props> = ({
           }
           {...getFieldProps(`${prefix}.${CRUUSER_USER_TYPE_KEY.PI_CODE}`)}
           errorMessage={_getErrorMessage(`${prefix}.${CRUUSER_USER_TYPE_KEY.PI_CODE}`)}
-          onChange={(name, value) => {
-            setFieldValue(name, value);
-            setFieldValue(`${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`, [value]);
-            history.push({ search: query.toString() });
-          }}
+          onChange={handleSelectPICode}
         />
       </Grid>
       <Grid item xs={12}>

@@ -1,14 +1,23 @@
 import { Delete } from '@mui/icons-material';
-import { IconButton, Table, TableBody, TableContainer, TableHead, TableRow } from '@mui/material';
+import {
+  IconButton,
+  Table,
+  TableBody,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@mui/material';
+import cn from 'classnames';
 import React from 'react';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import { StyledTableCell, StyledTableRow } from 'src/components/CustomTable';
-import { ROLE_NAME } from 'src/queries/Profile/helpers';
+import { isFA, ROLE_NAME } from 'src/queries/Profile/helpers';
 import { UserFisCode } from 'src/queries/Users/types';
 import { Callback } from 'src/redux/types';
 import { isEmpty } from 'src/validations';
 
-const ManageCodesTable: React.FC<Props> = ({ rows, type, onDeleteCode }) => {
+const TableCodes: React.FC<Props> = ({ rows, type, onDeleteCode }) => {
   return (
     <TableContainer
       sx={{
@@ -25,10 +34,10 @@ const ManageCodesTable: React.FC<Props> = ({ rows, type, onDeleteCode }) => {
       }}
     >
       <Table>
-        <TableHead>
+        <TableHead sx={{ position: 'sticky', top: 0 }}>
           <TableRow>
             {[
-              { title: type === ROLE_NAME.FA ? 'FA Code' : 'PI Code', width: '90%' },
+              { title: isFA(type) ? 'FA Code' : 'PI Code', width: '90%' },
               { title: ' ', width: '10%' },
             ].map((item) => (
               <StyledTableCell key={item.title} width={item.width}>
@@ -40,11 +49,22 @@ const ManageCodesTable: React.FC<Props> = ({ rows, type, onDeleteCode }) => {
         <TableBody>
           {!isEmpty(rows) &&
             rows.map((row, index) => {
-              const codeInfo = type === ROLE_NAME.FA ? `${row.code}` : `${row.code}, ${row.piName}`;
+              const codeInfo = isFA(type) ? `${row.code}` : `${row.code}, ${row.piName}`;
               return (
                 <StyledTableRow key={`${row.code}-${row.codeType}-${index}`}>
-                  <StyledTableCell width={'90%'}>
-                    {codeInfo.length > 10 ? `${codeInfo.substring(0, 10)}...` : codeInfo}
+                  <StyledTableCell
+                    sx={{
+                      minWidth: 100,
+                      maxWidth: 100,
+                    }}
+                    className={cn({ 'marquee-left': codeInfo.length > 10 })}
+                  >
+                    <Typography
+                      variant="body2"
+                      className={codeInfo.length > 10 ? 'marquee-left__text' : ''}
+                    >
+                      {codeInfo}
+                    </Typography>
                   </StyledTableCell>
                   <StyledTableCell width={'10%'}>
                     <IconButton
@@ -77,4 +97,4 @@ type Props = {
   onDeleteCode: Callback;
 };
 
-export default React.memo(ManageCodesTable);
+export default React.memo(TableCodes);

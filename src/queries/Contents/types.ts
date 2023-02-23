@@ -14,15 +14,15 @@ export interface NAICSCode {
   description: string;
 }
 
-export interface UserFICode {
+export interface UserFiCode {
   code: string;
   type: string;
 }
 
 // get PI codes
-export interface PICode extends UserFICode {
+export interface PICode extends UserFiCode {
   piName: string;
 }
 
 // get FA codes
-export interface FACode extends UserFICode {}
+export interface FACode extends UserFiCode {}
