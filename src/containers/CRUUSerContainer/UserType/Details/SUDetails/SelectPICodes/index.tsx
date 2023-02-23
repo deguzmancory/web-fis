@@ -1,4 +1,4 @@
-import { Grid, Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import React from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { Button, Select } from 'src/components/common';
@@ -80,11 +80,11 @@ const SelectPICodes: React.FC<Props> = ({ formikProps, isLoading }) => {
   );
 
   return (
-    <Grid container spacing={1}>
-      <Grid item xs={12}>
+    <Box>
+      <Box mb={1} mt={5}>
         <TableCodes type={ROLE_NAME.PI} rows={piCodeRows} onDeleteCode={handleDeleteCode} />
-      </Grid>
-      <Grid item xs={12}>
+      </Box>
+      <Box mb={1}>
         <Select
           label=""
           placeholder={'Search'}
@@ -98,13 +98,13 @@ const SelectPICodes: React.FC<Props> = ({ formikProps, isLoading }) => {
           )}
           onChange={setFieldValue}
         />
-      </Grid>
-      <Grid item xs={12}>
+      </Box>
+      <Box mb={1}>
         <Stack alignItems={'flex-end'}>
           <Button onClick={handleAddCode}>Add</Button>
         </Stack>
-      </Grid>
-    </Grid>
+      </Box>
+    </Box>
   );
 };
 

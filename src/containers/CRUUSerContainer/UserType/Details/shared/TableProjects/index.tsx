@@ -1,22 +1,21 @@
 import { Box, Stack, Typography, useMediaQuery } from '@mui/material';
+import _, { get } from 'lodash';
 import { MUIDataTableOptions } from 'mui-datatables';
 import React from 'react';
-import { connect } from 'react-redux';
+import { useHistory, useLocation } from 'react-router';
 import { muiResponsive, PARAMS_SPLITTER } from 'src/appConfig/constants';
 import { Table } from 'src/components/common';
 import EmptyTable from 'src/components/EmptyTable';
-import { FinancialProject, GetPropertiesParams } from 'src/queries/Users/types';
-import { IRootState } from 'src/redux/rootReducer';
-import { allColumns } from './allColumns';
-import { useGetFinancialProjects } from 'src/queries/Users/useGetFinancialProjects';
-import { CRUUserFormikProps } from 'src/containers/CRUUSerContainer/helper';
-import { ROLE_NAME } from 'src/queries/Profile/helpers';
-import { get } from 'lodash';
-import { UserFiCode } from 'src/queries/Contents/types';
 import { CRUUSER_USER_TYPE_KEY } from 'src/containers/CRUUSerContainer/enums';
+import { CRUUserFormikProps } from 'src/containers/CRUUSerContainer/helper';
+import { UserFiCode } from 'src/queries/Contents/types';
+import { ROLE_NAME } from 'src/queries/Profile/helpers';
+import { FinancialProject, GetPropertiesParams } from 'src/queries/Users/types';
+import { useGetFinancialProjects } from 'src/queries/Users/useGetFinancialProjects';
 import { handleShowErrorMsg } from 'src/utils';
-import { useHistory, useLocation } from 'react-router';
 import { isEmpty } from 'src/validations';
+import { allColumns } from './allColumns';
+import HeaderTableUserType from './header';
 
 const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoading }) => {
   const history = useHistory();
@@ -43,7 +42,7 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
     setParams,
   } = useGetFinancialProjects({
     onError: (error) => handleShowErrorMsg(error),
-    enabled: !isEmpty(userFisCodes) || !isEmpty(userFisProjects),
+    enabled: !isEmpty(userFisCodes) || !isEmpty(userFisProjects), //TODO: tin_pham refactor, API call 2 times
   });
 
   const filteredFinancialProjects = React.useMemo(() => {
@@ -78,7 +77,7 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
       searchAlwaysOpen: false,
       searchOpen: false,
       search: false,
-      tableBodyHeight: isTabletScreen ? '100%' : 'calc(100vh - 420px)', // content height
+      tableBodyHeight: isTabletScreen ? '100%' : 'calc(100vh - 450px)', // content height
     }),
     [isTabletScreen, totalRecords]
   );
@@ -109,6 +108,7 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
 
   return (
     <Box>
+      <HeaderTableUserType />
       <Table
         title={''}
         onAction={handleRefetchFinancialProjects}
@@ -119,7 +119,7 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
         emptyComponent={
           <EmptyTable
             style={{
-              height: isTabletScreen ? '100%' : 'calc(100vh - 420px)',
+              height: isTabletScreen ? '100%' : 'calc(100vh - 597px)',
             }}
           />
         }
@@ -131,46 +131,47 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
   );
 };
 
-type Props = ReturnType<typeof mapStateToProps> &
-  typeof mapDispatchToProps & {
-    formikProps: CRUUserFormikProps;
-    isLoading: boolean;
-    prefix: string;
-    type: ROLE_NAME;
-  };
+type Props = {
+  formikProps: CRUUserFormikProps;
+  isLoading: boolean;
+  prefix: string;
+  type: ROLE_NAME;
+};
+export default React.memo(TableProjects, (prevProps, nextProps) => {
+  const prevPropsFormikValues = prevProps.formikProps.values;
+  const nextPropsFormikValues = nextProps.formikProps.values;
+  const type = nextProps.type;
 
-const mapStateToProps = (state: IRootState) => ({});
+  const prevPropsUserFisProjects =
+    get(prevPropsFormikValues, `${prevProps.prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_PROJECTS}`) ||
+    [];
+  const nextPropsUserFisProjects =
+    get(nextPropsFormikValues, `${nextProps.prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_PROJECTS}`) ||
+    [];
 
-const mapDispatchToProps = {};
+  switch (type) {
+    case ROLE_NAME.PI:
+      const prevPropsUserPiCode =
+        get(prevPropsFormikValues, `${prevProps.prefix}.${CRUUSER_USER_TYPE_KEY.PI_CODE}`) || null;
+      const nextPropsUserPiCode =
+        get(nextPropsFormikValues, `${prevProps.prefix}.${CRUUSER_USER_TYPE_KEY.PI_CODE}`) || null;
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(
-  React.memo(TableProjects, (prevProps, nextProps) => {
-    const prevPropsFormikValues = prevProps.formikProps.values;
-    const nextPropsFormikValues = nextProps.formikProps.values;
+      return (
+        _.isEqual(prevPropsUserPiCode, nextPropsUserPiCode) &&
+        prevPropsUserFisProjects?.length === nextPropsUserFisProjects?.length
+      );
 
-    const prevPropsUserFisCodes =
-      get(prevPropsFormikValues, `${prevProps.prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`) ||
-      [];
-    const nextPropsUserFisCodes =
-      get(nextPropsFormikValues, `${nextProps.prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`) ||
-      [];
-    const prevPropsUserFisProjects =
-      get(
-        prevPropsFormikValues,
-        `${prevProps.prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_PROJECTS}`
-      ) || [];
-    const nextPropsUserFisProjects =
-      get(
-        nextPropsFormikValues,
-        `${nextProps.prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_PROJECTS}`
-      ) || [];
+    default:
+      const prevPropsUserFisCodes =
+        get(prevPropsFormikValues, `${prevProps.prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`) ||
+        [];
+      const nextPropsUserFisCodes =
+        get(nextPropsFormikValues, `${nextProps.prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`) ||
+        [];
 
-    return (
-      prevPropsUserFisCodes?.length === nextPropsUserFisCodes?.length &&
-      prevPropsUserFisProjects?.length === nextPropsUserFisProjects?.length
-    );
-  })
-);
+      return (
+        prevPropsUserFisCodes?.length === nextPropsUserFisCodes?.length &&
+        prevPropsUserFisProjects?.length === nextPropsUserFisProjects?.length
+      );
+  }
+});

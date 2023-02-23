@@ -37,6 +37,8 @@ export const generateArray = (length: number, initial = '') => Array(length).fil
 export const stringify = (params: { [key: string]: number | string | string[] }) => {
   let result = '';
 
+  if (!params) return '';
+
   Object.keys(params).forEach((key) => {
     if (!isEmpty(params[`${key}`])) {
       if (Array.isArray(params[`${key}`])) {

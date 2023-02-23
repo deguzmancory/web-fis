@@ -16,6 +16,7 @@ const ContactFilter: React.FC<Props> = ({
   labelClassName,
   anchorOrigin,
   transformOrigin,
+  icon,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
 
@@ -39,6 +40,9 @@ const ContactFilter: React.FC<Props> = ({
         onClick={handleClick}
         variant="link"
         className={cn('cmp-popover__button', labelClassName)}
+        {...(icon && {
+          icon: icon,
+        })}
       >
         {label}
       </Button>
@@ -94,6 +98,7 @@ type Props = ReturnType<typeof mapStateToProps> &
     isShow?: boolean;
     anchorOrigin?: PopoverPosition;
     transformOrigin?: PopoverPosition;
+    icon?: React.ReactElement;
   };
 
 const mapStateToProps = (state: IRootState) => ({});

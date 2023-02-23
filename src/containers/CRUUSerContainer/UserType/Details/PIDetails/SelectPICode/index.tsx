@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material';
+import { Box } from '@mui/material';
 import { get } from 'lodash';
 import React from 'react';
 import { useHistory, useLocation } from 'react-router';
@@ -55,8 +55,7 @@ const SelectPICode: React.FC<Props> = ({
     const value = event.target.checked;
     const existingPICode = initialPIInfo?.piCode || null;
 
-    //TODO: confirm the logic
-    if (value === true) {
+    if (!value) {
       setFieldValue(`${prefix}.${CRUUSER_USER_TYPE_KEY.PI_CODE}`, existingPICode);
       setFieldValue(
         `${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`,
@@ -71,8 +70,12 @@ const SelectPICode: React.FC<Props> = ({
   };
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
+    <Box>
+      <Box
+        sx={{
+          marginTop: `13px`,
+        }}
+      >
         <Select
           label="PI Code"
           placeholder={'Search'}
@@ -80,15 +83,14 @@ const SelectPICode: React.FC<Props> = ({
           hideSearchIcon
           isClearable={false}
           isDisabled={
-            isLoading ||
-            get(values, `${prefix}.${CRUUSER_USER_TYPE_KEY.USE_EXISTING_PI_CODE}`) === true
+            isLoading || !get(values, `${prefix}.${CRUUSER_USER_TYPE_KEY.USE_EXISTING_PI_CODE}`)
           }
           {...getFieldProps(`${prefix}.${CRUUSER_USER_TYPE_KEY.PI_CODE}`)}
           errorMessage={_getErrorMessage(`${prefix}.${CRUUSER_USER_TYPE_KEY.PI_CODE}`)}
           onChange={handleSelectPICode}
         />
-      </Grid>
-      <Grid item xs={12}>
+      </Box>
+      <Box mt={2}>
         <Checkbox.Item
           label="Use Existing PI Code"
           {...getFieldProps(`${prefix}.${CRUUSER_USER_TYPE_KEY.USE_EXISTING_PI_CODE}`)}
@@ -96,8 +98,8 @@ const SelectPICode: React.FC<Props> = ({
           onChange={handleUseExistingPICodeChange}
           disabled={isLoading}
         />
-      </Grid>
-    </Grid>
+      </Box>
+    </Box>
   );
 };
 
