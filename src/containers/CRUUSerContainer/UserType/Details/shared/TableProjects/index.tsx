@@ -78,7 +78,7 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
       searchAlwaysOpen: false,
       searchOpen: false,
       search: false,
-      tableBodyMaxHeight: isTabletScreen ? '100%' : 'calc(100vh - 366px)', // content height
+      tableBodyHeight: isTabletScreen ? '100%' : 'calc(100vh - 420px)', // content height
     }),
     [isTabletScreen, totalRecords]
   );
@@ -116,7 +116,13 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
         data={filteredFinancialProjects}
         tableOptions={tableOptions}
         columns={columns}
-        emptyComponent={<EmptyTable />}
+        emptyComponent={
+          <EmptyTable
+            style={{
+              height: isTabletScreen ? '100%' : 'calc(100vh - 420px)',
+            }}
+          />
+        }
       />
       <Stack alignItems={'flex-end'} mt={2}>
         <Typography variant="body2">(Only unlinked projects can be removed)</Typography>

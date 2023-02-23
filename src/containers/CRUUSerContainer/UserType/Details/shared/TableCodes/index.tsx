@@ -21,8 +21,7 @@ const TableCodes: React.FC<Props> = ({ rows, type, onDeleteCode }) => {
   return (
     <TableContainer
       sx={{
-        minHeight: '200px',
-        maxHeight: '200px',
+        height: 'calc(100vh - 460px)',
         overflow: 'auto',
         border: `${COLOR_CODE.DEFAULT_BORDER}`,
         '.MuiTableCell-body': {

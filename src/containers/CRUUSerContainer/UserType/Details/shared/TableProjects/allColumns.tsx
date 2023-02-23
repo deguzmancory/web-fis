@@ -115,8 +115,8 @@ export const allColumns = ({
         return (
           <Box
             sx={{
-              minWidth: 10,
-              maxWidth: 10,
+              minWidth: 15,
+              maxWidth: 15,
             }}
           >
             <Button
