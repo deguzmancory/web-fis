@@ -178,6 +178,13 @@ label {
   &__text {
     white-space: nowrap;
     animation: marquee-left 6s linear infinite alternate;
+
+    &--hover {
+      white-space: nowrap;
+      &:hover {
+        animation: marquee-left 6s linear infinite alternate;
+      }
+    }
   }
 }
 

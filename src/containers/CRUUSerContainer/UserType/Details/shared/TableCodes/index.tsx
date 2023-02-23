@@ -60,7 +60,7 @@ const TableCodes: React.FC<Props> = ({ rows, type, onDeleteCode }) => {
                   >
                     <Typography
                       variant="body2"
-                      className={codeInfo.length > 10 ? 'marquee-left__text' : ''}
+                      className={codeInfo.length > 10 ? 'marquee-left__text--hover' : ''}
                     >
                       {codeInfo}
                     </Typography>

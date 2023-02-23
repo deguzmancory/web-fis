@@ -1,12 +1,12 @@
 import { Delete } from '@mui/icons-material';
 import { Box, Typography } from '@mui/material';
-import dayjs from 'dayjs';
 import { MUIDataTableColumn, MUIDataTableMeta } from 'mui-datatables';
 import { Button } from 'src/components/common';
 import { UserFiCode } from 'src/queries/Contents/types';
 import { isFA, ROLE_NAME } from 'src/queries/Profile/helpers';
 import { FinancialProject, FINANCIAL_PROJECT_KEY } from 'src/queries/Users/types';
 import { Callback } from 'src/redux/types';
+import { getDateDisplay } from 'src/utils/momentUtils';
 
 export const allColumns = ({
   onRowDelete,
@@ -88,7 +88,7 @@ export const allColumns = ({
         const rowData = meta.tableData[meta.rowIndex] as FinancialProject;
         return (
           <Typography variant="body2">
-            {dayjs(rowData.startDate).format('MM/DD')} - {dayjs(rowData.endDate).format('MM/DD')}
+            {getDateDisplay(rowData.startDate)} - {getDateDisplay(rowData.endDate)}
           </Typography>
         );
       },
