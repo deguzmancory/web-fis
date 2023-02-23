@@ -14,7 +14,6 @@ import {
 const CUDetails: React.FC<Props> = ({ formikProps }) => {
   const { values, setFieldValue } = formikProps;
   const permissions = values?.permissions;
-  console.log('CUDetails');
 
   const { permissionsCu, loading } = useGetPermissionCu({
     onSuccess(data) {},
@@ -30,6 +29,28 @@ const CUDetails: React.FC<Props> = ({ formikProps }) => {
     const clonePermissions = _.cloneDeep(permissions);
 
     if (value) {
+      const isViewVendorMasterRecords =
+        valueCheckbox(PERMISSION_CU_LABEL.VIEW_VENDOR_MASTER_RECORDS) === id;
+
+      const isEditVendorMasterRecords =
+        valueCheckbox(PERMISSION_CU_LABEL.EDIT_VENDOR_MASTER_RECORDS) === id;
+
+      if (isEditVendorMasterRecords) {
+        // Check isEditVendorMasterRecords >> remove VIEW_VENDOR_MASTER_RECORDS
+        updatedPermissions = clonePermissions.filter(
+          (permission) =>
+            permission.permissionId !==
+            valueCheckbox(PERMISSION_CU_LABEL.VIEW_VENDOR_MASTER_RECORDS)
+        );
+      } else if (isViewVendorMasterRecords) {
+        // Check isViewVendorMasterRecords >> remove EDIT_VENDOR_MASTER_RECORDS
+        updatedPermissions = clonePermissions.filter(
+          (permission) =>
+            permission.permissionId !==
+            valueCheckbox(PERMISSION_CU_LABEL.EDIT_VENDOR_MASTER_RECORDS)
+        );
+      }
+
       // add the permission to the array if it doesn't already exist
       if (!clonePermissions.some((permission) => permission.permissionId === id)) {
         updatedPermissions.push({
@@ -37,9 +58,25 @@ const CUDetails: React.FC<Props> = ({ formikProps }) => {
         });
       }
     } else {
-      // remove the permission from the array if it exists
-      updatedPermissions = clonePermissions.filter((permission) => permission.permissionId !== id);
+      const isViewVendorList = valueCheckbox(PERMISSION_CU_LABEL.VIEW_VENDOR_LIST) === id;
+      if (isViewVendorList) {
+        // Uncheck View Vendor List >> remove VIEW_VENDOR_MASTER_RECORDS && EDIT_VENDOR_MASTER_RECORDS also
+        updatedPermissions = clonePermissions.filter(
+          (permission) =>
+            permission.permissionId !==
+              valueCheckbox(PERMISSION_CU_LABEL.VIEW_VENDOR_MASTER_RECORDS) &&
+            permission.permissionId !==
+              valueCheckbox(PERMISSION_CU_LABEL.EDIT_VENDOR_MASTER_RECORDS) &&
+            permission.permissionId !== id
+        );
+      } else {
+        // remove the permission from the array if it exists
+        updatedPermissions = clonePermissions.filter(
+          (permission) => permission.permissionId !== id
+        );
+      }
     }
+    // setFieldValue(CRUUSER_KEY.PERMISSIONS, _.uniqBy(updatedPermissions, 'permissionId'));
     setFieldValue(CRUUSER_KEY.PERMISSIONS, updatedPermissions);
   };
 
@@ -114,7 +151,7 @@ const CUDetails: React.FC<Props> = ({ formikProps }) => {
     } else if (isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_READ_A_USER)) {
       return PERMISSION_CU_VALUE.VIEW_ONLY;
     } else {
-      return PERMISSION_CU_VALUE.ALL;
+      return null;
     }
   }, [permissions, permissionsCu]);
 
@@ -236,9 +273,11 @@ const CUDetails: React.FC<Props> = ({ formikProps }) => {
 
           {renderCheckbox(PERMISSION_CU_LABEL.VIEW_VENDOR_LIST)}
           {renderCheckbox(PERMISSION_CU_LABEL.VIEW_VENDOR_MASTER_RECORDS, {
-            disabled: !!valueCheckbox(PERMISSION_CU_LABEL.VIEW_VENDOR_LIST),
+            disabled: !statusCheckbox(PERMISSION_CU_LABEL.VIEW_VENDOR_LIST),
           })}
-          {renderCheckbox(PERMISSION_CU_LABEL.EDIT_VENDOR_MASTER_RECORDS)}
+          {renderCheckbox(PERMISSION_CU_LABEL.EDIT_VENDOR_MASTER_RECORDS, {
+            disabled: !statusCheckbox(PERMISSION_CU_LABEL.VIEW_VENDOR_LIST),
+          })}
         </Grid>
         <Grid item xs={4}>
           <RadioButton
@@ -264,5 +303,5 @@ type Props = {
 export default React.memo(CUDetails, (prevProps, nextProps) => {
   const prevPermissionsValues = prevProps.formikProps.values.permissions;
   const nextPermissionsValues = nextProps.formikProps.values.permissions;
-  return prevPermissionsValues?.length === nextPermissionsValues?.length;
+  return _.isEqual(prevPermissionsValues, nextPermissionsValues);
 });
