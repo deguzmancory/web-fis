@@ -7,7 +7,7 @@ import { muiResponsive, PARAMS_SPLITTER } from 'src/appConfig/constants';
 import { Table } from 'src/components/common';
 import EmptyTable from 'src/components/EmptyTable';
 import { CRUUSER_USER_TYPE_KEY } from 'src/containers/CRUUSerContainer/enums';
-import { CRUUserFormikProps } from 'src/containers/CRUUSerContainer/helper';
+import { CRUUserFormikProps, isEditProfileMode } from 'src/containers/CRUUSerContainer/helper';
 import { UserFiCode } from 'src/queries/Contents/types';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { FinancialProject, GetPropertiesParams } from 'src/queries/Users/types';
@@ -23,6 +23,8 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
   const query = React.useMemo(() => new URLSearchParams(location.search), [location.search]);
 
   const { values, setFieldValue } = formikProps;
+  const currentFormMode = values.mode;
+  console.log('isEditProfileMode(formMode)', isEditProfileMode(currentFormMode));
   const isTabletScreen = useMediaQuery(muiResponsive.TABLET);
 
   const userFisCodes: UserFiCode[] = React.useMemo(
@@ -102,8 +104,9 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
         onRowDelete: (rowData) => handleRowDelete(rowData),
         userFisCodes,
         userType: type,
+        formMode: currentFormMode,
       }),
-    [userFisCodes, type, handleRowDelete]
+    [userFisCodes, type, handleRowDelete, currentFormMode]
   );
 
   return (

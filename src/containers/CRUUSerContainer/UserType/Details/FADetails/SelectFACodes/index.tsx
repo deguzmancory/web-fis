@@ -82,7 +82,12 @@ const SelectFACodes: React.FC<Props> = ({ formikProps, isLoading }) => {
   return (
     <Box>
       <Box mb={1} mt={5}>
-        <TableCodes type={ROLE_NAME.FA} rows={faCodeRows} onDeleteCode={handleDeleteCode} />
+        <TableCodes
+          type={ROLE_NAME.FA}
+          rows={faCodeRows}
+          onDeleteCode={handleDeleteCode}
+          readonly={isInEditProfileMode}
+        />
       </Box>
       {!isInEditProfileMode && (
         <>

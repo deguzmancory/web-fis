@@ -2,6 +2,8 @@ import { Delete } from '@mui/icons-material';
 import { Box, Typography } from '@mui/material';
 import { MUIDataTableColumn, MUIDataTableMeta } from 'mui-datatables';
 import { Button } from 'src/components/common';
+import { USER_MODE } from 'src/containers/CRUUSerContainer/enums';
+import { isEditProfileMode } from 'src/containers/CRUUSerContainer/helper';
 import { UserFiCode } from 'src/queries/Contents/types';
 import { isFA, ROLE_NAME } from 'src/queries/Profile/helpers';
 import { FinancialProject, FINANCIAL_PROJECT_KEY } from 'src/queries/Users/types';
@@ -12,10 +14,12 @@ export const allColumns = ({
   onRowDelete,
   userFisCodes,
   userType,
+  formMode,
 }: {
   onRowDelete: Callback;
   userFisCodes: UserFiCode[];
   userType: ROLE_NAME;
+  formMode: USER_MODE;
 }): MUIDataTableColumn[] => [
   {
     name: isFA(userType) ? FINANCIAL_PROJECT_KEY.FA_CODE : FINANCIAL_PROJECT_KEY.PI_CODE,
@@ -100,6 +104,7 @@ export const allColumns = ({
     options: {
       filter: false,
       sort: false,
+      display: isEditProfileMode(formMode) ? 'false' : 'true',
       customBodyRender: (
         _value: any,
         meta:
@@ -111,7 +116,7 @@ export const allColumns = ({
         const isUnlinkProject = userFisCodes.every((code) => code.code !== targetCode);
 
         if (!isUnlinkProject) return null;
-
+        if (isEditProfileMode(formMode)) return null;
         return (
           <Box
             sx={{

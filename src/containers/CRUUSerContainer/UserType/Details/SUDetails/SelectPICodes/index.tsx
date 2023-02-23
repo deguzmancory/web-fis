@@ -88,7 +88,7 @@ const SelectPICodes: React.FC<Props> = ({ formikProps, isLoading }) => {
           type={ROLE_NAME.PI}
           rows={piCodeRows}
           onDeleteCode={handleDeleteCode}
-          readonly
+          readonly={isInEditProfileMode}
         />
       </Box>
 
