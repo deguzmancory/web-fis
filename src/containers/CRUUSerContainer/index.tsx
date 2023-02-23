@@ -163,6 +163,10 @@ const CRUUserContainer: React.FC<Props> = ({
         id: item.id,
       }));
 
+      const fisFaInfo = user.fisFaInfo ?? initialCRUUserFormValue.fisFaInfo;
+      const fisPiInfo = user.fisPiInfo ?? initialCRUUserFormValue.fisPiInfo;
+      const fisSuInfo = user.fisSuInfo ?? initialCRUUserFormValue.fisSuInfo;
+
       return {
         ...initialCRUUserFormValue,
         mode: USER_MODE.EDIT_USER,
@@ -179,9 +183,9 @@ const CRUUserContainer: React.FC<Props> = ({
         comments: user.comments,
         delegateAccess: delegateAccess,
         delegatedAccess: user.delegatedAccesses,
-        fisFaInfo: { ...user.fisFaInfo, currentFACode: null, currentSearchProject: null },
-        fisPiInfo: { ...user.fisPiInfo, useExistingPICode: false, currentSearchProject: null },
-        fisSuInfo: { ...user.fisSuInfo, currentPICode: null, currentSearchProject: null },
+        fisFaInfo: { ...fisFaInfo, currentFACode: null, currentSearchProject: null },
+        fisPiInfo: { ...fisPiInfo, useExistingPICode: false, currentSearchProject: null },
+        fisSuInfo: { ...fisSuInfo, currentPICode: null, currentSearchProject: null },
         permissions: user.permissions.map((permission) => ({
           permissionId: permission.permissionId,
         })),

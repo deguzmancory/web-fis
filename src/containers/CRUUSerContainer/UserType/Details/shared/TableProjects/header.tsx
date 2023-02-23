@@ -1,5 +1,5 @@
 import { Search } from '@mui/icons-material';
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import React from 'react';
 import CustomSearchTable from 'src/components/CustomSearchTable';
 import MuiPopOverFilter from 'src/components/MuiPopOverFilter';
@@ -8,7 +8,8 @@ const HeaderTableUserType = () => {
   const [isShowPopover, setIsShowPopover] = React.useState(false);
   return (
     <>
-      <Stack direction={'row'} justifyContent={'flex-end'} mb={1}>
+      <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} mb={1}>
+        <Typography variant="body2">User Project List</Typography>
         <MuiPopOverFilter
           isShow={isShowPopover}
           onShow={setIsShowPopover}

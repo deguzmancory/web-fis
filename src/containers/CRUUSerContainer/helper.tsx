@@ -268,7 +268,13 @@ export const getPayloadDelegateAccess = (delegateAccess: CRUUserFormValue['deleg
   }));
 };
 
-export const getShareUserTypeDetailsPayload = <T extends SharedUserTypeDetails>(fisInfo: T) => {
+export const getShareUserTypeDetailsPayload = <T extends SharedUserTypeDetails>({
+  fisInfo,
+  ignoreFisCodes = false,
+}: {
+  fisInfo: T;
+  ignoreFisCodes?: boolean;
+}) => {
   return {
     sendInvoiceTo: fisInfo.sendInvoiceTo,
     sendInvoiceToEmail: fisInfo.sendInvoiceToEmail,
@@ -281,11 +287,33 @@ export const getShareUserTypeDetailsPayload = <T extends SharedUserTypeDetails>(
     addressCountry: fisInfo.addressCountry,
     remittanceName: fisInfo.remittanceName,
     remittancePhoneNumber: fisInfo.remittancePhoneNumber,
-    userFisCodes: fisInfo.userFisCodes,
-    userFisProjects: fisInfo.userFisProjects,
+    userFisCodes: ignoreFisCodes
+      ? undefined
+      : fisInfo.userFisCodes?.map((code) => ({
+          code: code.code,
+          codeType: code.codeType,
+          id: code?.id,
+        })),
+    userFisProjects: fisInfo.userFisProjects?.map((project) => ({
+      id: project?.id,
+      projectNumber: project.projectNumber,
+    })),
   };
 };
 
+const getFisInfoByRole = <T,>({
+  currentRole,
+  payload,
+  userRoles,
+}: {
+  userRoles: string[];
+  currentRole: ROLE_NAME;
+  payload: T;
+}) => {
+  return userRoles.includes(currentRole) ? payload : null;
+};
+
+//TODO: huy_dang refactor add new and update
 export const formatPayloadAddNew = (values: CRUUserFormValue): AddUserPayload => {
   const payload = {
     ...values,
@@ -295,25 +323,35 @@ export const formatPayloadAddNew = (values: CRUUserFormValue): AddUserPayload =>
     username: values.username.toLowerCase(),
     status: getPayloadUserStatus(values.status),
     delegateAccess: getPayloadDelegateAccess(values.delegateAccess),
-
-    fisFaInfo: {
-      ...getShareUserTypeDetailsPayload(values.fisFaInfo),
-      faCode: '', //TODO: check
-    },
-    fisPiInfo: {
-      ...getShareUserTypeDetailsPayload(values.fisPiInfo),
-      piCode: values.fisPiInfo.piCode,
-      directInquiriesTo: values.fisPiInfo.directInquiriesTo,
-      phoneNumber: values.fisPiInfo.phoneNumber,
-      faStaffToReview: values.fisPiInfo.faStaffToReview,
-    },
-    fisSuInfo: {
-      ...getShareUserTypeDetailsPayload(values.fisSuInfo),
-      directInquiriesTo: values.fisSuInfo.directInquiriesTo,
-      phoneNumber: values.fisSuInfo.phoneNumber,
-      faStaffToReview: values.fisSuInfo.faStaffToReview,
-    },
-
+    fisFaInfo: getFisInfoByRole({
+      currentRole: ROLE_NAME.FA,
+      userRoles: values.roles,
+      payload: {
+        ...getShareUserTypeDetailsPayload({ fisInfo: values.fisFaInfo }),
+        faCode: undefined, //TODO: check
+      },
+    }),
+    fisPiInfo: getFisInfoByRole({
+      currentRole: ROLE_NAME.PI,
+      userRoles: values.roles,
+      payload: {
+        ...getShareUserTypeDetailsPayload({ fisInfo: values.fisPiInfo, ignoreFisCodes: true }),
+        piCode: values.fisPiInfo.piCode,
+        directInquiriesTo: values.fisPiInfo.directInquiriesTo,
+        phoneNumber: values.fisPiInfo.phoneNumber,
+        faStaffToReview: values.fisPiInfo.faStaffToReview,
+      },
+    }),
+    fisSuInfo: getFisInfoByRole({
+      currentRole: ROLE_NAME.SU,
+      userRoles: values.roles,
+      payload: {
+        ...getShareUserTypeDetailsPayload({ fisInfo: values.fisSuInfo }),
+        directInquiriesTo: values.fisSuInfo.directInquiriesTo,
+        phoneNumber: values.fisSuInfo.phoneNumber,
+        faStaffToReview: values.fisSuInfo.faStaffToReview,
+      },
+    }),
     permissions: !isEmpty(values.permissions)
       ? values.permissions.map((permission) => permission.permissionId)
       : [],
@@ -341,24 +379,35 @@ export const formatPayloadUpdate = (values: CRUUserFormValue, user: UserDetail) 
     isDhUser: values.email.includes('datahouse.com') ? true : false,
     status: getPayloadUserStatus(values.status),
     delegateAccess: getPayloadDelegateAccess(values.delegateAccess),
-
-    fisFaInfo: {
-      ...getShareUserTypeDetailsPayload(values.fisFaInfo),
-      faCode: '', //TODO: check
-    },
-    fisPiInfo: {
-      ...getShareUserTypeDetailsPayload(values.fisPiInfo),
-      piCode: values.fisPiInfo.piCode,
-      directInquiriesTo: values.fisPiInfo.directInquiriesTo,
-      phoneNumber: values.fisPiInfo.phoneNumber,
-      faStaffToReview: values.fisPiInfo.faStaffToReview,
-    },
-    fisSuInfo: {
-      ...getShareUserTypeDetailsPayload(values.fisSuInfo),
-      directInquiriesTo: values.fisSuInfo.directInquiriesTo,
-      phoneNumber: values.fisSuInfo.phoneNumber,
-      faStaffToReview: values.fisSuInfo.faStaffToReview,
-    },
+    fisFaInfo: getFisInfoByRole({
+      currentRole: ROLE_NAME.FA,
+      userRoles: values.roles,
+      payload: {
+        ...getShareUserTypeDetailsPayload({ fisInfo: values.fisFaInfo }),
+        faCode: undefined, //TODO: check
+      },
+    }),
+    fisPiInfo: getFisInfoByRole({
+      currentRole: ROLE_NAME.PI,
+      userRoles: values.roles,
+      payload: {
+        ...getShareUserTypeDetailsPayload({ fisInfo: values.fisPiInfo, ignoreFisCodes: true }),
+        piCode: values.fisPiInfo.piCode,
+        directInquiriesTo: values.fisPiInfo.directInquiriesTo,
+        phoneNumber: values.fisPiInfo.phoneNumber,
+        faStaffToReview: values.fisPiInfo.faStaffToReview,
+      },
+    }),
+    fisSuInfo: getFisInfoByRole({
+      currentRole: ROLE_NAME.SU,
+      userRoles: values.roles,
+      payload: {
+        ...getShareUserTypeDetailsPayload({ fisInfo: values.fisSuInfo }),
+        directInquiriesTo: values.fisSuInfo.directInquiriesTo,
+        phoneNumber: values.fisSuInfo.phoneNumber,
+        faStaffToReview: values.fisSuInfo.faStaffToReview,
+      },
+    }),
 
     permissions: !isEmpty(values.permissions)
       ? values.permissions.map((permission) => permission.permissionId)

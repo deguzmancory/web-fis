@@ -77,6 +77,10 @@ const EditProfile: React.FC<Props> = ({
       id: item.id || '',
     }));
 
+    const fisFaInfo = profile.fisFaInfo ?? initialCRUUserFormValue.fisFaInfo;
+    const fisPiInfo = profile.fisPiInfo ?? initialCRUUserFormValue.fisPiInfo;
+    const fisSuInfo = profile.fisSuInfo ?? initialCRUUserFormValue.fisSuInfo;
+
     return {
       ...initialCRUUserFormValue,
       mode: USER_MODE.EDIT_PROFILE,
@@ -93,6 +97,12 @@ const EditProfile: React.FC<Props> = ({
       comments: profile.comments,
       delegateAccess: delegateAccess,
       delegatedAccess: profile.delegatedAccesses,
+      fisFaInfo: { ...fisFaInfo, currentFACode: null, currentSearchProject: null },
+      fisPiInfo: { ...fisPiInfo, useExistingPICode: false, currentSearchProject: null },
+      fisSuInfo: { ...fisSuInfo, currentPICode: null, currentSearchProject: null },
+      permissions: profile.permissions?.map((permission) => ({
+        permissionId: permission.permissionId,
+      })),
     };
   }, [profile]);
 

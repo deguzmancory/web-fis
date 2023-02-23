@@ -17,7 +17,7 @@ import { UserFisCode } from 'src/queries/Users/types';
 import { Callback } from 'src/redux/types';
 import { isEmpty } from 'src/validations';
 
-const TableCodes: React.FC<Props> = ({ rows, type, onDeleteCode }) => {
+const TableCodes: React.FC<Props> = ({ rows, type, readonly, onDeleteCode }) => {
   return (
     <TableContainer
       sx={{
@@ -65,22 +65,24 @@ const TableCodes: React.FC<Props> = ({ rows, type, onDeleteCode }) => {
                       {codeInfo}
                     </Typography>
                   </StyledTableCell>
-                  <StyledTableCell width={'10%'}>
-                    <IconButton
-                      size="small"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
+                  {!readonly && (
+                    <StyledTableCell width={'10%'}>
+                      <IconButton
+                        size="small"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
 
-                        onDeleteCode(row.code);
-                      }}
-                      sx={{
-                        p: 0,
-                      }}
-                    >
-                      <Delete />
-                    </IconButton>
-                  </StyledTableCell>
+                          onDeleteCode(row.code);
+                        }}
+                        sx={{
+                          p: 0,
+                        }}
+                      >
+                        <Delete />
+                      </IconButton>
+                    </StyledTableCell>
+                  )}
                 </StyledTableRow>
               );
             })}
@@ -93,6 +95,7 @@ const TableCodes: React.FC<Props> = ({ rows, type, onDeleteCode }) => {
 type Props = {
   rows: UserFisCode[];
   type: ROLE_NAME.PI | ROLE_NAME.FA;
+  readonly?: boolean;
   onDeleteCode: Callback;
 };
 

@@ -65,7 +65,7 @@ const UserTypeInfoForm: React.FC<Props> = ({
   }, []);
 
   return (
-    <Accordion title={title} isExpanded>
+    <Accordion title={title}>
       {/* Section General Info */}
       {showGeneralInfoSection && (
         <Box>

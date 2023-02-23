@@ -8,6 +8,7 @@ import {
   CRUUserFormikProps,
   getErrorMessage,
   getFisCodeOptions,
+  isEditProfileMode,
 } from 'src/containers/CRUUSerContainer/helper';
 import { PICode } from 'src/queries/Contents/types';
 import { useGetPICode } from 'src/queries/Contents/useGetPICode';
@@ -33,6 +34,7 @@ const SelectPICode: React.FC<Props> = ({
   );
 
   const { values, errors, touched, getFieldProps, setFieldValue } = formikProps;
+  const isInEditProfileMode = isEditProfileMode(values.mode);
 
   const _getErrorMessage = (fieldName) => {
     return getErrorMessage(fieldName, { touched, errors });
@@ -83,22 +85,28 @@ const SelectPICode: React.FC<Props> = ({
           hideSearchIcon
           isClearable={false}
           isDisabled={
-            isLoading || !get(values, `${prefix}.${CRUUSER_USER_TYPE_KEY.USE_EXISTING_PI_CODE}`)
+            isLoading ||
+            !get(values, `${prefix}.${CRUUSER_USER_TYPE_KEY.USE_EXISTING_PI_CODE}`) ||
+            isInEditProfileMode
           }
           {...getFieldProps(`${prefix}.${CRUUSER_USER_TYPE_KEY.PI_CODE}`)}
           errorMessage={_getErrorMessage(`${prefix}.${CRUUSER_USER_TYPE_KEY.PI_CODE}`)}
           onChange={handleSelectPICode}
         />
       </Box>
-      <Box mt={2}>
-        <Checkbox.Item
-          label="Use Existing PI Code"
-          {...getFieldProps(`${prefix}.${CRUUSER_USER_TYPE_KEY.USE_EXISTING_PI_CODE}`)}
-          errorMessage={_getErrorMessage(`${prefix}.${CRUUSER_USER_TYPE_KEY.USE_EXISTING_PI_CODE}`)}
-          onChange={handleUseExistingPICodeChange}
-          disabled={isLoading}
-        />
-      </Box>
+      {!isInEditProfileMode && (
+        <Box mt={2}>
+          <Checkbox.Item
+            label="Use Existing PI Code"
+            {...getFieldProps(`${prefix}.${CRUUSER_USER_TYPE_KEY.USE_EXISTING_PI_CODE}`)}
+            errorMessage={_getErrorMessage(
+              `${prefix}.${CRUUSER_USER_TYPE_KEY.USE_EXISTING_PI_CODE}`
+            )}
+            onChange={handleUseExistingPICodeChange}
+            disabled={isLoading}
+          />
+        </Box>
+      )}
     </Box>
   );
 };

@@ -56,9 +56,9 @@ export enum CRUUSER_USER_TYPE_KEY {
 }
 
 export enum USER_MODE {
-  EDIT_USER,
-  EDIT_PROFILE,
-  ADD_USER,
+  EDIT_USER = 'EDIT_USER',
+  EDIT_PROFILE = 'EDIT_PROFILE',
+  ADD_USER = 'ADD_USER',
 }
 
 export enum USER_TYPE_KEY {

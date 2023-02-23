@@ -7,6 +7,7 @@ import {
   CRUUserFormikProps,
   getErrorMessage,
   getFisCodeOptions,
+  isEditProfileMode,
 } from 'src/containers/CRUUSerContainer/helper';
 import { useGetPICode } from 'src/queries';
 import { PICode } from 'src/queries/Contents/types';
@@ -21,6 +22,7 @@ const SelectPICodes: React.FC<Props> = ({ formikProps, isLoading }) => {
 
   const { values, errors, touched, getFieldProps, setFieldValue } = formikProps;
   const { piCodes } = useGetPICode();
+  const isInEditProfileMode = isEditProfileMode(values.mode);
 
   const piCodeRows: UserFisCode[] = React.useMemo(
     () => values.fisSuInfo.userFisCodes || [],
@@ -82,28 +84,40 @@ const SelectPICodes: React.FC<Props> = ({ formikProps, isLoading }) => {
   return (
     <Box>
       <Box mb={1} mt={5}>
-        <TableCodes type={ROLE_NAME.PI} rows={piCodeRows} onDeleteCode={handleDeleteCode} />
-      </Box>
-      <Box mb={1}>
-        <Select
-          label=""
-          placeholder={'Search'}
-          options={piOptions}
-          hideSearchIcon
-          isClearable={false}
-          isDisabled={isLoading}
-          {...getFieldProps(`${CRUUSER_KEY.FIS_SU_INFO}.${CRUUSER_USER_TYPE_KEY.CURRENT_PI_CODE}`)}
-          errorMessage={_getErrorMessage(
-            `${CRUUSER_KEY.FIS_SU_INFO}.${CRUUSER_USER_TYPE_KEY.CURRENT_PI_CODE}`
-          )}
-          onChange={setFieldValue}
+        <TableCodes
+          type={ROLE_NAME.PI}
+          rows={piCodeRows}
+          onDeleteCode={handleDeleteCode}
+          readonly
         />
       </Box>
-      <Box mb={1}>
-        <Stack alignItems={'flex-end'}>
-          <Button onClick={handleAddCode}>Add</Button>
-        </Stack>
-      </Box>
+
+      {!isInEditProfileMode && (
+        <>
+          <Box mb={1}>
+            <Select
+              label=""
+              placeholder={'Search'}
+              options={piOptions}
+              hideSearchIcon
+              isClearable={false}
+              isDisabled={isLoading}
+              {...getFieldProps(
+                `${CRUUSER_KEY.FIS_SU_INFO}.${CRUUSER_USER_TYPE_KEY.CURRENT_PI_CODE}`
+              )}
+              errorMessage={_getErrorMessage(
+                `${CRUUSER_KEY.FIS_SU_INFO}.${CRUUSER_USER_TYPE_KEY.CURRENT_PI_CODE}`
+              )}
+              onChange={setFieldValue}
+            />
+          </Box>
+          <Box mb={1}>
+            <Stack alignItems={'flex-end'}>
+              <Button onClick={handleAddCode}>Add</Button>
+            </Stack>
+          </Box>
+        </>
+      )}
     </Box>
   );
 };

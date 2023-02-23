@@ -1,5 +1,6 @@
 import {
   AuditInformation,
+  CUPermission,
   DelegateAccess,
   DelegatedAccess,
   FADetail,
@@ -18,9 +19,6 @@ export interface MyProfile {
   defaultUserType: string;
   email: string;
   firstName: string;
-  fisFaInfo: FADetail;
-  fisPiInfo: PIDetail;
-  fisSuInfo: SUDetail;
   fullName: string;
   id: string;
   isDhUser: boolean;
@@ -43,6 +41,13 @@ export interface MyProfile {
   status: USER_STATUS;
   delegateAccesses: DelegateAccess[];
   delegatedAccesses: DelegatedAccess[];
+
+  fisFaInfo: FADetail;
+  fisPiInfo: PIDetail;
+  fisSuInfo: SUDetail;
+
+  permissions: CUPermission[];
+
   userAuditTrails: AuditInformation[];
 }
 
