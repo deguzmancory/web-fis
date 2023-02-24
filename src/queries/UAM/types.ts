@@ -30,17 +30,3 @@ export interface CompleteNewPasswordPayload {
   password: string;
   requiredAttributes?: any;
 }
-
-export interface Permission {
-  id: number;
-  resourceName: string;
-  displayName: string;
-  canCreate: boolean;
-  canRead: boolean;
-  canUpdate: boolean;
-  canDelete: boolean;
-  permissionGroupId: number;
-  createdAt: string;
-  updatedAt: string;
-  description?: string;
-}

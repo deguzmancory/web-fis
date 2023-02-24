@@ -6,11 +6,18 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import { useComponentDidMount } from 'src/hooks';
-import { MyProfile, useLogout, useProfile } from 'src/queries';
+import { MyProfile, useLogout, useMyPermissions, useProfile } from 'src/queries';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { setAuthenticated, setCurrentRole, setProfile } from 'src/redux/auth/authSlice';
 import { IRootState } from 'src/redux/rootReducer';
-import { DelegationKeyService, Navigator, RoleService, Toastify, TokenService } from 'src/services';
+import {
+  DelegationKeyService,
+  Navigator,
+  PermissionsService,
+  RoleService,
+  Toastify,
+  TokenService,
+} from 'src/services';
 
 const AuthContainer: React.FC<Props> = ({
   history,
@@ -31,6 +38,23 @@ const AuthContainer: React.FC<Props> = ({
     TokenService.clearToken();
   };
 
+  const { getMyPermissions } = useMyPermissions({
+    onSuccess(data) {
+      const permissions = data?.map((permission) => permission.displayName) || [];
+      PermissionsService.setPermissions(permissions);
+    },
+    onError(error) {
+      Toastify.error(
+        `Error when fetch permission data: ${JSON.stringify(
+          error.message
+        )} Please try to login again!`
+      );
+      setTimeout(() => {
+        handleLogout();
+      }, 3000);
+    },
+  });
+
   const { getMyProfile } = useProfile({
     onSuccess(data) {
       if (data) {
@@ -49,6 +73,10 @@ const AuthContainer: React.FC<Props> = ({
         }
 
         onSetCurrentRole(_currentRole as ROLE_NAME);
+
+        if (data.roles.some((role) => role.role.name === ROLE_NAME.CU)) {
+          getMyPermissions();
+        }
       }
     },
     onError(error) {

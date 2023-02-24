@@ -12,19 +12,14 @@ export enum PERMISSION_CU_LABEL {
   USER_MANAGEMENT = 'User Management',
 }
 
-export enum PERMISSION_CU_VALUE {
+export enum PERMISSION_CU_OPTION_VALUE {
   ALL = 'ALL',
   NON_CENTRAL_USERS = 'NON_CENTRAL_USERS',
   VIEW_ONLY = 'VIEW_ONLY',
-  ALLOW_TO_CREATE_A_USER = 'USER:C',
-  ALLOW_TO_READ_A_USER = 'USER:R',
-  ALLOW_TO_UPDATE_A_USER = 'USER:U',
-  ALLOW_TO_DELETE_A_USER = 'USER:D',
-  ALLOW_TO_UPDATE_A_CU_USER = 'USER_CU:U',
 }
 
 export const optionsPermissionCuUserManagement = [
-  { label: 'All', value: PERMISSION_CU_VALUE.ALL },
-  { label: 'Non Central Users', value: PERMISSION_CU_VALUE.NON_CENTRAL_USERS },
-  { label: 'View Only', value: PERMISSION_CU_VALUE.VIEW_ONLY },
+  { label: 'All', value: PERMISSION_CU_OPTION_VALUE.ALL },
+  { label: 'Non Central Users', value: PERMISSION_CU_OPTION_VALUE.NON_CENTRAL_USERS },
+  { label: 'View Only', value: PERMISSION_CU_OPTION_VALUE.VIEW_ONLY },
 ];

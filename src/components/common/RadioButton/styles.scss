@@ -45,7 +45,16 @@ $radio-size: 16px;
       }
     }
     &:disabled {
+      &:checked {
+        + .cmp-radio__label {
+          &:before {
+            background-color: rgba($color: $color-info, $alpha: 0.5);
+            box-shadow: inset 0 0 0 2px $color-white;
+          }
+        }
+      }
       + .cmp-radio__label {
+        cursor: default;
         &:before {
           box-shadow: inset 0 0 0 4px $color-white;
           border-color: darken($color-white, 25%);

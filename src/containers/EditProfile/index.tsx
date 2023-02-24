@@ -4,7 +4,7 @@ import { Suspense, useMemo, useRef } from 'react';
 import { connect } from 'react-redux';
 import { PATHS } from 'src/appConfig/paths';
 import { Accordion, Button, LoadingCommon } from 'src/components/common';
-import { useProfile } from 'src/queries';
+import { useMyPermissions, useProfile } from 'src/queries';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { useUpdateProfile } from 'src/queries/Profile/useUpdateProfile';
 import { setCurrentRole } from 'src/redux/auth/authSlice';
@@ -42,6 +42,7 @@ const EditProfile: React.FC<Props> = ({
   onSetCurrentRole,
 }) => {
   const { profile, handleInvalidateProfile } = useProfile();
+  const { myPermissions } = useMyPermissions();
   const formRef = useRef<FormikProps<CRUUserFormValue>>(null);
   const { isLoading: loading, updateProfile } = useUpdateProfile({
     onSuccess(_data, variables, _context) {
@@ -104,11 +105,11 @@ const EditProfile: React.FC<Props> = ({
       fisFaInfo: { ...fisFaInfo, currentFACode: null, currentSearchProject: null },
       fisPiInfo: { ...fisPiInfo, useExistingPICode: false, currentSearchProject: null },
       fisSuInfo: { ...fisSuInfo, currentPICode: null, currentSearchProject: null },
-      permissions: profile.permissions?.map((permission) => ({
-        permissionId: permission.permissionId,
+      permissions: myPermissions?.map((permission) => ({
+        permissionId: permission.id,
       })),
     };
-  }, [profile]);
+  }, [profile, myPermissions]);
 
   const handleFormSubmit = (values: CRUUserFormValue) => {
     const payload = formatEditProfilePayload(values, profile);

@@ -2,10 +2,10 @@ import { QueryFunction, useQuery, useQueryClient, UseQueryOptions } from 'react-
 import apiClient from '../apiClient';
 import { ApiResponseType, getResponseData, responseWrapper } from '../helpers';
 import { API_QUERIES } from '../keys';
-import { PermissionCu, PermissionCuResponse } from './types';
+import { PermissionCuResponse, UserPermission } from './types';
 
 export function useGetPermissionCu(
-  options?: UseQueryOptions<ApiResponseType<PermissionCuResponse>, Error, PermissionCu[]>
+  options?: UseQueryOptions<ApiResponseType<PermissionCuResponse>, Error, UserPermission[]>
 ) {
   const handleGetPermissionCu: QueryFunction<
     ApiResponseType<PermissionCuResponse>,
@@ -18,14 +18,14 @@ export function useGetPermissionCu(
     isError,
     isFetching,
     refetch: getPermissionCu,
-  } = useQuery<ApiResponseType<PermissionCuResponse>, Error, PermissionCu[]>(
+  } = useQuery<ApiResponseType<PermissionCuResponse>, Error, UserPermission[]>(
     [API_QUERIES.PERMISSION_CU],
     {
       queryFn: handleGetPermissionCu,
       refetchOnMount: false,
-      select: getResponseData,
       enabled: true,
       notifyOnChangeProps: ['data', 'isFetching'],
+      select: getResponseData,
       ...options,
     }
   );

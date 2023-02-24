@@ -5,7 +5,7 @@ export enum API_QUERIES {
   ZIP_CODE = '/zip-code',
 
   // Permissions
-  PERMISSIONS = '/permissions',
+  MY_PERMISSIONS = '/permissions/me',
   PERMISSION_CU = '/permissions/cu',
   PI_CODES = '/pi-codes',
   FA_CODES = '/fa-codes',

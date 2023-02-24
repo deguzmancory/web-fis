@@ -3,8 +3,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { COLOR_CODE, NO_OPENER } from 'src/appConfig/constants';
 import { DashboardItem } from './helpers';
+import { PermissionsService } from 'src/services';
+import { isEmpty } from 'src/validations';
 
 const CardDashboard: React.FC<Props> = ({ card, userRole }) => {
+  const myPermissions = PermissionsService.getPermissions();
+
   return (
     <Box
       minHeight={'100%'}
@@ -34,7 +38,12 @@ const CardDashboard: React.FC<Props> = ({ card, userRole }) => {
       <Box mt={2}>
         {card.items.map((item, index) => {
           const isShow = item.roles.some((role) => role === userRole);
-          return isShow ? (
+          const needPermission = !isEmpty(item.permissions);
+          const hasPermission =
+            needPermission &&
+            item.permissions.some((permission) => myPermissions.includes(permission));
+
+          return isShow && (needPermission ? hasPermission : true) ? (
             <Box key={item.title} py={1} borderBottom={`1px solid ${COLOR_CODE.PRIMARY_100}`}>
               {item.isExternalUrl ? (
                 <MuiLink

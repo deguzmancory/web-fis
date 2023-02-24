@@ -1,12 +1,9 @@
+import { PERMISSION_VALUE } from 'src/queries/Permissions';
+
 let _permissions: string[] = [];
 
-const setPermissions = async (payload) => {
-  try {
-    const permissions = JSON.parse(payload?.['permissions']);
-    _permissions = permissions;
-  } catch {
-    return null;
-  }
+const setPermissions = async (permissions: string[]) => {
+  _permissions = permissions || [];
 };
 
 const clearPermission = () => {
@@ -17,40 +14,68 @@ const getPermissions = () => {
   return _permissions;
 };
 
-const webAdmin = () => ({
-  canCreate: _permissions?.includes('web_admin:create'),
-  canView: _permissions?.includes('web_admin:read'),
-  canUpdate: _permissions?.includes('web_admin:update'),
-  canDelete: _permissions?.includes('web_admin:delete'),
+const registerCheck = () => ({
+  canView: _permissions?.includes(PERMISSION_VALUE.VIEW_CHECK_REGISTERS),
 });
 
-const permission = () => ({
-  canCreate: _permissions?.includes('permission:create'),
-  canView: _permissions?.includes('permission:read'),
-  canUpdate: _permissions?.includes('permission:update'),
-  canDelete: _permissions?.includes('permission:delete'),
+const printCheck = () => ({
+  canView: _permissions?.includes(PERMISSION_VALUE.PRINT_CHECKS),
+});
+
+const paymentOver = () => ({
+  canUpdate: _permissions?.includes(PERMISSION_VALUE.APPROVAL_PO_PAYMENTS_OVER_24999),
+});
+
+const financialForecastPayrollReport = () => ({
+  canView: _permissions?.includes(PERMISSION_VALUE.FINANCIAL_FORECAST_PAYROLL_REPORT),
+});
+
+const payrollReport = () => ({
+  canView: _permissions?.includes(PERMISSION_VALUE.RCUH_PAYROLL_REPORT),
+});
+
+const vacationReport = () => ({
+  canView: _permissions?.includes(PERMISSION_VALUE.VACATION_SICK_LEAVE_AUDIT_PAGE),
+});
+
+const staff = () => ({
+  canUpdate: _permissions?.includes(PERMISSION_VALUE.EDIT_STAFF_LISTING),
 });
 
 const user = () => ({
-  canCreate: _permissions?.includes('user:create'),
-  canView: _permissions?.includes('user:read'),
-  canUpdate: _permissions?.includes('user:update'),
-  canDelete: _permissions?.includes('user:delete'),
+  canCreate: _permissions?.includes(PERMISSION_VALUE.ALLOW_CREATE_USER),
+  canView: _permissions?.includes(PERMISSION_VALUE.ALLOW_READ_USER),
+  canUpdate: _permissions?.includes(PERMISSION_VALUE.ALLOW_UPDATE_USER),
+  canDelete: _permissions?.includes(PERMISSION_VALUE.ALLOW_DELETE_USER),
 });
 
-const role = () => ({
-  canCreate: _permissions?.includes('role:create'),
-  canView: _permissions?.includes('role:read'),
-  canUpdate: _permissions?.includes('role:update'),
-  canDelete: _permissions?.includes('role:delete'),
+const userCU = () => ({
+  canUpdate: _permissions?.includes(PERMISSION_VALUE.ALLOW_UPDATE_CU_USER),
+});
+
+const vendor = () => ({
+  canView: _permissions?.includes(PERMISSION_VALUE.VIEW_VENDOR_LIST),
+});
+
+const vendorMaster = () => ({
+  canView: _permissions?.includes(PERMISSION_VALUE.VIEW_VENDOR_MASTER_RECORDS),
+  canUpdate: _permissions?.includes(PERMISSION_VALUE.EDIT_VENDOR_MASTER_RECORDS),
 });
 
 export default {
   setPermissions,
   clearPermission,
   getPermissions,
-  webAdmin,
+
+  registerCheck,
+  printCheck,
+  paymentOver,
+  financialForecastPayrollReport,
+  payrollReport,
+  vacationReport,
+  staff,
   user,
-  role,
-  permission,
+  userCU,
+  vendor,
+  vendorMaster,
 };

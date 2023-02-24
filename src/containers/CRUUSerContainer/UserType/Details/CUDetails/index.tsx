@@ -3,21 +3,23 @@ import _ from 'lodash';
 import React from 'react';
 import { Checkbox, RadioButton } from 'src/components/common';
 import { CRUUSER_KEY } from 'src/containers/CRUUSerContainer/enums';
-import { CRUUserFormikProps } from 'src/containers/CRUUSerContainer/helper';
-import { useGetPermissionCu } from 'src/queries/Permissions';
+import { CRUUserFormikProps, isEditProfileMode } from 'src/containers/CRUUSerContainer/helper';
+import { PERMISSION_VALUE, useGetPermissionCu } from 'src/queries/Permissions';
 import { CUPermission } from 'src/queries/Users/types';
 import {
   optionsPermissionCuUserManagement,
   PERMISSION_CU_LABEL,
-  PERMISSION_CU_VALUE,
+  PERMISSION_CU_OPTION_VALUE,
 } from './helpers';
 const CUDetails: React.FC<Props> = ({ formikProps }) => {
   const { values, setFieldValue } = formikProps;
   const permissions = values?.permissions;
+  const isInEditProfileMode = isEditProfileMode(values.mode);
 
   const { permissionsCu, loading } = useGetPermissionCu({
     onSuccess(data) {},
     onError(err) {},
+    suspense: true,
   });
 
   const isLoading = React.useMemo(() => {
@@ -111,10 +113,104 @@ const CUDetails: React.FC<Props> = ({ formikProps }) => {
           const value = event.target.checked;
           return handleCheckboxChange(value, valueCheckbox(name));
         }}
-        disabled={isLoading || options?.disabled}
+        disabled={isLoading || isInEditProfileMode || options?.disabled}
       />
     );
   };
+
+  const getPermissionIds = React.useCallback(
+    (permissions: PERMISSION_VALUE[]) => {
+      if (!permissionsCu) return new Set([]);
+
+      const permissionIds: number[] = [];
+      permissions.forEach((permission) => {
+        const permissionCu = permissionsCu.find((p) => p.displayName === permission);
+        if (permissionCu) permissionIds.push(permissionCu.id);
+      });
+      return new Set(permissionIds);
+    },
+    [permissionsCu]
+  );
+
+  const permissionUserManagementIds = React.useMemo(() => {
+    return {
+      [PERMISSION_CU_OPTION_VALUE.ALL]: getPermissionIds([
+        PERMISSION_VALUE.ALLOW_CREATE_USER,
+        PERMISSION_VALUE.ALLOW_READ_USER,
+        PERMISSION_VALUE.ALLOW_UPDATE_USER,
+        PERMISSION_VALUE.ALLOW_UPDATE_CU_USER,
+        PERMISSION_VALUE.ALLOW_DELETE_USER,
+      ]),
+      [PERMISSION_CU_OPTION_VALUE.NON_CENTRAL_USERS]: getPermissionIds([
+        PERMISSION_VALUE.ALLOW_CREATE_USER,
+        PERMISSION_VALUE.ALLOW_READ_USER,
+        PERMISSION_VALUE.ALLOW_UPDATE_USER,
+        PERMISSION_VALUE.ALLOW_DELETE_USER,
+      ]),
+      [PERMISSION_CU_OPTION_VALUE.VIEW_ONLY]: getPermissionIds([PERMISSION_VALUE.ALLOW_READ_USER]),
+    };
+  }, [getPermissionIds]);
+
+  const permissionsUserManagementWithRole = React.useMemo(() => {
+    return {
+      [PERMISSION_CU_OPTION_VALUE.ALL]: [
+        PERMISSION_VALUE.ALLOW_CREATE_USER,
+        PERMISSION_VALUE.ALLOW_READ_USER,
+        PERMISSION_VALUE.ALLOW_UPDATE_USER,
+        PERMISSION_VALUE.ALLOW_UPDATE_CU_USER,
+        PERMISSION_VALUE.ALLOW_DELETE_USER,
+      ],
+      [PERMISSION_CU_OPTION_VALUE.NON_CENTRAL_USERS]: [
+        PERMISSION_VALUE.ALLOW_CREATE_USER,
+        PERMISSION_VALUE.ALLOW_READ_USER,
+        PERMISSION_VALUE.ALLOW_UPDATE_USER,
+        PERMISSION_VALUE.ALLOW_DELETE_USER,
+      ],
+      [PERMISSION_CU_OPTION_VALUE.VIEW_ONLY]: [PERMISSION_VALUE.ALLOW_READ_USER],
+    };
+  }, []);
+
+  const getListsIdFromPermissionType = React.useCallback(
+    (arr: PERMISSION_VALUE[]) => {
+      if (!permissionsCu) return [];
+      return permissionsCu
+        .filter((permissionCu) => arr.includes(permissionCu.displayName as PERMISSION_VALUE))
+        .map((permissionCu) => ({ permissionId: permissionCu.id }));
+    },
+    [permissionsCu]
+  );
+
+  const handleRadioButtonChange = React.useCallback(
+    (value: PERMISSION_CU_OPTION_VALUE) => {
+      if (!permissionsCu || !permissions || !value) return null;
+
+      let before: CUPermission[] = [...permissions];
+      let updatedPermissions: CUPermission[] = before.filter(
+        (permission) =>
+          !permissionUserManagementIds[PERMISSION_CU_OPTION_VALUE.ALL].has(permission.permissionId)
+      );
+      const uniquePermissions = () => {
+        return _.uniqBy(
+          [
+            ...updatedPermissions,
+            ...getListsIdFromPermissionType(permissionsUserManagementWithRole[`${value}`]),
+          ],
+          'permissionId'
+        );
+      };
+
+      const newPermissions = uniquePermissions();
+      return setFieldValue(CRUUSER_KEY.PERMISSIONS, newPermissions);
+    },
+    [
+      permissionsCu,
+      permissions,
+      permissionUserManagementIds,
+      permissionsUserManagementWithRole,
+      setFieldValue,
+      getListsIdFromPermissionType,
+    ]
+  );
 
   const valueRadioUserManagement = React.useCallback(() => {
     const isHavePermissionMap = new Map();
@@ -133,121 +229,27 @@ const CUDetails: React.FC<Props> = ({ formikProps }) => {
       return result;
     };
     if (
-      isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_CREATE_A_USER) &&
-      isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_READ_A_USER) &&
-      isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_UPDATE_A_USER) &&
-      isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_DELETE_A_USER) &&
-      isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_UPDATE_A_CU_USER)
+      isHavePermission(PERMISSION_VALUE.ALLOW_CREATE_USER) &&
+      isHavePermission(PERMISSION_VALUE.ALLOW_READ_USER) &&
+      isHavePermission(PERMISSION_VALUE.ALLOW_UPDATE_USER) &&
+      isHavePermission(PERMISSION_VALUE.ALLOW_DELETE_USER) &&
+      isHavePermission(PERMISSION_VALUE.ALLOW_UPDATE_CU_USER)
     ) {
-      return PERMISSION_CU_VALUE.ALL;
+      return PERMISSION_CU_OPTION_VALUE.ALL;
     } else if (
-      isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_CREATE_A_USER) &&
-      isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_READ_A_USER) &&
-      isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_UPDATE_A_USER) &&
-      isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_DELETE_A_USER) &&
-      !isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_UPDATE_A_CU_USER)
+      isHavePermission(PERMISSION_VALUE.ALLOW_CREATE_USER) &&
+      isHavePermission(PERMISSION_VALUE.ALLOW_READ_USER) &&
+      isHavePermission(PERMISSION_VALUE.ALLOW_UPDATE_USER) &&
+      isHavePermission(PERMISSION_VALUE.ALLOW_DELETE_USER) &&
+      !isHavePermission(PERMISSION_VALUE.ALLOW_UPDATE_CU_USER)
     ) {
-      return PERMISSION_CU_VALUE.NON_CENTRAL_USERS;
-    } else if (isHavePermission(PERMISSION_CU_VALUE.ALLOW_TO_READ_A_USER)) {
-      return PERMISSION_CU_VALUE.VIEW_ONLY;
+      return PERMISSION_CU_OPTION_VALUE.NON_CENTRAL_USERS;
+    } else if (isHavePermission(PERMISSION_VALUE.ALLOW_READ_USER)) {
+      return PERMISSION_CU_OPTION_VALUE.VIEW_ONLY;
     } else {
       return null;
     }
   }, [permissions, permissionsCu]);
-
-  const getPermissionIds = React.useCallback(
-    (permissions: PERMISSION_CU_VALUE[]) => {
-      if (!permissionsCu) return new Set([]);
-
-      const permissionIds: number[] = [];
-      permissions.forEach((permission) => {
-        const permissionCu = permissionsCu.find((p) => p.displayName === permission);
-        if (permissionCu) permissionIds.push(permissionCu.id);
-      });
-      return new Set(permissionIds);
-    },
-    [permissionsCu]
-  );
-
-  const permissionUserManagementIds = React.useMemo(() => {
-    return {
-      [PERMISSION_CU_VALUE.ALL]: getPermissionIds([
-        PERMISSION_CU_VALUE.ALLOW_TO_CREATE_A_USER,
-        PERMISSION_CU_VALUE.ALLOW_TO_READ_A_USER,
-        PERMISSION_CU_VALUE.ALLOW_TO_UPDATE_A_USER,
-        PERMISSION_CU_VALUE.ALLOW_TO_UPDATE_A_CU_USER,
-        PERMISSION_CU_VALUE.ALLOW_TO_DELETE_A_USER,
-      ]),
-      [PERMISSION_CU_VALUE.NON_CENTRAL_USERS]: getPermissionIds([
-        PERMISSION_CU_VALUE.ALLOW_TO_CREATE_A_USER,
-        PERMISSION_CU_VALUE.ALLOW_TO_READ_A_USER,
-        PERMISSION_CU_VALUE.ALLOW_TO_UPDATE_A_USER,
-        PERMISSION_CU_VALUE.ALLOW_TO_DELETE_A_USER,
-      ]),
-      [PERMISSION_CU_VALUE.VIEW_ONLY]: getPermissionIds([PERMISSION_CU_VALUE.ALLOW_TO_READ_A_USER]),
-    };
-  }, [getPermissionIds]);
-
-  const permissionsUserManagementWithRole = React.useMemo(() => {
-    return {
-      [PERMISSION_CU_VALUE.ALL]: [
-        PERMISSION_CU_VALUE.ALLOW_TO_CREATE_A_USER,
-        PERMISSION_CU_VALUE.ALLOW_TO_READ_A_USER,
-        PERMISSION_CU_VALUE.ALLOW_TO_UPDATE_A_USER,
-        PERMISSION_CU_VALUE.ALLOW_TO_UPDATE_A_CU_USER,
-        PERMISSION_CU_VALUE.ALLOW_TO_DELETE_A_USER,
-      ],
-      [PERMISSION_CU_VALUE.NON_CENTRAL_USERS]: [
-        PERMISSION_CU_VALUE.ALLOW_TO_CREATE_A_USER,
-        PERMISSION_CU_VALUE.ALLOW_TO_READ_A_USER,
-        PERMISSION_CU_VALUE.ALLOW_TO_UPDATE_A_USER,
-        PERMISSION_CU_VALUE.ALLOW_TO_DELETE_A_USER,
-      ],
-      [PERMISSION_CU_VALUE.VIEW_ONLY]: [PERMISSION_CU_VALUE.ALLOW_TO_READ_A_USER],
-    };
-  }, []);
-
-  const getListsIdFromPermissionType = React.useCallback(
-    (arr: PERMISSION_CU_VALUE[]) => {
-      if (!permissionsCu) return [];
-      return permissionsCu
-        .filter((permissionCu) => arr.includes(permissionCu.displayName as PERMISSION_CU_VALUE))
-        .map((permissionCu) => ({ permissionId: permissionCu.id }));
-    },
-    [permissionsCu]
-  );
-
-  const handleRadioButtonChange = React.useCallback(
-    (value: PERMISSION_CU_VALUE) => {
-      if (!permissionsCu || !permissions || !value) return null;
-
-      let before: CUPermission[] = [...permissions];
-      let updatedPermissions: CUPermission[] = before.filter(
-        (permission) =>
-          !permissionUserManagementIds[PERMISSION_CU_VALUE.ALL].has(permission.permissionId)
-      );
-      const uniquePermissions = () => {
-        return _.uniqBy(
-          [
-            ...updatedPermissions,
-            ...getListsIdFromPermissionType(permissionsUserManagementWithRole[`${value}`]),
-          ],
-          'permissionId'
-        );
-      };
-
-      const newPermissions = uniquePermissions();
-      return setFieldValue(CRUUSER_KEY.PERMISSIONS, newPermissions);
-    },
-    [
-      permissionsCu,
-      permissions,
-      setFieldValue,
-      permissionUserManagementIds,
-      getListsIdFromPermissionType,
-      permissionsUserManagementWithRole,
-    ]
-  );
 
   return (
     <Box p={2}>
@@ -286,10 +288,10 @@ const CUDetails: React.FC<Props> = ({ formikProps }) => {
             options={optionsPermissionCuUserManagement}
             containerClassName="element-title-bold"
             value={valueRadioUserManagement()}
-            onChange={(name, value) => {
+            onChange={(_name, value) => {
               return handleRadioButtonChange(value);
             }}
-            disabled={isLoading}
+            disabled={isLoading || isInEditProfileMode}
           />
         </Grid>
       </Grid>

@@ -1,5 +1,5 @@
 import cn from 'classnames';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import shortid from 'shortid';
 import { BOOLEAN } from 'src/appConfig/constants';
 import { View } from '..';
@@ -38,26 +38,21 @@ const Group: React.FC<RadioGroupProps> = ({
   options,
   value,
   containerClassName,
-  onChange = () => {},
   label,
   errorMessage,
   name,
-  onBlur,
   columns = 3,
   required,
   isTrueFalseOptions = false,
+  onBlur,
+  onChange = () => {},
+  ...props
 }) => {
-  const [data, setData] = useState<any>(value);
-
-  useEffect(() => {
-    onChange(name, data);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
-
   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.target as HTMLInputElement;
     const value = target.value;
-    setData(isTrueFalseOptions ? castTrueFalseStringToBoolean(value) : value);
+    const data = isTrueFalseOptions ? castTrueFalseStringToBoolean(value) : value;
+    onChange(name, data);
   };
 
   const handleRadioBlur = () => {
@@ -77,12 +72,13 @@ const Group: React.FC<RadioGroupProps> = ({
             key={`radio-${name}-${index}`}
             name={name}
             value={option.value}
-            checked={data === option.value}
+            checked={value === option.value}
             label={option.label}
             onChange={handleValueChange}
             containerClassName={cn(columns && 'cmp-radio-groups__column')}
             style={{ width: `${100 / columns}%` }}
             onBlur={handleRadioBlur}
+            {...props}
           />
         ))}
       </View>

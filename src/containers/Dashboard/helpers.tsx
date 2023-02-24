@@ -1,6 +1,7 @@
 import { AirplanemodeActive, Extension, Help, PieChart } from '@mui/icons-material';
 import { IoServer, IoWallet } from 'react-icons/io5';
 import { PATHS } from 'src/appConfig/paths';
+import { PERMISSION_VALUE } from 'src/queries/Permissions';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 
 export type DashboardItem = {
@@ -13,6 +14,7 @@ export type DashboardItem = {
     url: string;
     isExternalUrl?: boolean;
     roles: string[];
+    permissions?: string[];
   }[];
 };
 
@@ -27,6 +29,7 @@ export const dashboardItems: DashboardItem[] = [
         url: '#',
         isExternalUrl: false,
         roles: [ROLE_NAME.CU],
+        permissions: [PERMISSION_VALUE.APPROVAL_PO_PAYMENTS_OVER_24999],
       },
       {
         title: 'Review/Approve PO Documents',
