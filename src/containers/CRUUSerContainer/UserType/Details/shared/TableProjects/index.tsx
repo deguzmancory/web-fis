@@ -7,7 +7,7 @@ import { muiResponsive, PARAMS_SPLITTER } from 'src/appConfig/constants';
 import { Table } from 'src/components/common';
 import EmptyTable from 'src/components/EmptyTable';
 import { CRUUSER_USER_TYPE_KEY } from 'src/containers/CRUUSerContainer/enums';
-import { CRUUserFormikProps, isEditProfileMode } from 'src/containers/CRUUSerContainer/helper';
+import { CRUUserFormikProps } from 'src/containers/CRUUSerContainer/helper';
 import { UserFiCode } from 'src/queries/Contents/types';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { FinancialProject, GetPropertiesParams } from 'src/queries/Users/types';
@@ -24,7 +24,6 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
 
   const { values, setFieldValue } = formikProps;
   const currentFormMode = values.mode;
-  console.log('isEditProfileMode(formMode)', isEditProfileMode(currentFormMode));
   const isTabletScreen = useMediaQuery(muiResponsive.TABLET);
 
   const userFisCodes: UserFiCode[] = React.useMemo(
@@ -41,6 +40,7 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
     financialProjects,
     totalRecords,
     isLoading: isLoadingGetProjects,
+    currentParams,
     setParams,
   } = useGetFinancialProjects({
     onError: (error) => handleShowErrorMsg(error),
@@ -48,12 +48,12 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
   });
 
   const filteredFinancialProjects = React.useMemo(() => {
-    if (isEmpty(userFisCodes) && isEmpty(userFisProjects)) {
+    if ((isEmpty(userFisCodes) && isEmpty(userFisProjects)) || !currentParams) {
       return [];
     }
 
     return financialProjects;
-  }, [financialProjects, userFisCodes, userFisProjects]);
+  }, [financialProjects, userFisCodes, userFisProjects, currentParams]);
 
   const handleRefetchFinancialProjects = React.useCallback(
     (params: GetPropertiesParams) => {
@@ -115,7 +115,7 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
       <Table
         title={''}
         onAction={handleRefetchFinancialProjects}
-        isLoading={isLoading || isLoadingGetProjects}
+        isLoading={isLoading || isLoadingGetProjects || !currentParams}
         data={filteredFinancialProjects}
         tableOptions={tableOptions}
         columns={columns}

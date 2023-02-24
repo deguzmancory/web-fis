@@ -16,6 +16,7 @@ import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, RoleService, Toastify, TokenService } from 'src/services';
 import { deepKeys, handleShowErrorMsg, scrollToTopError } from 'src/utils';
+import { getUncontrolledInputFieldProps } from 'src/utils';
 import { localTimeToHawaii } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
 import BreadcrumbsUserDetail from './breadcrumbs';
@@ -27,7 +28,6 @@ import {
   CRUUserFormValue,
   formatPayloadAddNew,
   formatPayloadUpdate,
-  getUncontrolledInputFieldProps,
   getValueRoles,
   getValueUserStatus,
   initialCRUUserFormValue,

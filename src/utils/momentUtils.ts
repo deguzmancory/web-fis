@@ -14,6 +14,10 @@ export const DateFormatDisplayMinute = 'MM/DD/YYYY hh:mm A';
 
 export const TimeFormat = 'HH:mm';
 
+export const hourDateFormat = 'h:mm:ss a, MMMM DD, YYYY';
+export const dateTimeFormat = 'MM/DD/YYYY HH:MM:ss A';
+export const monthFormat = 'MMMM DD, YYYY';
+
 /**
  * Get date display
  * @param {string|date|Dayjs} value

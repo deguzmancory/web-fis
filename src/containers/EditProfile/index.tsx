@@ -12,7 +12,12 @@ import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSl
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { IRootState } from 'src/redux/store';
 import { Navigator, RoleService, Toastify } from 'src/services';
-import { deepKeys, handleShowErrorMsg, scrollToTopError } from 'src/utils';
+import {
+  deepKeys,
+  getUncontrolledInputFieldProps,
+  handleShowErrorMsg,
+  scrollToTopError,
+} from 'src/utils';
 import { localTimeToHawaii } from 'src/utils/momentUtils';
 import AuditInformation from '../CRUUSerContainer/AuditInformation';
 import { CRUUSER_KEY, USER_MODE } from '../CRUUSerContainer/enums';
@@ -20,7 +25,6 @@ import GeneralInfo from '../CRUUSerContainer/GeneralInfo';
 import {
   CRUUserFormikProps,
   CRUUserFormValue,
-  getUncontrolledInputFieldProps,
   getValueRoles,
   getValueUserStatus,
   initialCRUUserFormValue,

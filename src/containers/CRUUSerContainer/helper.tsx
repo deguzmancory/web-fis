@@ -224,9 +224,6 @@ export const getErrorMessage = (fieldName: string, { touched, errors }) => {
   const error = get(errors, fieldName);
 
   return get(touched, fieldName) && error ? error : '';
-
-  // eslint-disable-next-line security/detect-object-injection
-  // return touched[fieldName] && errors[fieldName] ? errors[fieldName] : '';
 };
 
 export const getValueUserStatus = (status: UserDetail['status']) => {
@@ -301,6 +298,7 @@ export const getShareUserTypeDetailsPayload = <T extends SharedUserTypeDetails>(
   };
 };
 
+//usage: if do not select this role, do not send info of role
 const getFisInfoByRole = <T,>({
   currentRole,
   payload,
@@ -314,9 +312,8 @@ const getFisInfoByRole = <T,>({
 };
 
 //TODO: huy_dang refactor add new and update
-export const formatPayloadAddNew = (values: CRUUserFormValue): AddUserPayload => {
-  const payload = {
-    ...values,
+const getSharedPayloadOfAddAndUpdate = (values: CRUUserFormValue) => {
+  return {
     firstName: getTitleCase(values.firstName),
     lastName: getTitleCase(values.lastName),
     middleName: getTitleCase(values.middleName),
@@ -356,6 +353,13 @@ export const formatPayloadAddNew = (values: CRUUserFormValue): AddUserPayload =>
       ? values.permissions.map((permission) => permission.permissionId)
       : [],
   };
+};
+
+export const formatPayloadAddNew = (values: CRUUserFormValue): AddUserPayload => {
+  const payload = {
+    ...values,
+    ...getSharedPayloadOfAddAndUpdate(values),
+  };
 
   delete payload.mode;
   delete payload.lastLoginDate;
@@ -369,49 +373,11 @@ export const formatPayloadAddNew = (values: CRUUserFormValue): AddUserPayload =>
 export const formatPayloadUpdate = (values: CRUUserFormValue, user: UserDetail) => {
   const payload = {
     ...values,
+    ...getSharedPayloadOfAddAndUpdate(values),
     id: user.id,
-    username: values.username.toLowerCase(),
-    firstName: getTitleCase(values.firstName),
-    lastName: getTitleCase(values.lastName),
-    middleName: getTitleCase(values.middleName),
     fullName: user.fullName,
     allowMaintenanceModeLogin: user.allowMaintenanceModeLogin,
     isDhUser: values.email.includes('datahouse.com') ? true : false,
-    status: getPayloadUserStatus(values.status),
-    delegateAccess: getPayloadDelegateAccess(values.delegateAccess),
-    fisFaInfo: getFisInfoByRole({
-      currentRole: ROLE_NAME.FA,
-      userRoles: values.roles,
-      payload: {
-        ...getShareUserTypeDetailsPayload({ fisInfo: values.fisFaInfo }),
-        faCode: undefined, //TODO: check
-      },
-    }),
-    fisPiInfo: getFisInfoByRole({
-      currentRole: ROLE_NAME.PI,
-      userRoles: values.roles,
-      payload: {
-        ...getShareUserTypeDetailsPayload({ fisInfo: values.fisPiInfo, ignoreFisCodes: true }),
-        piCode: values.fisPiInfo.piCode,
-        directInquiriesTo: values.fisPiInfo.directInquiriesTo,
-        phoneNumber: values.fisPiInfo.phoneNumber,
-        faStaffToReview: values.fisPiInfo.faStaffToReview,
-      },
-    }),
-    fisSuInfo: getFisInfoByRole({
-      currentRole: ROLE_NAME.SU,
-      userRoles: values.roles,
-      payload: {
-        ...getShareUserTypeDetailsPayload({ fisInfo: values.fisSuInfo }),
-        directInquiriesTo: values.fisSuInfo.directInquiriesTo,
-        phoneNumber: values.fisSuInfo.phoneNumber,
-        faStaffToReview: values.fisSuInfo.faStaffToReview,
-      },
-    }),
-
-    permissions: !isEmpty(values.permissions)
-      ? values.permissions.map((permission) => permission.permissionId)
-      : [],
   };
 
   delete payload.mode;
@@ -433,25 +399,6 @@ export const isAddUserMode = (mode: USER_MODE) => {
 export const isEditProfileMode = (mode: USER_MODE) => {
   return mode === USER_MODE.EDIT_PROFILE;
 };
-
-export const getUncontrolledInputFieldProps =
-  ({ values, setFieldTouched, setFieldValue }) =>
-  (name: string, options: { onBlur: (name, values) => void }) => {
-    return {
-      name,
-      defaultValue: get(values, name),
-      onBlur: (event) => {
-        const value = event.target.value;
-
-        if (options && options.onBlur) {
-          return options.onBlur(name, value);
-        }
-
-        setFieldTouched(name, true);
-        setFieldValue(name, value);
-      },
-    };
-  };
 
 export const getFisCodeOptions = <T extends Partial<PICode & FACode>>({
   code,
