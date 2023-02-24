@@ -289,6 +289,7 @@ export const getShareUserTypeDetailsPayload = <T extends SharedUserTypeDetails>(
       : fisInfo.userFisCodes?.map((code) => ({
           code: code.code,
           codeType: code.codeType,
+          piName: code?.piName,
           id: code?.id,
         })),
     userFisProjects: fisInfo.userFisProjects?.map((project) => ({
@@ -299,7 +300,7 @@ export const getShareUserTypeDetailsPayload = <T extends SharedUserTypeDetails>(
 };
 
 //usage: if do not select this role, do not send info of role
-const getFisInfoByRole = <T,>({
+export const getFisInfoByRole = <T,>({
   currentRole,
   payload,
   userRoles,
@@ -311,7 +312,6 @@ const getFisInfoByRole = <T,>({
   return userRoles.includes(currentRole) ? payload : null;
 };
 
-//TODO: huy_dang refactor add new and update
 const getSharedPayloadOfAddAndUpdate = (values: CRUUserFormValue) => {
   return {
     firstName: getTitleCase(values.firstName),

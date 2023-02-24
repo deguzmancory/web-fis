@@ -36,6 +36,12 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
     [prefix, values]
   );
 
+  // in case empty userFisCodes and userFisProjects => no records
+  const hideTableRecords = React.useMemo(
+    () => isEmpty(userFisCodes) && isEmpty(userFisProjects),
+    [userFisCodes, userFisProjects]
+  );
+
   const {
     financialProjects,
     totalRecords,
@@ -44,16 +50,16 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
     setParams,
   } = useGetFinancialProjects({
     onError: (error) => handleShowErrorMsg(error),
-    enabled: !isEmpty(userFisCodes) || !isEmpty(userFisProjects), //TODO: tin_pham refactor, API call 2 times
+    enabled: !hideTableRecords, //TODO: tin_pham refactor, API call 2 times
   });
 
   const filteredFinancialProjects = React.useMemo(() => {
-    if ((isEmpty(userFisCodes) && isEmpty(userFisProjects)) || !currentParams) {
+    if (hideTableRecords || !currentParams) {
       return [];
     }
 
     return financialProjects;
-  }, [financialProjects, userFisCodes, userFisProjects, currentParams]);
+  }, [financialProjects, hideTableRecords, currentParams]);
 
   const handleRefetchFinancialProjects = React.useCallback(
     (params: GetPropertiesParams) => {
@@ -73,7 +79,7 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
 
   const tableOptions: MUIDataTableOptions = React.useMemo(
     () => ({
-      count: totalRecords,
+      count: hideTableRecords ? 0 : totalRecords,
       rowHover: true,
       filter: false,
       searchAlwaysOpen: false,
@@ -81,7 +87,7 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
       search: false,
       tableBodyHeight: isTabletScreen ? '100%' : 'calc(100vh - 450px)', // content height
     }),
-    [isTabletScreen, totalRecords]
+    [isTabletScreen, totalRecords, hideTableRecords]
   );
 
   const handleRowDelete = React.useCallback(
