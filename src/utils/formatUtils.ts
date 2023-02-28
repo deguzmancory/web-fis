@@ -6,9 +6,13 @@ import {
 } from 'react-phone-number-input';
 import { isEmpty } from 'src/validations';
 
-export const moneyReg = /[\d,]+\.{0,1}\d{0,2}/;
+export const moneyReg = /[\d,]+\.{0,1}\d{0,}/;
 
 export const MoneyInputDetect = (value) => `${value}`.match(moneyReg)?.[0] || '';
+
+export const convertCurrencyInputToString = (value) => {
+  return value.replace(/[^0-9.-]+/g, '');
+};
 
 export const formatPhoneNumber = (mobile: string) => {
   if (!mobile) return '';
@@ -37,14 +41,15 @@ export const formatShowSSN = (value: string, from: number = 6) => {
   return `*******${value.slice(from)}`;
 };
 
-export const formatMoney = (value: number) =>
-  value
-    .toLocaleString('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0,
-    })
-    .replace(/\./g, ',');
+export const formatMoney = (value: number, defaultValue = '') => {
+  if (isNaN(value)) return defaultValue;
+
+  return value.toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 2,
+  });
+};
 
 export const formatMoneyInput = (value: number) => {
   if (!value) return '';

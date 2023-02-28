@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { FaElementor, FaUsersCog, FaUserShield } from 'react-icons/fa';
 import {
+  AnimatedTabPanel,
   Button,
   Checkbox,
   ConfirmationCodeField,
   DatePicker,
   DateRangePicker,
+  EllipsisTypographyTooltip,
   Input,
+  InputCurrency,
   InputPassword,
   Loading,
   Tag,
@@ -22,20 +25,34 @@ import RadioButton from 'src/components/common/RadioButton';
 import Signature from 'src/components/common/Signature';
 import './styles.scss';
 
-import { Container, Divider, Tooltip } from '@mui/material';
+import { Box, Container, Divider, Tooltip, Typography } from '@mui/material';
+import { FormikProps, useFormik } from 'formik';
 import { Location } from 'history';
-import { DateRange } from 'src/components/common/DateRangePicker';
-import { Toastify } from 'src/services';
-import { emptyFunction } from 'src/utils';
-import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
-import { IRootState } from 'src/redux/store';
+import { get } from 'lodash';
 import { connect } from 'react-redux';
-import { DIALOG_TYPES } from 'src/redux/dialog/type';
-import TabsBar from 'src/components/common/TabsBar';
-import { getRoleName } from 'src/queries/Profile/helpers';
 import { useHistory, useLocation } from 'react-router-dom';
+import { DateRange } from 'src/components/common/DateRangePicker';
+import TabsBar from 'src/components/common/TabsBar';
+import ReportTable from 'src/components/ReportTable';
+import { BodyRow, BodyRows } from 'src/components/ReportTable/types';
+import {
+  getRecordTableHeader,
+  INDIRECT_COSTS,
+  REPORT_TABLE_HEADER_ROW_IN_FOOTER,
+} from 'src/mocks/table/reportTableConfig';
+import { ReportData, ReportTableData } from 'src/mocks/table/reportTableData';
+import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
+import { DIALOG_TYPES } from 'src/redux/dialog/type';
+import { IRootState } from 'src/redux/store';
+import { Toastify } from 'src/services';
+import { emptyFunction, formatMoney, getUncontrolledCurrencyInputFieldProps } from 'src/utils';
+import JsonView from 'react-json-view';
 
 const Dev: React.FC<Props> = ({ location, onShowDialog, onHideDialog, onHideAllDialog }) => {
+  const currentLocation = useLocation();
+  const history = useHistory();
+  const query = new URLSearchParams(currentLocation.search);
+
   const [files, setFiles] = useState<File[]>();
   const [count, setCount] = useState(0);
   const [datePicked, setDatePicked] = useState<Date>(new Date());
@@ -45,10 +62,11 @@ const Dev: React.FC<Props> = ({ location, onShowDialog, onHideDialog, onHideAllD
   const [radio, setRadio] = useState<string>('');
   const [select, setSelect] = useState<string[]>([]);
   const [source, setSource] = useState<string>(null);
+  const [currencyInput, setCurrencyInput] = useState<number>(0);
   const [tab, setTab] = useState(null);
-  const currentLocation = useLocation();
-  const history = useHistory();
-  const query = new URLSearchParams(currentLocation.search);
+  const formTableInputRef = React.useRef<FormikProps<ReportData[]>>(null);
+  const [disableInputTable, setDisabledInputTable] = useState<boolean>(true);
+  const reportTableData = ReportTableData.document;
 
   const handleCodeFieldChange = (value: string) => {
     console.log('value', value);
@@ -82,7 +100,6 @@ const Dev: React.FC<Props> = ({ location, onShowDialog, onHideDialog, onHideAllD
     onShowDialog({
       type: DIALOG_TYPES.CONTENT_DIALOG,
       data: {
-        title: 'Dialog Content Dialog',
         content: (
           <View>
             <Input label="aaaaaaaaaa" placeholder="asdasd" />
@@ -179,26 +196,396 @@ const Dev: React.FC<Props> = ({ location, onShowDialog, onHideDialog, onHideAllD
     });
   };
 
+  const handleFormTableInputSubmit = (value) => {
+    onShowDialog({
+      type: DIALOG_TYPES.OK_DIALOG,
+      data: {
+        title: 'Data Editable Table',
+        content: (
+          <Box>
+            <JsonView src={{ value: value }} />
+          </Box>
+        ),
+        onOk: () => onHideDialog(),
+      },
+    });
+  };
+
+  const initialRow = {
+    projectNumber: '',
+    activityCode: '',
+    amountAwarded: '',
+    totalExpended: '',
+    outstandingPO: '',
+    totalCost: '',
+    suspense: '',
+    availableBalance: '',
+    currentExpended: '',
+    description: '',
+    category: '',
+  };
+
+  const { values, setValues, getFieldProps, setFieldValue, setFieldTouched, handleSubmit } =
+    useFormik<ReportData[]>({
+      initialValues: [...reportTableData.reportDataList, initialRow],
+      validationSchema: null,
+      innerRef: formTableInputRef,
+      enableReinitialize: true,
+      onSubmit: handleFormTableInputSubmit,
+    });
+
+  const getUncontrolledFieldProps = getUncontrolledCurrencyInputFieldProps({
+    values,
+    setFieldTouched,
+    setFieldValue,
+  });
+
+  const getAutoGenerateUncontrolledFieldProps = getUncontrolledCurrencyInputFieldProps({
+    values,
+    setFieldTouched,
+    setFieldValue,
+  });
+
+  const removeRow = (index: number) => {
+    setValues(values.filter((_row, idx) => idx !== index));
+  };
+
+  const addNewRow = () => {
+    setValues([...values, initialRow]);
+  };
+
+  const handleAutoGenerateOnBlur = ({ name, value, index }) => {
+    setFieldValue(name, value);
+    setFieldTouched(name, value);
+
+    const currentRow = get(values, index);
+    if (!value && !Object.values(currentRow).some((value) => value && value !== '0')) {
+      if (index === values.length - 1) return;
+
+      removeRow(index);
+      return;
+    }
+
+    const rowAbove = get(values, `${index + 1}`);
+    if (!rowAbove) {
+      addNewRow();
+      return;
+    }
+  };
+
+  const cellBaseStyles = {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    borderStyle: 'border-box',
+    fontSize: 14,
+  };
+
+  const cellCurrencyInputBaseStyles = {
+    ...cellBaseStyles,
+    width: 140,
+    maxWidth: 140,
+    textAlign: 'right' as const,
+  };
+
+  const cellContainCurrencyInputStyles = {
+    ...cellCurrencyInputBaseStyles,
+
+    padding: '8px',
+  };
+
+  const cellContainInputStyles = {
+    ...cellBaseStyles,
+
+    padding: '8px',
+  };
+
+  const currencyInputInlineTableStyles = {
+    ...cellBaseStyles,
+    // border: 'none',
+    // backgroundColor: 'transparent',
+    textAlign: 'right' as const,
+  };
+
+  const reportList: BodyRows = values.map((reportRow, index) => {
+    const reportRowFormValues: ReportData = get(values, index);
+    return {
+      columns: [
+        {
+          content: reportRow.category,
+        },
+        {
+          content: (
+            <Input {...getUncontrolledFieldProps(`${index}.description`)} style={cellBaseStyles} />
+          ),
+          style: cellContainInputStyles,
+        },
+        {
+          content: (
+            <InputCurrency
+              {...getUncontrolledFieldProps(`${index}.amountAwarded`)}
+              style={currencyInputInlineTableStyles}
+            />
+          ),
+          style: cellContainCurrencyInputStyles,
+        },
+        {
+          content: formatMoney(Number(get(values, `${index}.currentExpended`))), //formatMoney(Number(reportRow.currentExpended)),
+          style: cellCurrencyInputBaseStyles,
+        },
+        {
+          content: (
+            <InputCurrency
+              {...getFieldProps(`${index}.totalExpended`)}
+              onChange={setFieldValue}
+              style={currencyInputInlineTableStyles}
+            />
+          ),
+          style: cellContainCurrencyInputStyles,
+        },
+        {
+          content: (
+            <InputCurrency
+              {...getUncontrolledFieldProps(`${index}.outstandingPO`)}
+              style={currencyInputInlineTableStyles}
+              disabled={disableInputTable}
+            />
+          ),
+          style: cellContainCurrencyInputStyles,
+        },
+        {
+          content: formatMoney(
+            Number(reportRowFormValues?.amountAwarded) +
+              Number(reportRowFormValues?.currentExpended) +
+              Number(reportRowFormValues?.totalExpended) +
+              Number(reportRowFormValues?.suspense) +
+              Number(reportRowFormValues?.outstandingPO)
+          ),
+          style: cellCurrencyInputBaseStyles,
+        },
+        {
+          content: (
+            <InputCurrency
+              {...getAutoGenerateUncontrolledFieldProps(`${index}.suspense`, {
+                onBlur: (name, value) => handleAutoGenerateOnBlur({ name, value, index }),
+              })}
+              style={currencyInputInlineTableStyles}
+            />
+          ),
+          style: cellContainCurrencyInputStyles,
+        },
+        {
+          content: (
+            <Typography
+              variant="body2"
+              className={Number(reportRow.availableBalance) < 0 ? 'has-text-danger' : ''}
+              sx={currencyInputInlineTableStyles}
+            >
+              {formatMoney(Number(reportRow.availableBalance))}
+            </Typography>
+          ),
+          style: cellCurrencyInputBaseStyles,
+        },
+        {
+          content: <Button onClick={() => alert(JSON.stringify(get(values, index)))}>View</Button>,
+        },
+      ],
+    };
+  });
+  const directCostsTotalRow: BodyRow = {
+    columns: [
+      {
+        content: 'Direct Costs Total',
+        colSpan: 2,
+        isHeaderColumn: true,
+        style: {
+          textAlign: 'right',
+        },
+      },
+      {
+        content: (
+          <EllipsisTypographyTooltip variant="body2" lengthShowTooltip={15}>
+            {formatMoney(values.reduce((output, report) => output + +report.amountAwarded, 0))}
+          </EllipsisTypographyTooltip>
+        ),
+        style: cellCurrencyInputBaseStyles,
+      },
+      {
+        content: (
+          <EllipsisTypographyTooltip variant="body2" lengthShowTooltip={15}>
+            {formatMoney(values.reduce((output, report) => output + +report.currentExpended, 0))}
+          </EllipsisTypographyTooltip>
+        ),
+        style: cellCurrencyInputBaseStyles,
+      },
+      {
+        content: (
+          <EllipsisTypographyTooltip variant="body2" lengthShowTooltip={15}>
+            {formatMoney(values.reduce((output, report) => output + +report.totalExpended, 0))}
+          </EllipsisTypographyTooltip>
+        ),
+        style: cellCurrencyInputBaseStyles,
+      },
+      {
+        content: (
+          <EllipsisTypographyTooltip variant="body2" lengthShowTooltip={15}>
+            {formatMoney(values.reduce((output, report) => output + +report.outstandingPO, 0))}
+          </EllipsisTypographyTooltip>
+        ),
+        style: cellCurrencyInputBaseStyles,
+      },
+      {
+        content: (
+          <EllipsisTypographyTooltip variant="body2" lengthShowTooltip={15}>
+            {formatMoney(values.reduce((output, report) => output + +report.totalCost, 0))}
+          </EllipsisTypographyTooltip>
+        ),
+        style: cellCurrencyInputBaseStyles,
+      },
+      {
+        content: (
+          <EllipsisTypographyTooltip variant="body2" lengthShowTooltip={15}>
+            {formatMoney(values.reduce((output, report) => output + +report.suspense, 0))}
+          </EllipsisTypographyTooltip>
+        ),
+        style: cellCurrencyInputBaseStyles,
+      },
+      {
+        content: (
+          <EllipsisTypographyTooltip variant="body2" lengthShowTooltip={15}>
+            {formatMoney(values.reduce((output, report) => output + +report.availableBalance, 0))}
+          </EllipsisTypographyTooltip>
+        ),
+        style: cellCurrencyInputBaseStyles,
+      },
+      {
+        content: '',
+      },
+    ],
+  };
+
+  const grandTotalRow: BodyRow = {
+    columns: [
+      {
+        content: 'Grand Total',
+        colSpan: 2,
+        isHeaderColumn: true,
+        style: {
+          textAlign: 'right',
+        },
+      },
+      {
+        content: formatMoney(Number(reportTableData.grandTotal.amountAwarded)),
+        style: {
+          textAlign: 'right',
+        },
+      },
+      {
+        content: formatMoney(Number(reportTableData.grandTotal.currentExpended)),
+        style: {
+          textAlign: 'right',
+        },
+      },
+      {
+        content: formatMoney(Number(reportTableData.grandTotal.totalExpended)),
+        style: {
+          textAlign: 'right',
+        },
+      },
+      {
+        content: formatMoney(Number(reportTableData.grandTotal.outstandingPO)),
+        style: {
+          textAlign: 'right',
+        },
+      },
+      {
+        content: formatMoney(Number(reportTableData.grandTotal.totalCost)),
+        style: {
+          textAlign: 'right',
+        },
+      },
+      {
+        content: formatMoney(Number(reportTableData.grandTotal.suspense)),
+        style: {
+          textAlign: 'right',
+        },
+      },
+      {
+        content: formatMoney(Number(reportTableData.grandTotal.availableBalance)),
+        style: {
+          textAlign: 'right',
+        },
+      },
+      {
+        content: '',
+      },
+    ],
+  };
+
+  const handleToggleDisabled = () => {
+    setDisabledInputTable((prev) => !prev);
+  };
+
+  const bodyList: BodyRows = [
+    ...getRecordTableHeader({
+      onToggleDisabled: handleToggleDisabled,
+      disabled: disableInputTable,
+    }),
+    ...reportList,
+    directCostsTotalRow,
+    INDIRECT_COSTS,
+    grandTotalRow,
+    ...REPORT_TABLE_HEADER_ROW_IN_FOOTER,
+  ];
+
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="lg">
+      <View className="mt-32">
+        <h2>Report table</h2>
+        <ReportTable
+          showBorder
+          // headerList={REPORT_TABLE_HEADER}
+          // headerSx={{
+          //   textAlign: 'center',
+          // }}
+          bodyList={bodyList}
+        />
+
+        <Box mt={2}>
+          <Button onClick={() => handleSubmit()}>Submit Table</Button>
+        </Box>
+      </View>
+
+      <View className="mt-32">
+        <h2>Input Currency</h2>
+        <InputCurrency
+          onChange={(name: string, value: number) => {
+            setCurrencyInput(value);
+          }}
+          label="Currency"
+          value={currencyInput}
+          name=""
+        />
+      </View>
+
       <View className="mb-32 mt-32">
+        <h2>Tab bars</h2>
         <TabsBar
           tabsList={[
             {
-              label: getRoleName('SU'),
-              value: 'SU',
+              label: 'Tab 1',
+              value: 'tab1',
             },
             {
-              label: getRoleName('PI'),
-              value: ' PI',
+              label: 'Tab 2',
+              value: 'tab2',
             },
             {
-              label: getRoleName('FA'),
-              value: 'FA',
+              label: 'Tab 3',
+              value: 'tab3',
             },
             {
-              label: getRoleName('CU'),
-              value: 'CU',
+              label: 'Tab 4',
+              value: 'tab4',
             },
           ]}
           value={tab}
@@ -209,6 +596,12 @@ const Dev: React.FC<Props> = ({ location, onShowDialog, onHideDialog, onHideAllD
           }}
         />
         <Divider />
+        <AnimatedTabPanel uniqKey={`userType-${tab}`} transitionTime={0.2}>
+          {tab === 'tab1' && <Box p={2}>Content 1</Box>}
+          {tab === 'tab2' && <Box p={2}>Content 2</Box>}
+          {tab === 'tab3' && <Box p={2}>Content 3</Box>}
+          {tab === 'tab4' && <Box p={2}>Content 4</Box>}
+        </AnimatedTabPanel>
       </View>
 
       <View className="mb-32">
