@@ -140,12 +140,12 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
   }, [prefix]);
 
   const filteredProjects = React.useMemo(() => {
-    if (!searchProjects) {
+    if (!searchProjects && !values.projectNumber) {
       return [];
     }
 
     return financialProjects;
-  }, [financialProjects, searchProjects]);
+  }, [financialProjects, searchProjects, values.projectNumber]);
 
   //search project after debouncing input
   React.useEffect(() => {
@@ -196,6 +196,9 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
               }}
               onBlur={setFieldTouched}
               errorMessage={_getErrorMessage(ADD_DELEGATION_KEY.EXISTING_USER_ACCOUNT)}
+              menuStyle={{
+                width: '300px',
+              }}
             />
           </Grid>
           <Grid item xs={2}>
@@ -225,6 +228,9 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
               }}
               onBlur={setFieldTouched}
               errorMessage={_getErrorMessage(ADD_DELEGATION_KEY.USER_TYPE)}
+              menuStyle={{
+                width: '200px',
+              }}
             />
           </Grid>
           <Grid item xs={3}>
@@ -253,6 +259,9 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
               optionWithSubLabel
               onChange={setFieldValue}
               errorMessage={_getErrorMessage(ADD_DELEGATION_KEY.PROJECT_NUMBER)}
+              menuStyle={{
+                width: '400px',
+              }}
             />
           </Grid>
           <Grid item xs={2}>

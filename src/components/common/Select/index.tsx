@@ -3,8 +3,15 @@ import { isEqual } from 'lodash';
 import { useCallback, useRef } from 'react';
 import { FiSearch } from 'react-icons/fi';
 import { IoCaretDownOutline } from 'react-icons/io5';
-import Select, { components } from 'react-select';
+import Select, {
+  components,
+  MenuPosition,
+  ControlProps,
+  CSSObjectWithLabel,
+  StylesConfig,
+} from 'react-select';
 import { COLOR_CODE } from 'src/appConfig/constants';
+import { Callback } from 'src/redux/types';
 import { getRandomId } from 'src/utils';
 import { isEmpty } from 'src/validations';
 import Element from '../Element';
@@ -19,17 +26,17 @@ const DropdownIndicator = (props) => {
   );
 };
 
-const Control = ({ children, ...props }) => (
+const Control: React.FC<ControlProps> = ({ children, ...props }) => (
   <components.Control {...props}>
     <FiSearch className="ml-8" />
     {children}
   </components.Control>
 );
-const ControlNoSearchIcon = ({ children, ...props }) => (
+const ControlNoSearchIcon: React.FC<ControlProps> = ({ children, ...props }) => (
   <components.Control {...props}>{children}</components.Control>
 );
 
-const SelectCmp = ({
+const SelectCmp: React.FC<Props> = ({
   options,
   label,
   className = '',
@@ -49,6 +56,9 @@ const SelectCmp = ({
   menuPosition = 'fixed',
   optionWithSubLabel = false,
   isLoading = false,
+  menuStyle,
+  optionStyle,
+  styles,
   onChange = (name, value) => {},
   onBlur = (e) => {},
   onInputChange = (value) => {},
@@ -140,6 +150,7 @@ const SelectCmp = ({
             },
           })}
           styles={{
+            ...styles,
             option: (base, state) => ({
               ...base,
               backgroundColor: state.isFocused
@@ -147,10 +158,15 @@ const SelectCmp = ({
                 : state.isSelected
                 ? COLOR_CODE.PRIMARY_100
                 : 'white',
+              optionStyle,
             }),
             menuPortal: (base, props) => ({
               ...base,
               zIndex: 999,
+            }),
+            menu: (base, props) => ({
+              ...base,
+              ...menuStyle,
             }),
           }}
           {...props}
@@ -167,6 +183,46 @@ const SelectCmp = ({
       </View>
     </Element>
   );
+};
+
+type Props = {
+  options: any[];
+  label: string;
+  className?: string;
+  value: any;
+  errorMessage?: string;
+  placeholder?: string;
+  containerClassName?: string;
+  name?: string;
+  required?: boolean;
+  infoTooltipMessage?: string;
+  infoTooltipPlacement?:
+    | 'bottom-end'
+    | 'bottom-start'
+    | 'bottom'
+    | 'left-end'
+    | 'left-start'
+    | 'left'
+    | 'right-end'
+    | 'right-start'
+    | 'right'
+    | 'top-end'
+    | 'top-start'
+    | 'top';
+  infoToolTipWithArrow?: boolean;
+  hideSearchIcon?: boolean;
+  isClearable?: boolean;
+  isDisabled?: boolean;
+  isMulti?: boolean;
+  menuPosition?: MenuPosition;
+  optionWithSubLabel?: boolean;
+  menuStyle?: CSSObjectWithLabel;
+  optionStyle?: CSSObjectWithLabel;
+  styles?: StylesConfig;
+  isLoading?: boolean;
+  onChange?: Callback;
+  onBlur?: Callback;
+  onInputChange?: Callback;
 };
 
 export default SelectCmp;

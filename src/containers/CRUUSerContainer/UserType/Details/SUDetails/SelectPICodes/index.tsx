@@ -109,6 +109,9 @@ const SelectPICodes: React.FC<Props> = ({ formikProps, isLoading }) => {
                 `${CRUUSER_KEY.FIS_SU_INFO}.${CRUUSER_USER_TYPE_KEY.CURRENT_PI_CODE}`
               )}
               onChange={setFieldValue}
+              menuStyle={{
+                width: '320px',
+              }}
             />
           </Box>
           <Box mb={1}>

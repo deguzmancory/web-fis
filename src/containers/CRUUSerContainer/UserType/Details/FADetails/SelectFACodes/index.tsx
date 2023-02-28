@@ -106,6 +106,9 @@ const SelectFACodes: React.FC<Props> = ({ formikProps, isLoading }) => {
                 `${CRUUSER_KEY.FIS_FA_INFO}.${CRUUSER_USER_TYPE_KEY.CURRENT_FA_CODE}`
               )}
               onChange={setFieldValue}
+              menuStyle={{
+                width: '200px',
+              }}
             />
           </Box>
           <Box mb={1}>
