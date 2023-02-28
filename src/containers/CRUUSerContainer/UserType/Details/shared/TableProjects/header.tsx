@@ -4,6 +4,10 @@ import React from 'react';
 import CustomSearchTable from 'src/components/CustomSearchTable';
 import MuiPopOverFilter from 'src/components/MuiPopOverFilter';
 
+export enum SEARCH_PROJECT_KEY {
+  SEARCH_NAME = 'searchName',
+}
+
 const HeaderTableUserType = () => {
   const [isShowPopover, setIsShowPopover] = React.useState(false);
   return (
@@ -21,7 +25,11 @@ const HeaderTableUserType = () => {
           icon={<Search />}
           body={
             <Box p={2}>
-              <CustomSearchTable label={null} placeholder="Search by Project Title" />
+              <CustomSearchTable
+                label={null}
+                placeholder="Search by Project Title"
+                searchKey={SEARCH_PROJECT_KEY.SEARCH_NAME}
+              />
             </Box>
           }
         />

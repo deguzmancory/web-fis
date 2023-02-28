@@ -1,13 +1,15 @@
 import { Box, Grid, Stack } from '@mui/material';
 import { useFormik } from 'formik';
-import { debounce } from 'lodash';
+import { debounce, get } from 'lodash';
 import React from 'react';
+import { PARAMS_SPLITTER } from 'src/appConfig/constants';
 import { Button, DatePicker, Select } from 'src/components/common';
-import { getRoleNamePayload } from 'src/queries/Profile/helpers';
-import { useSearchProjects, useSearchUsers } from 'src/queries/Users';
+import { getRoleNamePayload, ROLE_NAME } from 'src/queries/Profile/helpers';
+import { useSearchUsers } from 'src/queries/Users';
+import { useGetFinancialProjects } from 'src/queries/Users/useGetFinancialProjects';
 import { formatDateUtc } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
-import { CRUUSER_KEY } from '../../enums';
+import { CRUUSER_KEY, CRUUSER_USER_TYPE_KEY } from '../../enums';
 import { CRUUserFormikProps, getErrorMessage } from '../../helper';
 import {
   addDelegationFormSchema,
@@ -21,6 +23,32 @@ import {
 const AddDelegation: React.FC<Props> = ({ formikProps }) => {
   const { setFieldValue: setFieldValueFormik, values: valuesFormik } = formikProps;
 
+  //search users
+  const [searchUsers, setSearchUsers] = React.useState('');
+  const { users, isLoading: isLoadingSearchUsers } = useSearchUsers({
+    name: searchUsers,
+    exclude: valuesFormik.username,
+  });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debounceSearchUsersValue = React.useCallback(debounce(setSearchUsers, 200), []);
+
+  //search projects
+  const [searchProjects, setSearchProjects] = React.useState('');
+  const {
+    financialProjects,
+    isLoading: isLoadingSearchProjects,
+    setParams,
+  } = useGetFinancialProjects({
+    enabled: !!searchProjects,
+  });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debounceSearchProjectsValue = React.useCallback(debounce(setSearchProjects, 200), []);
+
+  const _getErrorMessage = (fieldName: ADD_DELEGATION_KEY) => {
+    return getErrorMessage(fieldName, { touched, errors });
+  };
+
+  //form
   const getInitialValues = React.useMemo(() => {
     return {
       ...initialAddDelegationFormValue,
@@ -66,8 +94,8 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
   const {
     values,
     errors,
-    getFieldProps,
     touched,
+    getFieldProps,
     setFieldTouched,
     setFieldValue,
     setFieldError,
@@ -75,32 +103,63 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
     resetForm,
   } = useFormik<AddDelegationFormValue>({
     initialValues: getInitialValues,
-    onSubmit: handleAddDelegation,
     validationSchema: addDelegationFormSchema,
     enableReinitialize: true,
+    onSubmit: handleAddDelegation,
   });
 
-  const _getErrorMessage = (fieldName: ADD_DELEGATION_KEY) => {
-    return getErrorMessage(fieldName, { touched, errors });
-  };
+  //search projects
+  const prefix = React.useMemo(() => {
+    const selectedUserType = values.userType as ROLE_NAME;
 
-  const [searchUsers, setSearchUsers] = React.useState('');
+    switch (selectedUserType) {
+      case ROLE_NAME.SU:
+        return CRUUSER_KEY.FIS_SU_INFO;
+      case ROLE_NAME.PI:
+        return CRUUSER_KEY.FIS_PI_INFO;
+      case ROLE_NAME.FA:
+        return CRUUSER_KEY.FIS_FA_INFO;
 
-  const { users, isLoading: isLoadingSearchUsers } = useSearchUsers({
-    name: searchUsers,
-    exclude: valuesFormik.username,
-  });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debounceSearchUsersValue = React.useCallback(debounce(setSearchUsers, 200), []);
+      default:
+        return '';
+    }
+  }, [values.userType]);
 
-  const [searchProjects, setSearchProjects] = React.useState('');
+  const userFisCodes = React.useMemo(() => {
+    if (!prefix) return [];
+    return get(valuesFormik, `${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`) || [];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prefix]);
 
-  const { projects, isLoading: isLoadingSearchProjects } = useSearchProjects({
-    projectNumber: searchProjects,
-  });
+  const userFisProjects = React.useMemo(() => {
+    if (!prefix) return [];
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debounceSearchProjectsValue = React.useCallback(debounce(setSearchProjects, 200), []);
+    return get(valuesFormik, `${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_PROJECTS}`) || [];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prefix]);
+
+  const filteredProjects = React.useMemo(() => {
+    if (!searchProjects) {
+      return [];
+    }
+
+    return financialProjects;
+  }, [financialProjects, searchProjects]);
+  console.log('filteredProjects: ', filteredProjects);
+  console.log('financialProjects: ', financialProjects);
+
+  //search project after debouncing input
+  React.useEffect(() => {
+    if (!values.userType && !searchProjects) return;
+
+    setParams({
+      search: searchProjects,
+      userType: values.userType as ROLE_NAME,
+      codes: userFisCodes.map((code) => code.code).join(PARAMS_SPLITTER),
+      projectNumbers: userFisProjects.map((project) => project.projectNumber).join(PARAMS_SPLITTER),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchProjects]);
 
   return (
     <Box mb={2}>
@@ -175,11 +234,11 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
               label="Project Number"
               placeholder={'Search'}
               options={
-                projects
-                  ? projects.map((project) => ({
-                      label: `${project.projectNumber}`,
-                      value: project.projectNumber,
-                      subLabel: project.projectNumber,
+                filteredProjects
+                  ? filteredProjects.map((project) => ({
+                      label: `${project.number}`,
+                      value: project.number,
+                      subLabel: project.name,
                     }))
                   : []
               }

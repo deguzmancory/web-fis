@@ -3,6 +3,7 @@ import {
   IconButton,
   Table,
   TableBody,
+  tableCellClasses,
   TableContainer,
   TableHead,
   TableRow,
@@ -24,16 +25,16 @@ const TableCodes: React.FC<Props> = ({ rows, type, readonly, onDeleteCode }) => 
         height: 'calc(100vh - 490px)',
         overflow: 'auto',
         border: `${COLOR_CODE.DEFAULT_BORDER}`,
-        '.MuiTableCell-body': {
+        [`.${tableCellClasses.body}`]: {
           padding: '4px 8px !important',
         },
-        '.MuiTableCell-head': {
+        [`.${tableCellClasses.head}`]: {
           padding: '4px 8px !important',
         },
       }}
     >
-      <Table>
-        <TableHead sx={{ position: 'sticky', top: 0 }}>
+      <Table stickyHeader aria-label="sticky table">
+        <TableHead>
           <TableRow>
             {[
               { title: isFA(type) ? 'FA Code' : 'PI Code', width: '90%' },

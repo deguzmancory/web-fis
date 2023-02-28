@@ -9,6 +9,7 @@ import { Input } from '../common';
 type Props = {
   label?: string;
   placeholder?: string;
+  searchKey?: string;
 };
 
 enum QUERY_KEY {
@@ -18,11 +19,12 @@ enum QUERY_KEY {
 const CustomSearchTable: React.FC<Props> = ({
   label = 'Search User Documents',
   placeholder = 'Search',
+  searchKey = QUERY_KEY.SEARCH,
 }) => {
   const history = useHistory();
   const location = useLocation();
   const query = new URLSearchParams(location.search);
-  const searchText = query.get(QUERY_KEY.SEARCH) || '';
+  const searchText = query.get(searchKey) || '';
   const [searchValue, setSearchValue] = React.useState(searchText || '');
 
   const hasValue = !isEmpty(searchText);
@@ -40,7 +42,7 @@ const CustomSearchTable: React.FC<Props> = ({
   };
 
   const onSearch = (value: string) => {
-    query.set(QUERY_KEY.SEARCH, value);
+    query.set(searchKey, value);
     history.push({ search: query.toString() });
   };
 

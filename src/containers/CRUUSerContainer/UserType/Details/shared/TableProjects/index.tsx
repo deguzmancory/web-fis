@@ -15,12 +15,16 @@ import { useGetFinancialProjects } from 'src/queries/Users/useGetFinancialProjec
 import { handleShowErrorMsg } from 'src/utils';
 import { isEmpty } from 'src/validations';
 import { allColumns } from './allColumns';
-import HeaderTableUserType from './header';
+import HeaderTableUserType, { SEARCH_PROJECT_KEY } from './header';
 
 const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoading }) => {
   const history = useHistory();
   const location = useLocation();
   const query = React.useMemo(() => new URLSearchParams(location.search), [location.search]);
+  const searchProjectName = React.useMemo(
+    () => query.get(SEARCH_PROJECT_KEY.SEARCH_NAME) || undefined,
+    [query]
+  );
 
   const { values, setFieldValue } = formikProps;
   const currentFormMode = values.mode;
@@ -65,6 +69,7 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
     (params: GetPropertiesParams) => {
       const newParams = {
         ...params,
+        searchName: searchProjectName,
         userType: type,
         codes: userFisCodes.map((code) => code.code).join(PARAMS_SPLITTER),
         projectNumbers: userFisProjects
@@ -74,7 +79,7 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
 
       setParams(newParams);
     },
-    [setParams, type, userFisCodes, userFisProjects]
+    [setParams, type, userFisCodes, userFisProjects, searchProjectName]
   );
 
   const tableOptions: MUIDataTableOptions = React.useMemo(

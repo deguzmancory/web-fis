@@ -59,9 +59,15 @@ const create = (baseURL = appConfig.API_URL) => {
         config.headers.Authorization = 'Bearer ' + token;
 
         const delegationKey = DelegationKeyService.getDelegationKey();
+        const currentRoleKey = RoleService.getCurrentRole();
+
         if (delegationKey) {
           config.headers['x-delegation-token'] = delegationKey;
         }
+        if (currentRoleKey) {
+          config.headers['x-active-role'] = currentRoleKey;
+        }
+
         return Promise.resolve(config);
       })
       .catch(() => {
