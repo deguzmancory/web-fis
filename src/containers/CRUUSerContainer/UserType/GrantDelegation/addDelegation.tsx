@@ -127,6 +127,7 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
 
   const userFisCodes = React.useMemo(() => {
     if (!prefix) return [];
+
     return get(valuesFormik, `${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`) || [];
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prefix]);
@@ -145,8 +146,6 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
 
     return financialProjects;
   }, [financialProjects, searchProjects]);
-  console.log('filteredProjects: ', filteredProjects);
-  console.log('financialProjects: ', financialProjects);
 
   //search project after debouncing input
   React.useEffect(() => {
@@ -246,9 +245,7 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
               value={values.projectNumber}
               name={ADD_DELEGATION_KEY.PROJECT_NUMBER}
               onInputChange={(value: string) => {
-                if (value.length > 0) {
-                  debounceSearchProjectsValue(value);
-                }
+                debounceSearchProjectsValue(value);
               }}
               hideSearchIcon
               isClearable={false}
