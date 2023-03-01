@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { get } from 'lodash';
+import { get, isEqual } from 'lodash';
 import { MyProfile } from 'src/queries';
 import { FACode, PICode } from 'src/queries/Contents/types';
 import { getRoleNamePayload, isPI, ROLE_NAME } from 'src/queries/Profile/helpers';
@@ -430,4 +430,12 @@ export const getFisCodeOptions = <T extends Partial<PICode & FACode>>({
       },
     ];
   }, []);
+};
+
+export const isEqualPrevAndNextObjByPath = (prevValues, nextValues, path) => {
+  const prev = get(prevValues, path);
+  const next = get(nextValues, path);
+  return Array.isArray(prev) && Array.isArray(next)
+    ? prev.length === next.length
+    : isEqual(prev, next);
 };

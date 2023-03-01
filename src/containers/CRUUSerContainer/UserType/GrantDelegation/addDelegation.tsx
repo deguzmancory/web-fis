@@ -10,7 +10,7 @@ import { useGetFinancialProjects } from 'src/queries/Users/useGetFinancialProjec
 import { formatDateUtc } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
 import { CRUUSER_KEY, CRUUSER_USER_TYPE_KEY } from '../../enums';
-import { CRUUserFormikProps, getErrorMessage } from '../../helper';
+import { CRUUserFormikProps, getErrorMessage, isEqualPrevAndNextObjByPath } from '../../helper';
 import {
   addDelegationFormSchema,
   AddDelegationFormValue,
@@ -131,6 +131,7 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
     return get(valuesFormik, `${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`) || [];
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prefix]);
+  console.log('userFisCodes: ', userFisCodes);
 
   const userFisProjects = React.useMemo(() => {
     if (!prefix) return [];
@@ -316,4 +317,40 @@ type Props = {
   formikProps: CRUUserFormikProps;
 };
 
-export default AddDelegation;
+export default React.memo(AddDelegation, (prevProps, nextProps) => {
+  const prevValues = prevProps.formikProps.values;
+  const nextValues = nextProps.formikProps.values;
+
+  return (
+    isEqualPrevAndNextObjByPath(
+      prevValues,
+      nextValues,
+      `${CRUUSER_KEY.FIS_SU_INFO}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`
+    ) &&
+    isEqualPrevAndNextObjByPath(
+      prevValues,
+      nextValues,
+      `${CRUUSER_KEY.FIS_SU_INFO}.${CRUUSER_USER_TYPE_KEY.USER_FIS_PROJECTS}`
+    ) &&
+    isEqualPrevAndNextObjByPath(
+      prevValues,
+      nextValues,
+      `${CRUUSER_KEY.FIS_FA_INFO}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`
+    ) &&
+    isEqualPrevAndNextObjByPath(
+      prevValues,
+      nextValues,
+      `${CRUUSER_KEY.FIS_FA_INFO}.${CRUUSER_USER_TYPE_KEY.USER_FIS_PROJECTS}`
+    ) &&
+    isEqualPrevAndNextObjByPath(
+      prevValues,
+      nextValues,
+      `${CRUUSER_KEY.FIS_PI_INFO}.${CRUUSER_USER_TYPE_KEY.PI_CODE}`
+    ) &&
+    isEqualPrevAndNextObjByPath(
+      prevValues,
+      nextValues,
+      `${CRUUSER_KEY.FIS_PI_INFO}.${CRUUSER_USER_TYPE_KEY.USER_FIS_PROJECTS}`
+    )
+  );
+});

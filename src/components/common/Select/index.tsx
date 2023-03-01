@@ -9,6 +9,7 @@ import Select, {
   ControlProps,
   CSSObjectWithLabel,
   StylesConfig,
+  Props as SelectProps,
 } from 'react-select';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import { Callback } from 'src/redux/types';
@@ -185,8 +186,15 @@ const SelectCmp: React.FC<Props> = ({
   );
 };
 
-type Props = {
-  options: any[];
+export interface SelectOption {
+  label: string | React.ReactNode;
+  value: any;
+  prefix?: string | React.ReactNode;
+  subLabel?: string | React.ReactNode;
+}
+
+type Props = Omit<SelectProps, 'onBlur' | 'onChange'> & {
+  options: SelectOption[] & any;
   label: string;
   className?: string;
   value: any;

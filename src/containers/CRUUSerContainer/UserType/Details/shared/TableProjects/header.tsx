@@ -29,6 +29,7 @@ const HeaderTableUserType = () => {
                 label={null}
                 placeholder="Search by Project Title"
                 searchKey={SEARCH_PROJECT_KEY.SEARCH_NAME}
+                enableAutoFocus
               />
             </Box>
           }

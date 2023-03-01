@@ -260,7 +260,7 @@ export type DelegatedAccess = {
 };
 
 export interface UserFisCode {
-  id: string;
+  id?: string;
   code: string;
   codeType: string;
 

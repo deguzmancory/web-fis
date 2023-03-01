@@ -214,7 +214,7 @@ const UserTypeInfoForm: React.FC<Props> = ({
                 errorMessage={_getErrorMessage(`${prefix}.${CRUUSER_USER_TYPE_KEY.ADDRESS_STATE}`)}
                 {...getFieldProps(`${prefix}.${CRUUSER_USER_TYPE_KEY.ADDRESS_STATE}`)}
                 onChange={setFieldValue}
-                disabled={isLoading}
+                isDisabled={isLoading}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={2}>

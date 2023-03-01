@@ -15,8 +15,12 @@ import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSl
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, RoleService, Toastify, TokenService } from 'src/services';
-import { deepKeys, handleShowErrorMsg, scrollToTopError } from 'src/utils';
-import { getUncontrolledInputFieldProps } from 'src/utils';
+import {
+  deepKeys,
+  getUncontrolledInputFieldProps,
+  handleShowErrorMsg,
+  scrollToTopError,
+} from 'src/utils';
 import { localTimeToHawaii } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
 import BreadcrumbsUserDetail from './breadcrumbs';
@@ -164,8 +168,17 @@ const CRUUserContainer: React.FC<Props> = ({
       }));
 
       const fisFaInfo = user.fisFaInfo ?? initialCRUUserFormValue.fisFaInfo;
-      const fisPiInfo = user.fisPiInfo ?? initialCRUUserFormValue.fisPiInfo;
       const fisSuInfo = user.fisSuInfo ?? initialCRUUserFormValue.fisSuInfo;
+
+      // PI section doesn't have userFisCodes => create an local property for reuseable purpose
+      const fisPiInfo = user.fisPiInfo
+        ? {
+            ...user.fisPiInfo,
+            userFisCodes: user.fisPiInfo.piCode
+              ? [{ code: user.fisPiInfo.piCode, codeType: ROLE_NAME.PI }]
+              : [],
+          }
+        : initialCRUUserFormValue.fisPiInfo;
 
       return {
         ...initialCRUUserFormValue,

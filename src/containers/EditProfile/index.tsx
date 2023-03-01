@@ -83,8 +83,17 @@ const EditProfile: React.FC<Props> = ({
     }));
 
     const fisFaInfo = profile.fisFaInfo ?? initialCRUUserFormValue.fisFaInfo;
-    const fisPiInfo = profile.fisPiInfo ?? initialCRUUserFormValue.fisPiInfo;
     const fisSuInfo = profile.fisSuInfo ?? initialCRUUserFormValue.fisSuInfo;
+
+    // PI section doesn't have userFisCodes => create an local property for reuseable purpose
+    const fisPiInfo = profile.fisPiInfo
+      ? {
+          ...profile.fisPiInfo,
+          profileFisCodes: profile.fisPiInfo.piCode
+            ? [{ code: profile.fisPiInfo.piCode, codeType: ROLE_NAME.PI }]
+            : [],
+        }
+      : initialCRUUserFormValue.fisPiInfo;
 
     return {
       ...initialCRUUserFormValue,

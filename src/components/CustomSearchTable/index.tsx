@@ -10,6 +10,7 @@ type Props = {
   label?: string;
   placeholder?: string;
   searchKey?: string;
+  enableAutoFocus?: boolean;
 };
 
 enum QUERY_KEY {
@@ -20,12 +21,20 @@ const CustomSearchTable: React.FC<Props> = ({
   label = 'Search User Documents',
   placeholder = 'Search',
   searchKey = QUERY_KEY.SEARCH,
+  enableAutoFocus = false,
 }) => {
   const history = useHistory();
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const searchText = query.get(searchKey) || '';
   const [searchValue, setSearchValue] = React.useState(searchText || '');
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    if (enableAutoFocus) {
+      inputRef.current?.focus();
+    }
+  }, [enableAutoFocus]);
 
   const hasValue = !isEmpty(searchText);
 
@@ -61,6 +70,7 @@ const CustomSearchTable: React.FC<Props> = ({
           onIconClick: handleClearSearchValue,
         })}
         iconPosition="right"
+        inputRef={inputRef}
       />
     </Box>
   );

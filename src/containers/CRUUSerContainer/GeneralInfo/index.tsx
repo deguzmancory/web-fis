@@ -89,8 +89,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, isLoading }) => {
               onChange={setFieldValue}
               onBlur={setFieldTouched}
               errorMessage={_getErrorMessage(CRUUSER_KEY.DEFAULT_USER_TYPE)}
-              isDisabled={isEmpty(values.roles)}
-              disabled={isLoading}
+              isDisabled={isEmpty(values.roles) || isLoading}
               infoTooltipMessage={
                 isInEditUserMode
                   ? 'The selected user type will be the default when logging in.'
