@@ -30,6 +30,10 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
   const currentFormMode = values.mode;
   const isTabletScreen = useMediaQuery(muiResponsive.TABLET);
 
+  const isViewOnly = React.useMemo(() => {
+    return values.isViewOnly;
+  }, [values.isViewOnly]);
+
   const userFisCodes: UserFiCode[] = React.useMemo(
     () => get(values, `${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`) || [],
     [prefix, values]
@@ -125,8 +129,9 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
         userFisCodes,
         userType: type,
         formMode: currentFormMode,
+        isViewOnly: isViewOnly,
       }),
-    [userFisCodes, type, handleRowDelete, currentFormMode]
+    [userFisCodes, type, currentFormMode, isViewOnly, handleRowDelete]
   );
 
   return (

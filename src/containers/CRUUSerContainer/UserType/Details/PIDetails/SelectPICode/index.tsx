@@ -71,6 +71,10 @@ const SelectPICode: React.FC<Props> = ({
     setFieldValue(`${prefix}.${CRUUSER_USER_TYPE_KEY.USE_EXISTING_PI_CODE}`, value);
   };
 
+  const isViewOnly = React.useMemo(() => {
+    return formikProps.values.isViewOnly;
+  }, [formikProps.values.isViewOnly]);
+
   return (
     <Box>
       <Box
@@ -87,7 +91,8 @@ const SelectPICode: React.FC<Props> = ({
           isDisabled={
             isLoading ||
             !get(values, `${prefix}.${CRUUSER_USER_TYPE_KEY.USE_EXISTING_PI_CODE}`) ||
-            isInEditProfileMode
+            isInEditProfileMode ||
+            isViewOnly
           }
           {...getFieldProps(`${prefix}.${CRUUSER_USER_TYPE_KEY.PI_CODE}`)}
           errorMessage={_getErrorMessage(`${prefix}.${CRUUSER_USER_TYPE_KEY.PI_CODE}`)}
@@ -103,7 +108,7 @@ const SelectPICode: React.FC<Props> = ({
               `${prefix}.${CRUUSER_USER_TYPE_KEY.USE_EXISTING_PI_CODE}`
             )}
             onChange={handleUseExistingPICodeChange}
-            disabled={isLoading}
+            disabled={isLoading || isViewOnly}
           />
         </Box>
       )}

@@ -15,11 +15,13 @@ export const allColumns = ({
   userFisCodes,
   userType,
   formMode,
+  isViewOnly,
 }: {
   onRowDelete: Callback;
   userFisCodes: UserFiCode[];
   userType: ROLE_NAME;
   formMode: USER_MODE;
+  isViewOnly?: boolean;
 }): MUIDataTableColumn[] => [
   {
     name: isFA(userType) ? FINANCIAL_PROJECT_KEY.FA_CODE : FINANCIAL_PROJECT_KEY.PI_CODE,
@@ -32,6 +34,11 @@ export const allColumns = ({
 
         return <Typography variant="body2">{isUnlinkProject ? 'Unlink' : value}</Typography>;
       },
+      setCellHeaderProps: () => ({
+        style: {
+          whiteSpace: 'nowrap',
+        },
+      }),
     },
   },
 
@@ -44,6 +51,11 @@ export const allColumns = ({
       customBodyRender: (value: string) => {
         return <Typography variant="body2">{value ?? '--'}</Typography>;
       },
+      setCellHeaderProps: () => ({
+        style: {
+          whiteSpace: 'nowrap',
+        },
+      }),
     },
   },
   {
@@ -62,7 +74,7 @@ export const allColumns = ({
     label: 'Inactive',
     options: {
       filter: false,
-      sort: true,
+      sort: false,
       customBodyRender: (value: string) => {
         return (
           <Box
@@ -104,7 +116,7 @@ export const allColumns = ({
     options: {
       filter: false,
       sort: false,
-      display: isEditProfileMode(formMode) ? 'false' : 'true',
+      display: isEditProfileMode(formMode) || isViewOnly ? 'false' : 'true',
       customBodyRender: (
         _value: any,
         meta:
@@ -117,6 +129,7 @@ export const allColumns = ({
 
         if (!isUnlinkProject) return null;
         if (isEditProfileMode(formMode)) return null;
+        if (isViewOnly) return null;
         return (
           <Box
             sx={{

@@ -24,6 +24,10 @@ const SelectFACodes: React.FC<Props> = ({ formikProps, isLoading }) => {
   const { faCodes } = useGetFACode();
   const isInEditProfileMode = isEditProfileMode(values.mode);
 
+  const isViewOnly = React.useMemo(() => {
+    return values.isViewOnly;
+  }, [values.isViewOnly]);
+
   const faCodeRows: UserFisCode[] = React.useMemo(
     () => values.fisFaInfo.userFisCodes || [],
     [values.fisFaInfo.userFisCodes]
@@ -86,10 +90,10 @@ const SelectFACodes: React.FC<Props> = ({ formikProps, isLoading }) => {
           type={ROLE_NAME.FA}
           rows={faCodeRows}
           onDeleteCode={handleDeleteCode}
-          readonly={isInEditProfileMode}
+          readonly={isInEditProfileMode || isViewOnly}
         />
       </Box>
-      {!isInEditProfileMode && (
+      {!isInEditProfileMode && !isViewOnly && (
         <>
           <Box mb={1}>
             <Select

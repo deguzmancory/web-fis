@@ -5,12 +5,20 @@ import AddDelegation from './addDelegation';
 import TableGrantDelegation from './table';
 
 const GrantDelegation: React.FC<Props> = ({ formikProps }) => {
+  const isViewOnly = React.useMemo(() => {
+    return formikProps.values.isViewOnly;
+  }, [formikProps.values.isViewOnly]);
+
   return (
     <Box>
-      <Typography variant="body1" mb={2}>
-        Give Delegate Account Access to Another User(s)
-      </Typography>
-      <AddDelegation formikProps={formikProps} />
+      {!isViewOnly && (
+        <>
+          <Typography variant="body1" mb={2}>
+            Give Delegate Account Access to Another User(s)
+          </Typography>
+          <AddDelegation formikProps={formikProps} />
+        </>
+      )}
 
       <Typography variant="body1" mb={1}>
         Users Who Have Been Granted Access to This Account

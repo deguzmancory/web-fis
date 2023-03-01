@@ -85,6 +85,12 @@ const SearchProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoa
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchProjects]);
 
+  const isViewMode = formikProps.values?.isViewOnly;
+
+  if (isViewMode) {
+    return <></>;
+  }
+
   return (
     <Stack direction={'row'}>
       <Select

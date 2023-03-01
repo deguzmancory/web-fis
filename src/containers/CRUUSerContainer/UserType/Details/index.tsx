@@ -9,11 +9,13 @@ import { isEmpty } from 'src/validations';
 import { USER_TYPE_KEY } from '../../enums';
 import { CRUUserFormikProps } from '../../helper';
 import Layout from '../../layout';
-import CUDetails from './CUDetails';
-import FADetails from './FADetails';
-import PIDetails from './PIDetails';
+
 import { SEARCH_PROJECT_KEY } from './shared/TableProjects/header';
-import SUDetails from './SUDetails';
+
+const CUDetails = React.lazy(() => import('./CUDetails'));
+const FADetails = React.lazy(() => import('./FADetails'));
+const PIDetails = React.lazy(() => import('./PIDetails'));
+const SUDetails = React.lazy(() => import('./SUDetails'));
 
 const UserTypeDetails: React.FC<Props> = ({ initialPIInfo, formikProps, isLoading }) => {
   const location = useLocation();
@@ -43,6 +45,7 @@ const UserTypeDetails: React.FC<Props> = ({ initialPIInfo, formikProps, isLoadin
   const onChangeTab = (_e, value) => {
     query.set(USER_TYPE_KEY.TAB, value);
     query.delete(SEARCH_PROJECT_KEY.SEARCH_NAME);
+    query.delete('sort');
     history.push({ search: query.toString() });
   };
 

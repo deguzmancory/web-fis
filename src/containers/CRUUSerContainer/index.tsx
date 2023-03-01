@@ -14,7 +14,7 @@ import { setCurrentRole } from 'src/redux/auth/authSlice';
 import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { IRootState } from 'src/redux/rootReducer';
-import { Navigator, RoleService, Toastify, TokenService } from 'src/services';
+import { Navigator, PermissionsService, RoleService, Toastify, TokenService } from 'src/services';
 import {
   deepKeys,
   getUncontrolledInputFieldProps,
@@ -55,7 +55,9 @@ const CRUUserContainer: React.FC<Props> = ({
   onSetCurrentRole,
 }) => {
   const { userId } = useParams<{ userId: string }>();
-  const [isEditUserMode] = React.useState(!isEmpty(userId));
+  const isEditUserMode = React.useMemo(() => {
+    return !isEmpty(userId);
+  }, [userId]);
 
   const {
     user,
@@ -180,9 +182,12 @@ const CRUUserContainer: React.FC<Props> = ({
           }
         : initialCRUUserFormValue.fisPiInfo;
 
+      const isViewOnly = !PermissionsService.user().canUpdate && PermissionsService.user().canView;
+
       return {
         ...initialCRUUserFormValue,
         mode: USER_MODE.EDIT_USER,
+        isViewOnly: isViewOnly,
         firstName: user.firstName,
         lastName: user.lastName,
         middleName: user.middleName || '',
@@ -250,6 +255,26 @@ const CRUUserContainer: React.FC<Props> = ({
     }),
   };
 
+  const isViewOnly = React.useMemo(() => {
+    return values.isViewOnly;
+  }, [values.isViewOnly]);
+
+  const havePermissionCreate = PermissionsService.user().canCreate;
+  if (!havePermissionCreate && !isEditUserMode) {
+    return (
+      <Box py={2} minHeight={'50vh'}>
+        <Container>
+          <Layout>
+            <NoPermission
+              buttonLink={PATHS.userManagements}
+              buttonTitle={`Go to Users Management`}
+            />
+          </Layout>
+        </Container>
+      </Box>
+    );
+  }
+
   return (
     <Box className={`${clsPrefix}`} py={2} minHeight={'50vh'}>
       <Container maxWidth="lg">
@@ -265,7 +290,7 @@ const CRUUserContainer: React.FC<Props> = ({
           ) : (
             <>
               <Layout>
-                <GeneralInfo formikProps={formikProps} isLoading={loading} />
+                <GeneralInfo formikProps={formikProps} isLoading={loading || isViewOnly} />
               </Layout>
               <Layout>
                 <UserType
@@ -275,7 +300,7 @@ const CRUUserContainer: React.FC<Props> = ({
                 />
               </Layout>
               <Layout>
-                <InternalComments formikProps={formikProps} isLoading={loading} />
+                <InternalComments formikProps={formikProps} isLoading={loading || isViewOnly} />
               </Layout>
               {isEditUserMode && (
                 <Suspense fallback={<LoadingCommon />}>
@@ -283,7 +308,7 @@ const CRUUserContainer: React.FC<Props> = ({
                     <AuditInformation
                       formikProps={formikProps}
                       userAuditTrails={user?.userAuditTrails || []}
-                      isLoading={loading}
+                      isLoading={loading || isViewOnly}
                     />
                   </Accordion>
                 </Suspense>
@@ -305,7 +330,7 @@ const CRUUserContainer: React.FC<Props> = ({
                     handleSubmit();
                   }}
                   isLoading={loading}
-                  disabled={loading}
+                  disabled={loading || isViewOnly}
                 >
                   Save
                 </Button>

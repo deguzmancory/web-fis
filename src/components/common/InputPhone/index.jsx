@@ -16,6 +16,7 @@ export default ({
   onChange,
   icon = null,
   required = false,
+  disabled,
   ...props
 }) => {
   const id = useRef(`input-${getRandomId()}`);
@@ -40,6 +41,7 @@ export default ({
           defaultCountry={defaultCountryCode}
           className={cn('cmp-phoneinput__input', {
             'cmp-phoneinput__input--error': !isEmpty(errorMessage),
+            'cmp-phoneinput__input--disabled': disabled,
           })}
           onChange={handleChange}
           name={name}

@@ -81,6 +81,10 @@ const SelectPICodes: React.FC<Props> = ({ formikProps, isLoading }) => {
     [history, piCodeRows, setFieldValue, query]
   );
 
+  const isViewOnly = React.useMemo(() => {
+    return formikProps.values.isViewOnly;
+  }, [formikProps.values.isViewOnly]);
+
   return (
     <Box>
       <Box mb={1} mt={5}>
@@ -88,11 +92,11 @@ const SelectPICodes: React.FC<Props> = ({ formikProps, isLoading }) => {
           type={ROLE_NAME.PI}
           rows={piCodeRows}
           onDeleteCode={handleDeleteCode}
-          readonly={isInEditProfileMode}
+          readonly={isInEditProfileMode || isViewOnly}
         />
       </Box>
 
-      {!isInEditProfileMode && (
+      {!isInEditProfileMode && !isViewOnly && (
         <>
           <Box mb={1}>
             <Select

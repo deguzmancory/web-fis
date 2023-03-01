@@ -5,6 +5,9 @@ import { Checkbox } from 'src/components/common';
 import { userTypeOptions } from 'src/containers/UsersManagement/TableList/CustomFilter/helpers';
 import { CRUUSER_KEY, USER_TYPE_KEY } from '../../enums';
 import { CRUUserFormikProps, getErrorMessage, isEditProfileMode } from '../../helper';
+import _ from 'lodash';
+import { PermissionsService } from 'src/services';
+import { ROLE_NAME } from 'src/queries/Profile/helpers';
 
 const SelectUserType: React.FC<Props> = ({ formikProps, isLoading }) => {
   const history = useHistory();
@@ -25,13 +28,22 @@ const SelectUserType: React.FC<Props> = ({ formikProps, isLoading }) => {
     history.push({ search: query.toString() });
   };
 
+  const nonCuPermission = !PermissionsService.userCU().canUpdate;
+
+  const filterUserTypeOptions = React.useMemo(() => {
+    if (nonCuPermission) {
+      return userTypeOptions.filter((role) => role.value !== ROLE_NAME.CU);
+    }
+    return userTypeOptions;
+  }, [nonCuPermission]);
+
   return (
     <Box>
       <Grid container>
         <Grid item xs={12}>
           <Checkbox.Group
             label={null}
-            options={userTypeOptions}
+            options={filterUserTypeOptions}
             columns={4}
             {...getFieldProps(CRUUSER_KEY.ROLES)}
             onChange={handleCheckboxChange}
@@ -47,4 +59,8 @@ type Props = {
   formikProps: CRUUserFormikProps;
   isLoading: boolean;
 };
-export default SelectUserType;
+export default React.memo(SelectUserType, (prevProps, nextProps) => {
+  const prevRolesValues = prevProps.formikProps.values.roles;
+  const nextRolesValues = nextProps.formikProps.values.roles;
+  return _.isEqual(prevRolesValues, nextRolesValues);
+});

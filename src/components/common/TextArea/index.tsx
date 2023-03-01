@@ -8,7 +8,7 @@ import Element from '../Element';
 import View from '../View';
 import './styles.scss';
 
-const Input: React.FC<InputProps> = ({
+const TextArea: React.FC<InputProps> = ({
   children,
   errorMessage,
   label,
@@ -18,6 +18,7 @@ const Input: React.FC<InputProps> = ({
   iconName = '',
   onIconClick,
   required,
+  disabled,
   ...props
 }) => {
   const id = useRef<string>(`text-area-${getRandomId()}`);
@@ -35,6 +36,7 @@ const Input: React.FC<InputProps> = ({
           id={id.current}
           className={cn(className, 'cmp-text-area', {
             'cmp-text-area--error': !isEmpty(errorMessage),
+            'cmp-text-area--disabled': disabled,
           })}
           ref={inputRef}
           {...props}
@@ -59,4 +61,4 @@ export type InputProps = BaseInputProps & {
   required?: boolean;
 };
 
-export default Input;
+export default TextArea;

@@ -17,6 +17,10 @@ const ActionsButton: React.FC<Props> = ({
 }) => {
   const { setFieldValue, values } = formikProps;
 
+  const isViewOnly = React.useMemo(() => {
+    return values.isViewOnly;
+  }, [values.isViewOnly]);
+
   const handleDeleteRow = () => {
     onShowDialog({
       type: DIALOG_TYPES.YESNO_DIALOG,
@@ -87,6 +91,14 @@ const ActionsButton: React.FC<Props> = ({
       })
     );
   };
+
+  if (isViewOnly) {
+    return (
+      <Stack flexDirection={'row'} justifyContent="flex-end">
+        &nbsp;
+      </Stack>
+    );
+  }
 
   return (
     <Stack flexDirection={'row'} justifyContent="flex-end">

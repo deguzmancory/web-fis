@@ -11,6 +11,10 @@ import TableProjects from '../shared/TableProjects';
 const FADetails: React.FC<Props> = ({ formikProps, isLoading }) => {
   const isInEditProfileMode = isEditProfileMode(formikProps.values.mode);
 
+  const isViewOnly = React.useMemo(() => {
+    return formikProps.values.isViewOnly;
+  }, [formikProps.values.isViewOnly]);
+
   return (
     <Box>
       <Box p={2}>
@@ -46,7 +50,7 @@ const FADetails: React.FC<Props> = ({ formikProps, isLoading }) => {
       <Box p={2}>
         <UserTypeInfoForm
           title="Fiscal Administrator - Send Invoice in Duplicate To"
-          isLoading={isLoading}
+          isLoading={isLoading || isViewOnly}
           formikProps={formikProps}
           prefix={`${CRUUSER_KEY.FIS_FA_INFO}`}
           showGeneralInfoSection={false}

@@ -11,6 +11,10 @@ import TableProjects from '../shared/TableProjects';
 const PIDetails: React.FC<Props> = ({ formikProps, isLoading }) => {
   const isInEditProfileMode = isEditProfileMode(formikProps.values.mode);
 
+  const isViewOnly = React.useMemo(() => {
+    return formikProps.values.isViewOnly;
+  }, [formikProps.values.isViewOnly]);
+
   return (
     <Box>
       <Box p={2}>
@@ -46,7 +50,7 @@ const PIDetails: React.FC<Props> = ({ formikProps, isLoading }) => {
       <Box p={2}>
         <UserTypeInfoForm
           title="Principal Investigator Default Purchase Requisition or Payment Request Information"
-          isLoading={isLoading}
+          isLoading={isLoading || isViewOnly}
           formikProps={formikProps}
           prefix={`${CRUUSER_KEY.FIS_PI_INFO}`}
         />

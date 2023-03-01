@@ -16,6 +16,10 @@ const CUDetails: React.FC<Props> = ({ formikProps }) => {
   const permissions = values?.permissions;
   const isInEditProfileMode = isEditProfileMode(values.mode);
 
+  const isViewOnly = React.useMemo(() => {
+    return values.isViewOnly;
+  }, [values.isViewOnly]);
+
   const { permissionsCu, loading } = useGetPermissionCu({
     onSuccess(data) {},
     onError(err) {},
@@ -113,7 +117,7 @@ const CUDetails: React.FC<Props> = ({ formikProps }) => {
           const value = event.target.checked;
           return handleCheckboxChange(value, valueCheckbox(name));
         }}
-        disabled={isLoading || isInEditProfileMode || options?.disabled}
+        disabled={isLoading || isInEditProfileMode || options?.disabled || isViewOnly}
       />
     );
   };
@@ -291,7 +295,7 @@ const CUDetails: React.FC<Props> = ({ formikProps }) => {
             onChange={(_name, value) => {
               return handleRadioButtonChange(value);
             }}
-            disabled={isLoading || isInEditProfileMode}
+            disabled={isLoading || isInEditProfileMode || isViewOnly}
           />
         </Grid>
       </Grid>

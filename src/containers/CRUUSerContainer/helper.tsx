@@ -26,6 +26,7 @@ import { USER_MODE } from './enums';
 
 export interface CRUUserFormValue {
   mode: USER_MODE;
+  isViewOnly?: boolean;
 
   // General Info
   firstName: UserDetail['firstName'];
@@ -106,6 +107,7 @@ const initialSharedUserTypeFormValue: SharedUserTypeDetails = {
 
 export const initialCRUUserFormValue: CRUUserFormValue = {
   mode: null,
+  isViewOnly: null,
 
   // General Info
   firstName: '',
@@ -362,6 +364,7 @@ export const formatPayloadAddNew = (values: CRUUserFormValue): AddUserPayload =>
   };
 
   delete payload.mode;
+  delete payload.isViewOnly;
   delete payload.lastLoginDate;
   delete payload.passwordSetDate;
   delete payload.newPassword;
@@ -381,6 +384,7 @@ export const formatPayloadUpdate = (values: CRUUserFormValue, user: UserDetail) 
   };
 
   delete payload.mode;
+  delete payload.isViewOnly;
   delete payload.lastLoginDate;
   delete payload.passwordSetDate;
   delete payload.fullName;

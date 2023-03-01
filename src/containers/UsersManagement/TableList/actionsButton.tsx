@@ -5,10 +5,12 @@ import { useDeleteUser, useGetAllUsers } from 'src/queries/Users';
 import { User } from 'src/queries/Users/types';
 import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
-import { Toastify } from 'src/services';
+import { PermissionsService, Toastify } from 'src/services';
 import { handleShowErrorMsg } from 'src/utils';
 
 const ActionsButton: React.FC<Props> = ({ data, onShowDialog, onHideDialog }) => {
+  const canDelete = PermissionsService.user().canDelete;
+
   const { handleInvalidateAllUser, isFetching } = useGetAllUsers();
   const { deleteUser, isLoading } = useDeleteUser({
     onSuccess() {
@@ -40,18 +42,22 @@ const ActionsButton: React.FC<Props> = ({ data, onShowDialog, onHideDialog }) =>
   };
 
   return (
-    <Button
-      variant="link-danger"
-      fontWeightNormal
-      onClick={(e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        handleDeleteUser(data);
-      }}
-      disabled={isLoading || isFetching}
-    >
-      Delete
-    </Button>
+    <>
+      {canDelete && (
+        <Button
+          variant="link-danger"
+          fontWeightNormal
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            handleDeleteUser(data);
+          }}
+          disabled={isLoading || isFetching}
+        >
+          Delete
+        </Button>
+      )}
+    </>
   );
 };
 

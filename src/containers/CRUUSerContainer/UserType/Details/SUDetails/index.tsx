@@ -11,6 +11,9 @@ import SelectPICodes from './SelectPICodes';
 
 const SUDetails: React.FC<Props> = ({ formikProps, isLoading }) => {
   const isInEditProfileMode = isEditProfileMode(formikProps.values.mode);
+  const isViewOnly = React.useMemo(() => {
+    return formikProps.values.isViewOnly;
+  }, [formikProps.values.isViewOnly]);
 
   return (
     <Box>
@@ -49,7 +52,7 @@ const SUDetails: React.FC<Props> = ({ formikProps, isLoading }) => {
       <Box p={2}>
         <UserTypeInfoForm
           title="Secondary User Default Purchase Requisition or Payment Request Information"
-          isLoading={isLoading}
+          isLoading={isLoading || isViewOnly}
           formikProps={formikProps}
           prefix={`${CRUUSER_KEY.FIS_SU_INFO}`}
         />

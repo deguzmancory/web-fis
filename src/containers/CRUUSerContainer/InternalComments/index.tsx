@@ -3,6 +3,7 @@ import React from 'react';
 import { TextArea } from 'src/components/common';
 import { CRUUSER_KEY } from '../enums';
 import { CRUUserFormikProps, getErrorMessage } from '../helper';
+import _ from 'lodash';
 
 const InternalComments: React.FC<Props> = ({ formikProps, isLoading }) => {
   const { errors, touched, getUncontrolledFieldProps } = formikProps;
@@ -30,4 +31,8 @@ type Props = {
   formikProps: CRUUserFormikProps;
   isLoading: boolean;
 };
-export default InternalComments;
+export default React.memo(InternalComments, (prevProps, nextProps) => {
+  const prevCommentsValues = prevProps.formikProps.values.comments;
+  const nextCommentsValues = nextProps.formikProps.values.comments;
+  return _.isEqual(prevCommentsValues, nextCommentsValues);
+});
