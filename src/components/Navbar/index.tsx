@@ -12,6 +12,8 @@ import MainMenu from './mainMenu';
 import './styles.scss';
 import UserMenu from './UserMenu';
 
+const clsPrefix = 'ctn-navbar-desktop';
+
 const Navbar: React.FC<Props> = ({ userProfile, currentRole }) => {
   const { showNavbar } = useSelector((state: IRootState) => state.common);
   const { fullName } = userProfile || {};
@@ -33,7 +35,7 @@ const Navbar: React.FC<Props> = ({ userProfile, currentRole }) => {
           <Stack width={'100%'} height={70} flexDirection={'row'} justifyContent={'space-between'}>
             <Box sx={{ transform: 'translateY(15px)' }}>
               <Link to={PATHS.root}>
-                <Image src={IMAGES.logoFull} />
+                <Image src={IMAGES.logoFull} className={`${clsPrefix}-logo`} />
               </Link>
             </Box>
 

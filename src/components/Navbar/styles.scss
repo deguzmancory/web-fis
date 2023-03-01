@@ -3,6 +3,10 @@
 
 .ctn-navbar {
   &-desktop {
+    &-logo {
+      object-fit: contain;
+      height: 40px;
+    }
     &-link {
       padding: 0 16px !important;
       margin: auto 0px !important;
