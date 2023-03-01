@@ -19,6 +19,7 @@ import {
   getDelegateUserTypeOptions,
   initialAddDelegationFormValue,
 } from './helpers';
+import { getDateDisplay } from 'src/utils';
 
 const AddDelegation: React.FC<Props> = ({ formikProps }) => {
   const { setFieldValue: setFieldValueFormik, values: valuesFormik } = formikProps;
@@ -131,7 +132,6 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
     return get(valuesFormik, `${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`) || [];
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prefix]);
-  console.log('userFisCodes: ', userFisCodes);
 
   const userFisProjects = React.useMemo(() => {
     if (!prefix) return [];
@@ -242,9 +242,11 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
               options={
                 filteredProjects
                   ? filteredProjects.map((project) => ({
-                      label: `${project.number}`,
-                      value: project.number,
-                      subLabel: project.name,
+                      label: `${project.number} ${project.name}`,
+                      value: { projectNumber: project.number },
+                      subLabel: `(${getDateDisplay(project.startDate)} - ${getDateDisplay(
+                        project.endDate
+                      )})`,
                     }))
                   : []
               }
@@ -261,7 +263,7 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
               onChange={setFieldValue}
               errorMessage={_getErrorMessage(ADD_DELEGATION_KEY.PROJECT_NUMBER)}
               menuStyle={{
-                width: '400px',
+                width: '550px',
               }}
             />
           </Grid>

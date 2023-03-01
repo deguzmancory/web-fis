@@ -62,7 +62,7 @@ export const allColumns = ({
     label: 'Inactive',
     options: {
       filter: false,
-      sort: false,
+      sort: true,
       customBodyRender: (value: string) => {
         return (
           <Box

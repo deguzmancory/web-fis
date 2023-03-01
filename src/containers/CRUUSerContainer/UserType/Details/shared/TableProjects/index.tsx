@@ -67,7 +67,7 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
 
   const handleRefetchFinancialProjects = React.useCallback(
     (params: GetPropertiesParams) => {
-      const newParams = {
+      let newParams = {
         ...params,
         searchName: searchProjectName,
         userType: type,
@@ -76,6 +76,15 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
           .map((project) => project.projectNumber)
           .join(PARAMS_SPLITTER),
       };
+
+      const sort = params?.sort;
+      if (sort) {
+        newParams = {
+          ...newParams,
+          order: `${newParams.sort}:${newParams.order}`,
+        };
+        delete newParams.sort;
+      }
 
       setParams(newParams);
     },

@@ -1,5 +1,4 @@
 import { Box, Stack } from '@mui/material';
-import dayjs from 'dayjs';
 import { debounce, get } from 'lodash';
 import React from 'react';
 import { useHistory, useLocation } from 'react-router';
@@ -11,6 +10,7 @@ import { UserFiCode } from 'src/queries/Contents/types';
 import { isPI, ROLE_NAME } from 'src/queries/Profile/helpers';
 import { FinancialProject } from 'src/queries/Users/types';
 import { useGetFinancialProjects } from 'src/queries/Users/useGetFinancialProjects';
+import { getDateDisplay } from 'src/utils';
 
 const SearchProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoading }) => {
   const history = useHistory();
@@ -100,9 +100,9 @@ const SearchProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoa
             ? filteredFinancialProjects.map((project) => ({
                 label: `${project.number} ${project.name}`,
                 value: { projectNumber: project.number },
-                subLabel: `(${dayjs(project.startDate).format('MM/DD')} - ${dayjs(
+                subLabel: `(${getDateDisplay(project.startDate)} - ${getDateDisplay(
                   project.endDate
-                ).format('MM/DD')})`,
+                )})`,
               }))
             : []
         }
