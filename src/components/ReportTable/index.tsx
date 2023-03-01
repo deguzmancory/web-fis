@@ -19,11 +19,9 @@ import { BodyRows, DEFAULT_TABLE_VALUE, HeaderRows } from './types';
 const ReportTable: React.FC<Props> = ({
   tableSx,
   showBorder = false,
-
   headerList,
   stickyHeader,
   headerSx,
-
   bodyList,
 }) => {
   const renderRows = React.useCallback(
@@ -42,8 +40,9 @@ const ReportTable: React.FC<Props> = ({
           {row.columns?.map((cell, cellIndex) => {
             // render subContent
             let subContent;
-            if (!cell.subContent) subContent = null;
-            else {
+            if (!cell.subContent) {
+              subContent = null;
+            } else {
               subContent =
                 typeof cell.subContent === 'string' ? (
                   <Typography variant="subtitle1" sx={{ color: COLOR_CODE.WHITE }}>
@@ -60,10 +59,10 @@ const ReportTable: React.FC<Props> = ({
             return (
               <StyledTableCell
                 key={`cell-table-${cellIndex}`}
-                style={{
+                sx={{
+                  [`&.${tableCellClasses.root}`]: cell.style,
                   border: showBorder ? COLOR_CODE.DEFAULT_BORDER : undefined,
                 }}
-                sx={{ [`&.${tableCellClasses.root}`]: cell.style }}
                 colSpan={cell.colSpan || DEFAULT_TABLE_VALUE.COL_SPAN}
                 rowSpan={cell.rowSpan || DEFAULT_TABLE_VALUE.ROW_SPAN}
                 className={cell.className}

@@ -51,11 +51,20 @@ const Routing: React.FC<{ location: Location }> = (props) => {
 
             {/* Users */}
             <CustomRoute pageRequiredAuth path={PATHS.addUser} component={CRUUSerContainer} exact />
+            <CustomRoute pageRequiredAuth path={`${PATHS.userDetail}/dev/:devId`} component={Dev} />
+
+            <CustomRoute
+              pageRequiredAuth
+              path={`${PATHS.userDetail}/:userId/dev/:devId`}
+              component={Dev}
+            />
+
             <CustomRoute
               pageRequiredAuth
               path={`${PATHS.userDetail}/:userId`}
               component={CRUUSerContainer}
             />
+
             <CustomRoute
               pageRequiredAuth
               path={PATHS.userManagements}
