@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom';
 import { NO_OPENER } from 'src/appConfig/constants';
 import { PATHS } from 'src/appConfig/paths';
 import { dashboardItems } from 'src/containers/Dashboard/helpers';
-import { Navigator } from 'src/services';
+import { Navigator, PermissionsService } from 'src/services';
+import { isEmpty } from 'src/validations';
 const clsPrefix = 'ctn-navbar-desktop';
 
 type Props = {
@@ -13,6 +14,8 @@ type Props = {
 };
 
 const MainMenu: React.FC<Props> = ({ userRole }) => {
+  const myPermissions = PermissionsService.getPermissions();
+
   return (
     <>
       <Box
@@ -49,8 +52,12 @@ const MainMenu: React.FC<Props> = ({ userRole }) => {
             {[
               item.items.map((subItem) => {
                 const isShow = subItem.roles.some((role) => role === userRole);
+                const needPermission = !isEmpty(subItem.permissions);
+                const hasPermission =
+                  needPermission &&
+                  subItem.permissions.some((permission) => myPermissions.includes(permission));
 
-                return isShow ? (
+                return isShow && (needPermission ? hasPermission : true) ? (
                   <Box className={`subItem`} key={subItem.title}>
                     {subItem.isExternalUrl ? (
                       <MuiLink

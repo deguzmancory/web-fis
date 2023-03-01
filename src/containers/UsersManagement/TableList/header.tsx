@@ -4,11 +4,12 @@ import { PATHS } from 'src/appConfig/paths';
 import { Button } from 'src/components/common';
 import CustomSearchTable from 'src/components/CustomSearchTable';
 import { Callback } from 'src/redux/types';
-import { Navigator } from 'src/services';
+import { Navigator, PermissionsService } from 'src/services';
 import CustomFilterUsersManagement from './CustomFilter';
 import DownloadAllUsers from './downloadAllUsers';
 
 const HeaderTable: React.FC<Props> = ({ onRefreshTable, isLoading }) => {
+  const canCreatePermission = PermissionsService.user().canCreate;
   return (
     <Box>
       <Stack mb={2} flexDirection={'row'} justifyContent={'space-between'} alignItems={'flex-end'}>
@@ -31,15 +32,17 @@ const HeaderTable: React.FC<Props> = ({ onRefreshTable, isLoading }) => {
           >
             Refresh
           </Button>
-          <Button
-            icon={<Add />}
-            onClick={() => {
-              Navigator.navigate(PATHS.addUser);
-            }}
-            disabled={isLoading}
-          >
-            Add User
-          </Button>
+          {canCreatePermission && (
+            <Button
+              icon={<Add />}
+              onClick={() => {
+                Navigator.navigate(PATHS.addUser);
+              }}
+              disabled={isLoading}
+            >
+              Add User
+            </Button>
+          )}
         </Box>
       </Stack>
       <Stack mb={2} flexDirection={'row'} justifyContent={'flex-end'} alignItems={'center'}>
