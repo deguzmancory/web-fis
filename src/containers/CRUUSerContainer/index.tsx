@@ -259,8 +259,11 @@ const CRUUserContainer: React.FC<Props> = ({
     return values.isViewOnly;
   }, [values.isViewOnly]);
 
-  const havePermissionCreate = PermissionsService.user().canCreate;
-  if (!havePermissionCreate && !isEditUserMode) {
+  const havePermissionCreate = React.useMemo(() => {
+    return PermissionsService.user().canCreate;
+  }, []);
+
+  if ((!havePermissionCreate && !isEditUserMode) || !isCU(currentRole)) {
     return (
       <Box py={2} minHeight={'50vh'}>
         <Container>
@@ -283,60 +286,52 @@ const CRUUserContainer: React.FC<Props> = ({
           {isEditUserMode ? 'Edit' : 'Add'} User
         </Typography>
         <Suspense fallback={<LoadingCommon />}>
-          {!isCU(currentRole) ? (
-            <Layout>
-              <NoPermission />
-            </Layout>
-          ) : (
-            <>
-              <Layout>
-                <GeneralInfo formikProps={formikProps} isLoading={loading || isViewOnly} />
-              </Layout>
-              <Layout>
-                <UserType
+          <Layout>
+            <GeneralInfo formikProps={formikProps} isLoading={loading || isViewOnly} />
+          </Layout>
+          <Layout>
+            <UserType
+              formikProps={formikProps}
+              isLoading={loading}
+              initialPIInfo={user?.fisPiInfo}
+            />
+          </Layout>
+          <Layout>
+            <InternalComments formikProps={formikProps} isLoading={loading || isViewOnly} />
+          </Layout>
+          {isEditUserMode && (
+            <Suspense fallback={<LoadingCommon />}>
+              <Accordion title="Audit Information" className="mt-16">
+                <AuditInformation
                   formikProps={formikProps}
-                  isLoading={loading}
-                  initialPIInfo={user?.fisPiInfo}
+                  userAuditTrails={user?.userAuditTrails || []}
+                  isLoading={loading || isViewOnly}
                 />
-              </Layout>
-              <Layout>
-                <InternalComments formikProps={formikProps} isLoading={loading || isViewOnly} />
-              </Layout>
-              {isEditUserMode && (
-                <Suspense fallback={<LoadingCommon />}>
-                  <Accordion title="Audit Information" className="mt-16">
-                    <AuditInformation
-                      formikProps={formikProps}
-                      userAuditTrails={user?.userAuditTrails || []}
-                      isLoading={loading || isViewOnly}
-                    />
-                  </Accordion>
-                </Suspense>
-              )}
-
-              <Stack my={4} flexDirection={'row'} justifyContent="center">
-                <Button
-                  variant="outline"
-                  className="mr-8"
-                  onClick={() => {
-                    handleCancelButton();
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={() => {
-                    handleScrollToTopError();
-                    handleSubmit();
-                  }}
-                  isLoading={loading}
-                  disabled={loading || isViewOnly}
-                >
-                  Save
-                </Button>
-              </Stack>
-            </>
+              </Accordion>
+            </Suspense>
           )}
+
+          <Stack my={4} flexDirection={'row'} justifyContent="center">
+            <Button
+              variant="outline"
+              className="mr-8"
+              onClick={() => {
+                handleCancelButton();
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                handleScrollToTopError();
+                handleSubmit();
+              }}
+              isLoading={loading}
+              disabled={loading || isViewOnly}
+            >
+              Save
+            </Button>
+          </Stack>
         </Suspense>
       </Container>
     </Box>
