@@ -243,7 +243,7 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
                 filteredProjects
                   ? filteredProjects.map((project) => ({
                       label: `${project.number} ${project.name}`,
-                      value: { projectNumber: project.number },
+                      value: project.number,
                       subLabel: `(${getDateDisplay(project.startDate)} - ${getDateDisplay(
                         project.endDate
                       )})`,
