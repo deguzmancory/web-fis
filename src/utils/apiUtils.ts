@@ -11,13 +11,16 @@ export function newCancelToken(timeout = appConfig.CONNECTION_TIMEOUT) {
   return { cancelToken: source.token };
 }
 
-export const stringify = (params: { [key: string]: number | string | string[] }) => {
+export const stringify = (
+  params: { [key: string]: number | string | string[] },
+  excludeKey: string[] = []
+) => {
   let result = '';
 
   if (!params) return '';
 
   Object.keys(params).forEach((key) => {
-    if (!isEmpty(params[`${key}`])) {
+    if (!isEmpty(params[`${key}`]) || excludeKey.includes(`${key}`)) {
       if (Array.isArray(params[`${key}`])) {
         let array = params[`${key}`] as string[];
         array.forEach((param: string) => {

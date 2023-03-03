@@ -252,7 +252,7 @@ const create = (baseURL = appConfig.API_URL) => {
   };
 
   const getFinancialProjects = (params: GetPropertiesParams) => {
-    const queryString = stringify(params);
+    const queryString = stringify(params, ['codes']);
     return api.get(`/financial-svc/v1/projects?${queryString}`, {}, newCancelToken());
   };
 

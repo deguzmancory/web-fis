@@ -155,7 +155,9 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
     setParams({
       search: searchProjects,
       userType: values.userType as ROLE_NAME,
-      codes: userFisCodes.map((code) => code.code).join(PARAMS_SPLITTER),
+      codes: isEmpty(userFisCodes)
+        ? ''
+        : userFisCodes.map((code) => code.code).join(PARAMS_SPLITTER),
       projectNumbers: userFisProjects.map((project) => project.projectNumber).join(PARAMS_SPLITTER),
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
