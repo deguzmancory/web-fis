@@ -97,6 +97,7 @@ export const dashboardItems: DashboardItem[] = [
         url: '#',
         isExternalUrl: false,
         roles: [ROLE_NAME.CU],
+        permissions: [PERMISSION_VALUE.APPROVAL_PO_PAYMENTS_OVER_24999],
       },
       {
         title: 'Create Non-PO Payment',
@@ -146,6 +147,7 @@ export const dashboardItems: DashboardItem[] = [
         url: '#',
         isExternalUrl: false,
         roles: [ROLE_NAME.CU],
+        permissions: [PERMISSION_VALUE.APPROVAL_PO_PAYMENTS_OVER_24999],
       },
       {
         title: 'Review/Approve Travel Documents',
