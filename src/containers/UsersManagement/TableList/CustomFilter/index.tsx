@@ -2,6 +2,8 @@ import { useFormik } from 'formik';
 import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import CustomFilter from 'src/components/CustomFilter';
+import { ROLE_NAME } from 'src/queries/Profile/helpers';
+import { PermissionsService } from 'src/services';
 import { capitalizeWords } from 'src/utils';
 import { isEmpty } from 'src/validations';
 import { QUERY_KEY } from '../../helpers';
@@ -69,6 +71,17 @@ const CustomFilterUsersManagement = () => {
     enableReinitialize: true,
   });
 
+  const nonCuPermission = React.useMemo(() => {
+    return !PermissionsService.userCU().canUpdate;
+  }, []);
+
+  const filterUserTypeOptions = React.useMemo(() => {
+    if (nonCuPermission) {
+      return userTypeOptions.filter((role) => role.value !== ROLE_NAME.CU);
+    }
+    return userTypeOptions;
+  }, [nonCuPermission]);
+
   return (
     <CustomFilter.Container
       clearVariant="outline"
@@ -78,7 +91,7 @@ const CustomFilterUsersManagement = () => {
         <>
           <CustomFilter.CheckBox
             label={'User Type'}
-            options={userTypeOptions}
+            options={filterUserTypeOptions}
             name={CUSTOM_FILTER_USERS_KEY.USER_TYPES}
             {...getFieldProps(CUSTOM_FILTER_USERS_KEY.USER_TYPES)}
             onChange={setFieldValue}
