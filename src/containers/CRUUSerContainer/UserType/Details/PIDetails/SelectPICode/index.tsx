@@ -6,7 +6,6 @@ import { Checkbox, Select } from 'src/components/common';
 import { CRUUSER_KEY, CRUUSER_USER_TYPE_KEY } from 'src/containers/CRUUSerContainer/enums';
 import {
   CRUUserFormikProps,
-  getErrorMessage,
   getFisCodeOptions,
   isEditProfileMode,
 } from 'src/containers/CRUUSerContainer/helper';
@@ -14,6 +13,7 @@ import { PICode } from 'src/queries/Contents/types';
 import { useGetPICode } from 'src/queries/Contents/useGetPICode';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { PIDetail } from 'src/queries/Users/types';
+import { getErrorMessage } from 'src/utils';
 
 const SelectPICode: React.FC<Props> = ({
   prefix = CRUUSER_KEY.FIS_PI_INFO,

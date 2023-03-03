@@ -1,14 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export interface IFormState {
-  formData: any;
+export interface IFormState<T> {
+  formData: T | null;
   activeStep: number;
   maxValidStep: number;
-  formSteps: Array<any>;
+  formSteps: Array<T>;
 }
 export const FIRST_STEP = 0;
 
-const initialState: IFormState = {
+const initialState: IFormState<any> = {
   activeStep: FIRST_STEP,
   maxValidStep: 0,
   formData: null,
@@ -19,10 +19,10 @@ export const formSlice = createSlice({
   name: 'form',
   initialState,
   reducers: {
-    setFormData: (state, action: PayloadAction<any>) => {
+    setFormData: <T>(state, action: PayloadAction<T>) => {
       state.formData = action.payload;
     },
-    setFormSteps: (state, action: PayloadAction<Array<any>>) => {
+    setFormSteps: <T>(state, action: PayloadAction<Array<T>>) => {
       state.formSteps = action.payload;
     },
     setActiveStep: (state, action: PayloadAction<number>) => {
@@ -31,7 +31,7 @@ export const formSlice = createSlice({
         state.maxValidStep = action.payload;
       }
     },
-    clearFormSteps: (state, action: PayloadAction<any>) => {
+    clearFormSteps: <T>(state, action: PayloadAction<T>) => {
       state.activeStep = initialState.activeStep;
       state.maxValidStep = initialState.maxValidStep;
       state.formData = action.payload;

@@ -7,10 +7,11 @@ import { Button, DatePicker, Select } from 'src/components/common';
 import { getRoleNamePayload, ROLE_NAME } from 'src/queries/Profile/helpers';
 import { useSearchUsers } from 'src/queries/Users';
 import { useGetFinancialProjects } from 'src/queries/Users/useGetFinancialProjects';
+import { getErrorMessage, isEqualPrevAndNextObjByPath } from 'src/utils';
 import { formatDateUtc } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
 import { CRUUSER_KEY, CRUUSER_USER_TYPE_KEY } from '../../enums';
-import { CRUUserFormikProps, getErrorMessage, isEqualPrevAndNextObjByPath } from '../../helper';
+import { CRUUserFormikProps } from '../../helper';
 import {
   addDelegationFormSchema,
   AddDelegationFormValue,
@@ -326,35 +327,41 @@ export default React.memo(AddDelegation, (prevProps, nextProps) => {
   const nextValues = nextProps.formikProps.values;
 
   return (
-    isEqualPrevAndNextObjByPath(
+    isEqualPrevAndNextObjByPath({
       prevValues,
       nextValues,
-      `${CRUUSER_KEY.FIS_SU_INFO}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`
-    ) &&
-    isEqualPrevAndNextObjByPath(
+      path: `${CRUUSER_KEY.FIS_SU_INFO}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`,
+      checkEqualLengthArray: true,
+    }) &&
+    isEqualPrevAndNextObjByPath({
       prevValues,
       nextValues,
-      `${CRUUSER_KEY.FIS_SU_INFO}.${CRUUSER_USER_TYPE_KEY.USER_FIS_PROJECTS}`
-    ) &&
-    isEqualPrevAndNextObjByPath(
+      path: `${CRUUSER_KEY.FIS_SU_INFO}.${CRUUSER_USER_TYPE_KEY.USER_FIS_PROJECTS}`,
+      checkEqualLengthArray: true,
+    }) &&
+    isEqualPrevAndNextObjByPath({
       prevValues,
       nextValues,
-      `${CRUUSER_KEY.FIS_FA_INFO}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`
-    ) &&
-    isEqualPrevAndNextObjByPath(
+      path: `${CRUUSER_KEY.FIS_FA_INFO}.${CRUUSER_USER_TYPE_KEY.USER_FIS_CODES}`,
+      checkEqualLengthArray: true,
+    }) &&
+    isEqualPrevAndNextObjByPath({
       prevValues,
       nextValues,
-      `${CRUUSER_KEY.FIS_FA_INFO}.${CRUUSER_USER_TYPE_KEY.USER_FIS_PROJECTS}`
-    ) &&
-    isEqualPrevAndNextObjByPath(
+      path: `${CRUUSER_KEY.FIS_FA_INFO}.${CRUUSER_USER_TYPE_KEY.USER_FIS_PROJECTS}`,
+      checkEqualLengthArray: true,
+    }) &&
+    isEqualPrevAndNextObjByPath({
       prevValues,
       nextValues,
-      `${CRUUSER_KEY.FIS_PI_INFO}.${CRUUSER_USER_TYPE_KEY.PI_CODE}`
-    ) &&
-    isEqualPrevAndNextObjByPath(
+      path: `${CRUUSER_KEY.FIS_PI_INFO}.${CRUUSER_USER_TYPE_KEY.PI_CODE}`,
+      checkEqualLengthArray: true,
+    }) &&
+    isEqualPrevAndNextObjByPath({
       prevValues,
       nextValues,
-      `${CRUUSER_KEY.FIS_PI_INFO}.${CRUUSER_USER_TYPE_KEY.USER_FIS_PROJECTS}`
-    )
+      path: `${CRUUSER_KEY.FIS_PI_INFO}.${CRUUSER_USER_TYPE_KEY.USER_FIS_PROJECTS}`,
+      checkEqualLengthArray: true,
+    })
   );
 });

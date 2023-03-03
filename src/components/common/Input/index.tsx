@@ -1,7 +1,7 @@
 import cn from 'classnames';
 import React, { HTMLProps, MouseEventHandler, RefObject, useRef } from 'react';
 
-import { IconButton } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
 import { getRandomId } from 'src/utils';
 import { isEmpty } from 'src/validations';
 import Element from '../Element';
@@ -26,6 +26,7 @@ const Input: React.FC<InputProps> = ({
   infoTooltipPlacement,
   infoToolTipWithArrow,
   customIcon = null,
+  footer,
   onIconClick,
   ...props
 }) => {
@@ -71,6 +72,7 @@ const Input: React.FC<InputProps> = ({
         )}
         {customIcon}
       </View>
+      {footer && <Box mt={1}>{footer}</Box>}
     </Element>
   );
 };
@@ -114,6 +116,7 @@ export type InputProps = BaseInputProps & {
   containerClassName?: string;
   inputRef?: RefObject<HTMLInputElement>;
   subLabel?: string | React.ReactNode;
+  footer?: string | React.ReactNode;
   iconName?: string;
   iconPosition?: 'left' | 'right';
   onIconClick?: MouseEventHandler<HTMLElement>;

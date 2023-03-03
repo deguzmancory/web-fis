@@ -9,6 +9,7 @@
   transition: $default-transition;
   border-radius: $input-border-radius;
   font-size: $body-size;
+  min-height: $input-small;
 
   &:focus {
     box-shadow: $focus-shadow;
@@ -35,5 +36,18 @@
     transform: translateY(-50%);
 
     @include hover;
+  }
+
+  &__resize--horizontal {
+    resize: horizontal;
+  }
+  &__resize--vertical {
+    resize: vertical;
+  }
+  &__resize--both {
+    resize: both;
+  }
+  &__resize--none {
+    resize: none;
   }
 }

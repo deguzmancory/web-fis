@@ -19,6 +19,10 @@ export const PATHS = {
   addUser: '/miscellaneous/user-managements/add',
   userDetail: '/miscellaneous/user-managements/user-detail',
 
+  // Purchase Order
+  createPurchaseOrders: '/purchase-orders/create',
+  additionalForm: `/purchase-orders/additional-form`,
+
   // miscellaneous / Global settings
   globalSettings: '/global-settings',
   expiredPassword: '/expired-password',

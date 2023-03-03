@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { Location } from 'history';
-import _ from 'lodash';
+import _, { get, isEqual } from 'lodash';
 import { parse } from 'qs';
 import shortid from 'shortid';
 import { ErrorService, Toastify } from 'src/services';
@@ -121,4 +121,36 @@ export const handleShowErrorMsg = (error: Error, prefix: string = '') => {
     }
     Toastify.error(`${!isEmpty(prefix) ? `${prefix}: ` : ''}${errorMessage}`);
   }
+};
+
+export const handleScrollToTopError = <T>(errors: T) => {
+  return setTimeout(() => {
+    scrollToTopError(deepKeys(errors));
+  }, 100);
+};
+
+export const getErrorMessage = (fieldName: string, { touched, errors }) => {
+  if (!fieldName || !touched || !errors) return '';
+
+  const error = get(errors, fieldName);
+
+  return get(touched, fieldName) && error ? error : '';
+};
+
+export const isEqualPrevAndNextObjByPath = <T>({
+  prevValues,
+  nextValues,
+  path,
+  checkEqualLengthArray,
+}: {
+  prevValues: T;
+  nextValues: T;
+  path: string;
+  checkEqualLengthArray?: boolean;
+}) => {
+  const prev = get(prevValues, path);
+  const next = get(nextValues, path);
+  return checkEqualLengthArray && Array.isArray(prev) && Array.isArray(next)
+    ? prev.length === next.length
+    : isEqual(prev, next);
 };

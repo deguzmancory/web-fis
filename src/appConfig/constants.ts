@@ -28,6 +28,7 @@ export const COLOR_CODE = {
   WHITE: '#fff',
   BACKGROUND: '#f7f8fa',
   INFO: '#0088CC',
+  LINK: '#0088CC',
   DISABLED: '#91979E',
   PRIMARY_900: '#1f1f1f',
   PRIMARY_800: '#1f1f1f',

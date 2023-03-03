@@ -9,9 +9,10 @@ import {
   Select,
 } from 'src/components/common';
 import { CRUUSER_USER_TYPE_KEY } from 'src/containers/CRUUSerContainer/enums';
-import { CRUUserFormikProps, getErrorMessage } from 'src/containers/CRUUSerContainer/helper';
+import { CRUUserFormikProps } from 'src/containers/CRUUSerContainer/helper';
 import { useZipCode } from 'src/queries';
 import { StateService } from 'src/services';
+import { getErrorMessage } from 'src/utils';
 
 const usZipCodeLength = 5;
 

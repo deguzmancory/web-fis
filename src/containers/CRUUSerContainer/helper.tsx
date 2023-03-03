@@ -220,14 +220,6 @@ export const cRUUserFormSchema = Yup.object().shape({
 });
 
 /*** Functions ***/
-export const getErrorMessage = (fieldName: string, { touched, errors }) => {
-  if (!fieldName || !touched || !errors) return '';
-
-  const error = get(errors, fieldName);
-
-  return get(touched, fieldName) && error ? error : '';
-};
-
 export const getValueUserStatus = (status: UserDetail['status']) => {
   switch (status) {
     case USER_STATUS.ACTIVE:
@@ -434,12 +426,4 @@ export const getFisCodeOptions = <T extends Partial<PICode & FACode>>({
       },
     ];
   }, []);
-};
-
-export const isEqualPrevAndNextObjByPath = (prevValues, nextValues, path) => {
-  const prev = get(prevValues, path);
-  const next = get(nextValues, path);
-  return Array.isArray(prev) && Array.isArray(next)
-    ? prev.length === next.length
-    : isEqual(prev, next);
 };

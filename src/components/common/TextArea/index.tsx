@@ -16,9 +16,10 @@ const TextArea: React.FC<InputProps> = ({
   containerClassName,
   inputRef = null,
   iconName = '',
-  onIconClick,
+  resize = 'vertical',
   required,
   disabled,
+  onIconClick,
   ...props
 }) => {
   const id = useRef<string>(`text-area-${getRandomId()}`);
@@ -34,7 +35,7 @@ const TextArea: React.FC<InputProps> = ({
       <View>
         <textarea
           id={id.current}
-          className={cn(className, 'cmp-text-area', {
+          className={cn(className, 'cmp-text-area', `cmp-text-area__resize--${resize}`, {
             'cmp-text-area--error': !isEmpty(errorMessage),
             'cmp-text-area--disabled': disabled,
           })}
@@ -56,9 +57,10 @@ export type InputProps = BaseInputProps & {
   containerClassName?: string;
   inputRef?: RefObject<HTMLTextAreaElement>;
   iconName?: string;
-  onIconClick?: MouseEventHandler<HTMLElement>;
   label?: string | React.ReactNode;
   required?: boolean;
+  resize?: 'horizontal' | 'vertical' | 'bold' | 'none';
+  onIconClick?: MouseEventHandler<HTMLElement>;
 };
 
 export default TextArea;

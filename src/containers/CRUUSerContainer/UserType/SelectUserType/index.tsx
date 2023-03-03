@@ -1,13 +1,14 @@
 import { Box, Grid } from '@mui/material';
+import _ from 'lodash';
 import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Checkbox } from 'src/components/common';
 import { userTypeOptions } from 'src/containers/UsersManagement/TableList/CustomFilter/helpers';
-import { CRUUSER_KEY, USER_TYPE_KEY } from '../../enums';
-import { CRUUserFormikProps, getErrorMessage, isEditProfileMode } from '../../helper';
-import _ from 'lodash';
-import { PermissionsService } from 'src/services';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
+import { PermissionsService } from 'src/services';
+import { getErrorMessage } from 'src/utils';
+import { CRUUSER_KEY, USER_TYPE_KEY } from '../../enums';
+import { CRUUserFormikProps, isEditProfileMode } from '../../helper';
 
 const SelectUserType: React.FC<Props> = ({ formikProps, isLoading }) => {
   const history = useHistory();

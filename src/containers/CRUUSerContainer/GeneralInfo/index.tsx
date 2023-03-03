@@ -2,9 +2,10 @@ import { Box, Grid } from '@mui/material';
 import React from 'react';
 import { Checkbox, Input, InputPassword, Select, ValidatePassword } from 'src/components/common';
 import { userTypeOptions } from 'src/containers/UsersManagement/TableList/CustomFilter/helpers';
+import { getErrorMessage } from 'src/utils';
 import { isEmpty } from 'src/validations';
 import { CRUUSER_KEY } from '../enums';
-import { CRUUserFormikProps, getErrorMessage, isEditProfileMode, isEditUserMode } from '../helper';
+import { CRUUserFormikProps, isEditProfileMode, isEditUserMode } from '../helper';
 
 const GeneralInfo: React.FC<Props> = ({ formikProps, isLoading }) => {
   const {

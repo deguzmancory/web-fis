@@ -33,7 +33,8 @@
     "noopener",
     "noreferrer",
     "mrkdwn",
-    "CRUUSER"
+    "CRUUSER",
+    "Upsert"
   ],
   "files.exclude": {
     "bin": true,

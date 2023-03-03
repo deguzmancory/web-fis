@@ -33,6 +33,7 @@ const Control: React.FC<ControlProps> = ({ children, ...props }) => (
     {children}
   </components.Control>
 );
+
 const ControlNoSearchIcon: React.FC<ControlProps> = ({ children, ...props }) => (
   <components.Control {...props}>{children}</components.Control>
 );
@@ -159,7 +160,7 @@ const SelectCmp: React.FC<Props> = ({
                 : state.isSelected
                 ? COLOR_CODE.PRIMARY_100
                 : 'white',
-              optionStyle,
+              ...optionStyle,
             }),
             menuPortal: (base, props) => ({
               ...base,

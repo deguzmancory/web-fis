@@ -275,6 +275,11 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.put(url, undefined, options);
   };
 
+  // ====================== Users Management ======================
+  const getPO = (params: { id: string }) => {
+    return api.get(`/financial-svc/v1/purchase-orders/${params.id}`, {}, newCancelToken());
+  };
+
   // Global Settings
   const getAllGlobalSettings = () => {
     return api.get('/financial-svc/v1/global-settings', {}, newCancelToken());
@@ -348,6 +353,9 @@ const create = (baseURL = appConfig.API_URL) => {
     searchProjects,
     getUrlExportUsers,
     updateUserLastPasswordChanged,
+
+    // ====================== Users Management ======================
+    getPO,
 
     // Global Settings
     getAllGlobalSettings,

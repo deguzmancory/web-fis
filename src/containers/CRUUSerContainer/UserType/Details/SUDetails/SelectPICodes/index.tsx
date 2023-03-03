@@ -5,7 +5,6 @@ import { Button, Select } from 'src/components/common';
 import { CRUUSER_KEY, CRUUSER_USER_TYPE_KEY } from 'src/containers/CRUUSerContainer/enums';
 import {
   CRUUserFormikProps,
-  getErrorMessage,
   getFisCodeOptions,
   isEditProfileMode,
 } from 'src/containers/CRUUSerContainer/helper';
@@ -13,6 +12,7 @@ import { useGetPICode } from 'src/queries';
 import { PICode } from 'src/queries/Contents/types';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { UserFisCode } from 'src/queries/Users/types';
+import { getErrorMessage } from 'src/utils';
 import TableCodes from '../../shared/TableCodes';
 
 const SelectPICodes: React.FC<Props> = ({ formikProps, isLoading }) => {

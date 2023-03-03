@@ -1,15 +1,23 @@
-import { Typography } from '@mui/material';
+import { Typography, TypographyProps } from '@mui/material';
 import React from 'react';
 import { COLOR_CODE } from 'src/appConfig/constants';
 
-const TypographyLink: React.FC<Props> = ({ variant = 'body2', children, className }) => {
+const TypographyLink: React.FC<Props> = ({
+  variant = 'body2',
+  children,
+  className,
+  sx,
+  ...props
+}) => {
   return (
     <Typography
       variant={variant}
       color={COLOR_CODE.INFO}
       sx={{
+        ...sx,
         '&:hover': {
           textDecoration: 'underline',
+          cursor: 'pointer',
         },
       }}
       {...(className && {
@@ -17,16 +25,14 @@ const TypographyLink: React.FC<Props> = ({ variant = 'body2', children, classNam
           root: className,
         },
       })}
-      // classes={{
-      //   root:
-      // }}
+      {...props}
     >
       {children}
     </Typography>
   );
 };
 
-type Props = {
+type Props = TypographyProps & {
   children: any;
   variant?:
     | 'h1'

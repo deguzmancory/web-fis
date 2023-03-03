@@ -8,13 +8,13 @@ import dialogReducer, { dialogState, IDialogState } from './dialog/dialogSlice';
 import fileReducer, { fileState, IFileState } from './file/fileSlice';
 import formReducer, { formState, IFormState } from './form/formSlice';
 
-export interface IRootState {
+export interface IRootState<TFormData = any> {
   router: RouterState;
   common: ICommonState;
   auth: IAuthState;
   dialog: IDialogState;
   file: IFileState;
-  form: IFormState;
+  form: IFormState<TFormData>;
 }
 
 export const rootState: IRootState = {

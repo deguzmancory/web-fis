@@ -31,6 +31,8 @@ const SwitchUser = React.lazy(() => import('./SwitchUser'));
 const GlobalSettings = React.lazy(() => import('./GlobalSettings'));
 const EditProfile = React.lazy(() => import('./EditProfile'));
 const EmptyScreen = React.lazy(() => import('./UAMContainer/ChangePasswordExpired/emptyScreen'));
+const PurchaseOrderContainer = React.lazy(() => import('./PurchaseOrderContainer'));
+const SoleSourcePOContainer = React.lazy(() => import('./AdditionalPOForms/SoleSource'));
 
 const Routing: React.FC<{ location: Location }> = (props) => {
   Navigator.setTopHistory(useHistory());
@@ -51,13 +53,6 @@ const Routing: React.FC<{ location: Location }> = (props) => {
 
             {/* Users */}
             <CustomRoute pageRequiredAuth path={PATHS.addUser} component={CRUUSerContainer} exact />
-            <CustomRoute pageRequiredAuth path={`${PATHS.userDetail}/dev/:devId`} component={Dev} />
-
-            <CustomRoute
-              pageRequiredAuth
-              path={`${PATHS.userDetail}/:userId/dev/:devId`}
-              component={Dev}
-            />
 
             <CustomRoute
               pageRequiredAuth
@@ -71,6 +66,21 @@ const Routing: React.FC<{ location: Location }> = (props) => {
               component={UsersManagement}
             />
             {/* Users */}
+
+            {/* PO */}
+            <CustomRoute
+              pageRequiredAuth
+              path={PATHS.createPurchaseOrders}
+              component={PurchaseOrderContainer}
+              exact
+            />
+            <CustomRoute
+              pageRequiredAuth
+              path={`${PATHS.additionalForm}/:formCode`}
+              component={SoleSourcePOContainer}
+              exact
+            />
+            {/* PO */}
 
             <CustomRoute pageRequiredAuth path={PATHS.switchUser} component={SwitchUser} />
             <CustomRoute pageRequiredAuth path={PATHS.myProfile} component={EditProfile} />

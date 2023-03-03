@@ -21,6 +21,9 @@ export enum API_QUERIES {
   EXPORT_USERS = 'users/export',
   SEARCH_PROJECTS = 'projects/search',
 
+  // Purchase Orders
+  PO = '/purchase-orders/:id',
+
   // Financial
   GET_FINANCIAL_PROJECTS = '/financial-svc/v1/projects',
   SEARCH_FINANCIAL_PROJECTS = '/financial-svc/v1/projects/search',

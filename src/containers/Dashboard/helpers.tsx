@@ -51,7 +51,7 @@ export const dashboardItems: DashboardItem[] = [
       },
       {
         title: 'Create PO',
-        url: '#',
+        url: `${PATHS.createPurchaseOrders}`,
         isExternalUrl: false,
         roles: [ROLE_NAME.PI, ROLE_NAME.SU],
       },
