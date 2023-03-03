@@ -5,11 +5,11 @@
   position: relative;
 
   &__disabled {
-    opacity: 0.6;
     pointer-events: none;
   }
 
   &__disabled &__label svg {
+    opacity: 0.6;
     fill: $color-text-inactive;
   }
 
