@@ -10,7 +10,11 @@ import {
 import CustomTable from 'src/components/CustomTable';
 import { BodyBasicRows, CellType } from 'src/components/CustomTable/types';
 import { POLineItemPayload } from 'src/queries/PurchaseOrders';
-import { formatMoney, getUncontrolledCurrencyInputFieldProps } from 'src/utils';
+import {
+  formatMoney,
+  getUncontrolledCurrencyInputFieldProps,
+  isEqualPrevAndNextObjByPath,
+} from 'src/utils';
 import { initialLineItemValue } from '../constants';
 import { PO_FORM_KEY, PO_LINE_ITEM_KEY } from '../enums';
 import { UpsertPOFormikProps } from '../types';
@@ -276,4 +280,13 @@ type Props = {
   disabled: boolean;
 };
 
-export default React.memo(TableLineItems);
+export default React.memo(TableLineItems, (prevProps, nextProps) => {
+  const prevFormikValues = prevProps.formikProps.values;
+  const nextFormikValues = nextProps.formikProps.values;
+
+  return isEqualPrevAndNextObjByPath({
+    prevValues: prevFormikValues,
+    nextValues: nextFormikValues,
+    path: PO_FORM_KEY.LINE_ITEMS,
+  });
+});

@@ -2,7 +2,7 @@ import { Add } from '@mui/icons-material';
 import { Box, Grid, Typography } from '@mui/material';
 import React from 'react';
 import { EllipsisTooltipInput, Input, Link, TextArea } from 'src/components/common';
-import { getErrorMessage } from 'src/utils';
+import { getErrorMessage, isEqualPrevAndNextObjByPath } from 'src/utils';
 import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormikProps } from '../types';
 
@@ -230,4 +230,17 @@ type Props = {
   disabled: boolean;
 };
 
-export default React.memo(GeneralInfo);
+export default React.memo(GeneralInfo, (prevProps, nextProps) => {
+  const prevFormikValues = prevProps.formikProps.values;
+  const nextFormikValues = nextProps.formikProps.values;
+
+  const formKeysNeedRender = [PO_FORM_KEY.LOGIN_NAME, PO_FORM_KEY.PROJECT_TITLE]; //todo: add all keys using in this component
+
+  return formKeysNeedRender.every((key) =>
+    isEqualPrevAndNextObjByPath({
+      prevValues: prevFormikValues,
+      nextValues: nextFormikValues,
+      path: key,
+    })
+  );
+});

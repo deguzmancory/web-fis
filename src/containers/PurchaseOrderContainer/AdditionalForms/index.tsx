@@ -143,22 +143,7 @@ type Props = {
   disabled: boolean;
 };
 export default React.memo(AdditionalForms, (_prevProps, _nextProps) => {
-  // const prevValues = prevProps.formikProps.values;
-  // const nextValues = nextProps.formikProps.values;
-
-  // return (
-  //   isEqualPrevAndNextObjByPath({
-  //     prevValues,
-  //     nextValues,
-  //     path: PO_FORM_KEY.FORM_ATTACHMENTS,
-  //     checkEqualLengthArray: true,
-  //   }) &&
-  //   isEqualPrevAndNextObjByPath({
-  //     prevValues,
-  //     nextValues,
-  //     path: PO_FORM_KEY.AVAILABLE_FORMS,
-  //     checkEqualLengthArray: true,
-  //   })
-  // );
+  //return false will always re-render this component when props change (same as default behavior of not using React.memo)
+  // => always update formikValues for jump to another additional form purpose
   return false;
 });
