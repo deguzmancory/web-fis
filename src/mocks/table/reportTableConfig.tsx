@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import { Button } from 'src/components/common';
-import { BodyRow, BodyRows, HeaderRows } from 'src/components/ReportTable/types';
+import { BodyRow, BodyRows, HeaderRows } from 'src/components/CustomTable/types';
 import { Callback } from 'src/redux/types';
 
 export const REPORT_TABLE_HEADER: HeaderRows = [

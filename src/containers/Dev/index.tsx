@@ -35,7 +35,7 @@ import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { IRootState } from 'src/redux/store';
 import { Toastify } from 'src/services';
 import { emptyFunction } from 'src/utils';
-import ReportTableContainer from './reportTable';
+import CustomTableContainer from './customTable';
 
 const Dev: React.FC<Props> = ({ location, onShowDialog, onHideDialog, onHideAllDialog }) => {
   const currentLocation = useLocation();
@@ -186,7 +186,7 @@ const Dev: React.FC<Props> = ({ location, onShowDialog, onHideDialog, onHideAllD
     <Container maxWidth="lg">
       <View className="mt-32">
         <h2>Report table</h2>
-        <ReportTableContainer />
+        <CustomTableContainer />
       </View>
 
       <View className="mt-32">

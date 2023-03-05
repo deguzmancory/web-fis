@@ -1,3 +1,4 @@
+import { PATHS } from 'src/appConfig/paths';
 import { AdditionalPOForm } from 'src/queries/PurchaseOrders';
 import { PO_ADDITIONAL_FORM_CODE, PO_ADDITIONAL_FORM_EXTERNAL_LINK } from './enums';
 
@@ -26,7 +27,7 @@ export const getAdditionalPOFormValue = (forms: AdditionalPOForm[]) => {
       isExternalLink,
       href: isExternalLink
         ? getExternalLinkFromFormCode(availableForm.code as PO_ADDITIONAL_FORM_CODE)
-        : `/purchase-orders/additional-form/${availableForm.code}`,
+        : `${PATHS.additionalForm}/${availableForm.code}`,
     };
   });
 };

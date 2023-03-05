@@ -1,12 +1,16 @@
+import { Box, IconButton } from '@mui/material';
 import cn from 'classnames';
 import React, { HTMLProps, MouseEventHandler, RefObject, useRef } from 'react';
-
-import { Box, IconButton } from '@mui/material';
 import { getRandomId } from 'src/utils';
+import { CommonPlacement } from 'src/utils/commonTypes';
 import { isEmpty } from 'src/validations';
 import Element from '../Element';
 import Icon from '../Icon';
 import View from '../View';
+import EllipsisTooltipBaseInput, {
+  EllipsisTooltipBaseInputProps,
+} from '../EllipsisTooltipBaseInput';
+
 import './styles.scss';
 
 const Input: React.FC<InputProps> = ({
@@ -27,6 +31,7 @@ const Input: React.FC<InputProps> = ({
   infoToolTipWithArrow,
   customIcon = null,
   footer,
+  hideArrowTypeNumber = false,
   onIconClick,
   ...props
 }) => {
@@ -56,6 +61,9 @@ const Input: React.FC<InputProps> = ({
             },
             {
               'cmp-input--icon': !isEmpty(iconName || customIcon),
+            },
+            {
+              'cmp-input--hide-arrows': hideArrowTypeNumber,
             },
             {
               left: isIconPositionLeft,
@@ -107,6 +115,16 @@ export const InputIcon = ({ iconName, iconComponent, isIconPositionLeft, onIconC
   }
 };
 
+export const EllipsisTooltipInput: React.FC<EllipsisTooltipInputProps> = ({ ...props }) => {
+  return (
+    <EllipsisTooltipBaseInput {...props}>
+      <Input />
+    </EllipsisTooltipBaseInput>
+  );
+};
+
+export type EllipsisTooltipInputProps = EllipsisTooltipBaseInputProps & InputProps;
+
 type BaseInputProps = Pick<
   HTMLProps<HTMLInputElement>,
   Exclude<keyof HTMLProps<HTMLInputElement>, 'label'>
@@ -119,27 +137,16 @@ export type InputProps = BaseInputProps & {
   footer?: string | React.ReactNode;
   iconName?: string;
   iconPosition?: 'left' | 'right';
-  onIconClick?: MouseEventHandler<HTMLElement>;
   label?: string | React.ReactNode;
   required?: boolean;
   iconComponent?: React.ReactNode;
   hideIconError?: boolean;
   customIcon?: React.ReactElement;
   infoTooltipMessage?: string;
-  infoTooltipPlacement?:
-    | 'bottom-end'
-    | 'bottom-start'
-    | 'bottom'
-    | 'left-end'
-    | 'left-start'
-    | 'left'
-    | 'right-end'
-    | 'right-start'
-    | 'right'
-    | 'top-end'
-    | 'top-start'
-    | 'top';
+  infoTooltipPlacement?: CommonPlacement;
   infoToolTipWithArrow?: boolean;
+  hideArrowTypeNumber?: boolean;
+  onIconClick?: MouseEventHandler<HTMLElement>;
 };
 
 export default Input;

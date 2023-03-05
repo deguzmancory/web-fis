@@ -3,7 +3,17 @@ import CurrencyFormat from 'react-currency-format';
 import { Callback } from 'src/redux/types';
 import { emptyFunction, MoneyInputDetect } from 'src/utils';
 import { Input } from '..';
+import EllipsisTooltipBaseInput, {
+  EllipsisTooltipBaseInputProps,
+} from '../EllipsisTooltipBaseInput';
 import { InputIcon, InputProps } from '../Input';
+
+const baseStyles = {
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  borderStyle: 'border-box',
+  fontSize: 14,
+};
 
 const DollarInputIcon = (
   <InputIcon
@@ -41,6 +51,7 @@ const InputCurrency: React.FC<Props> = ({
   thousandSeparator = true,
   disabled,
   defaultValue,
+  textAlign,
   onChange,
   ...props
 }) => {
@@ -52,7 +63,7 @@ const InputCurrency: React.FC<Props> = ({
   return (
     <CurrencyFormat
       className={className}
-      style={style}
+      style={{ ...baseStyles, textAlign: textAlign, ...style }}
       thousandSeparator={thousandSeparator}
       fixedDecimalScale={!unFixedDecimalScale}
       decimalScale={decimalScale}
@@ -72,6 +83,17 @@ const InputCurrency: React.FC<Props> = ({
     />
   );
 };
+
+const EllipsisTooltipInputCurrency: React.FC<EllipsisTooltipInputProps> = ({ ...props }) => {
+  return (
+    <EllipsisTooltipBaseInput {...props}>
+      <InputCurrency name={props.name} />
+    </EllipsisTooltipBaseInput>
+  );
+};
+
+export type EllipsisTooltipInputProps = EllipsisTooltipBaseInputProps & Props;
+
 type Props = Omit<CurrencyFormat.Props, 'InputProps'> & { InputProps?: InputProps } & {
   unFixedDecimalScale?: boolean;
   value?: string | number;
@@ -86,7 +108,9 @@ type Props = Omit<CurrencyFormat.Props, 'InputProps'> & { InputProps?: InputProp
   decimalScale?: number;
   thousandSeparator?: string | boolean;
   disabled?: boolean;
+  textAlign?: 'start' | 'end' | 'left' | 'right' | 'center' | 'justify' | 'match-parent';
   onChange?: Callback;
 };
 
 export default InputCurrency;
+export { EllipsisTooltipInputCurrency };

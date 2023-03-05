@@ -8,13 +8,18 @@ import { useGetPODetail } from 'src/queries/PurchaseOrders/useGetPODetail';
 import { setFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Toastify } from 'src/services';
-import { getUncontrolledInputFieldProps, handleScrollToTopError } from 'src/utils';
+import {
+  getUncontrolledCurrencyInputFieldProps,
+  getUncontrolledInputFieldProps,
+  handleScrollToTopError,
+} from 'src/utils';
 import Layout from '../CRUUSerContainer/layout';
 import AdditionalForms from './AdditionalForms';
 import BreadcrumbsPODetail from './breadcrumbs';
 import { initialUpsertPOFormValue } from './constants';
 import GeneralInfo from './GeneralInfo';
 import { getAdditionalPOFormValue } from './helpers';
+import TableLineItems from './TableLineItems';
 import { UpsertPOFormikProps, UpsertPOFormValue } from './types';
 
 const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) => {
@@ -84,6 +89,11 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
       setFieldTouched,
       setFieldValue,
     }),
+    getUncontrolledCurrencyInputFieldProps: getUncontrolledCurrencyInputFieldProps({
+      values,
+      setFieldTouched,
+      setFieldValue,
+    }),
   };
 
   const _handleScrollToTopError = React.useCallback(() => {
@@ -106,6 +116,9 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
             <>
               <Layout>
                 <GeneralInfo formikProps={formikProps} disabled={false} />
+              </Layout>
+              <Layout>
+                <TableLineItems formikProps={formikProps} disabled={false} />
               </Layout>
               <Layout>
                 <AdditionalForms formikProps={formikProps} disabled={false} />

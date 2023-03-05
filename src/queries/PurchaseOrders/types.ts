@@ -203,7 +203,7 @@ export interface AdditionalPOForm {
 }
 
 export interface POLineItemPayload {
-  id: string;
+  id?: string;
   itemProjectNumber: string;
   subProject: string;
   budgetCategory: string;

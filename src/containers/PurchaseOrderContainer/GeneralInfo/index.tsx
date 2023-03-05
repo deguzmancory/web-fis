@@ -1,7 +1,7 @@
 import { Add } from '@mui/icons-material';
 import { Box, Grid, Typography } from '@mui/material';
 import React from 'react';
-import { Input, Link, TextArea } from 'src/components/common';
+import { EllipsisTooltipInput, Input, Link, TextArea } from 'src/components/common';
 import { getErrorMessage } from 'src/utils';
 import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormikProps } from '../types';
@@ -22,7 +22,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled }) => {
       <Grid container spacing={2}>
         <Grid item container spacing={3}>
           <Grid item xs={12} sm={6} md={4}>
-            <Input
+            <EllipsisTooltipInput
               label={'Login Name'}
               errorMessage={_getErrorMessage(PO_FORM_KEY.LOGIN_NAME)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.LOGIN_NAME)}

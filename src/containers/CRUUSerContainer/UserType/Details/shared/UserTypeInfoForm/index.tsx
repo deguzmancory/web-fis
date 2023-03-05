@@ -175,7 +175,7 @@ const UserTypeInfoForm: React.FC<Props> = ({
                     mask={'99999'}
                     {...getFieldProps(`${prefix}.${CRUUSER_USER_TYPE_KEY.ADDRESS_ZIP}`)}
                     onChange={handleChangeZipCode}
-                    autoComplete="asdasdasd"
+                    autoComplete="zip-code"
                     disabled={isLoading}
                     iconComponent={
                       isLoadingZipCode ? (

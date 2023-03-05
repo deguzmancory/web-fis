@@ -5,8 +5,12 @@ import React, { HTMLProps, RefObject, useRef, useState } from 'react';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import InputMask from 'react-input-mask';
 import { getRandomId } from 'src/utils';
+import { CommonPlacement } from 'src/utils/commonTypes';
 import { isEmpty } from 'src/validations';
 import Element from '../Element';
+import EllipsisTooltipBaseInput, {
+  EllipsisTooltipBaseInputProps,
+} from '../EllipsisTooltipBaseInput';
 import { InputIcon } from '../Input';
 import '../Input/styles.scss';
 import View from '../View';
@@ -80,6 +84,16 @@ const InputMaskPassword: React.FC<InputProps> = ({
   );
 };
 
+const EllipsisTooltipInputMaskPassword: React.FC<EllipsisTooltipInputProps> = ({ ...props }) => {
+  return (
+    <EllipsisTooltipBaseInput {...props}>
+      <InputMaskPassword name={props.name} mask={props.mask} />
+    </EllipsisTooltipBaseInput>
+  );
+};
+
+export type EllipsisTooltipInputProps = EllipsisTooltipBaseInputProps & InputProps;
+
 type BaseInputProps = Pick<
   HTMLProps<HTMLInputElement>,
   Exclude<keyof HTMLProps<HTMLInputElement>, 'label'>
@@ -96,20 +110,9 @@ export type InputProps = BaseInputProps & {
   required?: boolean;
   hideIconError?: boolean;
   infoTooltipMessage?: string;
-  infoTooltipPlacement?:
-    | 'bottom-end'
-    | 'bottom-start'
-    | 'bottom'
-    | 'left-end'
-    | 'left-start'
-    | 'left'
-    | 'right-end'
-    | 'right-start'
-    | 'right'
-    | 'top-end'
-    | 'top-start'
-    | 'top';
+  infoTooltipPlacement?: CommonPlacement;
   infoToolTipWithArrow?: boolean;
 };
 
 export default InputMaskPassword;
+export { EllipsisTooltipInputMaskPassword };

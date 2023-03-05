@@ -4,13 +4,18 @@ import cn from 'classnames';
 import React, { HTMLProps, MouseEventHandler, RefObject, useRef } from 'react';
 import InputMask from 'react-input-mask';
 import { getRandomId } from 'src/utils';
+import { CommonPlacement } from 'src/utils/commonTypes';
 import { isEmpty } from 'src/validations';
 import Element from '../Element';
-import { InputIcon } from '../Input';
-import '../Input/styles.scss';
+import EllipsisTooltipBaseInput, {
+  EllipsisTooltipBaseInputProps,
+} from '../EllipsisTooltipBaseInput';
 import View from '../View';
+import { InputIcon } from '../Input';
 
-const Input: React.FC<InputProps> = ({
+import '../Input/styles.scss';
+
+const InputMaskCmp: React.FC<InputProps> = ({
   children,
   errorMessage,
   label,
@@ -18,7 +23,6 @@ const Input: React.FC<InputProps> = ({
   subLabel,
   containerClassName,
   inputRef = null,
-  onIconClick,
   iconName = null,
   mask = '***',
   maskChar = null,
@@ -28,6 +32,7 @@ const Input: React.FC<InputProps> = ({
   infoTooltipMessage,
   infoTooltipPlacement,
   infoToolTipWithArrow,
+  onIconClick,
   ...props
 }) => {
   //   9: 0-9
@@ -69,6 +74,16 @@ const Input: React.FC<InputProps> = ({
   );
 };
 
+export const EllipsisTooltipInputMask: React.FC<EllipsisTooltipInputProps> = ({ ...props }) => {
+  return (
+    <EllipsisTooltipBaseInput {...props}>
+      <InputMask mask={props.mask} />
+    </EllipsisTooltipBaseInput>
+  );
+};
+
+type EllipsisTooltipInputProps = EllipsisTooltipBaseInputProps & InputProps;
+
 type BaseInputProps = Pick<
   HTMLProps<HTMLInputElement>,
   Exclude<keyof HTMLProps<HTMLInputElement>, 'label'>
@@ -78,7 +93,6 @@ export type InputProps = BaseInputProps & {
   containerClassName?: string;
   inputRef?: RefObject<HTMLInputElement>;
   subLabel?: string | React.ReactNode;
-  onIconClick?: MouseEventHandler<HTMLElement>;
   label?: string | React.ReactNode;
   iconName?: string;
   mask: string;
@@ -87,20 +101,9 @@ export type InputProps = BaseInputProps & {
   iconComponent?: React.ReactNode;
   hideIconError?: boolean;
   infoTooltipMessage?: string;
-  infoTooltipPlacement?:
-    | 'bottom-end'
-    | 'bottom-start'
-    | 'bottom'
-    | 'left-end'
-    | 'left-start'
-    | 'left'
-    | 'right-end'
-    | 'right-start'
-    | 'right'
-    | 'top-end'
-    | 'top-start'
-    | 'top';
+  infoTooltipPlacement?: CommonPlacement;
   infoToolTipWithArrow?: boolean;
+  onIconClick?: MouseEventHandler<HTMLElement>;
 };
 
-export default Input;
+export default InputMaskCmp;

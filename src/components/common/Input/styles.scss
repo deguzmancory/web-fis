@@ -10,6 +10,10 @@
   transition: $default-transition;
   font-size: $body-size;
 
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-style: border-box;
+
   &[type='password'] {
     padding-right: 36px !important;
   }
@@ -34,6 +38,20 @@
     &:focus {
       border-color: $color-danger;
       // box-shadow: $error-shadow;
+    }
+  }
+
+  &--hide-arrows {
+    /* Chrome, Safari, Edge, Opera */
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    &[type='number'] {
+      -moz-appearance: textfield;
     }
   }
 

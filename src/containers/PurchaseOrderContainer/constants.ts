@@ -68,7 +68,6 @@ export const initialAvailableFormValue = {
 };
 
 export const initialLineItemValue = {
-  id: '',
   itemProjectNumber: '',
   subProject: '',
   budgetCategory: '',
@@ -352,7 +351,7 @@ export const initialUpsertPOFormValue = {
   superquoteNumber: '',
   superquoteBidId: '',
   availableForms: initialAvailableForms,
-  lineItems: [],
+  lineItems: [initialLineItemValue],
   fileAttachments: [],
   formAttachments: [],
   determination: initialDeterminationValue,

@@ -1,22 +1,26 @@
 import cn from 'classnames';
 import { useRef } from 'react';
-import PhoneInput from 'react-phone-number-input';
+import PhoneInput, { Country } from 'react-phone-number-input';
+import { Callback } from 'src/redux/types';
 import { getRandomId } from 'src/utils';
 import { isEmpty } from 'src/validations';
 import Element from '../Element';
+import EllipsisTooltipBaseInput, {
+  EllipsisTooltipBaseInputProps,
+} from '../EllipsisTooltipBaseInput';
 import View from '../View';
 import './styles.scss';
 
-export default ({
-  label,
+const InputPhone: React.FC<Props> = ({
+  label = '',
   defaultCountryCode = 'US',
   errorMessage,
   containerClassName = '',
   name,
-  onChange,
   icon = null,
   required = false,
   disabled,
+  onChange,
   ...props
 }) => {
   const id = useRef(`input-${getRandomId()}`);
@@ -54,3 +58,28 @@ export default ({
     </Element>
   );
 };
+
+const EllipsisTooltipInputPhone: React.FC<EllipsisTooltipInputProps> = ({ ...props }) => {
+  return (
+    <EllipsisTooltipBaseInput {...props}>
+      <InputPhone name={props.name} />
+    </EllipsisTooltipBaseInput>
+  );
+};
+
+export type EllipsisTooltipInputProps = EllipsisTooltipBaseInputProps & Props;
+
+type Props = {
+  label?: React.ReactNode;
+  defaultCountryCode?: Country;
+  errorMessage?: string;
+  containerClassName?: string;
+  name: string;
+  icon?: React.ReactNode;
+  required?: boolean;
+  disabled?: boolean;
+  onChange?: Callback;
+};
+
+export default InputPhone;
+export { EllipsisTooltipInputPhone };

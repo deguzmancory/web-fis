@@ -41,6 +41,11 @@ export const COLOR_CODE = {
   PRIMARY_100: '#ececec',
   PRIMARY_50: '#f8f8f8',
   DEFAULT_BORDER: '1px solid #ccc',
+  DEFAULT_TABLE_ERROR_BORDER: '2px solid #DB0012',
+};
+
+export const COMMON_STYLE = {
+  SMALL_INPUT_HEIGHT: '40px',
 };
 
 export enum BOOLEAN {

@@ -6,8 +6,9 @@ import { Box, Typography } from '@mui/material';
 import { FormikProps, useFormik } from 'formik';
 import { get } from 'lodash';
 import JsonView from 'react-json-view';
-import ReportTable from 'src/components/ReportTable';
-import { BodyRow, BodyRows } from 'src/components/ReportTable/types';
+import { connect } from 'react-redux';
+import CustomTable, { cellBaseStyles } from 'src/components/CustomTable';
+import { BodyRow, BodyRows, CellType } from 'src/components/CustomTable/types';
 import {
   getRecordTableHeader,
   INDIRECT_COSTS,
@@ -18,9 +19,8 @@ import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSl
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { IRootState } from 'src/redux/store';
 import { formatMoney, getUncontrolledCurrencyInputFieldProps } from 'src/utils';
-import { connect } from 'react-redux';
 
-const ReportTableContainer: React.FC<Props> = ({ onHideAllDialog, onHideDialog, onShowDialog }) => {
+const CustomTableContainer: React.FC<Props> = ({ onHideAllDialog, onHideDialog, onShowDialog }) => {
   const formTableInputRef = React.useRef<FormikProps<ReportData[]>>(null);
   const [disableInputTable, setDisabledInputTable] = useState<boolean>(true);
   const reportTableData = ReportTableData.document;
@@ -102,41 +102,7 @@ const ReportTableContainer: React.FC<Props> = ({ onHideAllDialog, onHideDialog, 
     }
   };
 
-  const cellBaseStyles = {
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    borderStyle: 'border-box',
-    fontSize: 14,
-  };
-
-  const cellCurrencyInputBaseStyles = {
-    ...cellBaseStyles,
-    width: 140,
-    maxWidth: 140,
-    textAlign: 'right' as const,
-  };
-
-  const cellContainCurrencyInputStyles = {
-    ...cellCurrencyInputBaseStyles,
-
-    padding: '8px',
-  };
-
-  const cellContainInputStyles = {
-    ...cellBaseStyles,
-
-    padding: '8px',
-  };
-
-  const currencyInputInlineTableStyles = {
-    ...cellBaseStyles,
-    // border: 'none',
-    // backgroundColor: 'transparent',
-    textAlign: 'right' as const,
-  };
-
   const reportList: BodyRows = values.map((reportRow, index) => {
-    const reportRowFormValues: ReportData = get(values, index);
     return {
       columns: [
         {
@@ -146,50 +112,50 @@ const ReportTableContainer: React.FC<Props> = ({ onHideAllDialog, onHideDialog, 
           content: (
             <Input {...getUncontrolledFieldProps(`${index}.description`)} style={cellBaseStyles} />
           ),
-          style: cellContainInputStyles,
+          type: CellType.INPUT,
         },
         {
           content: (
             <InputCurrency
               {...getUncontrolledFieldProps(`${index}.amountAwarded`)}
-              style={currencyInputInlineTableStyles}
+              textAlign="right"
             />
           ),
-          style: cellContainCurrencyInputStyles,
+          type: CellType.CURRENCY_INPUT,
         },
         {
           content: formatMoney(Number(get(values, `${index}.currentExpended`))), //formatMoney(Number(reportRow.currentExpended)),
-          style: cellCurrencyInputBaseStyles,
+          type: CellType.CURRENCY_VALUE,
         },
         {
           content: (
             <InputCurrency
               {...getFieldProps(`${index}.totalExpended`)}
               onChange={setFieldValue}
-              style={currencyInputInlineTableStyles}
+              textAlign="right"
             />
           ),
-          style: cellContainCurrencyInputStyles,
+          type: CellType.CURRENCY_INPUT,
         },
         {
           content: (
             <InputCurrency
               {...getUncontrolledFieldProps(`${index}.outstandingPO`)}
-              style={currencyInputInlineTableStyles}
+              textAlign="right"
               disabled={disableInputTable}
             />
           ),
-          style: cellContainCurrencyInputStyles,
+          type: CellType.CURRENCY_INPUT,
         },
         {
           content: formatMoney(
-            Number(reportRowFormValues?.amountAwarded) +
-              Number(reportRowFormValues?.currentExpended) +
-              Number(reportRowFormValues?.totalExpended) +
-              Number(reportRowFormValues?.suspense) +
-              Number(reportRowFormValues?.outstandingPO)
+            Number(reportRow?.amountAwarded) +
+              Number(reportRow?.currentExpended) +
+              Number(reportRow?.totalExpended) +
+              Number(reportRow?.suspense) +
+              Number(reportRow?.outstandingPO)
           ),
-          style: cellCurrencyInputBaseStyles,
+          type: CellType.CURRENCY_VALUE,
         },
         {
           content: (
@@ -197,22 +163,22 @@ const ReportTableContainer: React.FC<Props> = ({ onHideAllDialog, onHideDialog, 
               {...getAutoGenerateUncontrolledFieldProps(`${index}.suspense`, {
                 onBlur: (name, value) => handleAutoGenerateOnBlur({ name, value, index }),
               })}
-              style={currencyInputInlineTableStyles}
+              textAlign="right"
             />
           ),
-          style: cellContainCurrencyInputStyles,
+          type: CellType.CURRENCY_INPUT,
         },
         {
           content: (
             <Typography
               variant="body2"
               className={Number(reportRow.availableBalance) < 0 ? 'has-text-danger' : ''}
-              sx={currencyInputInlineTableStyles}
+              textAlign="right"
             >
               {formatMoney(Number(reportRow.availableBalance))}
             </Typography>
           ),
-          style: cellCurrencyInputBaseStyles,
+          type: CellType.CURRENCY_VALUE,
         },
         {
           content: <Button onClick={() => alert(JSON.stringify(get(values, index)))}>View</Button>,
@@ -236,7 +202,7 @@ const ReportTableContainer: React.FC<Props> = ({ onHideAllDialog, onHideDialog, 
             {formatMoney(values.reduce((output, report) => output + +report.amountAwarded, 0))}
           </EllipsisTypographyTooltip>
         ),
-        style: cellCurrencyInputBaseStyles,
+        type: CellType.CURRENCY_VALUE,
       },
       {
         content: (
@@ -244,7 +210,7 @@ const ReportTableContainer: React.FC<Props> = ({ onHideAllDialog, onHideDialog, 
             {formatMoney(values.reduce((output, report) => output + +report.currentExpended, 0))}
           </EllipsisTypographyTooltip>
         ),
-        style: cellCurrencyInputBaseStyles,
+        type: CellType.CURRENCY_VALUE,
       },
       {
         content: (
@@ -252,7 +218,7 @@ const ReportTableContainer: React.FC<Props> = ({ onHideAllDialog, onHideDialog, 
             {formatMoney(values.reduce((output, report) => output + +report.totalExpended, 0))}
           </EllipsisTypographyTooltip>
         ),
-        style: cellCurrencyInputBaseStyles,
+        type: CellType.CURRENCY_VALUE,
       },
       {
         content: (
@@ -260,7 +226,7 @@ const ReportTableContainer: React.FC<Props> = ({ onHideAllDialog, onHideDialog, 
             {formatMoney(values.reduce((output, report) => output + +report.outstandingPO, 0))}
           </EllipsisTypographyTooltip>
         ),
-        style: cellCurrencyInputBaseStyles,
+        type: CellType.CURRENCY_VALUE,
       },
       {
         content: (
@@ -268,7 +234,7 @@ const ReportTableContainer: React.FC<Props> = ({ onHideAllDialog, onHideDialog, 
             {formatMoney(values.reduce((output, report) => output + +report.totalCost, 0))}
           </EllipsisTypographyTooltip>
         ),
-        style: cellCurrencyInputBaseStyles,
+        type: CellType.CURRENCY_VALUE,
       },
       {
         content: (
@@ -276,7 +242,7 @@ const ReportTableContainer: React.FC<Props> = ({ onHideAllDialog, onHideDialog, 
             {formatMoney(values.reduce((output, report) => output + +report.suspense, 0))}
           </EllipsisTypographyTooltip>
         ),
-        style: cellCurrencyInputBaseStyles,
+        type: CellType.CURRENCY_VALUE,
       },
       {
         content: (
@@ -284,7 +250,7 @@ const ReportTableContainer: React.FC<Props> = ({ onHideAllDialog, onHideDialog, 
             {formatMoney(values.reduce((output, report) => output + +report.availableBalance, 0))}
           </EllipsisTypographyTooltip>
         ),
-        style: cellCurrencyInputBaseStyles,
+        type: CellType.CURRENCY_VALUE,
       },
       {
         content: '',
@@ -368,7 +334,7 @@ const ReportTableContainer: React.FC<Props> = ({ onHideAllDialog, onHideDialog, 
 
   return (
     <>
-      <ReportTable
+      <CustomTable.Layout
         showBorder
         // headerList={REPORT_TABLE_HEADER}
         // headerSx={{
@@ -394,4 +360,4 @@ const mapDispatchToProps = {
   onHideAllDialog: hideAllDialog,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReportTableContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(CustomTableContainer);

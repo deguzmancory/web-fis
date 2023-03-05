@@ -10,6 +10,7 @@ export { default as ConfirmationCodeField } from './ConfirmationCodeField';
 export { default as DatePicker } from './DatePicker';
 export { default as DateRangePicker } from './DateRangePicker';
 export { default as Dialog } from './Dialog';
+export { default as EllipsisTooltipBaseInput } from './EllipsisTooltipBaseInput';
 export { default as EllipsisTypographyTooltip } from './EllipsisTypographyTooltip';
 export { default as FileRenderer } from './FileRenderer';
 export { default as FileUpload } from './FileUpload';
@@ -18,13 +19,16 @@ export { default as Grid } from './Grid';
 export { default as Icon } from './Icon';
 export { default as IconSuccess } from './IconSuccess';
 export { default as Image } from './Image';
-export { default as Input } from './Input';
-export { default as InputCurrency } from './InputCurrency';
-export { default as InputMask } from './InputMask';
-export { default as InputMaskPassword } from './InputMaskPassword';
+export { default as Input, EllipsisTooltipInput } from './Input';
+export { default as InputCurrency, EllipsisTooltipInputCurrency } from './InputCurrency';
+export { default as InputMask, EllipsisTooltipInputMask } from './InputMask';
+export {
+  default as InputMaskPassword,
+  EllipsisTooltipInputMaskPassword,
+} from './InputMaskPassword';
 export { default as InputMaskSelect } from './InputMaskSelect';
 export { default as InputPassword } from './InputPassword';
-export { default as InputPhone } from './InputPhone';
+export { default as InputPhone, EllipsisTooltipInputPhone } from './InputPhone';
 export { default as Link } from './Link';
 export { default as Loading } from './Loading';
 export { default as LoadingCommon } from './LoadingCommon';
