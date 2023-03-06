@@ -55,6 +55,8 @@ const SearchProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoa
   const handleAddProject = () => {
     if (!searchProjects && !currentSearchProject) return;
 
+    if (!currentSearchProject) return;
+
     const currentProjects: FinancialProject[] =
       get(values, `${prefix}.${CRUUSER_USER_TYPE_KEY.USER_FIS_PROJECTS}`) || [];
     const newProjects = [...currentProjects, currentSearchProject];
