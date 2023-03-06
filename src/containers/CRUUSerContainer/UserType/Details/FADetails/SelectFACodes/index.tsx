@@ -33,7 +33,7 @@ const SelectFACodes: React.FC<Props> = ({ formikProps, isLoading }) => {
     [values.fisFaInfo.userFisCodes]
   );
 
-  const piOptions = React.useMemo(
+  const faOptions = React.useMemo(
     () =>
       getFisCodeOptions<FACode>({
         code: faCodes,
@@ -49,6 +49,8 @@ const SelectFACodes: React.FC<Props> = ({ formikProps, isLoading }) => {
 
   const handleAddCode = () => {
     const currentFACode = values.fisFaInfo.currentFACode;
+
+    if (!currentFACode) return;
 
     if (faCodeRows.every((row) => row.code !== currentFACode)) {
       const newRows = [
@@ -99,7 +101,7 @@ const SelectFACodes: React.FC<Props> = ({ formikProps, isLoading }) => {
             <Select
               label=""
               placeholder={'Search'}
-              options={piOptions}
+              options={faOptions}
               hideSearchIcon
               isClearable={false}
               isDisabled={isLoading}

@@ -3,6 +3,7 @@ import { debounce, get } from 'lodash';
 import React from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { PARAMS_SPLITTER } from 'src/appConfig/constants';
+import { theme } from 'src/appConfig/muiTheme';
 import { Button, Select } from 'src/components/common';
 import { CRUUSER_USER_TYPE_KEY } from 'src/containers/CRUUSerContainer/enums';
 import { CRUUserFormikProps } from 'src/containers/CRUUSerContainer/helper';
@@ -94,36 +95,45 @@ const SearchProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoa
   }
 
   return (
-    <Stack direction={'row'}>
-      <Select
-        {...getFieldProps(`${prefix}.${CRUUSER_USER_TYPE_KEY.CURRENT_SEARCH_PROJECT}`)}
-        label={
-          isPI(type)
-            ? 'New Unassigned Project Search (Project not linked to PI Code)'
-            : 'Comprehensive Project Search'
-        }
-        placeholder={'Search'}
-        options={
-          filteredFinancialProjects
-            ? filteredFinancialProjects.map((project) => ({
-                label: `${project.number} ${project.name}`,
-                value: { projectNumber: project.number },
-                subLabel: `(${getDateDisplay(project.startDate)} - ${getDateDisplay(
-                  project.endDate
-                )})`,
-              }))
-            : []
-        }
-        isLoading={isLoadingSearchProjects}
-        onInputChange={(value: string) => {
-          debounceSearchProjectsValue(value);
+    <Stack direction={'row'} justifyContent={'space-between'}>
+      <Box
+        sx={{
+          width: '87%',
+          [theme.breakpoints.down('lg')]: {
+            width: '85%',
+          },
         }}
-        hideSearchIcon
-        isClearable={true}
-        onChange={setFieldValue}
-        optionWithSubLabel
-        isDisabled={isLoading}
-      />
+      >
+        <Select
+          {...getFieldProps(`${prefix}.${CRUUSER_USER_TYPE_KEY.CURRENT_SEARCH_PROJECT}`)}
+          label={
+            isPI(type)
+              ? 'New Unassigned Project Search (Project not linked to PI Code)'
+              : 'Comprehensive Project Search'
+          }
+          placeholder={'Search'}
+          options={
+            filteredFinancialProjects
+              ? filteredFinancialProjects.map((project) => ({
+                  label: `${project.number} ${project.name}`,
+                  value: { projectNumber: project.number },
+                  subLabel: `(${getDateDisplay(project.startDate)} - ${getDateDisplay(
+                    project.endDate
+                  )})`,
+                }))
+              : []
+          }
+          isLoading={isLoadingSearchProjects}
+          onInputChange={(value: string) => {
+            debounceSearchProjectsValue(value);
+          }}
+          hideSearchIcon
+          isClearable={true}
+          onChange={setFieldValue}
+          optionWithSubLabel
+          isDisabled={isLoading}
+        />
+      </Box>
 
       <Box alignSelf={'end'} ml={2}>
         <Button onClick={handleAddProject}>Add</Button>
