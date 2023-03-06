@@ -1,19 +1,18 @@
 import dayjs from 'dayjs';
-import { get, isEqual } from 'lodash';
 import { MyProfile } from 'src/queries';
 import { FACode, PICode } from 'src/queries/Contents/types';
 import { getRoleNamePayload, isPI, ROLE_NAME } from 'src/queries/Profile/helpers';
 import {
+  AddUserPayload,
   CUPermission,
   DelegatedAccess,
   FADetail,
-  PIDetail,
   FinancialProject,
+  PIDetail,
   SharedUserTypeDetails,
   SUDetail,
   UserDetail,
   USER_STATUS,
-  AddUserPayload,
 } from 'src/queries/Users/types';
 import { ErrorService, Yup } from 'src/services';
 import { getTitleCase } from 'src/utils';

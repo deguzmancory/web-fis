@@ -73,10 +73,6 @@ const AuthContainer: React.FC<Props> = ({
         }
 
         onSetCurrentRole(_currentRole as ROLE_NAME);
-
-        if (data.roles.some((role) => role.role.name === ROLE_NAME.CU)) {
-          getMyPermissions();
-        }
       }
     },
     onError(error) {
@@ -145,6 +141,11 @@ const AuthContainer: React.FC<Props> = ({
     if (!isAuthenticated) {
       Auth.currentAuthenticatedUser()
         .then((user) => {
+          const isCuRole = user?.signInUserSession?.idToken?.payload?.roles?.includes(ROLE_NAME.CU);
+
+          if (isCuRole) {
+            getMyPermissions();
+          }
           getMyProfile();
         })
         .catch(() => {

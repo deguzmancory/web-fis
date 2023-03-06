@@ -254,6 +254,7 @@ export const dashboardItems: DashboardItem[] = [
         url: PATHS.userManagements,
         isExternalUrl: false,
         roles: [ROLE_NAME.CU],
+        permissions: [PERMISSION_VALUE.ALLOW_READ_USER],
       },
       {
         title: 'Search Vendors',
