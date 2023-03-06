@@ -4,7 +4,7 @@ import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Checkbox } from 'src/components/common';
 import { userTypeOptions } from 'src/containers/UsersManagement/TableList/CustomFilter/helpers';
-import { ROLE_NAME } from 'src/queries/Profile/helpers';
+import { isCU } from 'src/queries/Profile/helpers';
 import { PermissionsService } from 'src/services';
 import { getErrorMessage } from 'src/utils';
 import { CRUUSER_KEY, USER_TYPE_KEY } from '../../enums';
@@ -33,7 +33,16 @@ const SelectUserType: React.FC<Props> = ({ formikProps, isLoading }) => {
 
   const filterUserTypeOptions = React.useMemo(() => {
     if (nonCuPermission) {
-      return userTypeOptions.filter((role) => role.value !== ROLE_NAME.CU);
+      return userTypeOptions.map((option) => {
+        return isCU(option.value)
+          ? {
+              ...option,
+              disabled: true,
+            }
+          : {
+              ...option,
+            };
+      });
     }
     return userTypeOptions;
   }, [nonCuPermission]);

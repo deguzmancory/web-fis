@@ -151,7 +151,7 @@ const Group: React.FC<CheckboxGroupProps> = ({
                 ? { marginRight: customColumnMargin + 'px' }
                 : { width: `${100 / columns}%` }
             }
-            disabled={disabled}
+            disabled={option?.disabled || disabled}
             name={name}
           />
         ))}
@@ -162,7 +162,7 @@ const Group: React.FC<CheckboxGroupProps> = ({
 
 type CheckboxGroupProps = {
   label?: React.ReactNode | string;
-  options?: { value: any; label: string; key?: string }[];
+  options?: { value: any; label: string; key?: string; disabled?: boolean }[];
   value?: any[];
   name?: string;
   onChange?: (...arg: any[]) => void;

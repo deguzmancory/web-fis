@@ -1,11 +1,10 @@
 import { Box, Divider } from '@mui/material';
-import React, { useMemo, useCallback, Suspense } from 'react';
+import React, { Suspense, useCallback, useMemo } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { AnimatedTabPanel, LoadingCommon } from 'src/components/common';
 import TabsBar, { TabList } from 'src/components/common/TabsBar';
 import { getRoleName, ROLE_NAME } from 'src/queries/Profile/helpers';
 import { PIDetail } from 'src/queries/Users/types';
-import { PermissionsService } from 'src/services';
 import { isEmpty } from 'src/validations';
 import { USER_TYPE_KEY } from '../../enums';
 import { CRUUserFormikProps } from '../../helper';
@@ -55,10 +54,6 @@ const UserTypeDetails: React.FC<Props> = ({ initialPIInfo, formikProps, isLoadin
     [userRoles]
   );
 
-  const isNonCu = React.useMemo(() => {
-    return !PermissionsService.userCU().canUpdate;
-  }, []);
-
   const getTabListOption = useCallback(
     (role: ROLE_NAME | '') => {
       return {
@@ -75,14 +70,11 @@ const UserTypeDetails: React.FC<Props> = ({ initialPIInfo, formikProps, isLoadin
       getTabListOption(ROLE_NAME.SU),
       getTabListOption(ROLE_NAME.PI),
       getTabListOption(ROLE_NAME.FA),
+      getTabListOption(ROLE_NAME.CU),
     ];
 
-    if (!isNonCu) {
-      return [...filterTabList, getTabListOption(ROLE_NAME.CU)];
-    }
-
     return filterTabList;
-  }, [getTabListOption, isNonCu]);
+  }, [getTabListOption]);
 
   const tabComponent = useMemo(() => {
     if (hasPermission(tab)) {
@@ -100,16 +92,13 @@ const UserTypeDetails: React.FC<Props> = ({ initialPIInfo, formikProps, isLoadin
         case ROLE_NAME.FA:
           return <FADetails formikProps={formikProps} isLoading={isLoading} />;
         case ROLE_NAME.CU:
-          if (isNonCu) {
-            return null;
-          }
           return <CUDetails formikProps={formikProps} />;
         default:
           return null;
       }
     }
     return null;
-  }, [hasPermission, tab, initialPIInfo, formikProps, isLoading, isNonCu]);
+  }, [hasPermission, tab, initialPIInfo, formikProps, isLoading]);
 
   if (isEmpty(userRoles)) return null;
 

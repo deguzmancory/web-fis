@@ -6,6 +6,7 @@ import { CRUUSER_KEY } from 'src/containers/CRUUSerContainer/enums';
 import { CRUUserFormikProps, isEditProfileMode } from 'src/containers/CRUUSerContainer/helper';
 import { PERMISSION_VALUE, useGetPermissionCu } from 'src/queries/Permissions';
 import { CUPermission } from 'src/queries/Users/types';
+import { PermissionsService } from 'src/services';
 import {
   optionsPermissionCuUserManagement,
   PERMISSION_CU_LABEL,
@@ -13,15 +14,22 @@ import {
 } from './helpers';
 const CUDetails: React.FC<Props> = ({ formikProps }) => {
   const { values, setFieldValue } = formikProps;
+
   const permissions = values?.permissions;
-  const isInEditProfileMode = isEditProfileMode(values.mode);
+
+  const isInEditProfileMode = React.useMemo(() => {
+    return isEditProfileMode(values.mode);
+  }, [values.mode]);
+
+  const isNonCu = React.useMemo(() => {
+    return !PermissionsService.userCU().canUpdate;
+  }, []);
 
   const isViewOnly = React.useMemo(() => {
-    return values.isViewOnly;
-  }, [values.isViewOnly]);
+    return values.isViewOnly || isNonCu;
+  }, [isNonCu, values.isViewOnly]);
 
   const { permissionsCu, loading } = useGetPermissionCu({
-    onSuccess(data) {},
     onError(err) {},
     suspense: true,
   });
