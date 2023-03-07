@@ -12,7 +12,7 @@ export function newCancelToken(timeout = appConfig.CONNECTION_TIMEOUT) {
 }
 
 export const stringify = (
-  params: { [key: string]: number | string | string[] },
+  params: { [key: string]: number | string | string[] | boolean },
   excludeKey: string[] = []
 ) => {
   let result = '';

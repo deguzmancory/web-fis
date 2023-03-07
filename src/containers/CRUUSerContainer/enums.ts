@@ -63,4 +63,5 @@ export enum USER_MODE {
 
 export enum USER_TYPE_KEY {
   TAB = 'tab',
+  UNLINKED_PROJECT = 'unlinkedProject',
 }

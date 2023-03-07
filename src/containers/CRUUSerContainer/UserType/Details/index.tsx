@@ -45,6 +45,7 @@ const UserTypeDetails: React.FC<Props> = ({ initialPIInfo, formikProps, isLoadin
   const onChangeTab = (_e, value) => {
     query.set(USER_TYPE_KEY.TAB, value);
     query.delete(SEARCH_PROJECT_KEY.SEARCH_NAME);
+    query.delete(USER_TYPE_KEY.UNLINKED_PROJECT);
     query.delete('sort');
     history.push({ search: query.toString() });
   };

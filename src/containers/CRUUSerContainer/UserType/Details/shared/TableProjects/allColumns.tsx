@@ -32,7 +32,7 @@ export const allColumns = ({
       customBodyRender: (value: string) => {
         const isUnlinkProject = userFisCodes.every((code) => code.code !== value);
 
-        return <Typography variant="body2">{isUnlinkProject ? 'Unlink' : value}</Typography>;
+        return <Typography variant="body2">{isUnlinkProject ? 'Unlinked' : value}</Typography>;
       },
       setCellHeaderProps: () => ({
         style: {

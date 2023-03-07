@@ -6,7 +6,7 @@ import { useHistory, useLocation } from 'react-router';
 import { muiResponsive, PARAMS_SPLITTER } from 'src/appConfig/constants';
 import { Table } from 'src/components/common';
 import EmptyTable from 'src/components/EmptyTable';
-import { CRUUSER_USER_TYPE_KEY } from 'src/containers/CRUUSerContainer/enums';
+import { CRUUSER_USER_TYPE_KEY, USER_TYPE_KEY } from 'src/containers/CRUUSerContainer/enums';
 import { CRUUserFormikProps } from 'src/containers/CRUUSerContainer/helper';
 import { UserFiCode } from 'src/queries/Contents/types';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
@@ -14,6 +14,7 @@ import { FinancialProject, GetPropertiesParams } from 'src/queries/Users/types';
 import { useGetFinancialProjects } from 'src/queries/Users/useGetFinancialProjects';
 import { handleShowErrorMsg } from 'src/utils';
 import { isEmpty } from 'src/validations';
+import { isUnlinkedProjectParam } from '../SwitchUnlinkedProject';
 import { allColumns } from './allColumns';
 import HeaderTableUserType, { SEARCH_PROJECT_KEY } from './header';
 
@@ -23,6 +24,10 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
   const query = React.useMemo(() => new URLSearchParams(location.search), [location.search]);
   const searchProjectName = React.useMemo(
     () => query.get(SEARCH_PROJECT_KEY.SEARCH_NAME) || undefined,
+    [query]
+  );
+  const unLinkedProject = React.useMemo(
+    () => query.get(USER_TYPE_KEY.UNLINKED_PROJECT) || '0',
     [query]
   );
 
@@ -79,6 +84,7 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
         projectNumbers: userFisProjects
           .map((project) => project.projectNumber)
           .join(PARAMS_SPLITTER),
+        isUnlinked: isUnlinkedProjectParam(unLinkedProject),
       };
 
       const sort = params?.sort;
@@ -92,7 +98,7 @@ const TableProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoad
 
       setParams(newParams);
     },
-    [setParams, type, userFisCodes, userFisProjects, searchProjectName]
+    [setParams, type, userFisCodes, userFisProjects, searchProjectName, unLinkedProject]
   );
 
   const tableOptions: MUIDataTableOptions = React.useMemo(

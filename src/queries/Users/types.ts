@@ -44,7 +44,7 @@ export interface User {
 }
 
 export type GetPropertiesParams = TableParams & {
-  [key: string]: string | number | string[];
+  [key: string]: string | number | string[] | boolean;
 };
 
 export type DelegateAccess = {

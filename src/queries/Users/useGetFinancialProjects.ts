@@ -14,6 +14,7 @@ export interface GetFinancialProjectsParams extends GetPropertiesParams {
   projectNumbers?: string;
   excludeCodes?: string;
   excludeProjects?: string;
+  isUnlinked?: boolean;
 }
 
 export function useGetFinancialProjects(
