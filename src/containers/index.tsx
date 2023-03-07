@@ -17,12 +17,12 @@ import SplashScreen from './StartupContainers/SplashScreen';
 import ToastContainer from './StartupContainers/ToastContainer';
 
 import { Box } from '@mui/material';
+import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundary';
 import Footer from 'src/components/Footer';
 import { useComponentDidMount } from 'src/hooks';
 import LoadingContainer from './StartupContainers/LoadingContainer';
 import ScrollToTop from './StartupContainers/ScrollToTop';
 import CheckPasswordExpiredContainer from './UAMContainer/ChangePasswordExpired/container';
-import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundary';
 
 const Dashboard = React.lazy(() => import('./Dashboard'));
 const UsersManagement = React.lazy(() => import('./UsersManagement'));
@@ -99,7 +99,6 @@ const Routing: React.FC<{ location: Location }> = (props) => {
       <Footer />
 
       <AuthContainer />
-
       {/* <ContentContainer /> */}
       <DialogContainer />
       <ToastContainer />
@@ -117,7 +116,11 @@ const CRouting: React.FC<Props> = ({ isAuthenticated, pageRequiredAuth, componen
 
     if ((isAuthenticated && pageRequiredAuth) || (!isAuthenticated && !pageRequiredAuth)) {
       // Before render component, check permission first
-      return <Component {...props} />;
+      return (
+        <CustomErrorBoundary showErrorMessage>
+          <Component {...props} />
+        </CustomErrorBoundary>
+      );
     }
 
     const redirectPath = isAuthenticated ? PATHS.dashboard : PATHS.dashboard;
@@ -127,14 +130,15 @@ const CRouting: React.FC<Props> = ({ isAuthenticated, pageRequiredAuth, componen
         state: { from: props.location },
       },
     };
-    return <Redirect {...redirectProps} />;
+
+    return (
+      <CustomErrorBoundary fallback={<LoadingContainer />}>
+        <Redirect {...redirectProps} />
+      </CustomErrorBoundary>
+    );
   };
 
-  return (
-    <CustomErrorBoundary showErrorMessage>
-      <Route {...rest} render={renderRoute(component)} />;
-    </CustomErrorBoundary>
-  );
+  return <Route {...rest} render={renderRoute(component)} />;
 };
 
 type Props = ReturnType<typeof mapStateToProps> &

@@ -98,8 +98,6 @@ const create = (baseURL = appConfig.API_URL) => {
 
         delay(() => {
           signOut();
-          TokenService.clearToken();
-          DelegationKeyService.clearDelegationKey();
         }, 2000);
 
         return;

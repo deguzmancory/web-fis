@@ -18,7 +18,6 @@ import {
   Toastify,
   TokenService,
 } from 'src/services';
-
 const AuthContainer: React.FC<Props> = ({
   history,
   isAuthenticated,
@@ -85,9 +84,9 @@ const AuthContainer: React.FC<Props> = ({
         }, 3000);
       } else {
         Toastify.error(
-          `Error when fetch profile data: ${JSON.stringify(
-            error.message
-          )} Please try to login again!`
+          `Error when fetch profile data: ${
+            error ? JSON.stringify(error.message) : ''
+          } Please try to login again!`
         );
         setTimeout(() => {
           handleLogout();

@@ -49,7 +49,7 @@ const SelectPICodes: React.FC<Props> = ({ formikProps, isLoading }) => {
 
     if (!currentPICode) return;
 
-    if (currentPICode && piCodeRows.every((row) => row.code !== currentPICode.code)) {
+    if (piCodeRows.every((row) => row.code !== currentPICode.code)) {
       const newRows = [
         ...piCodeRows,
         {
