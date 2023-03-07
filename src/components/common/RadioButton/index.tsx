@@ -39,6 +39,7 @@ const Group: React.FC<RadioGroupProps> = ({
   value,
   containerClassName,
   label,
+  subLabel,
   errorMessage,
   name,
   columns = 3,
@@ -63,6 +64,7 @@ const Group: React.FC<RadioGroupProps> = ({
     <Element
       errorMessage={errorMessage}
       label={label}
+      subLabel={subLabel}
       className={containerClassName}
       required={required}
     >
@@ -87,7 +89,8 @@ const Group: React.FC<RadioGroupProps> = ({
 };
 
 type RadioGroupProps = {
-  label?: string;
+  label?: string | React.ReactNode;
+  subLabel?: string | React.ReactNode;
   options?: { value: any; label: string }[];
   value?: any;
   name?: string;

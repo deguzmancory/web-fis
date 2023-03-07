@@ -1,7 +1,7 @@
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Grid, Stack, Typography } from '@mui/material';
 import _ from 'lodash';
 import React from 'react';
-import { Checkbox, RadioButton } from 'src/components/common';
+import { Button, Checkbox, RadioButton } from 'src/components/common';
 import { CRUUSER_KEY } from 'src/containers/CRUUSerContainer/enums';
 import { CRUUserFormikProps, isEditProfileMode } from 'src/containers/CRUUSerContainer/helper';
 import { PERMISSION_VALUE, useGetPermissionCu } from 'src/queries/Permissions';
@@ -12,6 +12,8 @@ import {
   PERMISSION_CU_LABEL,
   PERMISSION_CU_OPTION_VALUE,
 } from './helpers';
+import { isEmpty } from 'src/validations';
+
 const CUDetails: React.FC<Props> = ({ formikProps }) => {
   const { values, setFieldValue } = formikProps;
 
@@ -263,6 +265,19 @@ const CUDetails: React.FC<Props> = ({ formikProps }) => {
     }
   }, [permissions, permissionsCu]);
 
+  const handleClearRadioButton = () => {
+    const before: CUPermission[] = [...permissions];
+    const updatedPermissions: CUPermission[] = before.filter(
+      (permission) =>
+        !permissionUserManagementIds[PERMISSION_CU_OPTION_VALUE.ALL].has(permission.permissionId)
+    );
+    return setFieldValue(CRUUSER_KEY.PERMISSIONS, updatedPermissions);
+  };
+
+  const isShowClearRadioButton = React.useMemo(() => {
+    return !isInEditProfileMode && !isViewOnly && !isEmpty(valueRadioUserManagement());
+  }, [isInEditProfileMode, isViewOnly, valueRadioUserManagement]);
+
   return (
     <Box p={2}>
       <Typography variant="h5" mb={2}>
@@ -295,10 +310,30 @@ const CUDetails: React.FC<Props> = ({ formikProps }) => {
         </Grid>
         <Grid item xs={4}>
           <RadioButton
-            label="User Management"
+            subLabel={
+              <Stack direction="row" alignItems={'center'} mb={1}>
+                <Typography variant="body2" fontWeight={'bold'} mr={1}>
+                  User Management
+                </Typography>
+
+                {isShowClearRadioButton && (
+                  <Button
+                    variant="link"
+                    style={{
+                      padding: '0 4px',
+                      height: 20,
+                      fontSize: 12,
+                      transform: 'translateY(1px)',
+                    }}
+                    onClick={() => handleClearRadioButton()}
+                  >
+                    Clear
+                  </Button>
+                )}
+              </Stack>
+            }
             columns={1}
             options={optionsPermissionCuUserManagement}
-            containerClassName="element-title-bold"
             value={valueRadioUserManagement()}
             onChange={(_name, value) => {
               return handleRadioButtonChange(value);
