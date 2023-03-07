@@ -41,6 +41,7 @@ const AuthContainer: React.FC<Props> = ({
     onSuccess(data) {
       const permissions = data?.map((permission) => permission.displayName) || [];
       PermissionsService.setPermissions(permissions);
+      getMyProfile();
     },
     onError(error) {
       Toastify.error(
@@ -141,11 +142,13 @@ const AuthContainer: React.FC<Props> = ({
       Auth.currentAuthenticatedUser()
         .then((user) => {
           const isCuRole = user?.signInUserSession?.idToken?.payload?.roles?.includes(ROLE_NAME.CU);
-
+          // Is CU >> GET Permissions >> GET /me
+          // Else >> get /me
           if (isCuRole) {
             getMyPermissions();
+          } else {
+            getMyProfile();
           }
-          getMyProfile();
         })
         .catch(() => {
           clearAuth();

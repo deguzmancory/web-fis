@@ -20,7 +20,7 @@ export function useProfile(
     queryFn: handleGetProfile,
     refetchOnMount: false,
     select: (data) => data.data.data,
-    enabled: true,
+    enabled: false,
     notifyOnChangeProps: ['data', 'isFetching'],
     ...options,
   });
