@@ -1,5 +1,6 @@
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { FormikProps, useFormik } from 'formik';
+import _ from 'lodash';
 import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -12,9 +13,9 @@ import { useCreateUser, useGetAllUsers, useGetUser } from 'src/queries/Users';
 import { useUpdateUser } from 'src/queries/Users/useUpdateUser';
 import { setCurrentRole } from 'src/redux/auth/authSlice';
 import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
-import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, PermissionsService, RoleService, Toastify, TokenService } from 'src/services';
+import Prompt from 'src/services/Prompt';
 import {
   deepKeys,
   getUncontrolledInputFieldProps,
@@ -55,6 +56,7 @@ const CRUUserContainer: React.FC<Props> = ({
   onSetCurrentRole,
 }) => {
   const { userId } = useParams<{ userId: string }>();
+
   const isEditUserMode = React.useMemo(() => {
     return !isEmpty(userId);
   }, [userId]);
@@ -69,29 +71,16 @@ const CRUUserContainer: React.FC<Props> = ({
   });
 
   const handleCancelButton = () => {
-    onShowDialog({
-      type: DIALOG_TYPES.YESNO_DIALOG,
-      data: {
-        title: `Cancel`,
-        content: `There are unsaved changes on the Form. Are you sure you want to leave this page?`,
-        okText: 'Ok',
-        cancelText: 'Cancel',
-        onOk: () => {
-          onHideDialog();
-          setTimeout(() => {
-            Navigator.navigate(PATHS.userManagements);
-          }, 50);
-        },
-        onCancel: () => {
-          onHideAllDialog();
-        },
-      },
-    });
+    Navigator.navigate(PATHS.userManagements);
   };
 
   const { handleInvalidateAllUser } = useGetAllUsers();
   const { profile, handleInvalidateProfile, getMyProfile } = useProfile();
-  const { createUser, isLoading: isLoadingCreateUser } = useCreateUser({
+  const {
+    createUser,
+    isLoading: isLoadingCreateUser,
+    isSuccess: successCreateUser,
+  } = useCreateUser({
     onSuccess(_data, variables, _context) {
       Toastify.success(`Add User ${variables.username} successfully.`);
       handleInvalidateAllUser();
@@ -106,7 +95,11 @@ const CRUUserContainer: React.FC<Props> = ({
     },
   });
 
-  const { updateUser, isLoading: isLoadingUpdateUser } = useUpdateUser({
+  const {
+    updateUser,
+    isLoading: isLoadingUpdateUser,
+    isSuccess: successUpdate,
+  } = useUpdateUser({
     onSuccess(_data, variables, _context) {
       Toastify.success(`Update User ${variables.username} successfully.`);
       handleInvalidateUser();
@@ -217,6 +210,7 @@ const CRUUserContainer: React.FC<Props> = ({
   }, [isEditUserMode, user]);
 
   const loading = isLoadingGetUser || isLoadingCreateUser || isLoadingUpdateUser;
+  const success = successCreateUser || successUpdate;
 
   const handleScrollToTopError = () => {
     return setTimeout(() => {
@@ -278,63 +272,78 @@ const CRUUserContainer: React.FC<Props> = ({
     );
   }
 
-  return (
-    <Box className={`${clsPrefix}`} py={2} minHeight={'50vh'}>
-      <Container maxWidth="lg">
-        <BreadcrumbsUserDetail isViewMode={isEditUserMode} />
-        <Typography mt={2} variant="h2">
-          {isEditUserMode ? 'Edit' : 'Add'} User
-        </Typography>
-        <Suspense fallback={<LoadingCommon />}>
-          <Layout>
-            <GeneralInfo formikProps={formikProps} isLoading={loading || isViewOnly} />
-          </Layout>
-          <Layout>
-            <UserType
-              formikProps={formikProps}
-              isLoading={loading}
-              initialPIInfo={user?.fisPiInfo}
-            />
-          </Layout>
-          <Layout>
-            <InternalComments formikProps={formikProps} isLoading={loading || isViewOnly} />
-          </Layout>
-          {isEditUserMode && (
-            <Suspense fallback={<LoadingCommon />}>
-              <Accordion title="Audit Information" className="mt-16">
-                <AuditInformation
-                  formikProps={formikProps}
-                  userAuditTrails={user?.userAuditTrails || []}
-                  isLoading={loading || isViewOnly}
-                />
-              </Accordion>
-            </Suspense>
-          )}
+  const blockCondition = (location) => {
+    const equalValue = _.isEqual(initialFormValue, values);
+    return !success && !location.pathname.includes(`${PATHS.userManagements}/`) && !equalValue;
+  };
 
-          <Stack my={4} flexDirection={'row'} justifyContent="center">
-            <Button
-              variant="outline"
-              className="mr-8"
-              onClick={() => {
-                handleCancelButton();
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={() => {
-                handleScrollToTopError();
-                handleSubmit();
-              }}
-              isLoading={loading}
-              disabled={loading || isViewOnly}
-            >
-              Save
-            </Button>
-          </Stack>
-        </Suspense>
-      </Container>
-    </Box>
+  return (
+    <Prompt
+      title={'Leave site?'}
+      message={'There are unsaved changes on the Form. Are you sure you want to leave this page?'}
+      condition={blockCondition}
+      cancelTitle="Attention"
+      cancelMessage="Clicking this button will discard the mailing address changing request. Are you sure you want to proceed?"
+      cancelOkText="Yes, leave"
+      cancelText="No, stay"
+    >
+      <Box className={`${clsPrefix}`} py={2} minHeight={'50vh'}>
+        <Container maxWidth="lg">
+          <BreadcrumbsUserDetail isViewMode={isEditUserMode} />
+          <Typography mt={2} variant="h2">
+            {isEditUserMode ? 'Edit' : 'Add'} User
+          </Typography>
+          <Suspense fallback={<LoadingCommon />}>
+            <Layout>
+              <GeneralInfo formikProps={formikProps} isLoading={loading || isViewOnly} />
+            </Layout>
+            <Layout>
+              <UserType
+                formikProps={formikProps}
+                isLoading={loading}
+                initialPIInfo={user?.fisPiInfo}
+              />
+            </Layout>
+            <Layout>
+              <InternalComments formikProps={formikProps} isLoading={loading || isViewOnly} />
+            </Layout>
+            {isEditUserMode && (
+              <Suspense fallback={<LoadingCommon />}>
+                <Accordion title="Audit Information" className="mt-16">
+                  <AuditInformation
+                    formikProps={formikProps}
+                    userAuditTrails={user?.userAuditTrails || []}
+                    isLoading={loading || isViewOnly}
+                  />
+                </Accordion>
+              </Suspense>
+            )}
+
+            <Stack my={4} flexDirection={'row'} justifyContent="center">
+              <Button
+                variant="outline"
+                className="mr-8"
+                onClick={() => {
+                  handleCancelButton();
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  handleScrollToTopError();
+                  handleSubmit();
+                }}
+                isLoading={loading}
+                disabled={loading || isViewOnly}
+              >
+                Save
+              </Button>
+            </Stack>
+          </Suspense>
+        </Container>
+      </Box>
+    </Prompt>
   );
 };
 
