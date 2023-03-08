@@ -83,9 +83,8 @@ const AddDelegation: React.FC<Props> = ({ formikProps }) => {
         isAllProjects: false,
       };
       const delegateAccess = valuesFormik.delegateAccess;
-      delegateAccess.unshift(payload);
 
-      setFieldValueFormik(CRUUSER_KEY.DELEGATE_ACCESS, delegateAccess);
+      setFieldValueFormik(CRUUSER_KEY.DELEGATE_ACCESS, [payload, ...delegateAccess]);
 
       setTimeout(() => {
         resetForm();
