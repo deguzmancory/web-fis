@@ -3,11 +3,7 @@ import apiClient from '../apiClient';
 import { authResponseWrapper } from '../helpers';
 import { UpdateUserPayload } from './types';
 export function useUpdateUser(options?: UseMutationOptions<any, Error, UpdateUserPayload>) {
-  const {
-    mutate: updateUser,
-    isLoading,
-    isSuccess,
-  } = useMutation<any, Error, UpdateUserPayload>({
+  const { mutate: updateUser, isLoading } = useMutation<any, Error, UpdateUserPayload>({
     mutationFn: (payload: UpdateUserPayload) => {
       return authResponseWrapper(apiClient.updateUser, [payload]);
     },
@@ -17,6 +13,5 @@ export function useUpdateUser(options?: UseMutationOptions<any, Error, UpdateUse
   return {
     updateUser,
     isLoading,
-    isSuccess,
   };
 }

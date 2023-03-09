@@ -1,5 +1,6 @@
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { FormikProps, useFormik } from 'formik';
+import { Location } from 'history';
 import _ from 'lodash';
 import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
@@ -84,7 +85,6 @@ const CRUUserContainer: React.FC<Props> = ({
     onSuccess(_data, variables, _context) {
       Toastify.success(`Add User ${variables.username} successfully.`);
       handleInvalidateAllUser();
-      Navigator.navigate(PATHS.userManagements);
     },
     onError(error, _variables, _context) {
       if (error.message === 'An account with this username already existed.') {
@@ -95,11 +95,13 @@ const CRUUserContainer: React.FC<Props> = ({
     },
   });
 
-  const {
-    updateUser,
-    isLoading: isLoadingUpdateUser,
-    isSuccess: successUpdate,
-  } = useUpdateUser({
+  React.useEffect(() => {
+    if (successCreateUser) {
+      Navigator.navigate(PATHS.userManagements);
+    }
+  }, [successCreateUser]);
+
+  const { updateUser, isLoading: isLoadingUpdateUser } = useUpdateUser({
     onSuccess(_data, variables, _context) {
       Toastify.success(`Update User ${variables.username} successfully.`);
       handleInvalidateUser();
@@ -210,7 +212,6 @@ const CRUUserContainer: React.FC<Props> = ({
   }, [isEditUserMode, user]);
 
   const loading = isLoadingGetUser || isLoadingCreateUser || isLoadingUpdateUser;
-  const success = successCreateUser || successUpdate;
 
   const handleScrollToTopError = () => {
     return setTimeout(() => {
@@ -257,6 +258,20 @@ const CRUUserContainer: React.FC<Props> = ({
     return PermissionsService.user().canCreate;
   }, []);
 
+  const blockCondition = (location: Location<string>) => {
+    const equalValue = _.isEqual(initialFormValue, values);
+    let condition: boolean;
+    if (!successCreateUser && equalValue) {
+      condition = false;
+    } else if (successCreateUser) {
+      condition = false;
+    } else {
+      condition = !location.pathname.includes(`${PATHS.userManagements}/`) && !equalValue;
+    }
+
+    return condition;
+  };
+
   if ((!havePermissionCreate && !isEditUserMode) || !isCU(currentRole)) {
     return (
       <Box py={2} minHeight={'50vh'}>
@@ -271,11 +286,6 @@ const CRUUserContainer: React.FC<Props> = ({
       </Box>
     );
   }
-
-  const blockCondition = (location) => {
-    const equalValue = _.isEqual(initialFormValue, values);
-    return !success && !location.pathname.includes(`${PATHS.userManagements}/`) && !equalValue;
-  };
 
   return (
     <Prompt
