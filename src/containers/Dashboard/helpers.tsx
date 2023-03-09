@@ -258,7 +258,7 @@ export const dashboardItems: DashboardItem[] = [
       },
       {
         title: 'Search Vendors',
-        url: '#',
+        url: PATHS.vendors,
         isExternalUrl: false,
         roles: [ROLE_NAME.CU, ROLE_NAME.PI, ROLE_NAME.SU, ROLE_NAME.FA],
       },

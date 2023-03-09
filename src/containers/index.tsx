@@ -33,6 +33,7 @@ const EditProfile = React.lazy(() => import('./EditProfile'));
 const EmptyScreen = React.lazy(() => import('./UAMContainer/ChangePasswordExpired/emptyScreen'));
 const PurchaseOrderContainer = React.lazy(() => import('./PurchaseOrderContainer'));
 const SoleSourcePOContainer = React.lazy(() => import('./AdditionalPOForms'));
+const VendorsManagement = React.lazy(() => import('./VendorsManagement'));
 
 const Routing: React.FC<{ location: Location }> = (props) => {
   Navigator.setTopHistory(useHistory());
@@ -81,6 +82,10 @@ const Routing: React.FC<{ location: Location }> = (props) => {
               exact
             />
             {/* PO */}
+
+            {/* Vendors */}
+            <CustomRoute pageRequiredAuth path={PATHS.vendors} component={VendorsManagement} />
+            {/* Vendors */}
 
             <CustomRoute pageRequiredAuth path={PATHS.switchUser} component={SwitchUser} />
             <CustomRoute pageRequiredAuth path={PATHS.myProfile} component={EditProfile} />

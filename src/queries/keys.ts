@@ -26,6 +26,7 @@ export enum API_QUERIES {
 
   // Vendor
   SEARCH_VENDOR = '/vendor/search',
+  VENDORS = '/vendors',
 
   // Financial
   GET_FINANCIAL_PROJECTS = '/financial-svc/v1/projects',

@@ -26,6 +26,11 @@ export const PATHS = {
   // miscellaneous / Global settings
   globalSettings: '/global-settings',
   expiredPassword: '/expired-password',
+
+  // Vendors
+  vendors: '/miscellaneous/vendors',
+  addVendor: '/miscellaneous/vendors/add',
+  vendorDetail: '/miscellaneous/vendors/vendor-detail',
 };
 
 export const PATH_HEADERS = {

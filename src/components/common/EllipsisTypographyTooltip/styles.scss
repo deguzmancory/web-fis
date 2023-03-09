@@ -1,0 +1,9 @@
+@use 'src/scss/vars' as *;
+@use 'src/scss/mixin' as *;
+
+.ellipsis-multiple-line {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  // -webkit-line-clamp: 2;
+}

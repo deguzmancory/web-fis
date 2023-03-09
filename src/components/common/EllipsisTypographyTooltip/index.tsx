@@ -1,11 +1,12 @@
 import { Typography, Tooltip, TypographyProps, SxProps } from '@mui/material';
-
+import './styles.scss';
 const EllipsisTypographyTooltip: React.FC<Props> = ({
   lengthShowTooltip = 10,
   hideTooltip,
   children,
   placement = 'bottom',
   tooltipSx,
+  maxLine = 1,
   ...props
 }) => {
   return (
@@ -19,16 +20,13 @@ const EllipsisTypographyTooltip: React.FC<Props> = ({
       sx={tooltipSx}
     >
       <Typography
-        noWrap
+        variant="body2"
+        className="ellipsis-multiple-line"
         sx={{
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-          width: '100%',
+          WebkitLineClamp: maxLine,
         }}
-        {...props}
       >
-        {children}
+        {children ?? '--'}
       </Typography>
     </Tooltip>
   );
@@ -36,6 +34,7 @@ const EllipsisTypographyTooltip: React.FC<Props> = ({
 
 type Props = TypographyProps & {
   lengthShowTooltip?: number;
+  maxLine?: number;
   tooltipSx?: SxProps;
   hideTooltip?: boolean;
   placement?:

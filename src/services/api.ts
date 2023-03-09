@@ -271,6 +271,11 @@ const create = (baseURL = appConfig.API_URL) => {
   };
 
   // ====================== Vendors ======================
+  const getAllVendors = (params: GetPropertiesParams) => {
+    const queryString = stringify(params);
+    return api.get(`/financial-svc/v1/vendors?${queryString}`, {}, newCancelToken());
+  };
+
   const searchVendors = (params: SearchVendorsParams & GetPropertiesParams) => {
     const queryString = stringify(params);
     return api.get(`/financial-svc/v1/vendors/search?${queryString}`, {}, newCancelToken());
@@ -358,6 +363,7 @@ const create = (baseURL = appConfig.API_URL) => {
 
     // ====================== Vendors ======================
     searchVendors,
+    getAllVendors,
 
     // ====================== PO ======================
     getPO,
