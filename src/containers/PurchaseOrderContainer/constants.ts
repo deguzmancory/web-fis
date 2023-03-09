@@ -304,14 +304,14 @@ export const initialFfataValue = {
   performanceSiteAddressZip: '',
 };
 
-export const initialUpsertPOFormValue = {
+export const emptyUpsertPOFormValue = {
   documentType: '',
   majorVersion: '',
   minorVersion: null,
   formName: '',
   shortFormName: '',
   loginName: '',
-  number: '',
+  number: 'To be assigned',
   formNumber: '',
   projectTitle: '',
   projectNumber: '',

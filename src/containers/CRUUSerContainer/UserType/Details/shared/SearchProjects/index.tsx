@@ -9,8 +9,8 @@ import { CRUUSER_USER_TYPE_KEY } from 'src/containers/CRUUSerContainer/enums';
 import { CRUUserFormikProps } from 'src/containers/CRUUSerContainer/helper';
 import { UserFiCode } from 'src/queries/Contents/types';
 import { isPI, ROLE_NAME } from 'src/queries/Profile/helpers';
-import { FinancialProject } from 'src/queries/Users/types';
-import { useGetFinancialProjects } from 'src/queries/Users/useGetFinancialProjects';
+import { FinancialProject } from 'src/queries/Projects/types';
+import { useGetFinancialProjects } from 'src/queries/Projects/useGetFinancialProjects';
 import { getDateDisplay } from 'src/utils';
 
 const SearchProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoading }) => {

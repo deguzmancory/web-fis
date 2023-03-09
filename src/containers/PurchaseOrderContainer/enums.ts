@@ -1,7 +1,25 @@
 export enum PO_FORM_KEY {
   // general info
   LOGIN_NAME = 'loginName',
+  DATE = 'date',
+  NUMBER = 'number',
   PROJECT_TITLE = 'projectTitle',
+  PROJECT_NUMBER = 'projectNumber',
+  PI_NAME = 'piName',
+  PROJECT_PERIOD = 'projectPeriod',
+  SUPER_QUOTE_NUMBER = 'superquoteNumber',
+  SUPER_QUOTE_BID_ID = 'superquoteBidId',
+  VENDOR_NAME = 'vendorName',
+  VENDOR_CODE = 'vendorCode',
+  VENDOR_ADDRESS = 'vendorAddress',
+  SHIP_VIA = 'shipVia',
+  SHIP_OTHER = 'shipOther',
+  DELIVERY_BY = 'deliveryBy',
+  DISCOUNT_TERMS = 'discountTerms',
+  QUOTATION_NUMBER = 'quotationNumber',
+  DIRECT_INQUIRIES_TO = 'directInquiriesTo',
+  PHONE_NUMBER = 'phoneNumber',
+  FA_STAFF_REVIEWER = 'faStaffReviewer',
 
   // line items
   LINE_ITEMS = 'lineItems',

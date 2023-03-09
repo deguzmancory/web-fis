@@ -32,7 +32,7 @@ const GlobalSettings = React.lazy(() => import('./GlobalSettings'));
 const EditProfile = React.lazy(() => import('./EditProfile'));
 const EmptyScreen = React.lazy(() => import('./UAMContainer/ChangePasswordExpired/emptyScreen'));
 const PurchaseOrderContainer = React.lazy(() => import('./PurchaseOrderContainer'));
-const SoleSourcePOContainer = React.lazy(() => import('./AdditionalPOForms/SoleSource'));
+const SoleSourcePOContainer = React.lazy(() => import('./AdditionalPOForms'));
 
 const Routing: React.FC<{ location: Location }> = (props) => {
   Navigator.setTopHistory(useHistory());

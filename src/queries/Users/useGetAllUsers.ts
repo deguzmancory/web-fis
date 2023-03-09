@@ -2,9 +2,14 @@ import { useState } from 'react';
 import { useQuery, useQueryClient, UseQueryOptions } from 'react-query';
 import { isEmpty } from 'src/validations';
 import apiClient from '../apiClient';
-import { ApiResponseType, PaginationResponseType, responseWrapper } from '../helpers';
+import {
+  ApiResponseType,
+  GetPropertiesParams,
+  PaginationResponseType,
+  responseWrapper,
+} from '../helpers';
 import { API_QUERIES } from '../keys';
-import { GetPropertiesParams, User } from './types';
+import { User } from './types';
 
 export function useGetAllUsers(
   options?: UseQueryOptions<

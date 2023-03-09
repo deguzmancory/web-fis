@@ -2,33 +2,48 @@ import { Box, Container, Typography } from '@mui/material';
 import { FormikProps, useFormik } from 'formik';
 import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { LoadingCommon } from 'src/components/common';
 import NoPermission from 'src/components/NoPermission';
-import { useGetPODetail } from 'src/queries/PurchaseOrders/useGetPODetail';
+import { useProfile } from 'src/queries';
+import { useGetPODetail } from 'src/queries/PurchaseOrders';
 import { setFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Toastify } from 'src/services';
-import {
-  getUncontrolledCurrencyInputFieldProps,
-  getUncontrolledInputFieldProps,
-  handleScrollToTopError,
-} from 'src/utils';
+import { getUncontrolledCurrencyInputFieldProps, getUncontrolledInputFieldProps } from 'src/utils';
+import { PO_ADDITIONAL_FORM_KEY, PO_ADDITIONAL_FORM_PARAMS } from '../AdditionalPOForms/enum';
 import Layout from '../CRUUSerContainer/layout';
 import AdditionalForms from './AdditionalForms';
 import BreadcrumbsPODetail from './breadcrumbs';
-import { initialUpsertPOFormValue } from './constants';
+import { emptyUpsertPOFormValue } from './constants';
 import GeneralInfo from './GeneralInfo';
-import { getAdditionalPOFormValue } from './helpers';
+import { getAdditionalPOFormValue, getInitialPOFormValue } from './helpers';
 import TableLineItems from './TableLineItems';
 import { UpsertPOFormikProps, UpsertPOFormValue } from './types';
 
 const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) => {
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  const scrollToParam = query.get(PO_ADDITIONAL_FORM_PARAMS.SCROLL_TO) || null;
+
   const formRef = React.useRef<FormikProps<UpsertPOFormValue>>(null);
   const isEditPOMode = false;
   const hasPermission = true;
 
+  React.useEffect(() => {
+    if (scrollToParam && scrollToParam === PO_ADDITIONAL_FORM_KEY.ADDITIONAL_FORMS) {
+      const additionalFormId = document.getElementById(PO_ADDITIONAL_FORM_KEY.ADDITIONAL_FORMS);
+
+      if (additionalFormId) {
+        setTimeout(() => {
+          additionalFormId.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    }
+  }, [scrollToParam]);
+
   const { onGetPOById } = useGetPODetail({
-    id: '839b57dc-176b-4492-94a7-83f01efb8455', //handle when edit po ready
+    id: '839b57dc-176b-4492-94a7-83f01efb8455', //TODO: handle when edit po ready
     onSuccess: (data) => {
       const formValue: UpsertPOFormValue = {
         ...data,
@@ -43,12 +58,15 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
     },
   });
 
+  const { profile } = useProfile();
+
   React.useLayoutEffect(() => {
     // get initial data when first time mounted
     if (!formData) {
       // create mode
       if (!isEditPOMode) {
-        onSetFormData<UpsertPOFormValue>(initialUpsertPOFormValue);
+        const initialPOFormValue = getInitialPOFormValue({ profile });
+        onSetFormData<UpsertPOFormValue>(initialPOFormValue);
         return;
       }
 
@@ -58,17 +76,17 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
     }
 
     // just back from additional forms mode => not fetching anything
-  }, [formData, isEditPOMode, onGetPOById, onSetFormData]);
+  }, [formData, onSetFormData, isEditPOMode, profile, onGetPOById]);
 
   const handleFormSubmit = (values: UpsertPOFormValue) => {
     console.log('values: ', values);
   };
 
   const initialFormValue = React.useMemo(() => {
-    return formData || initialUpsertPOFormValue;
+    return formData || emptyUpsertPOFormValue;
   }, [formData]);
 
-  const { values, errors, touched, setFieldValue, getFieldProps, setFieldTouched, handleSubmit } =
+  const { values, errors, touched, setFieldValue, getFieldProps, setFieldTouched } =
     useFormik<UpsertPOFormValue>({
       initialValues: initialFormValue,
       validationSchema: null,
@@ -96,9 +114,9 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
     }),
   };
 
-  const _handleScrollToTopError = React.useCallback(() => {
-    handleScrollToTopError(errors);
-  }, [errors]);
+  // const _handleScrollToTopError = React.useCallback(() => {
+  //   handleScrollToTopError(errors);
+  // }, [errors]);
 
   return (
     <Box py={4}>

@@ -16,8 +16,14 @@ const BreadcrumbsPODetail: React.FC<Props> = ({ isViewMode }) => {
       <Link to={PATHS.dashboard}>
         <TypographyLink>Main Menu</TypographyLink>
       </Link>
+
       <Typography variant="body2">Purchasing (POs & PO Payments)</Typography>
-      <Typography variant="body2">{getTitleBreadcrumbs()} PO</Typography>
+
+      <Link to={PATHS.createPurchaseOrders}>
+        <TypographyLink>{getTitleBreadcrumbs()} PO</TypographyLink>
+      </Link>
+
+      <Typography variant="body2">Additional Forms</Typography>
     </Breadcrumbs>
   );
 };

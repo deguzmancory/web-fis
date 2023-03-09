@@ -2,12 +2,12 @@ import dayjs from 'dayjs';
 import { MyProfile } from 'src/queries';
 import { FACode, PICode } from 'src/queries/Contents/types';
 import { getRoleNamePayload, isPI, ROLE_NAME } from 'src/queries/Profile/helpers';
+import { FinancialProject } from 'src/queries/Projects/types';
 import {
   AddUserPayload,
   CUPermission,
   DelegatedAccess,
   FADetail,
-  FinancialProject,
   PIDetail,
   SharedUserTypeDetails,
   SUDetail,

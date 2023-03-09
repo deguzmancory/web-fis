@@ -1,21 +1,16 @@
 export interface SharedPODetail {
-  documentType: string;
-  majorVersion: string;
-  minorVersion: number;
-  formName: string;
-  shortFormName: string;
   loginName: string;
+  date: string;
   number: string;
-  formNumber: string;
   projectTitle: string;
   projectNumber: string;
   piName: string;
   projectPeriod: string;
-  faStaffReviewer: string;
+  superquoteNumber: string;
+  superquoteBidId: string;
   vendorName: string;
   vendorAddress: string;
   vendorCode: string;
-  shipTo: string;
   shipVia: string;
   shipOther: string;
   deliveryBy: string;
@@ -23,7 +18,15 @@ export interface SharedPODetail {
   quotationNumber: string;
   directInquiriesTo: string;
   phoneNumber: string;
-  date: string;
+  faStaffReviewer: string;
+
+  documentType: string;
+  majorVersion: string;
+  minorVersion: number;
+  formName: string;
+  shortFormName: string;
+  formNumber: string;
+  shipTo: string;
   confirming: boolean;
   getExempt: boolean;
   taxRate: number;
@@ -42,8 +45,6 @@ export interface SharedPODetail {
   poComments: string;
   amountChange: number;
   uhSubawardNumber: string;
-  superquoteNumber: string;
-  superquoteBidId: string;
 }
 
 export interface UpsertPOPayload extends SharedPODetail {

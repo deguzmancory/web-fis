@@ -2,10 +2,15 @@ import { useState } from 'react';
 import { useQuery, useQueryClient, UseQueryOptions } from 'react-query';
 import { isEmpty } from 'src/validations';
 import apiClient from '../apiClient';
-import { ApiResponseType, PaginationResponseType, responseWrapper } from '../helpers';
+import {
+  ApiResponseType,
+  GetPropertiesParams,
+  PaginationResponseType,
+  responseWrapper,
+} from '../helpers';
 import { API_QUERIES } from '../keys';
 import { ROLE_NAME } from '../Profile/helpers';
-import { FinancialProject, GetPropertiesParams } from './types';
+import { FinancialProject } from './types';
 
 export interface GetFinancialProjectsParams extends GetPropertiesParams {
   search?: string;

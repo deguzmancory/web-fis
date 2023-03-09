@@ -1,5 +1,6 @@
+import { GetPropertiesParams } from 'src/queries/helpers';
 import { ROLE_NAME, getRoleName } from 'src/queries/Profile/helpers';
-import { GetPropertiesParams, USER_KEY } from 'src/queries/Users/types';
+import { USER_KEY } from 'src/queries/Users/types';
 import { isEmpty } from 'src/validations';
 
 export enum CUSTOM_FILTER_USERS_KEY {

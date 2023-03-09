@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import cn from 'classnames';
 import { isEqual } from 'lodash';
 import { useCallback, useRef } from 'react';
@@ -14,6 +15,7 @@ import Select, {
 import { COLOR_CODE } from 'src/appConfig/constants';
 import { Callback } from 'src/redux/types';
 import { getRandomId } from 'src/utils';
+import { CommonPlacement } from 'src/utils/commonTypes';
 import { isEmpty } from 'src/validations';
 import Element from '../Element';
 import View from '../View';
@@ -38,6 +40,11 @@ const ControlNoSearchIcon: React.FC<ControlProps> = ({ children, ...props }) => 
   <components.Control {...props}>{children}</components.Control>
 );
 
+const menuRightPositionStyle = {
+  position: 'absolute' as const,
+  right: 0,
+};
+
 const SelectCmp: React.FC<Props> = ({
   options,
   label,
@@ -61,8 +68,11 @@ const SelectCmp: React.FC<Props> = ({
   menuStyle,
   optionStyle,
   styles,
+  footer,
+  customSelectedOptionValue,
+  menuOptionPosition = 'left',
   onChange = (name, value) => {},
-  onBlur = (e) => {},
+  onBlur = (name, value) => {},
   onInputChange = (value) => {},
   ...props
 }) => {
@@ -128,7 +138,7 @@ const SelectCmp: React.FC<Props> = ({
           id={id.current}
           isClearable={isClearable}
           isDisabled={isDisabled}
-          value={selectedOption}
+          value={customSelectedOptionValue ?? selectedOption}
           placeholder={placeholder}
           onChange={handleChange}
           options={options}
@@ -169,9 +179,9 @@ const SelectCmp: React.FC<Props> = ({
             menu: (base, props) => ({
               ...base,
               ...menuStyle,
+              ...(menuOptionPosition === 'right' && menuRightPositionStyle),
             }),
           }}
-          {...props}
           components={{
             DropdownIndicator,
             Control: hideSearchIcon ? ControlNoSearchIcon : Control,
@@ -181,15 +191,17 @@ const SelectCmp: React.FC<Props> = ({
           }}
           menuPosition={menuPosition}
           onInputChange={onInputChange}
+          {...props}
         />
       </View>
+      {footer && <Box mt={1}>{footer}</Box>}
     </Element>
   );
 };
 
-export interface SelectOption {
+export interface SelectOption<T = any> {
   label: string | React.ReactNode;
-  value: any;
+  value: T;
   prefix?: string | React.ReactNode;
   subLabel?: string | React.ReactNode;
 }
@@ -205,19 +217,7 @@ type Props = Omit<SelectProps, 'onBlur' | 'onChange'> & {
   name?: string;
   required?: boolean;
   infoTooltipMessage?: string;
-  infoTooltipPlacement?:
-    | 'bottom-end'
-    | 'bottom-start'
-    | 'bottom'
-    | 'left-end'
-    | 'left-start'
-    | 'left'
-    | 'right-end'
-    | 'right-start'
-    | 'right'
-    | 'top-end'
-    | 'top-start'
-    | 'top';
+  infoTooltipPlacement?: CommonPlacement;
   infoToolTipWithArrow?: boolean;
   hideSearchIcon?: boolean;
   isClearable?: boolean;
@@ -229,7 +229,10 @@ type Props = Omit<SelectProps, 'onBlur' | 'onChange'> & {
   optionStyle?: CSSObjectWithLabel;
   styles?: StylesConfig;
   isLoading?: boolean;
-  onChange?: Callback;
+  footer?: React.ReactNode;
+  customSelectedOptionValue?: any;
+  menuOptionPosition?: 'left' | 'right';
+  onChange?: (name, value) => void;
   onBlur?: Callback;
   onInputChange?: Callback;
 };

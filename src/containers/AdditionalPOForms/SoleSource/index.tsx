@@ -1,72 +1,107 @@
-import { Box, Container, Typography } from '@mui/material';
-import { FormikProps } from 'formik';
-import React, { Suspense } from 'react';
+import { Box, Grid } from '@mui/material';
+import { FormikProps, useFormik } from 'formik';
+import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
-import { Button, LoadingCommon } from 'src/components/common';
-import NoPermission from 'src/components/NoPermission';
-import Layout from 'src/containers/CRUUSerContainer/layout';
-import { PO_ADDITIONAL_FORM_CODE } from 'src/containers/PurchaseOrderContainer/enums';
+import { Input } from 'src/components/common';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
+import { POSoleSourcePayload } from 'src/queries/PurchaseOrders';
 import { setFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator } from 'src/services';
-import BreadcrumbsPODetail from './breadcrumbs';
-import SoleSourceForm from './SoleSourceForm';
+import { getErrorMessage, getUncontrolledInputFieldProps } from 'src/utils';
+import { PO_ADDITIONAL_FORM_KEY, PO_ADDITIONAL_FORM_PARAMS } from '../enum';
+import { PO_SOLE_SOURCE_FORM_KEY } from './enum';
 
-const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) => {
-  const { formCode } = useParams<{ formCode: string }>();
-  const formRef = React.useRef<FormikProps<any>>(null);
+const SoleSourceForm: React.FC<Props> = ({ formRef, formData, onSetFormData, disabled }) => {
+  const history = useHistory();
 
-  const isEditPOMode = true;
-  const hasPermission = true;
+  const handleFormSubmit = () => {
+    handleSaveForm();
+    Navigator.navigate(
+      `${PATHS.createPurchaseOrders}?${PO_ADDITIONAL_FORM_PARAMS.SCROLL_TO}=${PO_ADDITIONAL_FORM_KEY.ADDITIONAL_FORMS}`
+    );
+  };
 
-  React.useLayoutEffect(() => {
-    if (!formData) {
-      Navigator.navigate(PATHS.createPurchaseOrders);
-    }
-  }, [formData]);
+  const formik = useFormik<POSoleSourcePayload>({
+    initialValues: formData?.soleSource,
+    validationSchema: null,
+    enableReinitialize: true,
+    onSubmit: handleFormSubmit,
+  });
 
-  const renderForm = React.useCallback((code: PO_ADDITIONAL_FORM_CODE) => {
-    switch (code) {
-      case PO_ADDITIONAL_FORM_CODE.SOLE_SOURCE:
-        return <SoleSourceForm disabled={false} formRef={formRef} />;
+  React.useImperativeHandle(formRef, () => ({
+    ...formik,
+  }));
 
-      //return anther additional forms here
+  const { values, errors, touched, setFieldValue, setFieldTouched } = formik;
 
-      default:
-        return null;
-    }
-  }, []);
+  const _getUncontrolledFieldProps = getUncontrolledInputFieldProps({
+    values,
+    setFieldTouched,
+    setFieldValue,
+  });
 
-  const handleBackToPOForm = () => {
-    formRef.current.handleSubmit();
+  // const _handleScrollToTopError = React.useCallback(() => {
+  //   handleScrollToTopError(errors);
+  // }, [errors]);
+
+  const handleSaveForm = React.useCallback(() => {
+    onSetFormData<UpsertPOFormValue>({ ...formData, soleSource: values });
+  }, [formData, onSetFormData, values]);
+
+  React.useEffect(() => {
+    return history.listen(() => {
+      if (history.action === 'POP') {
+        handleSaveForm();
+      }
+    });
+  }, [history, handleSaveForm]);
+
+  const _getErrorMessage = (fieldName: PO_SOLE_SOURCE_FORM_KEY) => {
+    return getErrorMessage(fieldName, { touched, errors });
   };
 
   return (
-    <Box py={4}>
-      <Container maxWidth="lg">
-        <BreadcrumbsPODetail isViewMode={false} />
-        <Typography mt={2} variant="h2">
-          {isEditPOMode ? 'Edit ' : ''}RCUH Sole Source
-        </Typography>
-        <Suspense fallback={<LoadingCommon />}>
-          {!hasPermission ? (
-            <Layout>
-              <NoPermission />
-            </Layout>
-          ) : (
-            <Layout>{renderForm(formCode as PO_ADDITIONAL_FORM_CODE)}</Layout>
-          )}
-        </Suspense>
-        <Button onClick={handleBackToPOForm}>Back to PO form</Button>
-      </Container>
+    <Box>
+      <Grid container spacing={2}>
+        <Grid item container spacing={3}>
+          <Grid item xs={12} sm={6} md={4}>
+            <Input
+              label={'Department Head'}
+              errorMessage={_getErrorMessage(PO_SOLE_SOURCE_FORM_KEY.DEPARTMENT_HEAD)}
+              {..._getUncontrolledFieldProps(PO_SOLE_SOURCE_FORM_KEY.DEPARTMENT_HEAD)}
+              disabled={disabled}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <Input
+              label={'Prior Reference Number'}
+              errorMessage={_getErrorMessage(PO_SOLE_SOURCE_FORM_KEY.PRIOR_REFERENCE_NUMBER)}
+              {..._getUncontrolledFieldProps(PO_SOLE_SOURCE_FORM_KEY.PRIOR_REFERENCE_NUMBER)}
+              disabled={disabled}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <Input
+              label={'Service Unacceptable Reasons'}
+              errorMessage={_getErrorMessage(PO_SOLE_SOURCE_FORM_KEY.SERVICE_UNACCEPTABLE_REASONS)}
+              {..._getUncontrolledFieldProps(PO_SOLE_SOURCE_FORM_KEY.SERVICE_UNACCEPTABLE_REASONS)}
+              disabled={disabled}
+            />
+          </Grid>
+        </Grid>
+      </Grid>
     </Box>
   );
 };
 
-type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+type Props = ReturnType<typeof mapStateToProps> &
+  typeof mapDispatchToProps & {
+    disabled: boolean;
+    formRef: RefObject<FormikProps<any>>;
+  };
 
 const mapStateToProps = (state: IRootState<UpsertPOFormValue>) => ({
   formData: state.form.formData,
@@ -76,4 +111,8 @@ const mapDispatchToProps = {
   onSetFormData: setFormData,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PurchaseOrderContainer);
+const ForwardRefSoleSourceForm = React.forwardRef((props: Props, _ref) => (
+  <SoleSourceForm {...props} />
+));
+
+export default connect(mapStateToProps, mapDispatchToProps)(ForwardRefSoleSourceForm);

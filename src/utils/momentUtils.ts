@@ -23,7 +23,9 @@ export const monthFormat = 'MMMM DD, YYYY';
  * @param {string|date|Dayjs} value
  * @param {string} languageCode
  */
-export const getDateDisplay = (value: string) => {
+export const getDateDisplay = (value: string | Date) => {
+  if (!value) return '';
+
   return dayjs(value).format(DateFormat);
 };
 

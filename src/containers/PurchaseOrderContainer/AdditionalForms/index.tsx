@@ -9,6 +9,7 @@ import { Navigator } from 'src/services';
 import { PO_FORM_KEY } from '../enums';
 import { AdditionalPOFormValue, UpsertPOFormikProps } from '../types';
 import { setFormData } from 'src/redux/form/formSlice';
+import { PO_ADDITIONAL_FORM_KEY } from 'src/containers/AdditionalPOForms/enum';
 
 const AdditionalForms: React.FC<Props> = ({ formikProps, disabled }) => {
   const [selectedForm, setSelectedForm] = React.useState<AdditionalPOForm>(null);
@@ -86,7 +87,7 @@ const AdditionalForms: React.FC<Props> = ({ formikProps, disabled }) => {
   );
 
   return (
-    <Box>
+    <Box id={PO_ADDITIONAL_FORM_KEY.ADDITIONAL_FORMS}>
       <Typography variant="h5">Additional Forms included:</Typography>
 
       <Grid container mt={2}>

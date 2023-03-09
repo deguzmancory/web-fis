@@ -1,3 +1,4 @@
+import { TableParams } from 'src/redux/types';
 import { Toastify } from 'src/services';
 
 type ApiCall = (...args: any[]) => Promise<any>;
@@ -34,6 +35,9 @@ export async function authResponseWrapper<T>(func: ApiCall, [...args]: any[] = [
 
 export const getResponseData = (data: { data: any }) => data.data;
 
+export type GetPropertiesParams = TableParams & {
+  [key: string]: string | number | string[] | boolean;
+};
 export interface ApiResponseType<T> {
   data: T;
   code: number;

@@ -9,6 +9,7 @@ import {
   UpdateProfilePayload,
 } from 'src/queries';
 import { GetPresignedPayload, UploadFilePayload } from 'src/queries/File/types';
+import { GetPropertiesParams } from 'src/queries/helpers';
 import {
   ChangePasswordPayload,
   CompleteNewPasswordPayload,
@@ -20,11 +21,11 @@ import {
 } from 'src/queries/UAM/types';
 import {
   AddUserPayload,
-  GetPropertiesParams,
   UpdateUserLastPasswordChangedParams,
   UpdateUserPayload,
   User,
 } from 'src/queries/Users/types';
+import { SearchVendorsParams } from 'src/queries/Vendors';
 import { newCancelToken, stringify } from 'src/utils';
 import {
   DelegationKeyService,
@@ -244,16 +245,6 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.get(`/account-svc/v1/users/search/delegates?${queryString}`, {}, newCancelToken());
   };
 
-  const searchProjects = (params: GetPropertiesParams) => {
-    const queryString = stringify(params);
-    return api.get(`/account-svc/v1/projects?${queryString}`, {}, newCancelToken());
-  };
-
-  const getFinancialProjects = (params: GetPropertiesParams) => {
-    const queryString = stringify(params, ['codes']);
-    return api.get(`/financial-svc/v1/projects?${queryString}`, {}, newCancelToken());
-  };
-
   const getUrlExportUsers = () => {
     return api.get('/account-svc/v1/users/export', {}, newCancelToken());
   };
@@ -273,7 +264,19 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.put(url, undefined, options);
   };
 
-  // ====================== Users Management ======================
+  // ====================== Projects ======================
+  const getFinancialProjects = (params: GetPropertiesParams) => {
+    const queryString = stringify(params, ['codes']);
+    return api.get(`/financial-svc/v1/projects?${queryString}`, {}, newCancelToken());
+  };
+
+  // ====================== Vendors ======================
+  const searchVendors = (params: SearchVendorsParams & GetPropertiesParams) => {
+    const queryString = stringify(params);
+    return api.get(`/financial-svc/v1/vendors/search?${queryString}`, {}, newCancelToken());
+  };
+
+  // ====================== PO ======================
   const getPO = (params: { id: string }) => {
     return api.get(`/financial-svc/v1/purchase-orders/${params.id}`, {}, newCancelToken());
   };
@@ -347,12 +350,16 @@ const create = (baseURL = appConfig.API_URL) => {
     updateUser,
     deleteUser,
     searchUsers,
-    getFinancialProjects,
-    searchProjects,
     getUrlExportUsers,
     updateUserLastPasswordChanged,
 
-    // ====================== Users Management ======================
+    // ====================== Projects ======================
+    getFinancialProjects,
+
+    // ====================== Vendors ======================
+    searchVendors,
+
+    // ====================== PO ======================
     getPO,
 
     // Global Settings

@@ -10,10 +10,15 @@ import { POSoleSourcePayload } from 'src/queries/PurchaseOrders';
 import { setFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator } from 'src/services';
-import { getErrorMessage, getUncontrolledInputFieldProps, handleScrollToTopError } from 'src/utils';
-import { PO_SOLE_SOURCE_FORM_KEY } from './enum';
+import { getErrorMessage, getUncontrolledInputFieldProps } from 'src/utils';
+import { PO_EQUIPMENT_INVENTORY_FORM_KEY } from './enum';
 
-const SoleSourceForm: React.FC<Props> = ({ formRef, formData, onSetFormData, disabled }) => {
+const EquipmentInventoryForm: React.FC<Props> = ({
+  formRef,
+  formData,
+  onSetFormData,
+  disabled,
+}) => {
   const history = useHistory();
 
   const handleFormSubmit = () => {
@@ -32,7 +37,7 @@ const SoleSourceForm: React.FC<Props> = ({ formRef, formData, onSetFormData, dis
     ...formik,
   }));
 
-  const { values, errors, touched, setFieldValue, getFieldProps, setFieldTouched } = formik;
+  const { values, errors, touched, setFieldValue, setFieldTouched } = formik;
 
   const _getUncontrolledFieldProps = getUncontrolledInputFieldProps({
     values,
@@ -40,9 +45,9 @@ const SoleSourceForm: React.FC<Props> = ({ formRef, formData, onSetFormData, dis
     setFieldValue,
   });
 
-  const _handleScrollToTopError = React.useCallback(() => {
-    handleScrollToTopError(errors);
-  }, [errors]);
+  // const _handleScrollToTopError = React.useCallback(() => {
+  //   handleScrollToTopError(errors);
+  // }, [errors]);
 
   const handleSaveForm = React.useCallback(() => {
     onSetFormData<UpsertPOFormValue>({ ...formData, soleSource: values });
@@ -56,7 +61,7 @@ const SoleSourceForm: React.FC<Props> = ({ formRef, formData, onSetFormData, dis
     });
   }, [history, handleSaveForm]);
 
-  const _getErrorMessage = (fieldName: PO_SOLE_SOURCE_FORM_KEY) => {
+  const _getErrorMessage = (fieldName: PO_EQUIPMENT_INVENTORY_FORM_KEY) => {
     return getErrorMessage(fieldName, { touched, errors });
   };
 
@@ -66,25 +71,13 @@ const SoleSourceForm: React.FC<Props> = ({ formRef, formData, onSetFormData, dis
         <Grid item container spacing={3}>
           <Grid item xs={12} sm={6} md={4}>
             <Input
-              label={'Department Head'}
-              errorMessage={_getErrorMessage(PO_SOLE_SOURCE_FORM_KEY.DEPARTMENT_HEAD)}
-              {..._getUncontrolledFieldProps(PO_SOLE_SOURCE_FORM_KEY.DEPARTMENT_HEAD)}
-              disabled={disabled}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Input
-              label={'Prior Reference Number'}
-              errorMessage={_getErrorMessage(PO_SOLE_SOURCE_FORM_KEY.PRIOR_REFERENCE_NUMBER)}
-              {..._getUncontrolledFieldProps(PO_SOLE_SOURCE_FORM_KEY.PRIOR_REFERENCE_NUMBER)}
-              disabled={disabled}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Input
-              label={'Service Unacceptable Reasons'}
-              errorMessage={_getErrorMessage(PO_SOLE_SOURCE_FORM_KEY.SERVICE_UNACCEPTABLE_REASONS)}
-              {..._getUncontrolledFieldProps(PO_SOLE_SOURCE_FORM_KEY.SERVICE_UNACCEPTABLE_REASONS)}
+              label={'DESCRIPTION OF EQUIPMENT'}
+              errorMessage={_getErrorMessage(
+                PO_EQUIPMENT_INVENTORY_FORM_KEY.DESCRIPTION_OF_EQUIPMENT
+              )}
+              {..._getUncontrolledFieldProps(
+                PO_EQUIPMENT_INVENTORY_FORM_KEY.DESCRIPTION_OF_EQUIPMENT
+              )}
               disabled={disabled}
             />
           </Grid>
@@ -108,8 +101,4 @@ const mapDispatchToProps = {
   onSetFormData: setFormData,
 };
 
-const ForwardRefSoleSourceForm = React.forwardRef((props: Props, _ref) => (
-  <SoleSourceForm {...props} />
-));
-
-export default connect(mapStateToProps, mapDispatchToProps)(ForwardRefSoleSourceForm);
+export default connect(mapStateToProps, mapDispatchToProps)(EquipmentInventoryForm);

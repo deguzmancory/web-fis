@@ -6,7 +6,8 @@ import { USER_MODE } from 'src/containers/CRUUSerContainer/enums';
 import { isEditProfileMode } from 'src/containers/CRUUSerContainer/helper';
 import { UserFiCode } from 'src/queries/Contents/types';
 import { isFA, ROLE_NAME } from 'src/queries/Profile/helpers';
-import { FinancialProject, FINANCIAL_PROJECT_KEY } from 'src/queries/Users/types';
+import { FinancialProject } from 'src/queries/Projects/types';
+import { FINANCIAL_PROJECT_KEY } from 'src/queries/Users/types';
 import { Callback } from 'src/redux/types';
 import { getDateDisplay } from 'src/utils/momentUtils';
 

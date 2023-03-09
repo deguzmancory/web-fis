@@ -6,7 +6,7 @@ import { PARAMS_SPLITTER } from 'src/appConfig/constants';
 import { Button, DatePicker, Select } from 'src/components/common';
 import { getRoleNamePayload, ROLE_NAME } from 'src/queries/Profile/helpers';
 import { useSearchUsers } from 'src/queries/Users';
-import { useGetFinancialProjects } from 'src/queries/Users/useGetFinancialProjects';
+import { useGetFinancialProjects } from 'src/queries/Projects/useGetFinancialProjects';
 import { getErrorMessage, isEqualPrevAndNextObjByPath } from 'src/utils';
 import { formatDateUtc } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
