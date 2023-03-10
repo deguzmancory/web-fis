@@ -1,4 +1,5 @@
 import { useQuery, UseQueryOptions } from 'react-query';
+import { ShipViaContent } from 'src/mocks/content/mockContent';
 import { ContentStore } from 'src/redux/common/types';
 import apiClient from '../apiClient';
 import { ApiResponseType, responseWrapper } from '../helpers';
@@ -16,7 +17,9 @@ export function useContents(
   } = useQuery<ApiResponseType<ContentStore>, Error, ContentStore>([API_QUERIES.CONTENT], {
     queryFn: () => responseWrapper<ApiResponseType<ContentStore>>(apiClient.getContents),
     enabled: false,
-    select: (data) => data.data,
+    select: (data) => ({
+      shipVia: ShipViaContent,
+    }),
     ...options,
   });
 

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export interface IFormState<T> {
+export interface IFormState<T = any> {
   formData: T | null;
   activeStep: number;
   maxValidStep: number;
@@ -8,7 +8,7 @@ export interface IFormState<T> {
 }
 export const FIRST_STEP = 0;
 
-const initialState: IFormState<any> = {
+const initialState: IFormState = {
   activeStep: FIRST_STEP,
   maxValidStep: 0,
   formData: null,

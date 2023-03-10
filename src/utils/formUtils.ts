@@ -3,7 +3,7 @@ import { convertCurrencyInputToString, MoneyInputDetect } from './formatUtils';
 
 export const getUncontrolledInputFieldProps =
   ({ values, setFieldTouched, setFieldValue }) =>
-  (name: string, options?: { onBlur: (name, values) => void }) => {
+  (name: string, options?: { onBlur: (name, value) => void }) => {
     return {
       name,
       defaultValue: get(values, name),
@@ -22,7 +22,7 @@ export const getUncontrolledInputFieldProps =
 
 export const getUncontrolledCurrencyInputFieldProps =
   ({ values, setFieldTouched, setFieldValue }) =>
-  (name: string, options?: { onBlur: (name, values) => void }) => {
+  (name: string, options?: { onBlur: (name, value) => void }) => {
     return {
       name,
       defaultValue: get(values, name),

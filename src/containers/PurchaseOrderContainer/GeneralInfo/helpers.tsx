@@ -50,11 +50,17 @@ export const getVendorOptions = ({ vendors }: { vendors: Vendor[] }): SelectOpti
 
   return vendors.map((vendor) => ({
     label: (
-      <Box>
-        <span className="mr-4">{vendor.code}</span>
-        <span>{vendor.name}</span>
-      </Box>
+      <div
+        style={{
+          display: 'flex',
+        }}
+      >
+        <p style={{ width: '12%' }}>{vendor.code}</p>
+        <p style={{ width: '8%' }}>{vendor.w9}</p>
+        <p style={{ width: '84%' }}>{vendor.name}</p>
+      </div>
     ),
     value: vendor,
+    subLabel: `${vendor.address1}, ${vendor.address2}${vendor.address3 && `, ${vendor.address3}`}`,
   }));
 };

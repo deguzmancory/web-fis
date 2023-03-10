@@ -23,6 +23,7 @@ import { useComponentDidMount } from 'src/hooks';
 import LoadingContainer from './StartupContainers/LoadingContainer';
 import ScrollToTop from './StartupContainers/ScrollToTop';
 import CheckPasswordExpiredContainer from './UAMContainer/ChangePasswordExpired/container';
+import ContentContainer from './StartupContainers/ContentContainer';
 
 const Dashboard = React.lazy(() => import('./Dashboard'));
 const UsersManagement = React.lazy(() => import('./UsersManagement'));
@@ -104,7 +105,7 @@ const Routing: React.FC<{ location: Location }> = (props) => {
       <Footer />
 
       <AuthContainer />
-      {/* <ContentContainer /> */}
+      <ContentContainer />
       <DialogContainer />
       <ToastContainer />
       <ScrollToTop />

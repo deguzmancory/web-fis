@@ -13,6 +13,7 @@ export enum PO_FORM_KEY {
   VENDOR_CODE = 'vendorCode',
   VENDOR_ADDRESS = 'vendorAddress',
   SHIP_VIA = 'shipVia',
+  SHIP_TO = 'shipTo',
   SHIP_OTHER = 'shipOther',
   DELIVERY_BY = 'deliveryBy',
   DISCOUNT_TERMS = 'discountTerms',

@@ -3,13 +3,20 @@ import { Box, Grid, Typography } from '@mui/material';
 import { debounce } from 'lodash';
 import React from 'react';
 import { PARAMS_SPLITTER } from 'src/appConfig/constants';
-import { EllipsisTooltipInput, Input, Link, Select, TextArea } from 'src/components/common';
+import {
+  EllipsisTooltipInput,
+  Input,
+  InputPhone,
+  Link,
+  Select,
+  TextArea,
+} from 'src/components/common';
 import { SelectOption } from 'src/components/common/Select';
 import {
   getFinancialProjectOptions,
   getVendorOptions,
 } from 'src/containers/PurchaseOrderContainer/GeneralInfo/helpers';
-import { useProfile } from 'src/queries';
+import { useContents, useProfile } from 'src/queries';
 import { isPI, ROLE_NAME } from 'src/queries/Profile/helpers';
 import { FinancialProject } from 'src/queries/Projects/types';
 import { useGetFinancialProjects } from 'src/queries/Projects/useGetFinancialProjects';
@@ -17,6 +24,7 @@ import { Vendor } from 'src/queries/Vendors';
 import { useSearchVendors } from 'src/queries/Vendors/useSearchVendors';
 import { RoleService } from 'src/services';
 import { getDateDisplay, getErrorMessage, isEqualPrevAndNextObjByPath } from 'src/utils';
+import { getContentOptions } from 'src/utils/contentUtils';
 import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormikProps } from '../types';
 
@@ -50,6 +58,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled }) => {
   });
 
   const { profile } = useProfile();
+  const { contents } = useContents();
   const {
     financialProjects,
     setParams: setParamsSearchProject,
@@ -70,6 +79,8 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled }) => {
     enabled:
       !!searchVendors.name || !!searchVendors.code || !!currentVendorName || !!currentVendorCode,
   });
+
+  const shipViaOptions = getContentOptions(contents, 'shipVia');
 
   const projectTitleOptions: SelectOption[] = React.useMemo(() => {
     if (isLoadingSearchProjects || (!searchProjects.title && !currentProjectTitle)) {
@@ -119,6 +130,14 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled }) => {
   const updateVendorFields = (value: Vendor) => {
     setFieldValue(PO_FORM_KEY.VENDOR_NAME, value);
     setFieldValue(PO_FORM_KEY.VENDOR_CODE, value);
+    setFieldValue(
+      PO_FORM_KEY.VENDOR_ADDRESS,
+      value
+        ? `${value.name2 && `${value.name2}\n`}${value.address1 && `${value.address1}\n`}${
+            value.address2 && `${value.address2}\n`
+          }${value.address3}`
+        : ''
+    );
   };
 
   const _getErrorMessage = (fieldName: PO_FORM_KEY) => {
@@ -389,6 +408,15 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled }) => {
               onChange={(_name, value) => updateVendorFields(value)}
               optionWithSubLabel
               isDisabled={disabled}
+              menuStyle={{
+                width: '800px',
+              }}
+              labelStyle={{
+                width: '65%',
+              }}
+              subLabelStyle={{
+                width: '30%',
+              }}
               footer={
                 <Link
                   type="icon-link"
@@ -424,6 +452,16 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled }) => {
               filterOption={(_option, _inputValue) => {
                 return true; //ignore default filter option by label
               }}
+              menuStyle={{
+                width: '800px',
+              }}
+              labelStyle={{
+                width: '65%',
+              }}
+              subLabelStyle={{
+                width: '30%',
+              }}
+              menuOptionPosition="right"
               hideSearchIcon
               isClearable={true}
               onChange={(_name, value) => updateVendorFields(value)}
@@ -439,45 +477,47 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled }) => {
               errorMessage={_getErrorMessage(PO_FORM_KEY.VENDOR_ADDRESS)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.VENDOR_ADDRESS)}
               disabled={disabled}
+              style={{ minHeight: '100px' }}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextArea
               label={'Ship To Information (Name, Address)'}
               required
-              errorMessage={_getErrorMessage(PO_FORM_KEY.SHIP_OTHER)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.SHIP_OTHER)}
+              errorMessage={_getErrorMessage(PO_FORM_KEY.SHIP_TO)}
+              {...getUncontrolledFieldProps(PO_FORM_KEY.SHIP_TO)}
               disabled={disabled}
+              style={{ minHeight: '100px' }}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextArea
+            <Select
+              {...getFieldProps(PO_FORM_KEY.SHIP_VIA)}
               label={'Ship Via'}
-              errorMessage={_getErrorMessage(PO_FORM_KEY.SHIP_VIA)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.SHIP_VIA)}
-              disabled={disabled}
+              placeholder={'Select'}
+              options={shipViaOptions}
+              isDisabled={disabled}
+              onChange={setFieldValue}
+              isSearchable={false}
+              hideSearchIcon
             />
           </Grid>
-
           <Grid item xs={12} sm={8}>
             <Input
               label={'Ship Via Instructions'}
-              required
-              errorMessage={_getErrorMessage(PO_FORM_KEY.PROJECT_TITLE)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.PROJECT_TITLE)}
+              errorMessage={_getErrorMessage(PO_FORM_KEY.SHIP_OTHER)}
+              {...getUncontrolledFieldProps(PO_FORM_KEY.SHIP_OTHER)}
               disabled={disabled}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
             <Input
               label={'Delivery Required By'}
-              required
               errorMessage={_getErrorMessage(PO_FORM_KEY.DELIVERY_BY)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.DELIVERY_BY)}
               disabled={disabled}
             />
           </Grid>
-
           <Grid item xs={12} sm={6} md={4}>
             <Input
               label={'Discount Terms'}
@@ -503,19 +543,18 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled }) => {
               disabled={disabled}
             />
           </Grid>
-
           <Grid item xs={12} sm={6} md={4}>
-            <Input
+            <InputPhone
               label={'Phone Number'}
               errorMessage={_getErrorMessage(PO_FORM_KEY.PHONE_NUMBER)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.PHONE_NUMBER)}
+              {...getFieldProps(PO_FORM_KEY.PHONE_NUMBER)}
               disabled={disabled}
+              onChange={setFieldValue}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
             <Input
               label={'FA Staff to Review'}
-              required
               errorMessage={_getErrorMessage(PO_FORM_KEY.FA_STAFF_REVIEWER)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.FA_STAFF_REVIEWER)}
               disabled={disabled}

@@ -1,16 +1,11 @@
 export interface Content {
   id: number;
-  title: string;
-  completed: boolean;
-  key?: string;
-  name?: string;
-  description?: string;
+  createdAt: string;
+  updatedAt: string;
+  value: string;
+  displayName: string;
 }
 
 export type ContentStore = {
-  cities: Content[];
-  countries: Content[];
-  states: Content[];
-  departments: Content[];
-  ownershipType: Content[];
+  shipVia: Content[];
 };
