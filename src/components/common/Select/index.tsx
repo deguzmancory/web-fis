@@ -70,6 +70,8 @@ const SelectCmp: React.FC<Props> = ({
   styles,
   footer,
   customSelectedOptionValue,
+  subLabelStyle,
+  labelStyle,
   menuOptionPosition = 'left',
   onChange = (name, value) => {},
   onBlur = (name, value) => {},
@@ -94,33 +96,36 @@ const SelectCmp: React.FC<Props> = ({
   // For custom select, follow this link:
   // https://react-select.com/styles#using-classnames
 
-  const Option = useCallback((props) => {
-    const { data } = props;
-    const children = (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
-        <div>
-          {data.prefix && (
-            <span
-              style={{
-                marginRight: '12px',
-              }}
-            >
-              {data?.prefix}
-            </span>
-          )}
-          {data.label}
+  const Option = useCallback(
+    (props) => {
+      const { data } = props;
+      const children = (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <div style={labelStyle}>
+            {data.prefix && (
+              <span
+                style={{
+                  marginRight: '12px',
+                }}
+              >
+                {data?.prefix}
+              </span>
+            )}
+            {data.label}
+          </div>
+          <div style={{ textAlign: 'right', ...subLabelStyle }}>{data?.subLabel}</div>
         </div>
-        <div style={{ textAlign: 'right' }}>{data?.subLabel}</div>
-      </div>
-    );
-    return <components.Option {...props} children={children} />;
-  }, []);
+      );
+      return <components.Option {...props} children={children} />;
+    },
+    [labelStyle, subLabelStyle]
+  );
 
   return (
     <Element
@@ -230,6 +235,8 @@ type Props = Omit<SelectProps, 'onBlur' | 'onChange'> & {
   styles?: StylesConfig;
   isLoading?: boolean;
   footer?: React.ReactNode;
+  subLabelStyle?: React.CSSProperties;
+  labelStyle?: React.CSSProperties; //work only when optionWithSubLabel = true
   customSelectedOptionValue?: any;
   menuOptionPosition?: 'left' | 'right';
   onChange?: (name, value) => void;

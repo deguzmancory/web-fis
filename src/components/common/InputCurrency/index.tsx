@@ -73,10 +73,10 @@ const InputCurrency: React.FC<Props> = ({
       customInput={CustomInput}
       disabled={disabled}
       onValueChange={handleChange}
-      {...(value && {
+      {...(value !== undefined && {
         value: typeof value === 'string' ? value : MoneyInputDetect(value),
       })}
-      {...(defaultValue && {
+      {...(defaultValue !== undefined && {
         value: typeof defaultValue === 'string' ? defaultValue : MoneyInputDetect(defaultValue),
       })}
       {...props}

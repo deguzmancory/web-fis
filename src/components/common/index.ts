@@ -42,6 +42,7 @@ export { default as TableBasic } from './TableBasic';
 export { default as Tag } from './Tag';
 export { default as Text } from './Text';
 export { default as TextArea } from './TextArea';
+export { default as TextareaAutosize } from './TextareaAutosize';
 export { default as TimePicker } from './TimePicker';
 export { default as ValidatePassword } from './ValidatePassword';
 export { default as View } from './View';

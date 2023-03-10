@@ -45,6 +45,7 @@ export interface BodyRow {
   style?: SxProps;
   className?: string;
   isHeaderRow?: boolean;
+  errorMessage?: string;
 }
 
 export type BodyRows = BodyRow[];
@@ -62,6 +63,7 @@ export interface BodyBasicRow {
   style?: SxProps;
   className?: string;
   isHeaderRow?: boolean;
+  errorMessage?: string;
 }
 
 export type BodyBasicRows = BodyBasicRow[];

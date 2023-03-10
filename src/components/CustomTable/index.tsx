@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import React from 'react';
+import React, { Fragment } from 'react';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import { isEmpty } from 'src/validations';
 import Element from '../common/Element';
@@ -89,57 +89,82 @@ const renderRows = <
     }
 >(
   data: T,
-  showBorder = false
+  showBorder = false,
+  hideRowError = false
 ) => {
   if (isEmpty(data)) return null;
 
-  return data.map((row, rowIndex) => (
-    <TableRow sx={row.style} className={row.className} key={`row-table-${rowIndex}`}>
-      {row.columns?.map((cell, cellIndex) => {
-        // render subContent
-        let subContent;
-        if (!cell.subContent) {
-          subContent = null;
-        } else {
-          subContent =
-            typeof cell.subContent === 'string' ? (
-              <Typography variant="subtitle1" sx={{ color: COLOR_CODE.WHITE }}>
-                {cell.subContent}
-              </Typography>
-            ) : (
-              cell.subContent
+  return data.map((row, rowIndex) => {
+    const hasError = !isEmpty(row.errorMessage) && !hideRowError;
+
+    return (
+      <Fragment key={`row-table-${rowIndex}`}>
+        <TableRow
+          sx={{
+            ...row.style,
+            border: hasError ? COLOR_CODE.DEFAULT_TABLE_ERROR_BORDER : undefined,
+          }}
+          className={row.className}
+        >
+          {row.columns?.map((cell, cellIndex) => {
+            // render subContent
+            let subContent;
+            if (!cell.subContent) {
+              subContent = null;
+            } else {
+              subContent =
+                typeof cell.subContent === 'string' ? (
+                  <Typography variant="subtitle1" sx={{ color: COLOR_CODE.WHITE }}>
+                    {cell.subContent}
+                  </Typography>
+                ) : (
+                  cell.subContent
+                );
+            }
+
+            //render column as header column
+            const isHeaderColumn = row?.isHeaderRow || cell?.isHeaderColumn;
+
+            //get default cell style
+            const defaultCellStyle = getDefaultCellStyleByType(cell?.type);
+
+            return (
+              <StyledTableCell
+                key={`cell-table-${cellIndex}`}
+                sx={{
+                  [`&.${tableCellClasses.root}`]: { ...defaultCellStyle, ...cell.style },
+                  border: showBorder ? COLOR_CODE.DEFAULT_BORDER : undefined,
+                }}
+                width={cell.width}
+                height={cell.height}
+                colSpan={cell.colSpan || DEFAULT_TABLE_VALUE.COL_SPAN}
+                rowSpan={cell.rowSpan || DEFAULT_TABLE_VALUE.ROW_SPAN}
+                className={cell.className}
+                {...(isHeaderColumn && {
+                  variant: 'head',
+                })}
+              >
+                {cell.content}
+                {subContent}
+              </StyledTableCell>
             );
-        }
-
-        //render column as header column
-        const isHeaderColumn = row?.isHeaderRow || cell?.isHeaderColumn;
-
-        //get default cell style
-        const defaultCellStyle = getDefaultCellStyleByType(cell?.type);
-
-        return (
-          <StyledTableCell
-            key={`cell-table-${cellIndex}`}
-            sx={{
-              [`&.${tableCellClasses.root}`]: { ...defaultCellStyle, ...cell.style },
-              border: showBorder ? COLOR_CODE.DEFAULT_BORDER : undefined,
-            }}
-            width={cell.width}
-            height={cell.height}
-            colSpan={cell.colSpan || DEFAULT_TABLE_VALUE.COL_SPAN}
-            rowSpan={cell.rowSpan || DEFAULT_TABLE_VALUE.ROW_SPAN}
-            className={cell.className}
-            {...(isHeaderColumn && {
-              variant: 'head',
-            })}
-          >
-            {cell.content}
-            {subContent}
-          </StyledTableCell>
-        );
-      })}
-    </TableRow>
-  ));
+          })}
+        </TableRow>
+        {hasError && (
+          <TableRow>
+            <TableCell
+              colSpan={row.columns?.length || DEFAULT_TABLE_VALUE.COL_SPAN}
+              sx={{ padding: 1 }}
+            >
+              <Typography variant="subtitle1" color={'error'} width={'100%'}>
+                {row.errorMessage}
+              </Typography>
+            </TableCell>
+          </TableRow>
+        )}
+      </Fragment>
+    );
+  });
 };
 
 const EmptyTableBody = ({ headerList }) => {
@@ -228,7 +253,9 @@ const Basic: React.FC<TableBasicProps> = ({
             border: errorMessage ? COLOR_CODE.DEFAULT_TABLE_ERROR_BORDER : undefined,
           }}
         >
-          <TableHead sx={headerSx}>{renderRows<HeaderRows>(headerList, showBorder)}</TableHead>
+          <TableHead sx={headerSx}>
+            {renderRows<HeaderRows>(headerList, showBorder, true)}
+          </TableHead>
           <TableBody>
             {isEmpty(bodyList) ? (
               <EmptyTableBody headerList={headerList} />

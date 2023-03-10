@@ -12,7 +12,8 @@
   min-height: $input-small;
 
   &:focus {
-    box-shadow: $focus-shadow;
+    // box-shadow: $focus-shadow;
+    border: $default-border-primary;
   }
 
   &--error {
