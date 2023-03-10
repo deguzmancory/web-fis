@@ -1,0 +1,16 @@
+export enum PO_FFATA_DATA_COLLECTION_KEY {
+  AWARD_ID = 'awardId',
+  PO_DATE = 'poDate',
+  SUB_AWARD_AMOUNT = 'subawardAmount',
+  NAME_OR_DBA = 'nameOrDba',
+  SUB_AWARDEE_DUNS = 'subawardeeDuns',
+  SUB_AWARDEE_DUNS_4_EXTENSION = 'subawardeeDuns4Extension',
+  EXCEEDS_300000 = 'exceeds300000',
+  SUB_AWARD_TITLE_AND_DESC = 'subawardTitleAndDesc',
+  SAME_ADDRESS = 'sameAddress',
+  PERFORMANCE_SITE_ADDRESS_STREET = 'performanceSiteAddressStreet',
+  PERFORMANCE_SITE_ADDRESS_CITY = 'performanceSiteAddressCity',
+  PERFORMANCE_SITE_ADDRESS_STATE = 'performanceSiteAddressState',
+  PERFORMANCE_SITE_ADDRESS_COUNTRY = 'performanceSiteAddressCountry',
+  PERFORMANCE_SITE_ADDRESS_ZIP = 'performanceSiteAddressZip',
+}

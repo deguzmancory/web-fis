@@ -1,4 +1,5 @@
 import { Box, Container, Typography } from '@mui/material';
+import { Stack } from '@mui/system';
 import { FormikProps } from 'formik';
 import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
@@ -9,14 +10,23 @@ import NoPermission from 'src/components/NoPermission';
 import Layout from 'src/containers/CRUUSerContainer/layout';
 import { PO_ADDITIONAL_FORM_CODE } from 'src/containers/PurchaseOrderContainer/enums';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
+import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
+import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { setFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator } from 'src/services';
 import BreadcrumbsPODetail from './breadcrumbs';
 import EquipmentInventory from './EquipmentInventory';
+import FfataDataCollectionForm from './FfataDataCollection';
 import SoleSource from './SoleSource';
 
-const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) => {
+const PurchaseOrderContainer: React.FC<Props> = ({
+  formData,
+  onSetFormData,
+  onShowDialog,
+  onHideDialog,
+  onHideAllDialog,
+}) => {
   const { formCode } = useParams<{ formCode: string }>();
   const formRef = React.useRef<FormikProps<any>>(null);
 
@@ -35,6 +45,8 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
         return <SoleSource disabled={false} formRef={formRef} />;
       case PO_ADDITIONAL_FORM_CODE.EQUIPMENT_INVENTORY:
         return <EquipmentInventory disabled={false} formRef={formRef} />;
+      case PO_ADDITIONAL_FORM_CODE.FFATA:
+        return <FfataDataCollectionForm disabled={false} formRef={formRef} />;
 
       //return anther additional forms here
 
@@ -49,6 +61,8 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
         return 'SOLE SOURCE JUSTIFICATION *';
       case PO_ADDITIONAL_FORM_CODE.EQUIPMENT_INVENTORY:
         return 'EQUIPMENT INVENTORY FORM *';
+      case PO_ADDITIONAL_FORM_CODE.FFATA:
+        return 'FFATA DATA COLLECTION FOR SUBCONTRACTOR/VENDOR *';
 
       //return anther additional forms here
 
@@ -57,7 +71,29 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
     }
   }, []);
 
-  const handleBackToPOForm = () => {
+  const handleCancelButton = React.useCallback(() => {
+    onShowDialog({
+      type: DIALOG_TYPES.YESNO_DIALOG,
+      data: {
+        title: `Cancel`,
+        content: `There are unsaved changes on the Form. Are you sure you want to leave this page?`,
+        okText: 'Ok',
+        cancelText: 'Cancel',
+        onOk: () => {
+          onHideDialog();
+          setTimeout(() => {
+            formRef.current.handleReset();
+            Navigator.navigate(PATHS.createPurchaseOrders);
+          }, 50);
+        },
+        onCancel: () => {
+          onHideAllDialog();
+        },
+      },
+    });
+  }, []);
+
+  const handleSubmitForm = () => {
     formRef.current.handleSubmit();
   };
 
@@ -77,10 +113,15 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
               <NoPermission />
             </Layout>
           ) : (
-            <Layout>{renderForm(formCode as PO_ADDITIONAL_FORM_CODE)}</Layout>
+            <>{renderForm(formCode as PO_ADDITIONAL_FORM_CODE)}</>
           )}
         </Suspense>
-        <Button onClick={handleBackToPOForm}>Back to PO form</Button>
+        <Stack my={4} flexDirection={'row'} justifyContent="center">
+          <Button variant="outline" className="mr-8" onClick={() => handleCancelButton()}>
+            Cancel
+          </Button>
+          <Button onClick={() => handleSubmitForm()}>Save</Button>
+        </Stack>
       </Container>
     </Box>
   );
@@ -94,6 +135,9 @@ const mapStateToProps = (state: IRootState<UpsertPOFormValue>) => ({
 
 const mapDispatchToProps = {
   onSetFormData: setFormData,
+  onShowDialog: showDialog,
+  onHideDialog: hideDialog,
+  onHideAllDialog: hideAllDialog,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PurchaseOrderContainer);

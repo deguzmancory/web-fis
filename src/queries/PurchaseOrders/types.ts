@@ -419,15 +419,15 @@ export interface POAgreementUhPayload {
 export interface FfataPayload {
   id: string;
   awardId: string;
-  poNumber: string;
+  poNumber: string; // TODO: tuyen_tran: will remove if not need
   poDate: string;
   subawardAmount: string;
   nameOrDba: string;
   subawardeeDuns: string;
   subawardeeDuns4Extension: string;
   exceeds300000: boolean;
-  subawardTitleAndDesc: string;
-  sameAddress: boolean;
+  subawardTitleAndDesc: string; // TODO: tuyen_tran: will remove if not need
+  sameAddress: boolean; // TODO: tuyen_tran: will remove if not need
   performanceSiteAddressStreet: string;
   performanceSiteAddressCity: string;
   performanceSiteAddressState: string;
