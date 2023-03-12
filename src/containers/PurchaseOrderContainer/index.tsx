@@ -1,23 +1,31 @@
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Container, Stack, Typography } from '@mui/material';
 import { FormikProps, useFormik } from 'formik';
 import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { LoadingCommon } from 'src/components/common';
+import { Button, LoadingCommon } from 'src/components/common';
 import NoPermission from 'src/components/NoPermission';
 import { useProfile } from 'src/queries';
 import { useGetPODetail } from 'src/queries/PurchaseOrders';
 import { setFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Toastify } from 'src/services';
-import { getUncontrolledCurrencyInputFieldProps, getUncontrolledInputFieldProps } from 'src/utils';
+import {
+  getUncontrolledCurrencyInputFieldProps,
+  getUncontrolledInputFieldProps,
+  handleScrollToTopError,
+} from 'src/utils';
 import { PO_ADDITIONAL_FORM_KEY, PO_ADDITIONAL_FORM_PARAMS } from '../AdditionalPOForms/enum';
 import Layout from '../CRUUSerContainer/layout';
 import AdditionalForms from './AdditionalForms';
 import BreadcrumbsPODetail from './breadcrumbs';
 import { emptyUpsertPOFormValue } from './constants';
+import ExternalSpecialInstructions from './ExternalSpecialInstructions';
 import GeneralInfo from './GeneralInfo';
 import { getAdditionalPOFormValue, getInitialPOFormValue } from './helpers';
+import InternalSpecialInstructions from './InternalSpecialInstructions';
+import PurchaseInfo from './PurchaseInfo';
+import SendInvoiceInfo from './SendInvoiceInfo';
 import TableLineItems from './TableLineItems';
 import { UpsertPOFormikProps, UpsertPOFormValue } from './types';
 
@@ -29,6 +37,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
   const formRef = React.useRef<FormikProps<UpsertPOFormValue>>(null);
   const isEditPOMode = false;
   const hasPermission = true;
+  const loading = false;
 
   React.useEffect(() => {
     if (scrollToParam && scrollToParam === PO_ADDITIONAL_FORM_KEY.ADDITIONAL_FORMS) {
@@ -86,7 +95,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
     return formData || emptyUpsertPOFormValue;
   }, [formData]);
 
-  const { values, errors, touched, setFieldValue, getFieldProps, setFieldTouched } =
+  const { values, errors, touched, setFieldValue, getFieldProps, setFieldTouched, handleSubmit } =
     useFormik<UpsertPOFormValue>({
       initialValues: initialFormValue,
       validationSchema: null,
@@ -114,9 +123,11 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
     }),
   };
 
-  // const _handleScrollToTopError = React.useCallback(() => {
-  //   handleScrollToTopError(errors);
-  // }, [errors]);
+  const _handleScrollToTopError = React.useCallback(() => {
+    handleScrollToTopError(errors);
+  }, [errors]);
+
+  const handleCancelClick = () => {};
 
   return (
     <Box py={4}>
@@ -133,17 +144,56 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
           ) : (
             <>
               <Layout>
-                <GeneralInfo formikProps={formikProps} disabled={false} />
+                <GeneralInfo formikProps={formikProps} />
               </Layout>
               <Layout>
-                <TableLineItems formikProps={formikProps} disabled={false} />
+                <TableLineItems formikProps={formikProps} />
               </Layout>
               <Layout>
-                <AdditionalForms formikProps={formikProps} disabled={false} />
+                <PurchaseInfo formikProps={formikProps} />
+              </Layout>
+              <Layout>
+                <AdditionalForms formikProps={formikProps} />
+              </Layout>
+              <Layout>
+                <InternalSpecialInstructions formikProps={formikProps} />
+              </Layout>
+              <Layout>
+                <ExternalSpecialInstructions formikProps={formikProps} />
+              </Layout>
+              <Layout>
+                <SendInvoiceInfo formikProps={formikProps} />
               </Layout>
             </>
           )}
         </Suspense>
+
+        <Stack my={4} flexDirection={'row'} justifyContent="center">
+          <Button variant="outline" className="mr-8" onClick={handleCancelClick}>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              _handleScrollToTopError();
+              handleSubmit();
+            }}
+            isLoading={loading}
+            disabled={loading}
+            className="mr-8"
+          >
+            Save
+          </Button>
+          <Button
+            onClick={() => {
+              _handleScrollToTopError();
+              handleSubmit();
+            }}
+            isLoading={loading}
+            disabled={loading}
+          >
+            Submit to FA
+          </Button>
+        </Stack>
       </Container>
     </Box>
   );

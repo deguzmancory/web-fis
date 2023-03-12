@@ -111,8 +111,4 @@ const mapDispatchToProps = {
   onSetFormData: setFormData,
 };
 
-const ForwardRefSoleSourceForm = React.forwardRef((props: Props, _ref) => (
-  <SoleSourceForm {...props} />
-));
-
-export default connect(mapStateToProps, mapDispatchToProps)(ForwardRefSoleSourceForm);
+export default connect(mapStateToProps, mapDispatchToProps)(SoleSourceForm);

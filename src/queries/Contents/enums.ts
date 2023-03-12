@@ -1,7 +1,7 @@
 // contents
 export enum SHIP_VIA {
-  LOCAL_DELIVERY = 'LOCAL_DELIVERY',
-  WILL_CALL = 'WILL_CALL',
-  BEST_WAY = 'BEST_WAY',
-  OTHER = 'OTHER',
+  LOCAL_DELIVERY = 'Local Delivery',
+  WILL_CALL = 'Will-Call',
+  BEST_WAY = 'Best Way',
+  OTHER = 'Other (Specify)',
 }

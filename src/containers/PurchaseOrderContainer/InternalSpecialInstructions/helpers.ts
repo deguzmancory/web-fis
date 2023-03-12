@@ -1,0 +1,20 @@
+export enum RECORD_OF_COMPETITION_VALUE {
+  VERBAL_QUOTATIONS = 'Verbal Quotations',
+  WRITTEN_QUOTATIONS = 'Written Quotations (Forward to FA Office)',
+  NOT_APPLICABLE = 'Not Applicable',
+}
+
+export const recordOfCompetitionOptions = [
+  {
+    label: RECORD_OF_COMPETITION_VALUE.VERBAL_QUOTATIONS,
+    value: RECORD_OF_COMPETITION_VALUE.VERBAL_QUOTATIONS,
+  },
+  {
+    label: RECORD_OF_COMPETITION_VALUE.WRITTEN_QUOTATIONS,
+    value: RECORD_OF_COMPETITION_VALUE.WRITTEN_QUOTATIONS,
+  },
+  {
+    label: RECORD_OF_COMPETITION_VALUE.NOT_APPLICABLE,
+    value: RECORD_OF_COMPETITION_VALUE.NOT_APPLICABLE,
+  },
+];

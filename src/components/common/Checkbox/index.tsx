@@ -165,7 +165,6 @@ type CheckboxGroupProps = {
   options?: { value: any; label: string; key?: string; disabled?: boolean }[];
   value?: any[];
   name?: string;
-  onChange?: (...arg: any[]) => void;
   errorMessage?: string;
   containerClassName?: string;
   labelClassName?: string;
@@ -176,6 +175,7 @@ type CheckboxGroupProps = {
   noneOfAboveKey?;
   isCustomLabel?: boolean;
   isGetStringValue?: boolean;
+  onChange?: (...arg: any[]) => void;
 };
 
 export default { Item: Checkbox, Group };

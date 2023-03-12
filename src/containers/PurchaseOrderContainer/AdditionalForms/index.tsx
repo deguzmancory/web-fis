@@ -11,7 +11,7 @@ import { AdditionalPOFormValue, UpsertPOFormikProps } from '../types';
 import { setFormData } from 'src/redux/form/formSlice';
 import { PO_ADDITIONAL_FORM_KEY } from 'src/containers/AdditionalPOForms/enum';
 
-const AdditionalForms: React.FC<Props> = ({ formikProps, disabled }) => {
+const AdditionalForms: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const [selectedForm, setSelectedForm] = React.useState<AdditionalPOForm>(null);
   const dispatch = useDispatch();
 
@@ -33,6 +33,8 @@ const AdditionalForms: React.FC<Props> = ({ formikProps, disabled }) => {
 
   const handleAddForm = React.useCallback(() => {
     const currentAvailableAttachments = values.availableForms;
+
+    if (!selectedForm) return;
 
     if (
       !currentFormAttachments.some((formAttachment) => formAttachment.code === selectedForm.code)
@@ -99,12 +101,11 @@ const AdditionalForms: React.FC<Props> = ({ formikProps, disabled }) => {
                 placeholder={'Select'}
                 options={availableFormOptions}
                 value={selectedForm}
-                isLoading={false}
                 hideSearchIcon
                 isClearable={true}
                 onChange={(_name, value) => setSelectedForm(value)}
                 optionWithSubLabel
-                isDisabled={false}
+                isDisabled={disabled}
               />
             </Grid>
             {currentFormAttachments.map((formAttachment) => {
@@ -141,7 +142,7 @@ const AdditionalForms: React.FC<Props> = ({ formikProps, disabled }) => {
 
 type Props = {
   formikProps: UpsertPOFormikProps;
-  disabled: boolean;
+  disabled?: boolean;
 };
 export default React.memo(AdditionalForms, (_prevProps, _nextProps) => {
   //return false will always re-render this component when props change (same as default behavior of not using React.memo)

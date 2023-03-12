@@ -11,6 +11,7 @@ const RadioButton: React.FC<RadioProps> = ({
   labelClassName,
   containerClassName,
   style,
+  subLabel,
   ...props
 }) => {
   const id = useRef(shortid.generate());
@@ -20,12 +21,14 @@ const RadioButton: React.FC<RadioProps> = ({
       <label htmlFor={id.current} className={cn('cmp-radio__label', labelClassName)}>
         {label}
       </label>
+      {subLabel && subLabel}
     </View>
   );
 };
 
 type RadioProps = React.HTMLProps<HTMLInputElement> & {
   label?: string;
+  subLabel?: React.ReactNode;
   labelClassName?: string;
   containerClassName?: string;
 };
@@ -45,6 +48,8 @@ const Group: React.FC<RadioGroupProps> = ({
   columns = 3,
   required,
   isTrueFalseOptions = false,
+  itemStyle,
+  itemClassName,
   onBlur,
   onChange = () => {},
   ...props
@@ -77,9 +82,10 @@ const Group: React.FC<RadioGroupProps> = ({
             checked={value === option.value}
             label={option.label}
             onChange={handleValueChange}
-            containerClassName={cn(columns && 'cmp-radio-groups__column')}
-            style={{ width: `${100 / columns}%` }}
+            containerClassName={cn(itemClassName, columns && 'cmp-radio-groups__column')}
+            style={{ width: `${100 / columns}%`, ...itemStyle }}
             onBlur={handleRadioBlur}
+            subLabel={option.subLabel}
             {...props}
           />
         ))}
@@ -91,19 +97,21 @@ const Group: React.FC<RadioGroupProps> = ({
 type RadioGroupProps = {
   label?: string | React.ReactNode;
   subLabel?: string | React.ReactNode;
-  options?: { value: any; label: string }[];
+  options?: { value: any; label: string; subLabel?: React.ReactNode }[];
   value?: any;
   name?: string;
-  onChange?: (name: string, value: any) => void;
   errorMessage?: string;
   containerClassName?: string;
   labelClassName?: string;
   description?: string;
   columns?: number;
   disabled?: boolean;
-  onBlur?: (name: string, touched: boolean) => void;
   required?: boolean;
   isTrueFalseOptions?: boolean;
+  itemStyle?: React.CSSProperties;
+  itemClassName?: string;
+  onChange?: (name: string, value: any) => void;
+  onBlur?: (name: string, touched: boolean) => void;
 };
 
 export default Group;

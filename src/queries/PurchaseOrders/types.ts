@@ -1,4 +1,5 @@
 export interface SharedPODetail {
+  //general info
   loginName: string;
   date: string;
   number: string;
@@ -12,6 +13,7 @@ export interface SharedPODetail {
   vendorAddress: string;
   vendorCode: string;
   shipVia: string;
+  shipTo: string;
   shipOther: string;
   deliveryBy: string;
   discountTerms: string;
@@ -20,31 +22,49 @@ export interface SharedPODetail {
   phoneNumber: string;
   faStaffReviewer: string;
 
+  //purchase info
+  confirming: boolean;
+  getExempt: boolean;
+  attachment31: boolean;
+  fedAttachment: string;
+  uhSubawardNumber: string;
+  subtotal: number;
+  taxRate: number;
+  taxTotal: number;
+  total: number;
+  shippingTotal: number;
+
+  //Internal Special Instructions
+  internalA: string;
+  internalA1: string;
+  internalB: string;
+  internalC: string;
+
+  // External Special Instructions
+  presetInstructions: string;
+  externalSpecialInstructions: string;
+
+  // send invoice info
+  sendInvoiceTo: string;
+  sendInvoiceToClearFlag: boolean;
+  sendInvoiceToFaEmail: string;
+  invoiceDept: string;
+  invoiceStreetAddress: string;
+  invoiceCity: string;
+  invoiceState: string;
+  invoiceZip: string;
+  invoiceZip4: string;
+  invoiceCountry: string;
+
   documentType: string;
   majorVersion: string;
   minorVersion: number;
   formName: string;
   shortFormName: string;
   formNumber: string;
-  shipTo: string;
-  confirming: boolean;
-  getExempt: boolean;
-  taxRate: number;
-  taxTotal: number;
-  subtotal: number;
-  total: number;
-  shippingTotal: number;
-  attachment31: boolean;
-  fedAttachment: string;
-  internalA: string;
-  internalA1: string;
-  internalB: string;
-  internalC: string;
-  presetInstructions: string;
   signature: string;
   poComments: string;
   amountChange: number;
-  uhSubawardNumber: string;
 }
 
 export interface UpsertPOPayload extends SharedPODetail {
@@ -94,19 +114,8 @@ export interface PODetailResponse extends SharedPODetail {
   originalSubtotal: number;
   originalTotal: number;
   originalShippingTotal: number;
-  externalSpecialInstructions: string;
   status: string;
   userType: string;
-  sendInvoiceTo: string;
-  sendInvoiceToClearFlag: boolean;
-  sendInvoiceToFaEmail: string;
-  invoiceDept: string;
-  invoiceStreetAddress: string;
-  invoiceCity: string;
-  invoiceState: string;
-  invoiceZip: string;
-  invoiceZip4: string;
-  invoiceCountry: string;
   printedDate: string;
   balance: number;
   hasChangeDocument: boolean;

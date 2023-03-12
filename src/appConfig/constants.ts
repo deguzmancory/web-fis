@@ -55,3 +55,4 @@ export enum BOOLEAN {
 
 export const NO_OPENER = 'noopener noreferrer';
 export const PARAMS_SPLITTER = ';';
+export const US_ZIP_CODE_LENGTH = 5;

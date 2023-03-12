@@ -1,5 +1,6 @@
 import { Box, Grid, Typography } from '@mui/material';
 import React from 'react';
+import { US_ZIP_CODE_LENGTH } from 'src/appConfig/constants';
 import {
   Accordion,
   Input,
@@ -13,8 +14,6 @@ import { CRUUserFormikProps } from 'src/containers/CRUUSerContainer/helper';
 import { useZipCode } from 'src/queries';
 import { StateService } from 'src/services';
 import { getErrorMessage } from 'src/utils';
-
-const usZipCodeLength = 5;
 
 const UserTypeInfoForm: React.FC<Props> = ({
   title = '',
@@ -52,7 +51,7 @@ const UserTypeInfoForm: React.FC<Props> = ({
     const field = event.target.name;
     const value = event.target.value;
 
-    if (value?.length === usZipCodeLength) {
+    if (value?.length === US_ZIP_CODE_LENGTH) {
       checkZipCode(value);
     } else {
       setFieldValue(`${prefix}.${CRUUSER_USER_TYPE_KEY.ADDRESS_CITY}`, '');

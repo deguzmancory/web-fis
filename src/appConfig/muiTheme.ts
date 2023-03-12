@@ -110,6 +110,14 @@ const configTheme = createTheme({
             fontSize: 16,
           },
         },
+        h6: {
+          fontSize: 14,
+          fontWeight: 'bold',
+          color: COLOR_CODE.PRIMARY,
+          [breakpoints.down('md')]: {
+            fontSize: 14,
+          },
+        },
         body1: {
           fontSize: 16,
           color: COLOR_CODE.PRIMARY,

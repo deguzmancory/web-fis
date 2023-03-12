@@ -80,10 +80,55 @@
     padding-bottom: $index * $unit;
   }
 }
+@mixin margin-except-last-helper($index, $unit) {
+  .mt-except-last-#{$index} {
+    margin-top: $index * $unit;
+    &:last-child {
+      margin: 0;
+    }
+  }
+
+  .mb-except-last-#{$index} {
+    margin-bottom: $index * $unit;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  .ml-except-last-#{$index} {
+    margin-left: $index * $unit;
+    &:last-child {
+      margin: 0;
+    }
+  }
+
+  .mr-except-last-#{$index} {
+    margin-right: $index * $unit;
+    &:last-child {
+      margin: 0;
+    }
+  }
+
+  .mx-except-last-#{$index} {
+    margin-left: $index * $unit;
+    margin-right: $index * $unit;
+    &:last-child {
+      margin: 0;
+    }
+  }
+
+  .my-except-last-#{$index} {
+    margin-top: $index * $unit;
+    margin-bottom: $index * $unit;
+    &:last-child {
+      margin: 0;
+    }
+  }
+}
 
 @mixin spacing-helper($index, $unit) {
   @include margin-helper($index, $unit);
   @include padding-helper($index, $unit);
+  @include margin-except-last-helper($index, $unit);
 }
 
 // reponsive

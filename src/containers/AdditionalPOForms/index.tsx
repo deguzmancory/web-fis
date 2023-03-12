@@ -49,7 +49,6 @@ const PurchaseOrderContainer: React.FC<Props> = ({
         return <FfataDataCollectionForm disabled={false} formRef={formRef} />;
 
       //return anther additional forms here
-
       default:
         return null;
     }
@@ -65,7 +64,6 @@ const PurchaseOrderContainer: React.FC<Props> = ({
         return 'FFATA DATA COLLECTION FOR SUBCONTRACTOR/VENDOR *';
 
       //return anther additional forms here
-
       default:
         return 'UNKNOWN FORM';
     }

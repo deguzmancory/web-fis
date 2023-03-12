@@ -4,19 +4,18 @@ import React from 'react';
 import {
   EllipsisTooltipInput,
   EllipsisTooltipInputCurrency,
-  Input,
   TextareaAutosize,
 } from 'src/components/common';
 import CustomTable from 'src/components/CustomTable';
 import { BodyBasicRows, CellType } from 'src/components/CustomTable/types';
 import { POLineItemPayload } from 'src/queries/PurchaseOrders';
 import { Callback } from 'src/redux/types';
-import { formatMoney, isEqualPrevAndNextObjByPath } from 'src/utils';
+import { isEqualPrevAndNextObjByPath } from 'src/utils';
 import { initialLineItemValue } from '../constants';
 import { PO_FORM_KEY, PO_LINE_ITEM_KEY } from '../enums';
 import { UpsertPOFormikProps } from '../types';
 
-const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
+const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const { values, setFieldValue, getFieldProps } = formikProps;
 
   const lineItemsValue = React.useMemo(() => values.lineItems, [values.lineItems]);
@@ -35,25 +34,39 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
     setFieldValue(`${PO_FORM_KEY.LINE_ITEMS}`, [...lineItemsValue, initialLineItemValue]);
   }, [lineItemsValue, setFieldValue]);
 
-  const updateExtData = React.useCallback(
+  const updateExtItem = React.useCallback(
     ({
       lineItemRow,
       prefixLineItem,
+      index,
     }: {
       lineItemRow: POLineItemPayload;
       prefixLineItem: string;
+      index: number;
     }) => {
+      let updatedSubtotal = values.subtotal;
+
       if (!lineItemRow?.quantity || !isNumber(lineItemRow?.unitPrice)) {
+        updatedSubtotal = values.subtotal - (lineItemRow.ext || 0);
+
         setFieldValue(`${prefixLineItem}.${PO_LINE_ITEM_KEY.EXT}`, null);
+        setFieldValue(PO_FORM_KEY.SUBTOTAL, updatedSubtotal);
         return;
       }
 
-      setFieldValue(
-        `${prefixLineItem}.${PO_LINE_ITEM_KEY.EXT}`,
-        formatMoney(Number(lineItemRow?.quantity) * Number(lineItemRow?.unitPrice))
-      );
+      const currentLineItemExt = Number(lineItemRow?.quantity) * Number(lineItemRow?.unitPrice);
+
+      setFieldValue(`${prefixLineItem}.${PO_LINE_ITEM_KEY.EXT}`, currentLineItemExt);
+
+      updatedSubtotal = lineItemsValue.reduce((total, currentLineItem, currentIndex) => {
+        if (index === currentIndex) return total + currentLineItemExt;
+
+        return total + currentLineItem.ext;
+      }, 0);
+
+      setFieldValue(PO_FORM_KEY.SUBTOTAL, updatedSubtotal);
     },
-    [setFieldValue]
+    [setFieldValue, lineItemsValue, values]
   );
 
   const checkRowStateAndSetValue = React.useCallback(
@@ -122,7 +135,8 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
         value,
         index,
         callback: () => {
-          updateExtData({
+          updateExtItem({
+            index,
             prefixLineItem,
             lineItemRow: {
               ...lineItemRow,
@@ -132,7 +146,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
         },
       });
     },
-    [checkRowStateAndSetValue, updateExtData]
+    [checkRowStateAndSetValue, updateExtItem]
   );
 
   const handleInputChange = ({ name, value, index }) => {
@@ -175,6 +189,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
               style={{ width: 90 }}
               lengthShowTooltip={8}
               maxLength={5}
+              disabled={disabled}
             />
           ),
           width: 90,
@@ -195,6 +210,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
               style={{ width: 90 }}
               lengthShowTooltip={8}
               maxLength={4}
+              disabled={disabled}
               // errorMessage={'Required'} //TODO: add validation for cell
             />
           ),
@@ -216,6 +232,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
               style={{ width: 100 }}
               lengthShowTooltip={8}
               maxLength={3}
+              disabled={disabled}
             />
           ),
           width: 100,
@@ -234,6 +251,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
                 })
               }
               style={{ width: 240, paddingTop: '4px' }}
+              disabled={disabled}
             />
           ),
         },
@@ -241,7 +259,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
           type: CellType.INPUT,
           label: 'Quantity',
           content: (
-            <Input
+            <EllipsisTooltipInput
               {...getFieldProps(`${prefixLineItem}.${PO_LINE_ITEM_KEY.QUANTITY}`)}
               onChange={(e: any) => {
                 handleQuantityOrPriceChange({
@@ -255,8 +273,9 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
               }}
               type="number"
               style={{ width: 80 }}
-              // lengthShowTooltip={7}
+              lengthShowTooltip={7}
               hideArrowTypeNumber
+              disabled={disabled}
             />
           ),
           width: 80,
@@ -276,6 +295,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
               }
               style={{ width: 80 }}
               lengthShowTooltip={7}
+              disabled={disabled}
             />
           ),
           width: 80,
@@ -298,6 +318,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
               }
               textAlign="right"
               lengthShowTooltip={14}
+              disabled={disabled}
             />
           ),
         },
@@ -330,7 +351,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
 
 type Props = {
   formikProps: UpsertPOFormikProps;
-  disabled: boolean;
+  disabled?: boolean;
 };
 
 export default React.memo(TableLineItems, (prevProps, nextProps) => {

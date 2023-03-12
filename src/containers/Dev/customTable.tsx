@@ -109,9 +109,7 @@ const CustomTableContainer: React.FC<Props> = ({ onHideAllDialog, onHideDialog, 
           content: reportRow.category,
         },
         {
-          content: (
-            <Input {...getUncontrolledFieldProps(`${index}.description`)} style={cellBaseStyles} />
-          ),
+          content: <Input {...getFieldProps(`${index}.description`)} style={cellBaseStyles} />,
           type: CellType.INPUT,
         },
         {

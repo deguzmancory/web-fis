@@ -3,14 +3,7 @@ import { Box, Grid, Typography } from '@mui/material';
 import { debounce } from 'lodash';
 import React from 'react';
 import { PARAMS_SPLITTER } from 'src/appConfig/constants';
-import {
-  EllipsisTooltipInput,
-  Input,
-  InputPhone,
-  Link,
-  Select,
-  TextArea,
-} from 'src/components/common';
+import { Input, InputPhone, Link, Select, TextArea } from 'src/components/common';
 import { SelectOption } from 'src/components/common/Select';
 import {
   getFinancialProjectOptions,
@@ -38,7 +31,7 @@ type SearchVendorsType = {
   code: string;
 };
 
-const GeneralInfo: React.FC<Props> = ({ formikProps, disabled }) => {
+const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const { values, errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } =
     formikProps;
   const currentUserRole = RoleService.getCurrentRole() as ROLE_NAME;
@@ -249,7 +242,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled }) => {
       <Grid container spacing={2}>
         <Grid item container spacing={3}>
           <Grid item xs={12} sm={6} md={4}>
-            <EllipsisTooltipInput
+            <Input
               label={'Login Name'}
               errorMessage={_getErrorMessage(PO_FORM_KEY.LOGIN_NAME)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.LOGIN_NAME)}
@@ -350,7 +343,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled }) => {
             <Input
               label={'PI Name'}
               errorMessage={_getErrorMessage(PO_FORM_KEY.PI_NAME)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.PI_NAME)}
+              {...getFieldProps(PO_FORM_KEY.PI_NAME)}
               disabled
             />
           </Grid>
@@ -358,7 +351,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled }) => {
             <Input
               label={'Project Period'}
               errorMessage={_getErrorMessage(PO_FORM_KEY.PROJECT_PERIOD)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.PROJECT_PERIOD)}
+              {...getFieldProps(PO_FORM_KEY.PROJECT_PERIOD)}
               disabled
             />
           </Grid>
@@ -568,7 +561,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled }) => {
 
 type Props = {
   formikProps: UpsertPOFormikProps;
-  disabled: boolean;
+  disabled?: boolean;
 };
 
 export default React.memo(GeneralInfo, (prevProps, nextProps) => {
@@ -595,7 +588,7 @@ export default React.memo(GeneralInfo, (prevProps, nextProps) => {
     PO_FORM_KEY.DIRECT_INQUIRIES_TO,
     PO_FORM_KEY.PHONE_NUMBER,
     PO_FORM_KEY.FA_STAFF_REVIEWER,
-  ]; //todo: add all keys using in this component
+  ]; // only re-render if keys using in this component change
 
   return formKeysNeedRender.every((key) =>
     isEqualPrevAndNextObjByPath({

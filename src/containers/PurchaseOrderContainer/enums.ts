@@ -25,6 +25,18 @@ export enum PO_FORM_KEY {
   // line items
   LINE_ITEMS = 'lineItems',
 
+  // purchase info
+  CONFIRMING = 'confirming',
+  GET_EXEMPT = 'getExempt',
+  ATTACHMENT_31 = 'attachment31',
+  FED_ATTACHMENT = 'fedAttachment',
+  UH_SUBAWARD_NUMBER = 'uhSubawardNumber',
+  SUBTOTAL = 'subtotal',
+  TAX_RATE = 'taxRate',
+  TAX_TOTAL = 'taxTotal',
+  TOTAL = 'total',
+  SHIPPING_TOTAL = 'shippingTotal',
+
   // additional forms
   AVAILABLE_FORMS = 'availableForms',
   FORM_ATTACHMENTS = 'formAttachments',
@@ -38,6 +50,28 @@ export enum PO_FORM_KEY {
   AGREEMENT_UH = 'agreementUh',
   FFATA = 'ffata',
   DETERMINATION = 'determination',
+
+  //Internal Special Instructions
+  INTERNAL_A = 'internalA',
+  INTERNAL_A1 = 'internalA1',
+  INTERNAL_B = 'internalB',
+  INTERNAL_C = 'internalC',
+
+  // External Special Instructions
+  PRESET_INSTRUCTIONS = 'presetInstructions',
+  EXTERNAL_SPECIAL_INSTRUCTIONS = 'externalSpecialInstructions',
+
+  // send invoice info
+  SEND_INVOICE_TO = 'sendInvoiceTo',
+  SEND_INVOICE_TO_CLEAR_FLAG = 'sendInvoiceToClearFlag',
+  SEND_INVOICE_TO_FA_EMAIL = 'sendInvoiceToFaEmail',
+  INVOICE_DEPT = 'invoiceDept',
+  INVOICE_STREET_ADDRESS = 'invoiceStreetAddress',
+  INVOICE_CITY = 'invoiceCity',
+  INVOICE_STATE = 'invoiceState',
+  INVOICE_ZIP = 'invoiceZip',
+  INVOICE_ZIP4 = 'invoiceZip4',
+  INVOICE_COUNTRY = 'invoiceCountry',
 }
 
 export enum PO_ADDITIONAL_FORM_CODE {
