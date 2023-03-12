@@ -18,10 +18,16 @@ const TextareaAutosize: React.FC<InputProps> = ({
   resize = 'vertical',
   required,
   disabled,
+  isUncontrolledInput = false,
   onIconClick,
   ...props
 }) => {
   const id = useRef<string>(`text-area-${getRandomId()}`);
+  const uncontrolledInputRef = useRef<HTMLTextAreaElement>(null);
+
+  if (isUncontrolledInput && uncontrolledInputRef.current) {
+    uncontrolledInputRef.current.value = props.defaultValue?.toString();
+  }
 
   return (
     <Element
@@ -38,7 +44,7 @@ const TextareaAutosize: React.FC<InputProps> = ({
             'cmp-text-area--error': !isEmpty(errorMessage),
             'cmp-text-area--disabled': disabled,
           })}
-          ref={inputRef}
+          ref={inputRef ?? (isUncontrolledInput ? uncontrolledInputRef : undefined)}
           {...props}
         />
         {iconName && <Icon name={iconName} className="cmp-text-area__icon" onClick={onIconClick} />}
@@ -55,6 +61,7 @@ export type InputProps = TextareaAutosizeProps & {
   label?: string | React.ReactNode;
   required?: boolean;
   resize?: 'horizontal' | 'vertical' | 'bold' | 'none';
+  isUncontrolledInput?: boolean;
   onIconClick?: MouseEventHandler<HTMLElement>;
 };
 

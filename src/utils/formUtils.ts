@@ -7,6 +7,7 @@ export const getUncontrolledInputFieldProps =
     return {
       name,
       defaultValue: get(values, name),
+      isUncontrolledInput: true,
       onBlur: (event) => {
         const value = event.target.value;
 
@@ -26,6 +27,7 @@ export const getUncontrolledCurrencyInputFieldProps =
     return {
       name,
       defaultValue: get(values, name),
+      isUncontrolledInput: true,
       onBlur: (event) => {
         const targetValue = event.target.value;
         const value = MoneyInputDetect(targetValue)

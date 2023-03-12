@@ -32,11 +32,21 @@ const Input: React.FC<InputProps> = ({
   customIcon = null,
   footer,
   hideArrowTypeNumber = false,
+  isUncontrolledInput = false,
   onIconClick,
   ...props
 }) => {
   const id = useRef<string>(`input-${getRandomId()}`);
+  const uncontrolledInputRef = useRef<HTMLInputElement>(undefined);
   const isIconPositionLeft = iconPosition === 'left';
+
+  if (!inputRef && isUncontrolledInput && uncontrolledInputRef.current) {
+    uncontrolledInputRef.current.value = props.defaultValue?.toString();
+  }
+
+  if (inputRef && inputRef.current && isUncontrolledInput) {
+    inputRef.current.value = props.defaultValue?.toString();
+  }
 
   return (
     <Element
@@ -69,7 +79,7 @@ const Input: React.FC<InputProps> = ({
               left: isIconPositionLeft,
             }
           )}
-          ref={inputRef}
+          ref={inputRef ?? (isUncontrolledInput ? uncontrolledInputRef : undefined)}
           placeholder={props.placeholder}
           {...props}
         />
@@ -146,6 +156,7 @@ export type InputProps = BaseInputProps & {
   infoTooltipPlacement?: CommonPlacement;
   infoToolTipWithArrow?: boolean;
   hideArrowTypeNumber?: boolean;
+  isUncontrolledInput?: boolean;
   onIconClick?: MouseEventHandler<HTMLElement>;
 };
 
