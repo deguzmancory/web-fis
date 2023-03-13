@@ -18,11 +18,13 @@ import {
 import { PO_ADDITIONAL_FORM_KEY, PO_ADDITIONAL_FORM_PARAMS } from '../AdditionalPOForms/enum';
 import Layout from '../CRUUSerContainer/layout';
 import AdditionalForms from './AdditionalForms';
+import AuthorizedBy from './AuthorizedBy';
 import BreadcrumbsPODetail from './breadcrumbs';
 import { emptyUpsertPOFormValue } from './constants';
 import ExternalSpecialInstructions from './ExternalSpecialInstructions';
 import GeneralInfo from './GeneralInfo';
 import { getAdditionalPOFormValue, getInitialPOFormValue } from './helpers';
+import InternalComments from './InternalComments';
 import InternalSpecialInstructions from './InternalSpecialInstructions';
 import PurchaseInfo from './PurchaseInfo';
 import SendInvoiceInfo from './SendInvoiceInfo';
@@ -38,18 +40,6 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
   const isEditPOMode = false;
   const hasPermission = true;
   const loading = false;
-
-  React.useEffect(() => {
-    if (scrollToParam && scrollToParam === PO_ADDITIONAL_FORM_KEY.ADDITIONAL_FORMS) {
-      const additionalFormId = document.getElementById(PO_ADDITIONAL_FORM_KEY.ADDITIONAL_FORMS);
-
-      if (additionalFormId) {
-        setTimeout(() => {
-          additionalFormId.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
-      }
-    }
-  }, [scrollToParam]);
 
   const { onGetPOById } = useGetPODetail({
     id: '839b57dc-176b-4492-94a7-83f01efb8455', //TODO: handle when edit po ready
@@ -86,6 +76,18 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
 
     // just back from additional forms mode => not fetching anything
   }, [formData, onSetFormData, isEditPOMode, profile, onGetPOById]);
+
+  React.useEffect(() => {
+    if (scrollToParam && scrollToParam === PO_ADDITIONAL_FORM_KEY.ADDITIONAL_FORMS) {
+      const additionalFormId = document.getElementById(PO_ADDITIONAL_FORM_KEY.ADDITIONAL_FORMS);
+
+      if (additionalFormId) {
+        setTimeout(() => {
+          additionalFormId.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    }
+  }, [scrollToParam]);
 
   const handleFormSubmit = (values: UpsertPOFormValue) => {
     console.log('values: ', values);
@@ -163,6 +165,12 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
               </Layout>
               <Layout>
                 <SendInvoiceInfo formikProps={formikProps} />
+              </Layout>
+              <Layout>
+                <AuthorizedBy formikProps={formikProps} />
+              </Layout>
+              <Layout>
+                <InternalComments formikProps={formikProps} />
               </Layout>
             </>
           )}

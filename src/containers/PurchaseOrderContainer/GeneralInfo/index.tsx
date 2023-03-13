@@ -2,118 +2,47 @@ import { Add } from '@mui/icons-material';
 import { Box, Grid, Typography } from '@mui/material';
 import { debounce } from 'lodash';
 import React from 'react';
-import { PARAMS_SPLITTER } from 'src/appConfig/constants';
+import { useDispatch } from 'react-redux';
 import { Input, InputPhone, Link, Select, TextArea } from 'src/components/common';
 import { SelectOption } from 'src/components/common/Select';
-import {
-  getFinancialProjectOptions,
-  getVendorOptions,
-} from 'src/containers/PurchaseOrderContainer/GeneralInfo/helpers';
-import { useContents, useProfile } from 'src/queries';
-import { isPI, ROLE_NAME } from 'src/queries/Profile/helpers';
+import { useContents } from 'src/queries';
 import { FinancialProject } from 'src/queries/Projects/types';
-import { useGetFinancialProjects } from 'src/queries/Projects/useGetFinancialProjects';
 import { Vendor } from 'src/queries/Vendors';
-import { useSearchVendors } from 'src/queries/Vendors/useSearchVendors';
-import { RoleService } from 'src/services';
+import { showDialog } from 'src/redux/dialog/dialogSlice';
+import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { getDateDisplay, getErrorMessage, isEqualPrevAndNextObjByPath } from 'src/utils';
 import { getContentOptions } from 'src/utils/contentUtils';
 import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormikProps } from '../types';
-
-type SearchProjectsType = {
-  title: string;
-  number: string;
-};
-
-type SearchVendorsType = {
-  name: string;
-  code: string;
-};
+import SuperQuote from './superQuote';
+import usePOSearchProject, { SearchProjectsType } from '../hooks/usePOSearchProject';
+import usePOSearchVender, { SearchVendorsType } from '../hooks/usePOSearchVender';
 
 const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
+  const dispatch = useDispatch();
+
   const { values, errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } =
     formikProps;
-  const currentUserRole = RoleService.getCurrentRole() as ROLE_NAME;
+  console.log('formikProps: ', formikProps);
   const currentProjectTitle = React.useMemo(() => values.projectTitle, [values.projectTitle]);
   const currentProjectNumber = React.useMemo(() => values.projectNumber, [values.projectNumber]);
   const currentVendorName = React.useMemo(() => values.vendorName, [values.vendorName]);
   const currentVendorCode = React.useMemo(() => values.vendorCode, [values.vendorCode]);
 
-  const [searchProjects, setSearchProjects] = React.useState<SearchProjectsType>({
-    title: '',
-    number: '',
-  });
+  const { setSearchProjects, isLoadingSearchProjects, projectTitleOptions, projectNumberOptions } =
+    usePOSearchProject({ currentProjectTitle, currentProjectNumber });
 
-  const [searchVendors, setSearchVendors] = React.useState<SearchVendorsType>({
-    name: '',
-    code: '',
-  });
+  const { setSearchVendors, isLoadingSearchVendors, vendorNameOptions, vendorCodeOptions } =
+    usePOSearchVender({ currentVendorName, currentVendorCode });
 
-  const { profile } = useProfile();
   const { contents } = useContents();
-  const {
-    financialProjects,
-    setParams: setParamsSearchProject,
-    isLoading: isLoadingSearchProjects,
-  } = useGetFinancialProjects({
-    enabled:
-      !!searchProjects.title ||
-      !!searchProjects.number ||
-      !!currentProjectTitle ||
-      !!currentProjectNumber,
-  });
-
-  const {
-    vendors,
-    isLoading: isLoadingSearchVendors,
-    setSearchVendorParams,
-  } = useSearchVendors({
-    enabled:
-      !!searchVendors.name || !!searchVendors.code || !!currentVendorName || !!currentVendorCode,
-  });
 
   const shipViaOptions = getContentOptions(contents, 'shipVia');
-
-  const projectTitleOptions: SelectOption[] = React.useMemo(() => {
-    if (isLoadingSearchProjects || (!searchProjects.title && !currentProjectTitle)) {
-      return [];
-    }
-
-    return getFinancialProjectOptions({ financialProjects });
-  }, [financialProjects, searchProjects.title, currentProjectTitle, isLoadingSearchProjects]);
-
-  const projectNumberOptions: SelectOption[] = React.useMemo(() => {
-    if (isLoadingSearchProjects || (!searchProjects.number && !currentProjectNumber)) {
-      return [];
-    }
-
-    return getFinancialProjectOptions({
-      financialProjects,
-    });
-  }, [financialProjects, searchProjects.number, currentProjectNumber, isLoadingSearchProjects]);
-
-  const vendorNameOptions: SelectOption[] = React.useMemo(() => {
-    if (isLoadingSearchVendors || (!searchVendors.name && !currentVendorName)) {
-      return [];
-    }
-
-    return getVendorOptions({ vendors });
-  }, [vendors, searchVendors.name, currentVendorName, isLoadingSearchVendors]);
-
-  const vendorCodeOptions: SelectOption[] = React.useMemo(() => {
-    if (isLoadingSearchVendors || (!searchVendors.code && !currentVendorCode)) {
-      return [];
-    }
-
-    return getVendorOptions({
-      vendors,
-    });
-  }, [vendors, searchVendors.code, currentVendorCode, isLoadingSearchVendors]);
 
   const updateProjectFields = (value: FinancialProject) => {
     setFieldValue(PO_FORM_KEY.PROJECT_TITLE, value);
     setFieldValue(PO_FORM_KEY.PROJECT_NUMBER, value);
+    setFieldValue(PO_FORM_KEY.PI_NAME, value.piName || '');
     setFieldValue(
       PO_FORM_KEY.PROJECT_PERIOD,
       value ? `${getDateDisplay(value.startDate)} - ${getDateDisplay(value.endDate)}` : null
@@ -142,84 +71,20 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
   };
 
   const handleImportSuperQuoteClick = () => {
-    console.log('Clicked');
+    if (disabled) return;
+
+    dispatch(
+      showDialog({
+        type: DIALOG_TYPES.YESNO_DIALOG,
+        data: {
+          title: 'Import Data from SuperQUOTE',
+          content: <SuperQuote formikProps={formikProps} disabled={disabled} />,
+          showTitleDivider: true,
+          okText: 'Import',
+        },
+      })
+    );
   };
-
-  const getSearchProjectsParamsByRole = React.useCallback(
-    (role: ROLE_NAME): { codes: string; projectNumbers: string } | null => {
-      let roleInfo;
-
-      switch (role) {
-        case ROLE_NAME.PI:
-          roleInfo = profile.fisPiInfo;
-          break;
-        case ROLE_NAME.SU:
-          roleInfo = profile.fisSuInfo;
-          break;
-
-        default:
-          break;
-      }
-
-      if (!roleInfo) return null;
-
-      const codes = isPI(role)
-        ? profile.fisPiInfo.piCode
-        : roleInfo.userFisCodes?.map((code) => code.code).join(PARAMS_SPLITTER) ?? '';
-      const projectNumbers =
-        roleInfo.userFisProjects?.map((project) => project.projectNumber).join(PARAMS_SPLITTER) ??
-        '';
-
-      return { codes, projectNumbers };
-    },
-    [profile]
-  );
-
-  const searchProjectsParams = React.useMemo(
-    () => getSearchProjectsParamsByRole(currentUserRole),
-    [getSearchProjectsParamsByRole, currentUserRole]
-  );
-
-  //fetch project options whenever search projects input change
-  React.useEffect(() => {
-    if (!searchProjects.title) return;
-
-    setParamsSearchProject({
-      searchName: searchProjects.title,
-      userType: currentUserRole,
-      codes: searchProjectsParams?.codes || '',
-      projectNumbers: searchProjectsParams?.projectNumbers || '',
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchProjects.title, currentUserRole, setParamsSearchProject]);
-
-  React.useEffect(() => {
-    if (!searchProjects.number) return;
-
-    setParamsSearchProject({
-      searchNumber: searchProjects.number,
-      userType: currentUserRole,
-      codes: searchProjectsParams?.codes,
-      projectNumbers: searchProjectsParams?.projectNumbers,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchProjects.number, currentUserRole, setParamsSearchProject]);
-
-  React.useEffect(() => {
-    if (!searchVendors.name) return;
-
-    setSearchVendorParams({
-      search: searchVendors.name,
-    });
-  }, [searchVendors.name, setSearchVendorParams]);
-
-  React.useEffect(() => {
-    if (!searchVendors.code) return;
-
-    setSearchVendorParams({
-      search: searchVendors.code,
-    });
-  }, [searchVendors.code, setSearchVendorParams]);
 
   // Debouncing search projects inputs
   const debounceSearchProjectsInput = debounce((key: keyof SearchProjectsType, value: string) => {
@@ -359,7 +224,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
             <Input
               label={'SuperQUOTE No.'}
               errorMessage={_getErrorMessage(PO_FORM_KEY.SUPER_QUOTE_NUMBER)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.SUPER_QUOTE_NUMBER)}
+              {...getFieldProps(PO_FORM_KEY.SUPER_QUOTE_NUMBER)}
               disabled
               footer={
                 <Link
@@ -577,6 +442,7 @@ export default React.memo(GeneralInfo, (prevProps, nextProps) => {
     PO_FORM_KEY.PI_NAME,
     PO_FORM_KEY.PROJECT_PERIOD,
     PO_FORM_KEY.SUPER_QUOTE_NUMBER,
+    PO_FORM_KEY.SUPER_QUOTE_BID_ID,
     PO_FORM_KEY.VENDOR_NAME,
     PO_FORM_KEY.VENDOR_CODE,
     PO_FORM_KEY.VENDOR_ADDRESS,

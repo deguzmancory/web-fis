@@ -11,6 +11,7 @@ export interface ContentDialogData {
   hideTitle?: boolean;
   fullScreen?: boolean;
   hideCloseButton?: boolean;
+  showTitleDivider?: boolean;
   reconfirm?: {
     ok?: {
       show?: boolean;
@@ -45,6 +46,7 @@ export interface ConfirmDialogData {
   onCancel?: (...arg: any[]) => void;
   overflowVisible?: boolean;
   hideCloseButton?: boolean;
+  showTitleDivider?: boolean;
   maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
 }
 

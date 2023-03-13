@@ -5,16 +5,20 @@ import { Vendor } from 'src/queries/Vendors';
 import { getDateDisplay } from 'src/utils';
 import { isEmpty } from 'src/validations';
 
+export const VARIOUS_PROJECT_VALUE = 'Various';
+export const VARIOUS_PROJECT_NAME = 'PO WILL USE MORE THAN 1 PROJECT NUMBER';
+
 export const emptyVariousProject = {
   label: <Box>Various</Box>,
   value: {
-    name: 'Various',
-    number: 'Various',
+    name: VARIOUS_PROJECT_VALUE,
+    number: VARIOUS_PROJECT_VALUE,
     ac: null,
     campus: null,
     classification: null,
     endDate: null,
     faCode: null,
+    piName: VARIOUS_PROJECT_VALUE,
     id: null,
     inactive: false,
     piCode: null,
@@ -22,6 +26,10 @@ export const emptyVariousProject = {
     type: null,
   },
   subLabel: null,
+};
+
+const isVariousProject = (projectNumber: string) => {
+  return projectNumber === VARIOUS_PROJECT_VALUE;
 };
 
 export const getFinancialProjectOptions = ({
@@ -36,11 +44,13 @@ export const getFinancialProjectOptions = ({
       label: (
         <Box>
           <span className="mr-4">{project.number}</span>
-          <span>{project.name}</span>
+          <span>isVariousProject(project.number) ? VARIOUS_PROJECT_NAME : {project.name}</span>
         </Box>
       ),
       value: project,
-      subLabel: `(${getDateDisplay(project.startDate)} - ${getDateDisplay(project.endDate)})`,
+      subLabel: isVariousProject(project.number)
+        ? VARIOUS_PROJECT_VALUE
+        : `(${getDateDisplay(project.startDate)} - ${getDateDisplay(project.endDate)})`,
     }))
     .concat([emptyVariousProject]);
 };

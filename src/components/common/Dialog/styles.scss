@@ -23,12 +23,16 @@
   }
 
   &__title {
-    // border-bottom: 1px solid #ebebeb;
     padding-bottom: 0px;
 
     @include mobileScreen {
       padding: 16px 16px 0 16px;
     }
+  }
+
+  &__title-divider {
+    border-bottom: 1px solid #ebebeb;
+    margin-bottom: 8px !important;
   }
 
   &__content {

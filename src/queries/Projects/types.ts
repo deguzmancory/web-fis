@@ -6,6 +6,7 @@ export interface FinancialProject {
   ac: string;
   faCode: string;
   piCode: string;
+  piName: string;
   type: string;
   startDate: string;
   endDate: string;

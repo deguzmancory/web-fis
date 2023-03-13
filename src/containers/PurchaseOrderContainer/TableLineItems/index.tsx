@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { get, isNumber } from 'lodash';
+import { isNumber } from 'lodash';
 import React from 'react';
 import {
   EllipsisTooltipInput,
@@ -9,10 +9,10 @@ import {
 import CustomTable from 'src/components/CustomTable';
 import { BodyBasicRows, CellType } from 'src/components/CustomTable/types';
 import { POLineItemPayload } from 'src/queries/PurchaseOrders';
-import { Callback } from 'src/redux/types';
 import { isEqualPrevAndNextObjByPath } from 'src/utils';
 import { initialLineItemValue } from '../constants';
 import { PO_FORM_KEY, PO_LINE_ITEM_KEY } from '../enums';
+import { checkRowStateAndSetValue } from '../helpers';
 import { UpsertPOFormikProps } from '../types';
 
 const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
@@ -69,51 +69,6 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
     [setFieldValue, lineItemsValue, values]
   );
 
-  const checkRowStateAndSetValue = React.useCallback(
-    ({
-      value,
-      name,
-      index,
-      callback,
-    }: {
-      name: string;
-      value: any;
-      index: number;
-      callback?: Callback;
-    }) => {
-      const currentRow = get(lineItemsValue, index);
-
-      // if !value and other cell of current row do not have value => remove row
-      if (
-        !value &&
-        !Object.entries(currentRow).some(([key, value]) => {
-          // exclude the current field cause "currentRow" references to the previous data now
-          if (name.includes(key)) return false;
-          return !!value;
-        })
-      ) {
-        // not remove the last field
-        if (index === lineItemsValue.length - 1) return;
-
-        removeRow(index);
-      }
-      // add new row if the current row is the last row
-      else {
-        const rowAbove = get(lineItemsValue, `${index + 1}`);
-        if (!rowAbove) {
-          addNewRow();
-        }
-
-        setFieldValue(name, value);
-
-        if (callback) {
-          callback();
-        }
-      }
-    },
-    [addNewRow, lineItemsValue, removeRow, setFieldValue]
-  );
-
   const handleQuantityOrPriceChange = React.useCallback(
     ({
       name,
@@ -130,10 +85,14 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
       key: PO_LINE_ITEM_KEY;
       index: number;
     }) => {
-      checkRowStateAndSetValue({
+      checkRowStateAndSetValue<POLineItemPayload>({
         name,
         value,
         index,
+        records: lineItemsValue,
+        setFieldValue,
+        onAddRow: addNewRow,
+        onRemoveRow: removeRow,
         callback: () => {
           updateExtItem({
             index,
@@ -146,11 +105,19 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
         },
       });
     },
-    [checkRowStateAndSetValue, updateExtItem]
+    [lineItemsValue, updateExtItem, addNewRow, removeRow, setFieldValue]
   );
 
   const handleInputChange = ({ name, value, index }) => {
-    checkRowStateAndSetValue({ name, value, index });
+    checkRowStateAndSetValue<POLineItemPayload>({
+      name,
+      value,
+      index,
+      records: lineItemsValue,
+      setFieldValue,
+      onAddRow: addNewRow,
+      onRemoveRow: removeRow,
+    });
   };
 
   const lineItemRows: BodyBasicRows = lineItemsValue.map((lineItemRow, index) => {

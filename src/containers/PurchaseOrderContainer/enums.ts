@@ -72,6 +72,12 @@ export enum PO_FORM_KEY {
   INVOICE_ZIP = 'invoiceZip',
   INVOICE_ZIP4 = 'invoiceZip4',
   INVOICE_COUNTRY = 'invoiceCountry',
+
+  //Internal Comments
+  PO_COMMENTS = 'poComments',
+
+  //Authorized by
+  SIGNATURE = 'signature',
 }
 
 export enum PO_ADDITIONAL_FORM_CODE {

@@ -26,6 +26,7 @@ const DialogRenderer: React.FC<Props> = ({
     reconfirm,
     title = '',
     hideCloseButton,
+    showTitleDivider = false,
   } = data;
 
   const onNoClick = () => {
@@ -119,6 +120,7 @@ const DialogRenderer: React.FC<Props> = ({
       hideTitle={hideTitle}
       fullScreen={fullScreen}
       disabledButton={hideCloseButton}
+      showTitleDivider={showTitleDivider}
     >
       {content}
       {/* <DialogBody dialogType={dialogType} content={content as React.ReactElement} /> */}

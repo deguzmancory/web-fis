@@ -30,6 +30,7 @@ const Dialog: React.FC<
     overflowVisible?: boolean;
     disabledButton?: boolean;
     hideTitle?: boolean;
+    showTitleDivider?: boolean;
     onClose?: Callback;
   }
 > = ({
@@ -37,7 +38,6 @@ const Dialog: React.FC<
   children,
   title,
   dialogActions,
-  onClose,
   dialogContentClasses,
   fullScreen,
   loading,
@@ -45,6 +45,8 @@ const Dialog: React.FC<
   disabledButton,
   hideTitle,
   open,
+  showTitleDivider = false,
+  onClose,
   ...dialogProps
 }) => {
   return (
@@ -79,7 +81,9 @@ const Dialog: React.FC<
         </IconButton>
       )}
       {!hideTitle && (
-        <DialogTitle className="cmp-dialog__title">
+        <DialogTitle
+          className={cn('cmp-dialog__title', showTitleDivider && 'cmp-dialog__title-divider')}
+        >
           <View isRow align="center" justify="space-between">
             <View isRow align="center">
               {iconTitle && <i className="mr-8">{iconTitle}</i>}

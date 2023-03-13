@@ -56,14 +56,18 @@ export interface SharedPODetail {
   invoiceZip4: string;
   invoiceCountry: string;
 
+  //Internal Comments
+  poComments: string;
+
+  //Authorized by
+  signature: string;
+
   documentType: string;
   majorVersion: string;
   minorVersion: number;
   formName: string;
   shortFormName: string;
   formNumber: string;
-  signature: string;
-  poComments: string;
   amountChange: number;
 }
 
@@ -173,6 +177,8 @@ export interface PODetailResponse extends SharedPODetail {
   equipmentInventory: POEquipmentInventoryResponse;
   subcontractor: SubcontractorResponse;
   ffata: FfataReponse;
+
+  auditTrails: POAuditTrails[];
 }
 
 export interface POCommonResponse {
@@ -210,6 +216,17 @@ export interface AdditionalPOForm {
   name: string;
   code: string;
   accessKey: string;
+}
+
+export interface POAuditTrails {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  date: string;
+  user: string;
+  action: string;
+  username: string;
+  userType: string;
 }
 
 export interface POLineItemPayload {
@@ -263,18 +280,18 @@ export interface PODeterminationPayload {
   reason1: string;
   reason1Ref: string;
   reason2: string;
-  reason2Ref: any; //todo: update type;
-  reason3: any; //todo: update type;
-  reason3Ref: any; //todo: update type;
-  reason4: any; //todo: update type;
-  reason4Ref: any; //todo: update type;
-  reason5: any; //todo: update type;
-  reason5Ref: any; //todo: update type;
-  reason6: any; //todo: update type;
-  reason6Ref: any; //todo: update type;
-  reason6PoNumber: any; //todo: update type;
-  reason6ContractNumber: any; //todo: update type;
-  reason7: any; //todo: update type;
+  reason2Ref: string;
+  reason3: string;
+  reason3Ref: string;
+  reason4: string;
+  reason4Ref: string;
+  reason5: string;
+  reason5Ref: string;
+  reason6: string;
+  reason6Ref: string;
+  reason6PoNumber: string;
+  reason6ContractNumber: string;
+  reason7: string;
   costJustification: string;
   departmentHead: string;
   departmentHeadDate: string;
