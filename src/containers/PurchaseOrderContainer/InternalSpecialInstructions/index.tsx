@@ -1,9 +1,9 @@
 import { Box, Divider, Grid, Typography } from '@mui/material';
 import React from 'react';
 import { Link, RadioButton, TextareaAutosize } from 'src/components/common';
-import { getErrorMessage, isEqualPrevAndNextObjByPath } from 'src/utils';
+import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { PO_FORM_KEY } from '../enums';
-import { UpsertPOFormikProps } from '../types';
+import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
 import { recordOfCompetitionOptions } from './helpers';
 
 const InternalSpecialInstructions: React.FC<Props> = ({ formikProps, disabled = false }) => {
@@ -90,8 +90,8 @@ interface Props {
 }
 
 export default React.memo(InternalSpecialInstructions, (prevProps, nextProps) => {
-  const prevFormikValues = prevProps.formikProps.values;
-  const nextFormikValues = nextProps.formikProps.values;
+  const prevFormikProps = prevProps.formikProps;
+  const nextFormikProps = nextProps.formikProps;
 
   const formKeysNeedRender = [
     PO_FORM_KEY.INTERNAL_A,
@@ -100,11 +100,9 @@ export default React.memo(InternalSpecialInstructions, (prevProps, nextProps) =>
     PO_FORM_KEY.INTERNAL_C,
   ]; // only re-render if keys using in this component change
 
-  return formKeysNeedRender.every((key) =>
-    isEqualPrevAndNextObjByPath({
-      prevValues: prevFormikValues,
-      nextValues: nextFormikValues,
-      path: key,
-    })
-  );
+  return isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
+    prevFormikProps,
+    nextFormikProps,
+    formKeysNeedRender,
+  });
 });

@@ -5,6 +5,7 @@ import { parse } from 'qs';
 import shortid from 'shortid';
 import { ErrorService, Toastify } from 'src/services';
 import { isEmpty } from 'src/validations';
+import { CommonFormikProps } from './commonTypes';
 
 export const emptyFunction = () => {};
 
@@ -153,4 +154,44 @@ export const isEqualPrevAndNextObjByPath = <T>({
   return checkEqualLengthArray && Array.isArray(prev) && Array.isArray(next)
     ? prev.length === next.length
     : isEqual(prev, next);
+};
+
+export const isEqualPrevAndNextFormikValues = <TFormValue = any>({
+  formKeysNeedRender,
+  prevFormikProps,
+  nextFormikProps,
+}: {
+  formKeysNeedRender: string[];
+  prevFormikProps: CommonFormikProps<TFormValue>;
+  nextFormikProps: CommonFormikProps<TFormValue>;
+}) => {
+  const {
+    values: prevFormikValues,
+    errors: prevFormikErrors,
+    touched: prevFormikTouched,
+  } = prevFormikProps;
+  const {
+    values: nextFormikValues,
+    errors: nextFormikErrors,
+    touched: nextFormikTouched,
+  } = nextFormikProps;
+
+  return formKeysNeedRender.every(
+    (key) =>
+      isEqualPrevAndNextObjByPath({
+        prevValues: prevFormikValues,
+        nextValues: nextFormikValues,
+        path: key,
+      }) &&
+      isEqualPrevAndNextObjByPath({
+        prevValues: prevFormikErrors,
+        nextValues: nextFormikErrors,
+        path: key,
+      }) &&
+      isEqualPrevAndNextObjByPath({
+        prevValues: prevFormikTouched,
+        nextValues: nextFormikTouched,
+        path: key,
+      })
+  );
 };

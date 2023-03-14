@@ -10,14 +10,14 @@ import { FinancialProject } from 'src/queries/Projects/types';
 import { Vendor } from 'src/queries/Vendors';
 import { showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
-import { getDateDisplay, getErrorMessage, isEqualPrevAndNextObjByPath } from 'src/utils';
+import { getDateDisplay, getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { getContentOptions } from 'src/utils/contentUtils';
 import { PO_FORM_KEY } from '../enums';
-import { UpsertPOFormikProps } from '../types';
-import SuperQuote from './superQuote';
 import usePOSearchProject, { SearchProjectsType } from '../hooks/usePOSearchProject';
 import usePOSearchVender, { SearchVendorsType } from '../hooks/usePOSearchVender';
+import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
 import { isVariousProject, VARIOUS_PROJECT_VALUE } from './helpers';
+import SuperQuote from './superQuote';
 
 const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const dispatch = useDispatch();
@@ -56,6 +56,9 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const updateVendorFields = (value: Vendor) => {
     setFieldValue(PO_FORM_KEY.VENDOR_NAME, value);
     setFieldValue(PO_FORM_KEY.VENDOR_CODE, value);
+    setFieldValue(PO_FORM_KEY.ADDRESS_1, value.address1);
+    setFieldValue(PO_FORM_KEY.ADDRESS_2, value.address2);
+    setFieldValue(PO_FORM_KEY.ADDRESS_3, value.address3);
     const { name2, address1, address2, address3 } = value || {};
     const formattedAddress = value
       ? `${name2 && `${name2}\n`}${address1 && `${address1}\n`}${
@@ -137,6 +140,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
           <Grid item xs={12} sm={8}>
             <Select
               {...getFieldProps(PO_FORM_KEY.PROJECT_TITLE)}
+              errorMessage={_getErrorMessage(PO_FORM_KEY.PROJECT_TITLE)}
               label={'Project Title'}
               placeholder={'Search'}
               extraRequired
@@ -172,6 +176,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
           <Grid item xs={12} sm={4}>
             <Select
               {...getFieldProps(PO_FORM_KEY.PROJECT_NUMBER)}
+              errorMessage={_getErrorMessage(PO_FORM_KEY.PROJECT_NUMBER)}
               label={'Project #'}
               placeholder={'Search'}
               extraRequired
@@ -241,6 +246,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
           <Grid item xs={12} sm={8}>
             <Select
               {...getFieldProps(PO_FORM_KEY.VENDOR_NAME)}
+              errorMessage={_getErrorMessage(PO_FORM_KEY.VENDOR_NAME)}
               label={'Vendor Name'}
               placeholder={'Search'}
               extraRequired
@@ -289,6 +295,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
           <Grid item xs={12} sm={4}>
             <Select
               {...getFieldProps(PO_FORM_KEY.VENDOR_CODE)}
+              errorMessage={_getErrorMessage(PO_FORM_KEY.VENDOR_CODE)}
               label={'Vendor Code'}
               placeholder={'Search'}
               extraRequired
@@ -349,6 +356,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
           <Grid item xs={12} sm={4}>
             <Select
               {...getFieldProps(PO_FORM_KEY.SHIP_VIA)}
+              errorMessage={_getErrorMessage(PO_FORM_KEY.SHIP_VIA)}
               label={'Ship Via'}
               placeholder={'Select'}
               options={shipViaOptions}
@@ -411,6 +419,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
           <Grid item xs={12} sm={6} md={4}>
             <Input
               label={'FA Staff to Review'}
+              required
               errorMessage={_getErrorMessage(PO_FORM_KEY.FA_STAFF_REVIEWER)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.FA_STAFF_REVIEWER)}
               disabled={disabled}
@@ -428,8 +437,8 @@ type Props = {
 };
 
 export default React.memo(GeneralInfo, (prevProps, nextProps) => {
-  const prevFormikValues = prevProps.formikProps.values;
-  const nextFormikValues = nextProps.formikProps.values;
+  const prevFormikProps = prevProps.formikProps;
+  const nextFormikProps = nextProps.formikProps;
 
   const formKeysNeedRender = [
     PO_FORM_KEY.LOGIN_NAME,
@@ -454,11 +463,9 @@ export default React.memo(GeneralInfo, (prevProps, nextProps) => {
     PO_FORM_KEY.FA_STAFF_REVIEWER,
   ]; // only re-render if keys using in this component change
 
-  return formKeysNeedRender.every((key) =>
-    isEqualPrevAndNextObjByPath({
-      prevValues: prevFormikValues,
-      nextValues: nextFormikValues,
-      path: key,
-    })
-  );
+  return isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
+    prevFormikProps,
+    nextFormikProps,
+    formKeysNeedRender,
+  });
 });

@@ -153,7 +153,6 @@ const Table: React.FC<Props> = ({
     onAction(params);
   };
 
-  // console.log('tableStateRef: ', tableStateRef.current);
   const handleTableChange = async (action: any, tableState: MUIDataTableState) => {
     tableStateRef.current = tableState;
     switch (action) {

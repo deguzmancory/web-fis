@@ -1,3 +1,5 @@
+import { PO_ACTION } from 'src/containers/PurchaseOrderContainer/enums';
+
 export interface SharedPODetail {
   //general info
   loginName: string;
@@ -62,17 +64,26 @@ export interface SharedPODetail {
   //Authorized by
   signature: string;
 
-  documentType: string;
-  majorVersion: string;
+  //for payload only
+  address1: string;
+  address2: string;
+  address3: string;
+
+  //unknown //TODO: huy_dang check unused key
+  documentType?: string;
+  majorVersion?: string;
   minorVersion: number;
-  formName: string;
-  shortFormName: string;
-  formNumber: string;
-  amountChange: number;
+  formName?: string;
+  shortFormName?: string;
+  formNumber?: string;
+  amountChange?: number;
+  zipcode?: string;
+  reasonForChange?: string;
 }
 
 export interface UpsertPOPayload extends SharedPODetail {
   id?: string;
+  action: PO_ACTION;
 
   availableForms: AdditionalPOForm[];
   lineItems: POLineItemPayload[];
@@ -109,10 +120,8 @@ export interface PODetailResponse extends SharedPODetail {
   finalApprovedDate: string;
   approved: any; //TODO: update type
   vendorName2: string;
-  address1: string;
-  address2: string;
-  address3: string;
-  zipcode: string;
+
+  // zipcode: string;
   modifiedDate: string;
   originalTaxTotal: number;
   originalSubtotal: number;
@@ -125,7 +134,7 @@ export interface PODetailResponse extends SharedPODetail {
   hasChangeDocument: boolean;
   hasFinalPdf: boolean;
   isHistorical: boolean;
-  reasonForChange: string;
+  // reasonForChange: string;
   updateVersionNumber: number;
   paymentDirectInquiriesTo: string;
   paymentPhoneNumber: string;
@@ -219,7 +228,7 @@ export interface AdditionalPOForm {
 }
 
 export interface POAuditTrails {
-  id: string;
+  id?: string;
   createdAt: string;
   updatedAt: string;
   date: string;
@@ -244,7 +253,7 @@ export interface POLineItemPayload {
 }
 
 export interface POFileAttachmentPayload {
-  id: string;
+  id?: string;
   name: string;
   uploadDate: string;
   size: string;
@@ -255,7 +264,7 @@ export interface POFileAttachmentPayload {
 }
 
 export interface PODeterminationPayload {
-  id: string;
+  id?: string;
   to: string;
   dDate: string;
   from: string;
@@ -303,7 +312,7 @@ export interface PODeterminationPayload {
 }
 
 export interface POSoleSourcePayload {
-  id: string;
+  id?: string;
   to: string;
   ssDate: string;
   from: string;
@@ -321,7 +330,7 @@ export interface POSoleSourcePayload {
 }
 
 export interface POAuthToPurchasePayload {
-  id: string;
+  id?: string;
   grantNumber: string;
   contractNumber: string;
   accountNumber: string;
@@ -347,14 +356,14 @@ export interface POAuthToPurchasePayload {
 }
 
 export interface AuthToPurchaseResponse {
-  id: string;
+  id?: string;
   attachmentName: string;
   attachmentResponse: string;
   attachmentDate: string;
 }
 
 export interface POEquipmentInventoryPayload {
-  id: string;
+  id?: string;
   buildingCode: string;
   equipmentDescription: string;
   equipmentLocation: string;
@@ -367,7 +376,7 @@ export interface POEquipmentInventoryPayload {
 }
 
 export interface SubcontractorPayload {
-  id: string;
+  id?: string;
   subcontractor: string;
   date: string;
   project: string;
@@ -389,7 +398,7 @@ export interface SubcontractorPayload {
 }
 
 export interface POAgreementPayload {
-  id: string;
+  id?: string;
   day: string;
   month: string;
   year: string;
@@ -416,7 +425,7 @@ export interface POAgreementPayload {
 }
 
 export interface POAgreementUhPayload {
-  id: string;
+  id?: string;
   day: string;
   month: string;
   year: string;
@@ -443,7 +452,7 @@ export interface POAgreementUhPayload {
 }
 
 export interface FfataPayload {
-  id: string;
+  id?: string;
   awardId: string;
   poNumber: string; // TODO: tuyen_tran: will remove if not need
   poDate: string;

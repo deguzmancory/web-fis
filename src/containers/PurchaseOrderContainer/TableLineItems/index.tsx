@@ -9,11 +9,11 @@ import {
 import CustomTable from 'src/components/CustomTable';
 import { BodyBasicRows, CellType } from 'src/components/CustomTable/types';
 import { POLineItemPayload } from 'src/queries/PurchaseOrders';
-import { isEqualPrevAndNextObjByPath } from 'src/utils';
+import { isEqualPrevAndNextFormikValues } from 'src/utils';
 import { initialLineItemValue } from '../constants';
 import { PO_FORM_KEY, PO_LINE_ITEM_KEY } from '../enums';
 import { checkRowStateAndSetValue } from '../helpers';
-import { UpsertPOFormikProps } from '../types';
+import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
 
 const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const { values, setFieldValue, getFieldProps } = formikProps;
@@ -322,12 +322,14 @@ type Props = {
 };
 
 export default React.memo(TableLineItems, (prevProps, nextProps) => {
-  const prevFormikValues = prevProps.formikProps.values;
-  const nextFormikValues = nextProps.formikProps.values;
+  const prevFormikProps = prevProps.formikProps;
+  const nextFormikProps = nextProps.formikProps;
 
-  return isEqualPrevAndNextObjByPath({
-    prevValues: prevFormikValues,
-    nextValues: nextFormikValues,
-    path: PO_FORM_KEY.LINE_ITEMS,
+  const formKeysNeedRender = [PO_FORM_KEY.LINE_ITEMS];
+
+  return isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
+    prevFormikProps,
+    nextFormikProps,
+    formKeysNeedRender,
   });
 });

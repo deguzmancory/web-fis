@@ -21,7 +21,8 @@ export const PATHS = {
 
   // Purchase Order
   createPurchaseOrders: '/purchase-orders/create',
-  additionalForm: `/purchase-orders/additional-form`,
+  purchaseOrderDetail: '/purchase-orders/detail',
+  poAdditionalForm: `/purchase-orders/additional-form`,
 
   // miscellaneous / Global settings
   globalSettings: '/global-settings',

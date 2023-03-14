@@ -10,6 +10,7 @@ import {
 } from 'src/queries';
 import { GetPresignedPayload, UploadFilePayload } from 'src/queries/File/types';
 import { GetPropertiesParams } from 'src/queries/helpers';
+import { UpsertPOPayload } from 'src/queries/PurchaseOrders';
 import {
   ChangePasswordPayload,
   CompleteNewPasswordPayload,
@@ -286,6 +287,16 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.get(`/financial-svc/v1/purchase-orders/${params.id}`, {}, newCancelToken());
   };
 
+  const createPO = (payload: UpsertPOPayload) => {
+    return api.post(
+      `/financial-svc/v1/purchase-orders?action=${payload.action}`,
+      {
+        ...payload,
+      },
+      newCancelToken()
+    );
+  };
+
   // Global Settings
   const getAllGlobalSettings = () => {
     return api.get('/financial-svc/v1/global-settings', {}, newCancelToken());
@@ -367,6 +378,7 @@ const create = (baseURL = appConfig.API_URL) => {
 
     // ====================== PO ======================
     getPO,
+    createPO,
 
     // Global Settings
     getAllGlobalSettings,

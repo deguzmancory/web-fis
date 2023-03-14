@@ -78,6 +78,12 @@ export enum PO_FORM_KEY {
 
   //Authorized by
   SIGNATURE = 'signature',
+
+  //payload only
+  ADDRESS_1 = 'address1',
+  ADDRESS_2 = 'address2',
+  ADDRESS_3 = 'address3',
+  ACTION = 'action',
 }
 
 export enum PO_ADDITIONAL_FORM_CODE {
@@ -107,4 +113,12 @@ export enum PO_LINE_ITEM_KEY {
   UNIT_PRICE = 'unitPrice',
   EXT = 'ext',
   IS_ORIGINAL = 'isOriginal',
+}
+
+export enum PO_ACTION {
+  SAVE = 'save',
+  SUBMIT = 'submit',
+  APPROVE = 'approve',
+  DISAPPROVE = 'disapprove',
+  ADDITIONAL_INFO = 'additionalInfo',
 }

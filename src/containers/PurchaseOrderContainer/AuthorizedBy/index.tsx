@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material';
 import React from 'react';
 import { Input } from 'src/components/common';
 import SignatureBox from 'src/containers/shared/SignatureBox';
-import { getErrorMessage, isEqualPrevAndNextObjByPath } from 'src/utils';
+import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormikProps } from '../types';
 
@@ -37,12 +37,12 @@ type Props = {
 };
 
 export default React.memo(AuthorizedBy, (prevProps, nextProps) => {
-  const prevFormikValues = prevProps.formikProps.values;
-  const nextFormikValues = nextProps.formikProps.values;
+  const prevFormikProps = prevProps.formikProps;
+  const nextFormikProps = nextProps.formikProps;
 
-  return isEqualPrevAndNextObjByPath({
-    prevValues: prevFormikValues,
-    nextValues: nextFormikValues,
-    path: PO_FORM_KEY.SIGNATURE,
+  return isEqualPrevAndNextFormikValues({
+    prevFormikProps,
+    nextFormikProps,
+    formKeysNeedRender: [PO_FORM_KEY.SIGNATURE],
   });
 });

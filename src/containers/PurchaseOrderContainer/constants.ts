@@ -8,35 +8,35 @@ export const initialAvailableForms: AdditionalPOFormValue[] = [
     code: PO_ADDITIONAL_FORM_CODE.DETERMINATION,
     accessKey: '2',
     isExternalLink: false,
-    href: `${PATHS.additionalForm}/${PO_ADDITIONAL_FORM_CODE.DETERMINATION}`,
+    href: `${PATHS.poAdditionalForm}/${PO_ADDITIONAL_FORM_CODE.DETERMINATION}`,
   },
   {
     name: 'Sole Source Justification',
     code: PO_ADDITIONAL_FORM_CODE.SOLE_SOURCE,
     accessKey: '3',
     isExternalLink: false,
-    href: `${PATHS.additionalForm}/${PO_ADDITIONAL_FORM_CODE.SOLE_SOURCE}`,
+    href: `${PATHS.poAdditionalForm}/${PO_ADDITIONAL_FORM_CODE.SOLE_SOURCE}`,
   },
   {
     name: 'Auth. to Purchase Equip. w/Fed. Contract or Grant Funds',
     code: PO_ADDITIONAL_FORM_CODE.AUTH_TO_PURCHASE,
     accessKey: '4',
     isExternalLink: false,
-    href: `${PATHS.additionalForm}/${PO_ADDITIONAL_FORM_CODE.AUTH_TO_PURCHASE}`,
+    href: `${PATHS.poAdditionalForm}/${PO_ADDITIONAL_FORM_CODE.AUTH_TO_PURCHASE}`,
   },
   {
     name: 'Equipment Inventory Form',
     code: PO_ADDITIONAL_FORM_CODE.EQUIPMENT_INVENTORY,
     accessKey: '5',
     isExternalLink: false,
-    href: `${PATHS.additionalForm}/${PO_ADDITIONAL_FORM_CODE.EQUIPMENT_INVENTORY}`,
+    href: `${PATHS.poAdditionalForm}/${PO_ADDITIONAL_FORM_CODE.EQUIPMENT_INVENTORY}`,
   },
   {
     name: 'Subcontract Agreement',
     code: PO_ADDITIONAL_FORM_CODE.SUBCONTRACTOR,
     accessKey: '6',
     isExternalLink: false,
-    href: `${PATHS.additionalForm}/${PO_ADDITIONAL_FORM_CODE.SUBCONTRACTOR}`,
+    href: `${PATHS.poAdditionalForm}/${PO_ADDITIONAL_FORM_CODE.SUBCONTRACTOR}`,
   },
   {
     name: 'Agreement for Services (UH Projects)',
@@ -57,7 +57,7 @@ export const initialAvailableForms: AdditionalPOFormValue[] = [
     code: PO_ADDITIONAL_FORM_CODE.FFATA,
     accessKey: '9',
     isExternalLink: false,
-    href: `${PATHS.additionalForm}/${PO_ADDITIONAL_FORM_CODE.FFATA}`,
+    href: `${PATHS.poAdditionalForm}/${PO_ADDITIONAL_FORM_CODE.FFATA}`,
   },
 ];
 
@@ -146,7 +146,6 @@ export const initialDeterminationValue = {
 };
 
 export const initialSoleSourceValue = {
-  id: '',
   to: '',
   ssDate: '',
   from: '',
@@ -164,7 +163,6 @@ export const initialSoleSourceValue = {
 };
 
 export const initialAuthToPurchaseValue = {
-  id: '',
   grantNumber: '',
   contractNumber: '',
   accountNumber: '',
@@ -190,14 +188,12 @@ export const initialAuthToPurchaseValue = {
 };
 
 export const initialAuthToPurchaseResponseValue = {
-  id: '',
   attachmentName: '',
   attachmentResponse: '',
   attachmentDate: '',
 };
 
 export const initialEquipmentInventoryValue = {
-  id: '',
   buildingCode: '',
   equipmentDescription: '',
   equipmentLocation: '',
@@ -210,7 +206,6 @@ export const initialEquipmentInventoryValue = {
 };
 
 export const initialSubcontractorValue = {
-  id: '',
   subcontractor: '',
   date: '',
   project: '',
@@ -232,7 +227,6 @@ export const initialSubcontractorValue = {
 };
 
 export const initialAgreementValue = {
-  id: '',
   day: '',
   month: '',
   year: '',
@@ -259,7 +253,6 @@ export const initialAgreementValue = {
 };
 
 export const initialAgreementUhValue = {
-  id: '',
   day: '',
   month: '',
   year: '',
@@ -286,7 +279,6 @@ export const initialAgreementUhValue = {
 };
 
 export const initialFfataValue = {
-  id: '',
   awardId: '',
   poNumber: '',
   poDate: '',
@@ -305,6 +297,8 @@ export const initialFfataValue = {
 };
 
 export const emptyUpsertPOFormValue = {
+  action: null,
+
   documentType: '',
   majorVersion: '',
   minorVersion: null,
@@ -357,10 +351,10 @@ export const emptyUpsertPOFormValue = {
   invoiceCountry: '',
   signature: '',
   poComments: '',
-  amountChange: null, //todo: update type
+  // amountChange: null, //todo: update type
   uhSubawardNumber: '',
-  superquoteNumber: '',
-  superquoteBidId: '',
+  superquoteNumber: null,
+  superquoteBidId: null,
   availableForms: initialAvailableForms,
   lineItems: [initialLineItemValue],
   fileAttachments: [],
@@ -373,4 +367,9 @@ export const emptyUpsertPOFormValue = {
   agreement: initialAgreementValue,
   agreementUh: initialAgreementUhValue,
   ffata: initialFfataValue,
+
+  //payload only
+  address1: null,
+  address2: null,
+  address3: null,
 };

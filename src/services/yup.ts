@@ -6,6 +6,7 @@ import { isEmpty } from '../validations';
 yup.setLocale({
   mixed: {
     required: ErrorService.MESSAGES.required,
+    notType: ErrorService.MESSAGES.required,
   },
   string: {
     email: ErrorService.MESSAGES.invalidEmail,

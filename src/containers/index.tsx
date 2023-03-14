@@ -72,15 +72,18 @@ const Routing: React.FC<{ location: Location }> = (props) => {
             {/* PO */}
             <CustomRoute
               pageRequiredAuth
-              path={PATHS.createPurchaseOrders}
+              path={`${PATHS.purchaseOrderDetail}/:id`}
               component={PurchaseOrderContainer}
-              exact
             />
             <CustomRoute
               pageRequiredAuth
-              path={`${PATHS.additionalForm}/:formCode`}
+              path={`${PATHS.poAdditionalForm}/:formCode`}
               component={SoleSourcePOContainer}
-              exact
+            />
+            <CustomRoute
+              pageRequiredAuth
+              path={PATHS.createPurchaseOrders}
+              component={PurchaseOrderContainer}
             />
             {/* PO */}
 

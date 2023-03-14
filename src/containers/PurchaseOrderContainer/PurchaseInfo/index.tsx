@@ -7,9 +7,9 @@ import {
   Input,
   RadioButton,
 } from 'src/components/common';
-import { getErrorMessage, isEqualPrevAndNextObjByPath } from 'src/utils';
+import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { PO_FORM_KEY } from '../enums';
-import { UpsertPOFormikProps } from '../types';
+import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
 import { fedAttachmentOptions, FED_ATTACHMENT_VALUE } from './helpers';
 
 const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
@@ -197,8 +197,8 @@ interface Props {
 }
 
 export default React.memo(PurchaseInfo, (prevProps, nextProps) => {
-  const prevFormikValues = prevProps.formikProps.values;
-  const nextFormikValues = nextProps.formikProps.values;
+  const prevFormikProps = prevProps.formikProps;
+  const nextFormikProps = nextProps.formikProps;
 
   const formKeysNeedRender = [
     PO_FORM_KEY.CONFIRMING,
@@ -214,11 +214,9 @@ export default React.memo(PurchaseInfo, (prevProps, nextProps) => {
     PO_FORM_KEY.TOTAL,
   ]; // only re-render if keys using in this component change
 
-  return formKeysNeedRender.every((key) =>
-    isEqualPrevAndNextObjByPath({
-      prevValues: prevFormikValues,
-      nextValues: nextFormikValues,
-      path: key,
-    })
-  );
+  return isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
+    prevFormikProps,
+    nextFormikProps,
+    formKeysNeedRender,
+  });
 });

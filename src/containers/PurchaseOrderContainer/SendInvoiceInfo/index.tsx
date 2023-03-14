@@ -4,10 +4,10 @@ import { US_ZIP_CODE_LENGTH } from 'src/appConfig/constants';
 import { Checkbox, Input, InputMask, LoadingCommon, Select } from 'src/components/common';
 import { useZipCode } from 'src/queries';
 import { StateService } from 'src/services';
-import { getErrorMessage, isEqualPrevAndNextObjByPath } from 'src/utils';
-import { PO_FORM_KEY } from '../enums';
+import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import InfoTooltip from '../../shared/InfoTooltip';
-import { UpsertPOFormikProps } from '../types';
+import { PO_FORM_KEY } from '../enums';
+import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
 import { resetAllField } from './helpers';
 
 const SendInvoiceInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
@@ -198,8 +198,8 @@ interface Props {
 }
 
 export default React.memo(SendInvoiceInfo, (prevProps, nextProps) => {
-  const prevFormikValues = prevProps.formikProps.values;
-  const nextFormikValues = nextProps.formikProps.values;
+  const prevFormikProps = prevProps.formikProps;
+  const nextFormikProps = nextProps.formikProps;
 
   const formKeysNeedRender = [
     PO_FORM_KEY.SEND_INVOICE_TO,
@@ -214,11 +214,9 @@ export default React.memo(SendInvoiceInfo, (prevProps, nextProps) => {
     PO_FORM_KEY.INVOICE_COUNTRY,
   ]; // only re-render if keys using in this component change
 
-  return formKeysNeedRender.every((key) =>
-    isEqualPrevAndNextObjByPath({
-      prevValues: prevFormikValues,
-      nextValues: nextFormikValues,
-      path: key,
-    })
-  );
+  return isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
+    prevFormikProps,
+    nextFormikProps,
+    formKeysNeedRender,
+  });
 });
