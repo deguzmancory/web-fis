@@ -55,6 +55,7 @@ const SelectCmp: React.FC<Props> = ({
   containerClassName = '',
   name = '',
   required = false,
+  extraRequired = false,
   infoTooltipMessage = '',
   infoTooltipPlacement = 'right',
   infoToolTipWithArrow = true,
@@ -134,6 +135,7 @@ const SelectCmp: React.FC<Props> = ({
       label={label}
       className={containerClassName}
       required={required}
+      extraRequired={extraRequired}
       infoTooltipMessage={infoTooltipMessage}
       infoTooltipPlacement={infoTooltipPlacement}
       infoToolTipWithArrow={infoToolTipWithArrow}
@@ -221,6 +223,7 @@ type Props = Omit<SelectProps, 'onBlur' | 'onChange'> & {
   containerClassName?: string;
   name?: string;
   required?: boolean;
+  extraRequired?: boolean;
   infoTooltipMessage?: string;
   infoTooltipPlacement?: CommonPlacement;
   infoToolTipWithArrow?: boolean;

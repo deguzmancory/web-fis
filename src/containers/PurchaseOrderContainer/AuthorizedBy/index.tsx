@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import React from 'react';
 import { Input } from 'src/components/common';
-import SignatureBox from 'src/components/SignatureBox';
+import SignatureBox from 'src/containers/shared/SignatureBox';
 import { getErrorMessage, isEqualPrevAndNextObjByPath } from 'src/utils';
 import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormikProps } from '../types';

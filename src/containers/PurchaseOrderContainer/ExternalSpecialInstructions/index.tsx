@@ -1,8 +1,9 @@
-import { Box, Divider, Typography } from '@mui/material';
+import { Box, Divider, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { RadioButton, TextareaAutosize } from 'src/components/common';
 import { getErrorMessage, isEqualPrevAndNextObjByPath } from 'src/utils';
 import { PO_FORM_KEY } from '../enums';
+import InfoTooltip from '../../shared/InfoTooltip';
 import { UpsertPOFormikProps } from '../types';
 import { presetInstructionOptions } from './helpers';
 
@@ -15,9 +16,13 @@ const ExternalSpecialInstructions: React.FC<Props> = ({ formikProps, disabled = 
 
   return (
     <Box>
-      <Typography variant="h5" mb={1}>
-        External Special Instructions (Printed on PO)
-      </Typography>
+      <Stack direction="row" alignItems="center" mb={1}>
+        <Typography variant="h5" sx={{ mr: '4px' }}>
+          External Special Instructions (Printed on PO)
+        </Typography>
+        <InfoTooltip title="The section will be printed on the PO" />
+      </Stack>
+
       <Divider />
 
       <RadioButton

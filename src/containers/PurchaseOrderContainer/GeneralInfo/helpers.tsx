@@ -9,7 +9,12 @@ export const VARIOUS_PROJECT_VALUE = 'Various';
 export const VARIOUS_PROJECT_NAME = 'PO WILL USE MORE THAN 1 PROJECT NUMBER';
 
 export const emptyVariousProject = {
-  label: <Box>Various</Box>,
+  label: (
+    <Box>
+      <span className="mr-4">{VARIOUS_PROJECT_VALUE}</span>
+      <span>{VARIOUS_PROJECT_NAME}</span>
+    </Box>
+  ),
   value: {
     name: VARIOUS_PROJECT_VALUE,
     number: VARIOUS_PROJECT_VALUE,
@@ -28,7 +33,7 @@ export const emptyVariousProject = {
   subLabel: null,
 };
 
-const isVariousProject = (projectNumber: string) => {
+export const isVariousProject = (projectNumber: string) => {
   return projectNumber === VARIOUS_PROJECT_VALUE;
 };
 
@@ -44,13 +49,11 @@ export const getFinancialProjectOptions = ({
       label: (
         <Box>
           <span className="mr-4">{project.number}</span>
-          <span>isVariousProject(project.number) ? VARIOUS_PROJECT_NAME : {project.name}</span>
+          <span>{project.name}</span>
         </Box>
       ),
       value: project,
-      subLabel: isVariousProject(project.number)
-        ? VARIOUS_PROJECT_VALUE
-        : `(${getDateDisplay(project.startDate)} - ${getDateDisplay(project.endDate)})`,
+      subLabel: `(${getDateDisplay(project.startDate)} - ${getDateDisplay(project.endDate)})`,
     }))
     .concat([emptyVariousProject]);
 };

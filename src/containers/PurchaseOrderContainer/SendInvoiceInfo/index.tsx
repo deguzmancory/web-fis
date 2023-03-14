@@ -1,4 +1,4 @@
-import { Box, Divider, Grid, Typography } from '@mui/material';
+import { Box, Divider, Grid, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { US_ZIP_CODE_LENGTH } from 'src/appConfig/constants';
 import { Checkbox, Input, InputMask, LoadingCommon, Select } from 'src/components/common';
@@ -6,6 +6,7 @@ import { useZipCode } from 'src/queries';
 import { StateService } from 'src/services';
 import { getErrorMessage, isEqualPrevAndNextObjByPath } from 'src/utils';
 import { PO_FORM_KEY } from '../enums';
+import InfoTooltip from '../../shared/InfoTooltip';
 import { UpsertPOFormikProps } from '../types';
 import { resetAllField } from './helpers';
 
@@ -69,9 +70,12 @@ const SendInvoiceInfo: React.FC<Props> = ({ formikProps, disabled = false }) => 
 
   return (
     <Box>
-      <Typography variant="h5" mb={1}>
-        Send Invoice In Duplicate To (Printed on PO)
-      </Typography>
+      <Stack direction="row" alignItems="center" mb={1}>
+        <Typography variant="h5" sx={{ mr: '4px' }}>
+          Send Invoice In Duplicate To (Printed on PO)
+        </Typography>
+        <InfoTooltip title="The section will be printed on the PO" />
+      </Stack>
       <Divider />
 
       <Checkbox.Item

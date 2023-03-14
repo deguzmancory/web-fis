@@ -3,7 +3,7 @@ import { FormikProps, useFormik } from 'formik';
 import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { Button, LoadingCommon } from 'src/components/common';
+import { Button, Link, LoadingCommon } from 'src/components/common';
 import NoPermission from 'src/components/NoPermission';
 import { useProfile } from 'src/queries';
 import { useGetPODetail } from 'src/queries/PurchaseOrders';
@@ -16,7 +16,7 @@ import {
   handleScrollToTopError,
 } from 'src/utils';
 import { PO_ADDITIONAL_FORM_KEY, PO_ADDITIONAL_FORM_PARAMS } from '../AdditionalPOForms/enum';
-import Layout from '../CRUUSerContainer/layout';
+import SectionLayout from '../shared/SectionLayout';
 import AdditionalForms from './AdditionalForms';
 import AuthorizedBy from './AuthorizedBy';
 import BreadcrumbsPODetail from './breadcrumbs';
@@ -140,38 +140,53 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
         </Typography>
         <Suspense fallback={<LoadingCommon />}>
           {!hasPermission ? (
-            <Layout>
+            <SectionLayout>
               <NoPermission />
-            </Layout>
+            </SectionLayout>
           ) : (
             <>
-              <Layout>
+              <SectionLayout
+                header={
+                  <Stack direction={'row'} alignItems={'center'} justifyContent="end">
+                    <Typography>
+                      <span className="has-text-danger fw-bold text-is-16">**</span> = required to
+                      Save
+                    </Typography>
+                    <Typography mx={1}>
+                      <span className="has-text-danger fw-bold text-is-16">*</span> = required to
+                      Submit/Approve RCUH
+                    </Typography>
+                    {/* TODO: huy_dang add link */}
+                    <Link>Policy 2.201</Link>
+                  </Stack>
+                }
+              >
                 <GeneralInfo formikProps={formikProps} />
-              </Layout>
-              <Layout>
+              </SectionLayout>
+              <SectionLayout>
                 <TableLineItems formikProps={formikProps} />
-              </Layout>
-              <Layout>
+              </SectionLayout>
+              <SectionLayout>
                 <PurchaseInfo formikProps={formikProps} />
-              </Layout>
-              <Layout>
+              </SectionLayout>
+              <SectionLayout>
                 <AdditionalForms formikProps={formikProps} />
-              </Layout>
-              <Layout>
+              </SectionLayout>
+              <SectionLayout>
                 <InternalSpecialInstructions formikProps={formikProps} />
-              </Layout>
-              <Layout>
+              </SectionLayout>
+              <SectionLayout>
                 <ExternalSpecialInstructions formikProps={formikProps} />
-              </Layout>
-              <Layout>
+              </SectionLayout>
+              <SectionLayout>
                 <SendInvoiceInfo formikProps={formikProps} />
-              </Layout>
-              <Layout>
+              </SectionLayout>
+              <SectionLayout>
                 <AuthorizedBy formikProps={formikProps} />
-              </Layout>
-              <Layout>
+              </SectionLayout>
+              <SectionLayout>
                 <InternalComments formikProps={formikProps} />
-              </Layout>
+              </SectionLayout>
             </>
           )}
         </Suspense>

@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useGetUser } from 'src/queries/Users';
 import { handleShowErrorMsg } from 'src/utils';
 import BreadcrumbsUserDetail from './breadcrumbs';
-import Layout from './layout';
+import SectionLayout from '../shared/SectionLayout';
 const RefetchUser = React.lazy(() => import('./refetchUser'));
 
 const ErrorWrapperCRUUser = () => {
@@ -20,9 +20,9 @@ const ErrorWrapperCRUUser = () => {
     <Box py={4}>
       <Container>
         <BreadcrumbsUserDetail isViewMode={!!userId} />
-        <Layout>
+        <SectionLayout>
           <RefetchUser onGetUserById={onGetUserById} isLoading={isLoadingGetUser} />
-        </Layout>
+        </SectionLayout>
       </Container>
     </Box>
   );

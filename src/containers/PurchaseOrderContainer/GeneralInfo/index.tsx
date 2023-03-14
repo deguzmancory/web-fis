@@ -17,13 +17,13 @@ import { UpsertPOFormikProps } from '../types';
 import SuperQuote from './superQuote';
 import usePOSearchProject, { SearchProjectsType } from '../hooks/usePOSearchProject';
 import usePOSearchVender, { SearchVendorsType } from '../hooks/usePOSearchVender';
+import { isVariousProject, VARIOUS_PROJECT_VALUE } from './helpers';
 
 const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const dispatch = useDispatch();
 
   const { values, errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } =
     formikProps;
-  console.log('formikProps: ', formikProps);
   const currentProjectTitle = React.useMemo(() => values.projectTitle, [values.projectTitle]);
   const currentProjectNumber = React.useMemo(() => values.projectNumber, [values.projectNumber]);
   const currentVendorName = React.useMemo(() => values.vendorName, [values.vendorName]);
@@ -45,21 +45,24 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
     setFieldValue(PO_FORM_KEY.PI_NAME, value.piName || '');
     setFieldValue(
       PO_FORM_KEY.PROJECT_PERIOD,
-      value ? `${getDateDisplay(value.startDate)} - ${getDateDisplay(value.endDate)}` : null
+      value
+        ? isVariousProject(value.number)
+          ? VARIOUS_PROJECT_VALUE
+          : `${getDateDisplay(value.startDate)} - ${getDateDisplay(value.endDate)}`
+        : null
     );
   };
 
   const updateVendorFields = (value: Vendor) => {
     setFieldValue(PO_FORM_KEY.VENDOR_NAME, value);
     setFieldValue(PO_FORM_KEY.VENDOR_CODE, value);
-    setFieldValue(
-      PO_FORM_KEY.VENDOR_ADDRESS,
-      value
-        ? `${value.name2 && `${value.name2}\n`}${value.address1 && `${value.address1}\n`}${
-            value.address2 && `${value.address2}\n`
-          }${value.address3}`
-        : ''
-    );
+    const { name2, address1, address2, address3 } = value || {};
+    const formattedAddress = value
+      ? `${name2 && `${name2}\n`}${address1 && `${address1}\n`}${
+          address2 && `${address2}\n`
+        }${address3}`
+      : '';
+    setFieldValue(PO_FORM_KEY.VENDOR_ADDRESS, formattedAddress);
   };
 
   const _getErrorMessage = (fieldName: PO_FORM_KEY) => {
@@ -122,7 +125,6 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
               disabled
             />
           </Grid>
-          {/* TODO: update key */}
           <Grid item xs={12} sm={6} md={4}>
             <Input
               label={'Purchase Order No.'}
@@ -132,13 +134,12 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
               disabled
             />
           </Grid>
-          {/* TODO: update ** */}
           <Grid item xs={12} sm={8}>
             <Select
               {...getFieldProps(PO_FORM_KEY.PROJECT_TITLE)}
               label={'Project Title'}
               placeholder={'Search'}
-              required
+              extraRequired
               options={projectTitleOptions}
               isLoading={isLoadingSearchProjects}
               onInputChange={(value: string) => {
@@ -168,13 +169,12 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
               }
             />
           </Grid>
-          {/* TODO: update ** */}
           <Grid item xs={12} sm={4}>
             <Select
               {...getFieldProps(PO_FORM_KEY.PROJECT_NUMBER)}
               label={'Project #'}
               placeholder={'Search'}
-              required
+              extraRequired
               options={projectNumberOptions}
               isLoading={isLoadingSearchProjects}
               onInputChange={(value: string) => {
@@ -238,13 +238,12 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
               }
             />
           </Grid>
-          {/* TODO: update ** */}
           <Grid item xs={12} sm={8}>
             <Select
               {...getFieldProps(PO_FORM_KEY.VENDOR_NAME)}
               label={'Vendor Name'}
               placeholder={'Search'}
-              required
+              extraRequired
               options={vendorNameOptions}
               isLoading={isLoadingSearchVendors}
               onInputChange={(value: string) => {
@@ -287,13 +286,12 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
               }
             />
           </Grid>
-          {/* TODO: update ** */}
           <Grid item xs={12} sm={4}>
             <Select
               {...getFieldProps(PO_FORM_KEY.VENDOR_CODE)}
               label={'Vendor Code'}
               placeholder={'Search'}
-              required
+              extraRequired
               options={vendorCodeOptions}
               isLoading={isLoadingSearchVendors}
               onInputChange={(value: string) => {

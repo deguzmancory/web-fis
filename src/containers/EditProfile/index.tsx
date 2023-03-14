@@ -30,7 +30,7 @@ import {
   initialCRUUserFormValue,
 } from '../CRUUSerContainer/helper';
 import InternalComments from '../CRUUSerContainer/InternalComments';
-import Layout from '../CRUUSerContainer/layout';
+import SectionLayout from '../shared/SectionLayout';
 import UserType from '../CRUUSerContainer/UserType';
 import BreadcrumbsEditProfile from './breadcrumbs';
 import { editProfileFormSchema, formatEditProfilePayload } from './helpers';
@@ -193,19 +193,19 @@ const EditProfile: React.FC<Props> = ({
         </Typography>
 
         <Suspense fallback={<LoadingCommon />}>
-          <Layout>
+          <SectionLayout>
             <GeneralInfo formikProps={formikProps} isLoading={loading} />
-          </Layout>
-          <Layout>
+          </SectionLayout>
+          <SectionLayout>
             <UserType
               initialPIInfo={profile.fisPiInfo}
               formikProps={formikProps}
               isLoading={loading}
             />
-          </Layout>
-          <Layout>
+          </SectionLayout>
+          <SectionLayout>
             <InternalComments formikProps={formikProps} isLoading={loading} />
-          </Layout>
+          </SectionLayout>
           <Suspense fallback={<LoadingCommon />}>
             <Accordion title="Audit Information" className="mt-16">
               <AuditInformation

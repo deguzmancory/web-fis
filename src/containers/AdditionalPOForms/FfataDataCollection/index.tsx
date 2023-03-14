@@ -7,7 +7,7 @@ import { COLOR_CODE } from 'src/appConfig/constants';
 import { optionYesNoValue } from 'src/appConfig/enum';
 import { PATHS } from 'src/appConfig/paths';
 import { Input, RadioButton, TextareaAutosize } from 'src/components/common';
-import Layout from 'src/containers/CRUUSerContainer/layout';
+import SectionLayout from 'src/containers/shared/SectionLayout';
 import { emptyUpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/constants';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import { FfataPayload } from 'src/queries/PurchaseOrders';
@@ -76,7 +76,7 @@ const FfataDataCollectionForm: React.FC<Props> = ({
   return (
     <Box>
       <Container maxWidth="lg">
-        <Layout>
+        <SectionLayout>
           <Typography variant="body2">
             The Federal Funding Accountability and Transparency Act (FFATA), passed in 2006 and
             amended in 2008, requires information disclosure concerning entities receiving financial
@@ -86,8 +86,8 @@ const FfataDataCollectionForm: React.FC<Props> = ({
             complete all sections of the form below to facilitate required FFATA information
             reporting.
           </Typography>
-        </Layout>
-        <Layout>
+        </SectionLayout>
+        <SectionLayout>
           <Typography borderBottom={COLOR_CODE.DEFAULT_BORDER} variant="h5">
             Section A - To be completed by UH FO
           </Typography>
@@ -123,9 +123,9 @@ const FfataDataCollectionForm: React.FC<Props> = ({
               />
             </Grid>
           </Grid>
-        </Layout>
+        </SectionLayout>
 
-        <Layout>
+        <SectionLayout>
           <Typography borderBottom={COLOR_CODE.DEFAULT_BORDER} variant="h5">
             Section B - To be completed by Subcontractor / Vendor
           </Typography>
@@ -262,7 +262,7 @@ const FfataDataCollectionForm: React.FC<Props> = ({
               </Grid>
             </Grid>
           </Grid>
-        </Layout>
+        </SectionLayout>
       </Container>
     </Box>
   );

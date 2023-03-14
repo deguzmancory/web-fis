@@ -1,6 +1,6 @@
-import { Grid, Typography } from '@mui/material';
+import { Box, Divider, Grid, Typography } from '@mui/material';
 import React from 'react';
-import { Accordion, Link, RadioButton, TextareaAutosize } from 'src/components/common';
+import { Link, RadioButton, TextareaAutosize } from 'src/components/common';
 import { getErrorMessage, isEqualPrevAndNextObjByPath } from 'src/utils';
 import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormikProps } from '../types';
@@ -14,8 +14,14 @@ const InternalSpecialInstructions: React.FC<Props> = ({ formikProps, disabled = 
   };
 
   return (
-    <Accordion title={'Internal Special Instructions (Not printed on PO)'}>
-      <Grid container spacing={2}>
+    <Box>
+      <Typography variant="h5" mb={1}>
+        Internal Special Instructions (Not printed on PO)
+      </Typography>
+
+      <Divider />
+
+      <Grid container spacing={2} sx={{ pt: 2 }}>
         <Grid item xs={4}>
           <RadioButton
             subLabel={
@@ -74,7 +80,7 @@ const InternalSpecialInstructions: React.FC<Props> = ({ formikProps, disabled = 
           />
         </Grid>
       </Grid>
-    </Accordion>
+    </Box>
   );
 };
 

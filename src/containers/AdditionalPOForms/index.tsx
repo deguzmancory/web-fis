@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import { Button, LoadingCommon } from 'src/components/common';
 import NoPermission from 'src/components/NoPermission';
-import Layout from 'src/containers/CRUUSerContainer/layout';
+import SectionLayout from 'src/containers/shared/SectionLayout';
 import { PO_ADDITIONAL_FORM_CODE } from 'src/containers/PurchaseOrderContainer/enums';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
@@ -89,7 +89,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
         },
       },
     });
-  }, []);
+  }, [onHideAllDialog, onHideDialog, onShowDialog]);
 
   const handleSubmitForm = () => {
     formRef.current.handleSubmit();
@@ -107,9 +107,9 @@ const PurchaseOrderContainer: React.FC<Props> = ({
         </Typography>
         <Suspense fallback={<LoadingCommon />}>
           {!hasPermission ? (
-            <Layout>
+            <SectionLayout>
               <NoPermission />
-            </Layout>
+            </SectionLayout>
           ) : (
             <>{renderForm(formCode as PO_ADDITIONAL_FORM_CODE)}</>
           )}

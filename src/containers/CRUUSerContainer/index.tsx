@@ -38,7 +38,7 @@ import {
   getValueUserStatus,
   initialCRUUserFormValue,
 } from './helper';
-import Layout from './layout';
+import SectionLayout from '../shared/SectionLayout';
 import './styles.scss';
 
 const AuditInformation = React.lazy(() => import('./AuditInformation'));
@@ -276,12 +276,12 @@ const CRUUserContainer: React.FC<Props> = ({
     return (
       <Box py={2} minHeight={'50vh'}>
         <Container>
-          <Layout>
+          <SectionLayout>
             <NoPermission
               buttonLink={PATHS.userManagements}
               buttonTitle={`Go to Users Management`}
             />
-          </Layout>
+          </SectionLayout>
         </Container>
       </Box>
     );
@@ -304,19 +304,19 @@ const CRUUserContainer: React.FC<Props> = ({
             {isEditUserMode ? 'Edit' : 'Add'} User
           </Typography>
           <Suspense fallback={<LoadingCommon />}>
-            <Layout>
+            <SectionLayout>
               <GeneralInfo formikProps={formikProps} isLoading={loading || isViewOnly} />
-            </Layout>
-            <Layout>
+            </SectionLayout>
+            <SectionLayout>
               <UserType
                 formikProps={formikProps}
                 isLoading={loading}
                 initialPIInfo={user?.fisPiInfo}
               />
-            </Layout>
-            <Layout>
+            </SectionLayout>
+            <SectionLayout>
               <InternalComments formikProps={formikProps} isLoading={loading || isViewOnly} />
-            </Layout>
+            </SectionLayout>
             {isEditUserMode && (
               <Suspense fallback={<LoadingCommon />}>
                 <Accordion title="Audit Information" className="mt-16">

@@ -8,7 +8,7 @@ import { PIDetail } from 'src/queries/Users/types';
 import { isEmpty } from 'src/validations';
 import { USER_TYPE_KEY } from '../../enums';
 import { CRUUserFormikProps } from '../../helper';
-import Layout from '../../layout';
+import SectionLayout from '../../../shared/SectionLayout';
 
 import { SEARCH_PROJECT_KEY } from './shared/TableProjects/header';
 
@@ -104,7 +104,7 @@ const UserTypeDetails: React.FC<Props> = ({ initialPIInfo, formikProps, isLoadin
   if (isEmpty(userRoles)) return null;
 
   return (
-    <Layout
+    <SectionLayout
       sx={{
         padding: '0 0 16px 0',
       }}
@@ -126,7 +126,7 @@ const UserTypeDetails: React.FC<Props> = ({ initialPIInfo, formikProps, isLoadin
           </AnimatedTabPanel>
         </Box>
       )}
-    </Layout>
+    </SectionLayout>
   );
 };
 

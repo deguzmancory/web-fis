@@ -17,6 +17,7 @@ const Element: React.FC<Props> = ({
   className,
   subLabel,
   required,
+  extraRequired,
   infoTooltipMessage = '',
   infoTooltipPlacement = 'right',
   infoToolTipWithArrow = true,
@@ -39,6 +40,7 @@ const Element: React.FC<Props> = ({
           }}
         >
           {label} {required && <span className="has-text-danger fw-bold text-is-16">*</span>}
+          {extraRequired && <span className="has-text-danger fw-bold text-is-16">**</span>}
           {infoTooltipMessage && (
             <span>
               <Tooltip
@@ -86,6 +88,7 @@ type Props = ViewProps & {
   className?: string;
   subLabel?: string | React.ReactNode;
   required?: boolean;
+  extraRequired?: boolean;
   infoTooltipMessage?: string;
   infoTooltipPlacement?:
     | 'bottom-end'
