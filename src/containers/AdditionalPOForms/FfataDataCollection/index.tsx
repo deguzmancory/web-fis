@@ -4,7 +4,7 @@ import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { COLOR_CODE } from 'src/appConfig/constants';
-import { optionYesNoValue } from 'src/appConfig/enum';
+import { optionYesNoValue } from 'src/appConfig/options';
 import { PATHS } from 'src/appConfig/paths';
 import { Input, RadioButton, TextareaAutosize } from 'src/components/common';
 import SectionLayout from 'src/containers/shared/SectionLayout';
@@ -133,12 +133,12 @@ const FfataDataCollectionForm: React.FC<Props> = ({
             Please list entity data as it appears in your Central Contractor Registration (CCR)
             profile, as applicable.
           </Typography>
-          <Grid item container spacing={2}>
+          <Grid item alignItems="center" container spacing={2}>
             <>
-              <Grid item xs={4}>
+              <Grid item xs={3}>
                 <Typography variant="body1">1. Name/Doing Business As (DBA):</Typography>
               </Grid>
-              <Grid item xs={8}>
+              <Grid item xs={9}>
                 <Input
                   errorMessage={_getErrorMessage(PO_FFATA_DATA_COLLECTION_KEY.NAME_OR_DBA)}
                   {..._getUncontrolledFieldProps(PO_FFATA_DATA_COLLECTION_KEY.NAME_OR_DBA)}
@@ -181,16 +181,18 @@ const FfataDataCollectionForm: React.FC<Props> = ({
               </Grid>
             </>
             <Grid item container>
-              <RadioButton
-                label={
-                  '4. Did your gross income, from all sources, in the previous tax year exceed $300,000?'
-                }
-                options={optionYesNoValue}
-                columns={2}
-                errorMessage={_getErrorMessage(PO_FFATA_DATA_COLLECTION_KEY.EXCEEDS_300000)}
-                {...getFieldProps(PO_FFATA_DATA_COLLECTION_KEY.EXCEEDS_300000)}
-                onChange={setFieldValue}
-              />
+              <Grid>
+                <RadioButton
+                  label={
+                    '4. Did your gross income, from all sources, in the previous tax year exceed $300,000?'
+                  }
+                  options={optionYesNoValue}
+                  columns={2}
+                  errorMessage={_getErrorMessage(PO_FFATA_DATA_COLLECTION_KEY.EXCEEDS_300000)}
+                  {...getFieldProps(PO_FFATA_DATA_COLLECTION_KEY.EXCEEDS_300000)}
+                  onChange={setFieldValue}
+                />
+              </Grid>
               <Grid item container sx={{ px: 2, mb: 1 }}>
                 <Grid item xs={4}>
                   <Typography variant="body1">

@@ -162,6 +162,12 @@ export const initialSoleSourceValue = {
   approvedDuoDate: '',
 };
 
+export const initialAuthToPurchaseLineItemsValue = {
+  attachmentName: '',
+  attachmentResponse: '',
+  attachmentDate: null,
+};
+
 export const initialAuthToPurchaseValue = {
   grantNumber: '',
   contractNumber: '',
@@ -184,7 +190,7 @@ export const initialAuthToPurchaseValue = {
   availabilityNotExistsReason: '',
   formCompletedBy: '',
   multipleFederalSponsors: '',
-  responses: [],
+  responses: [initialAuthToPurchaseLineItemsValue],
 };
 
 export const initialAuthToPurchaseResponseValue = {

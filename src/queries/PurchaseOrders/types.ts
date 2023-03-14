@@ -359,7 +359,7 @@ export interface AuthToPurchaseResponse {
   id?: string;
   attachmentName: string;
   attachmentResponse: string;
-  attachmentDate: string;
+  attachmentDate: Date;
 }
 
 export interface POEquipmentInventoryPayload {
