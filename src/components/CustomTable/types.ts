@@ -13,6 +13,7 @@ export enum CellType {
 }
 
 export interface BaseTableCell {
+  hide?: boolean;
   content: string | React.ReactNode;
   name?: string;
   subContent?: string | React.ReactNode;

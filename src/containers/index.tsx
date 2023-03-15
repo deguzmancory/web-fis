@@ -33,7 +33,7 @@ const GlobalSettings = React.lazy(() => import('./GlobalSettings'));
 const EditProfile = React.lazy(() => import('./EditProfile'));
 const EmptyScreen = React.lazy(() => import('./UAMContainer/ChangePasswordExpired/emptyScreen'));
 const PurchaseOrderContainer = React.lazy(() => import('./PurchaseOrderContainer'));
-const SoleSourcePOContainer = React.lazy(() => import('./AdditionalPOForms'));
+const AdditionalPOFormsContainer = React.lazy(() => import('./AdditionalPOForms'));
 const VendorsManagement = React.lazy(() => import('./VendorsManagement'));
 
 const Routing: React.FC<{ location: Location }> = (props) => {
@@ -78,7 +78,7 @@ const Routing: React.FC<{ location: Location }> = (props) => {
             <CustomRoute
               pageRequiredAuth
               path={`${PATHS.poAdditionalForm}/:formCode`}
-              component={SoleSourcePOContainer}
+              component={AdditionalPOFormsContainer}
             />
             <CustomRoute
               pageRequiredAuth

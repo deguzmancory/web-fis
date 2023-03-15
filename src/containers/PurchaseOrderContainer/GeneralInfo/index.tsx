@@ -22,8 +22,15 @@ import SuperQuote from './superQuote';
 const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const dispatch = useDispatch();
 
-  const { values, errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } =
-    formikProps;
+  const {
+    values,
+    errors,
+    touched,
+    getUncontrolledFieldProps,
+    getFieldProps,
+    setFieldValue,
+    setFieldTouched,
+  } = formikProps;
   const currentProjectTitle = React.useMemo(() => values.projectTitle, [values.projectTitle]);
   const currentProjectNumber = React.useMemo(() => values.projectNumber, [values.projectNumber]);
   const currentVendorName = React.useMemo(() => values.vendorName, [values.vendorName]);
@@ -42,30 +49,33 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const updateProjectFields = (value: FinancialProject) => {
     setFieldValue(PO_FORM_KEY.PROJECT_TITLE, value);
     setFieldValue(PO_FORM_KEY.PROJECT_NUMBER, value);
-    setFieldValue(PO_FORM_KEY.PI_NAME, value.piName || '');
+    setFieldValue(PO_FORM_KEY.PI_NAME, value?.piName || '');
     setFieldValue(
       PO_FORM_KEY.PROJECT_PERIOD,
       value
         ? isVariousProject(value.number)
           ? VARIOUS_PROJECT_VALUE
           : `${getDateDisplay(value.startDate)} - ${getDateDisplay(value.endDate)}`
-        : null
+        : ''
     );
   };
 
   const updateVendorFields = (value: Vendor) => {
     setFieldValue(PO_FORM_KEY.VENDOR_NAME, value);
     setFieldValue(PO_FORM_KEY.VENDOR_CODE, value);
-    setFieldValue(PO_FORM_KEY.ADDRESS_1, value.address1);
-    setFieldValue(PO_FORM_KEY.ADDRESS_2, value.address2);
-    setFieldValue(PO_FORM_KEY.ADDRESS_3, value.address3);
-    const { name2, address1, address2, address3 } = value || {};
-    const formattedAddress = value
-      ? `${name2 && `${name2}\n`}${address1 && `${address1}\n`}${
-          address2 && `${address2}\n`
-        }${address3}`
-      : '';
-    setFieldValue(PO_FORM_KEY.VENDOR_ADDRESS, formattedAddress);
+    setFieldValue(PO_FORM_KEY.ADDRESS_1, value?.address1 || null);
+    setFieldValue(PO_FORM_KEY.ADDRESS_2, value?.address2 || null);
+    setFieldValue(PO_FORM_KEY.ADDRESS_3, value?.address3 || null);
+    if (value) {
+      const { name2, address1, address2, address3 } = value || {};
+      const formattedAddress = `${name2 && `${name2}\n`}${address1 && `${address1}\n`}${
+        address2 && `${address2}\n`
+      }${address3}`;
+
+      setFieldValue(PO_FORM_KEY.VENDOR_ADDRESS, formattedAddress);
+    } else {
+      setFieldValue(PO_FORM_KEY.VENDOR_ADDRESS, '');
+    }
   };
 
   const _getErrorMessage = (fieldName: PO_FORM_KEY) => {
@@ -141,6 +151,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
             <Select
               {...getFieldProps(PO_FORM_KEY.PROJECT_TITLE)}
               errorMessage={_getErrorMessage(PO_FORM_KEY.PROJECT_TITLE)}
+              onBlur={setFieldTouched}
               label={'Project Title'}
               placeholder={'Search'}
               extraRequired
@@ -177,6 +188,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
             <Select
               {...getFieldProps(PO_FORM_KEY.PROJECT_NUMBER)}
               errorMessage={_getErrorMessage(PO_FORM_KEY.PROJECT_NUMBER)}
+              onBlur={setFieldTouched}
               label={'Project #'}
               placeholder={'Search'}
               extraRequired
@@ -247,6 +259,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
             <Select
               {...getFieldProps(PO_FORM_KEY.VENDOR_NAME)}
               errorMessage={_getErrorMessage(PO_FORM_KEY.VENDOR_NAME)}
+              onBlur={setFieldTouched}
               label={'Vendor Name'}
               placeholder={'Search'}
               extraRequired
@@ -296,6 +309,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
             <Select
               {...getFieldProps(PO_FORM_KEY.VENDOR_CODE)}
               errorMessage={_getErrorMessage(PO_FORM_KEY.VENDOR_CODE)}
+              onBlur={setFieldTouched}
               label={'Vendor Code'}
               placeholder={'Search'}
               extraRequired
@@ -455,6 +469,7 @@ export default React.memo(GeneralInfo, (prevProps, nextProps) => {
     PO_FORM_KEY.VENDOR_ADDRESS,
     PO_FORM_KEY.SHIP_OTHER,
     PO_FORM_KEY.SHIP_VIA,
+    PO_FORM_KEY.SHIP_TO,
     PO_FORM_KEY.DELIVERY_BY,
     PO_FORM_KEY.DISCOUNT_TERMS,
     PO_FORM_KEY.QUOTATION_NUMBER,

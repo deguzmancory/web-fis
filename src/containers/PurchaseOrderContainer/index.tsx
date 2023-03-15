@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import { Button, Link, LoadingCommon } from 'src/components/common';
+import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundary';
 import NoPermission from 'src/components/NoPermission';
 import { useProfile } from 'src/queries';
 import { useGetPODetail } from 'src/queries/PurchaseOrders';
@@ -24,6 +25,7 @@ import AuthorizedBy from './AuthorizedBy';
 import BreadcrumbsPODetail from './breadcrumbs';
 import { emptyUpsertPOFormValue } from './constants';
 import { PO_ACTION, PO_FORM_KEY } from './enums';
+import ErrorWrapperPO from './ErrorWrapper/index.';
 import ExternalSpecialInstructions from './ExternalSpecialInstructions';
 import GeneralInfo from './GeneralInfo';
 import {
@@ -43,14 +45,17 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const query = new URLSearchParams(location.search);
-  const scrollToParam = query.get(PO_ADDITIONAL_FORM_PARAMS.SCROLL_TO) || null;
 
+  const [formAction, setFormAction] = React.useState<PO_ACTION>(null);
+  const [isTriedSubmit, setIsTriedSubmit] = React.useState<boolean>(false);
   const formRef = React.useRef<FormikProps<UpsertPOFormValue>>(null);
+  const scrollToParam = query.get(PO_ADDITIONAL_FORM_PARAMS.SCROLL_TO) || null;
   const isEditPOMode = !!id;
   const hasPermission = true; //TODO: huy_dang check logic
 
   const { onGetPOById } = useGetPODetail({
     id: id,
+    suspense: true,
     onSuccess: (data) => {
       const formValue: UpsertPOFormValue = {
         ...data,
@@ -75,31 +80,36 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
     },
   });
 
+  /* INIT DATA */
+  // get initial data when first time mounted
+
+  // create mode
+  // using useLayoutEffect to avoid flash at first time render
   React.useLayoutEffect(() => {
-    // get initial data when first time mounted
     if (!formData && !isEditPOMode) {
-      // create mode
       const initialPOFormValue = getInitialPOFormValue({ profile });
       onSetFormData<UpsertPOFormValue>(initialPOFormValue);
       return;
     }
-
-    // just back from additional forms mode => not fetching anything
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditPOMode, profile, onGetPOById, onSetFormData]);
 
+  // edit mode
+  // using useEffect for fetch data from api
   React.useEffect(() => {
-    // get initial data when first time mounted
     if (!formData && isEditPOMode) {
-      // edit mode
       onGetPOById();
       return;
     }
 
-    // just back from additional forms mode => not fetching anything
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditPOMode, profile, onGetPOById, onSetFormData]);
 
+  // else
+  // just back from additional forms mode => not fetching anything
+  /* END INIT DATA */
+
+  // Auto scroll to additional form section base on scrollToParam
   React.useEffect(() => {
     if (scrollToParam && scrollToParam === PO_ADDITIONAL_FORM_KEY.ADDITIONAL_FORMS) {
       const additionalFormId = document.getElementById(PO_ADDITIONAL_FORM_KEY.ADDITIONAL_FORMS);
@@ -124,14 +134,27 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
     return formData || emptyUpsertPOFormValue;
   }, [formData]);
 
-  const { values, errors, touched, setFieldValue, getFieldProps, setFieldTouched, handleSubmit } =
-    useFormik<UpsertPOFormValue>({
-      initialValues: initialFormValue,
-      validationSchema: getPOFormValidationSchema({ action: PO_ACTION.SAVE }),
-      innerRef: formRef,
-      enableReinitialize: true,
-      onSubmit: handleFormSubmit,
-    });
+  const validationSchema = React.useMemo(
+    () => getPOFormValidationSchema({ action: formAction }),
+    [formAction]
+  );
+
+  const {
+    values,
+    errors,
+    touched,
+    setFieldValue,
+    getFieldProps,
+    setFieldTouched,
+    handleSubmit,
+    validateForm,
+  } = useFormik<UpsertPOFormValue>({
+    initialValues: initialFormValue,
+    validationSchema: validationSchema,
+    innerRef: formRef,
+    enableReinitialize: true,
+    onSubmit: handleFormSubmit,
+  });
 
   const formikProps: UpsertPOFormikProps = {
     values,
@@ -156,7 +179,26 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
     handleScrollToTopError(errors);
   }, [errors]);
 
+  // set form action states for updating form's validation schema purpose
+  const handleSubmitButtonClick = ({ action }: { action: PO_ACTION }) => {
+    setFieldValue(PO_FORM_KEY.ACTION, action);
+    setFormAction(action);
+    setIsTriedSubmit(true);
+    validateForm();
+  };
+
   const handleCancelClick = () => {};
+
+  // handle submit form after updated the form's validation schema
+  React.useEffect(() => {
+    if (formAction && isTriedSubmit) {
+      _handleScrollToTopError();
+      handleSubmit();
+    }
+
+    return () => setIsTriedSubmit(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isTriedSubmit]);
 
   return (
     <Box py={4}>
@@ -223,11 +265,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
             Cancel
           </Button>
           <Button
-            onClick={() => {
-              _handleScrollToTopError();
-              setFieldValue(PO_FORM_KEY.ACTION, PO_ACTION.SAVE);
-              handleSubmit();
-            }}
+            onClick={() => handleSubmitButtonClick({ action: PO_ACTION.SAVE })}
             isLoading={isLoading}
             disabled={isLoading}
             className="mr-8"
@@ -235,11 +273,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
             Save
           </Button>
           <Button
-            onClick={() => {
-              _handleScrollToTopError();
-              setFieldValue(PO_FORM_KEY.ACTION, PO_ACTION.SUBMIT);
-              handleSubmit();
-            }}
+            onClick={() => handleSubmitButtonClick({ action: PO_ACTION.SUBMIT })}
             isLoading={isLoading}
             disabled={isLoading}
           >
@@ -248,6 +282,14 @@ const PurchaseOrderContainer: React.FC<Props> = ({ formData, onSetFormData }) =>
         </Stack>
       </Container>
     </Box>
+  );
+};
+
+const PurchaseOrderContainerWrapper: React.FC<Props> = ({ ...props }) => {
+  return (
+    <CustomErrorBoundary FallbackComponent={(props) => <ErrorWrapperPO {...props} />}>
+      <PurchaseOrderContainer {...props} />
+    </CustomErrorBoundary>
   );
 };
 
@@ -261,4 +303,4 @@ const mapDispatchToProps = {
   onSetFormData: setFormData,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PurchaseOrderContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(PurchaseOrderContainerWrapper);

@@ -33,8 +33,12 @@ export const emptyVariousProject = {
   subLabel: null,
 };
 
-export const isVariousProject = (projectNumber: string) => {
-  return projectNumber === VARIOUS_PROJECT_VALUE;
+export const isVariousProject = (projectNumber: string | FinancialProject) => {
+  if (!projectNumber) return false;
+
+  return typeof projectNumber === 'string'
+    ? projectNumber === VARIOUS_PROJECT_VALUE
+    : projectNumber.number === VARIOUS_PROJECT_VALUE;
 };
 
 export const getFinancialProjectOptions = ({

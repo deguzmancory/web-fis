@@ -1,5 +1,7 @@
 import { get } from 'lodash';
+import { CommonFormikProps } from './commonTypes';
 import { convertCurrencyInputToString, MoneyInputDetect } from './formatUtils';
+import { isEqualPrevAndNextObjByPath } from './handlerUtils';
 
 export const getUncontrolledInputFieldProps =
   ({ values, setFieldTouched, setFieldValue }) =>
@@ -43,3 +45,43 @@ export const getUncontrolledCurrencyInputFieldProps =
       },
     };
   };
+
+export const isEqualPrevAndNextFormikValues = <TFormValue = any>({
+  formKeysNeedRender,
+  prevFormikProps,
+  nextFormikProps,
+}: {
+  formKeysNeedRender: string[];
+  prevFormikProps: CommonFormikProps<TFormValue>;
+  nextFormikProps: CommonFormikProps<TFormValue>;
+}) => {
+  const {
+    values: prevFormikValues,
+    errors: prevFormikErrors,
+    touched: prevFormikTouched,
+  } = prevFormikProps;
+  const {
+    values: nextFormikValues,
+    errors: nextFormikErrors,
+    touched: nextFormikTouched,
+  } = nextFormikProps;
+
+  return formKeysNeedRender.every(
+    (key) =>
+      isEqualPrevAndNextObjByPath({
+        prevValues: prevFormikValues,
+        nextValues: nextFormikValues,
+        path: key,
+      }) &&
+      isEqualPrevAndNextObjByPath({
+        prevValues: prevFormikErrors,
+        nextValues: nextFormikErrors,
+        path: key,
+      }) &&
+      isEqualPrevAndNextObjByPath({
+        prevValues: prevFormikTouched,
+        nextValues: nextFormikTouched,
+        path: key,
+      })
+  );
+};

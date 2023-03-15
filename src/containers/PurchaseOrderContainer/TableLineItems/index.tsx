@@ -9,16 +9,25 @@ import {
 import CustomTable from 'src/components/CustomTable';
 import { BodyBasicRows, CellType } from 'src/components/CustomTable/types';
 import { POLineItemPayload } from 'src/queries/PurchaseOrders';
-import { isEqualPrevAndNextFormikValues } from 'src/utils';
+import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { initialLineItemValue } from '../constants';
 import { PO_FORM_KEY, PO_LINE_ITEM_KEY } from '../enums';
+import { isVariousProject } from '../GeneralInfo/helpers';
 import { checkRowStateAndSetValue } from '../helpers';
 import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
 
 const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
-  const { values, setFieldValue, getFieldProps } = formikProps;
+  const { values, errors, touched, setFieldValue, getFieldProps } = formikProps;
 
   const lineItemsValue = React.useMemo(() => values.lineItems, [values.lineItems]);
+  const hideProjectNumberColumn = React.useMemo(
+    () => !isVariousProject(values.projectNumber),
+    [values.projectNumber]
+  );
+
+  const _getErrorMessage = (fieldName: PO_FORM_KEY) => {
+    return getErrorMessage(fieldName, { touched, errors });
+  };
 
   const removeRow = React.useCallback(
     (index: number) => {
@@ -127,7 +136,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
       style: {
         verticalAlign: 'top',
       },
-      // errorMessage: index === 1 ? 'Extension must be less than $100,000,000.00.' : '', //TODO: add validation for row
+      errorMessage: lineItemsValue.length === 1 ? _getErrorMessage(PO_FORM_KEY.LINE_ITEMS) : '', //TODO: add validation for row
       columns: [
         {
           label: 'Line',
@@ -142,6 +151,28 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
         },
         {
           type: CellType.INPUT,
+          label: 'Project #',
+          content: (
+            <EllipsisTooltipInput
+              {...getFieldProps(`${prefixLineItem}.${PO_LINE_ITEM_KEY.ITEM_PROJECT_NUMBER}`)}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                handleInputChange({
+                  index,
+                  name: `${prefixLineItem}.${PO_LINE_ITEM_KEY.ITEM_PROJECT_NUMBER}`,
+                  value: event.target.value,
+                })
+              }
+              style={{ width: 90 }}
+              lengthShowTooltip={8}
+              disabled={disabled}
+              required
+            />
+          ),
+          width: 90,
+          hide: hideProjectNumberColumn,
+        },
+        {
+          type: CellType.INPUT,
           label: 'Sub Project',
           content: (
             <EllipsisTooltipInput
@@ -153,13 +184,13 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
                   value: event.target.value,
                 })
               }
-              style={{ width: 90 }}
-              lengthShowTooltip={8}
+              style={{ width: hideProjectNumberColumn ? 90 : 75 }}
+              hideEllipsisTooltip
               maxLength={5}
               disabled={disabled}
             />
           ),
-          width: 90,
+          width: hideProjectNumberColumn ? 90 : 75,
         },
         {
           type: CellType.INPUT,
@@ -174,14 +205,14 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
                   value: event.target.value,
                 })
               }
-              style={{ width: 90 }}
-              lengthShowTooltip={8}
+              style={{ width: hideProjectNumberColumn ? 90 : 75 }}
+              hideEllipsisTooltip
               maxLength={4}
               disabled={disabled}
               // errorMessage={'Required'} //TODO: add validation for cell
             />
           ),
-          width: 90,
+          width: hideProjectNumberColumn ? 90 : 75,
         },
         {
           type: CellType.INPUT,
@@ -196,13 +227,13 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
                   value: event.target.value,
                 })
               }
-              style={{ width: 100 }}
-              lengthShowTooltip={8}
+              style={{ width: hideProjectNumberColumn ? 90 : 75 }}
+              hideEllipsisTooltip
               maxLength={3}
               disabled={disabled}
             />
           ),
-          width: 100,
+          width: hideProjectNumberColumn ? 90 : 75,
         },
         {
           type: CellType.INPUT,
@@ -217,7 +248,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
                   value: event.target.value,
                 })
               }
-              style={{ width: 240, paddingTop: '4px' }}
+              style={{ width: hideProjectNumberColumn ? 240 : 200, paddingTop: '4px' }}
               disabled={disabled}
             />
           ),
@@ -325,7 +356,7 @@ export default React.memo(TableLineItems, (prevProps, nextProps) => {
   const prevFormikProps = prevProps.formikProps;
   const nextFormikProps = nextProps.formikProps;
 
-  const formKeysNeedRender = [PO_FORM_KEY.LINE_ITEMS];
+  const formKeysNeedRender = [PO_FORM_KEY.LINE_ITEMS, PO_FORM_KEY.PROJECT_NUMBER];
 
   return isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
     prevFormikProps,

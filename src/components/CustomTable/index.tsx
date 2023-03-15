@@ -107,6 +107,8 @@ const renderRows = <
           className={row.className}
         >
           {row.columns?.map((cell, cellIndex) => {
+            if (cell.hide) return null;
+
             // render subContent
             let subContent;
             if (!cell.subContent) {
@@ -234,6 +236,7 @@ const Basic: React.FC<TableBasicProps> = ({
                 rowSpan: column.rowSpan,
                 style: column.headerStyle,
                 className: column.headerClassName,
+                hide: column.hide,
               };
             }),
           }

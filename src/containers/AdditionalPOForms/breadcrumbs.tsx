@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import TypographyLink from 'src/components/TypographyLink';
 
-const BreadcrumbsPODetail: React.FC<Props> = ({ isViewMode }) => {
+const BreadcrumbsAdditonalPOForms: React.FC<Props> = ({ isViewMode }) => {
   const getTitleBreadcrumbs = () => {
     if (isViewMode) {
       return 'View/Edit';
@@ -32,4 +32,4 @@ type Props = {
   isViewMode: boolean;
 };
 
-export default BreadcrumbsPODetail;
+export default BreadcrumbsAdditonalPOForms;

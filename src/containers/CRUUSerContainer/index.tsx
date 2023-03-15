@@ -374,7 +374,7 @@ const ConnectCRUUserContainer = connect(mapStateToProps, mapDispatchToProps)(CRU
 
 const CRUUserContainerWrapper = () => {
   return (
-    <CustomErrorBoundary fallback={<ErrorWrapperCRUUser />}>
+    <CustomErrorBoundary FallbackComponent={(props) => <ErrorWrapperCRUUser {...props} />}>
       <ConnectCRUUserContainer />
     </CustomErrorBoundary>
   );

@@ -5,17 +5,22 @@ import { useGetUser } from 'src/queries/Users';
 import { handleShowErrorMsg } from 'src/utils';
 import BreadcrumbsUserDetail from './breadcrumbs';
 import SectionLayout from '../shared/SectionLayout';
+import { Callback } from 'src/redux/types';
 const RefetchUser = React.lazy(() => import('./refetchUser'));
 
-const ErrorWrapperCRUUser = () => {
+const ErrorWrapperCRUUser: React.FC<Props> = ({ resetErrorBoundary }) => {
   const { userId } = useParams<{ userId: string }>();
 
   const { onGetUserById, isLoading: isLoadingGetUser } = useGetUser({
     userId: userId || null,
+    onSuccess: () => {
+      resetErrorBoundary();
+    },
     onError(err) {
       handleShowErrorMsg(err);
     },
   });
+
   return (
     <Box py={4}>
       <Container>
@@ -26,6 +31,10 @@ const ErrorWrapperCRUUser = () => {
       </Container>
     </Box>
   );
+};
+
+type Props = {
+  resetErrorBoundary: Callback;
 };
 
 export default ErrorWrapperCRUUser;
