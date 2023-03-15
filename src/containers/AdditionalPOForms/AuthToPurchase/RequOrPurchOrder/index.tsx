@@ -6,9 +6,8 @@ import { getErrorMessage } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_AUTH_TO_PURCHASE_KEY } from '../enum';
 
-const RequOrPurchOrder: React.FC<Props> = ({ formikProps }) => {
+const PurchaseInfo: React.FC<Props> = ({ formikProps }) => {
   const { errors, touched, getUncontrolledFieldProps } = formikProps;
-
   const _getErrorMessage = (fieldName: PO_AUTH_TO_PURCHASE_KEY) => {
     return getErrorMessage(fieldName, { touched, errors });
   };
@@ -56,4 +55,11 @@ type Props = {
   formikProps: CommonFormikProps<POAuthToPurchasePayload>;
 };
 
-export default React.memo(RequOrPurchOrder);
+export default React.memo(PurchaseInfo, (prevProps, nextProps) => {
+  console.log('prevProps: ', prevProps);
+  console.log('nextProps: ', nextProps);
+  const prevFormikProps = prevProps.formikProps;
+  const nextFormikProps = nextProps.formikProps;
+
+  return false;
+});

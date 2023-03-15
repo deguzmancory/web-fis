@@ -17,7 +17,7 @@ import { PO_ADDITIONAL_FORM_KEY, PO_ADDITIONAL_FORM_PARAMS } from '../enum';
 import CheckAndFill from './CheckAndFill';
 import FormCompleted from './FormCompleted';
 import PreAcquisition from './PreAcquisition';
-import RequOrPurchOrder from './RequOrPurchOrder';
+import PurchaseInfo from './RequOrPurchOrder';
 
 const AuthToPurchaseForm: React.FC<Props> = ({ formRef, formData, onSetFormData, disabled }) => {
   const history = useHistory();
@@ -80,7 +80,7 @@ const AuthToPurchaseForm: React.FC<Props> = ({ formRef, formData, onSetFormData,
     <Box>
       <Container maxWidth="lg">
         <SectionLayout>
-          <RequOrPurchOrder formikProps={formikProps} />
+          <PurchaseInfo formikProps={formikProps} />
         </SectionLayout>
 
         <SectionLayout>

@@ -41,6 +41,8 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   }, [formData]);
 
   const renderForm = React.useCallback((code: PO_ADDITIONAL_FORM_CODE) => {
+    if (!formData) return null;
+
     switch (code) {
       case PO_ADDITIONAL_FORM_CODE.SOLE_SOURCE:
         return <SoleSource disabled={false} formRef={formRef} />;

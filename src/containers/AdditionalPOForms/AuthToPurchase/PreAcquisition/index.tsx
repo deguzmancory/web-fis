@@ -21,7 +21,7 @@ const PreAcquisition: React.FC<Props> = ({ formikProps }) => {
     setFieldValue,
     setFieldTouched,
   } = formikProps;
-  const lineItemsValue = React.useMemo(() => values?.responses, [values.responses]);
+  const lineItemsValue = React.useMemo(() => values.responses, [values.responses]);
 
   const _getErrorMessage = (fieldName: PO_AUTH_TO_PURCHASE_KEY) => {
     return getErrorMessage(fieldName, { touched, errors });
@@ -45,7 +45,6 @@ const PreAcquisition: React.FC<Props> = ({ formikProps }) => {
   );
 
   const handleInputChange = ({ name, value, index }) => {
-    console.log('value date: ', value);
     checkRowStateAndSetValue<AuthToPurchaseResponse>({
       name,
       value,
@@ -58,7 +57,6 @@ const PreAcquisition: React.FC<Props> = ({ formikProps }) => {
   };
 
   const lineItemRows: BodyBasicRows = lineItemsValue.map((lineItemRow, index) => {
-    console.log('lineItemRow: ', lineItemRow);
     const prefixLineItem = `${PO_AUTH_TO_PURCHASE_KEY.RESPONSES}.${index}`;
 
     return {
@@ -149,8 +147,9 @@ const PreAcquisition: React.FC<Props> = ({ formikProps }) => {
         </div>
         <span> </span>
         <div style={{ display: 'inline-block', width: '600px' }}>
-          <Input
+          <TextareaAutosize
             maxLength={250}
+            resize="none"
             errorMessage={_getErrorMessage(PO_AUTH_TO_PURCHASE_KEY.EQUIPMENT_DESCRIPTION)}
             {...getUncontrolledFieldProps(PO_AUTH_TO_PURCHASE_KEY.EQUIPMENT_DESCRIPTION)}
           />
