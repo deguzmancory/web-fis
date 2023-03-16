@@ -187,6 +187,7 @@ const FfataDataCollectionForm: React.FC<Props> = ({
                     '4. Did your gross income, from all sources, in the previous tax year exceed $300,000?'
                   }
                   options={optionYesNoValue}
+                  isTrueFalseOptions
                   columns={2}
                   errorMessage={_getErrorMessage(PO_FFATA_DATA_COLLECTION_KEY.EXCEEDS_300000)}
                   {...getFieldProps(PO_FFATA_DATA_COLLECTION_KEY.EXCEEDS_300000)}

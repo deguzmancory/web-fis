@@ -7,7 +7,7 @@ import { BodyBasicRows, CellType } from 'src/components/CustomTable/types';
 import { initialAuthToPurchaseLineItemsValue } from 'src/containers/PurchaseOrderContainer/constants';
 import { checkRowStateAndSetValue } from 'src/containers/PurchaseOrderContainer/helpers';
 import { AuthToPurchaseResponse, POAuthToPurchasePayload } from 'src/queries/PurchaseOrders';
-import { getErrorMessage } from 'src/utils';
+import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_AUTH_TO_PURCHASE_KEY, PO_AUTH_TO_PURCHASE_LINE_ITEM_KEY } from '../enum';
 
@@ -150,21 +150,23 @@ const PreAcquisition: React.FC<Props> = ({ formikProps }) => {
           <TextareaAutosize
             maxLength={250}
             resize="none"
+            style={{ padding: '0 2px', marginTop: '2px' }}
             errorMessage={_getErrorMessage(PO_AUTH_TO_PURCHASE_KEY.EQUIPMENT_DESCRIPTION)}
             {...getUncontrolledFieldProps(PO_AUTH_TO_PURCHASE_KEY.EQUIPMENT_DESCRIPTION)}
           />
         </div>
         <div style={{ display: 'contents' }}> for </div>
-        <div style={{ display: 'inline-block', width: '600px' }}>
-          <Input
+        <div style={{ display: 'inline-block', width: '60%' }}>
+          <TextareaAutosize
             maxLength={250}
+            resize="none"
+            style={{ padding: '0 2px', marginTop: '2px' }}
             errorMessage={_getErrorMessage(PO_AUTH_TO_PURCHASE_KEY.PROJECT)}
             {...getUncontrolledFieldProps(PO_AUTH_TO_PURCHASE_KEY.PROJECT)}
           />
         </div>
         <div style={{ display: 'contents' }}> , at an estimated cost of $ </div>
-        <div style={{ display: 'inline-block' }}>
-          {/* TODO: Number input required */}
+        <div style={{ display: 'inline-block', marginTop: '2px' }}>
           <Input
             type="number"
             maxLength={20}
@@ -186,7 +188,7 @@ const PreAcquisition: React.FC<Props> = ({ formikProps }) => {
         <Typography variant="body2">
           (Note: Applies to equipment with estimated value of $5,000 or more only.)
         </Typography>
-        <Box>
+        <Box mt={1}>
           <CustomTable.Basic bodyList={lineItemRows} />
         </Box>
       </>
@@ -208,4 +210,21 @@ type Props = {
   formikProps: CommonFormikProps<POAuthToPurchasePayload>;
 };
 
-export default React.memo(PreAcquisition);
+export default React.memo(PreAcquisition, (prevProps, nextProps) => {
+  const prevFormikProps = prevProps.formikProps;
+  const nextFormikProps = nextProps.formikProps;
+
+  const formKeysNeedRender = [
+    PO_AUTH_TO_PURCHASE_KEY.RESPONSES,
+    PO_AUTH_TO_PURCHASE_KEY.EQUIPMENT_DESCRIPTION,
+    PO_AUTH_TO_PURCHASE_KEY.PROJECT,
+    PO_AUTH_TO_PURCHASE_KEY.ESTIMATED_COST,
+    PO_AUTH_TO_PURCHASE_KEY.AVAILABILITY_NOT_EXISTS_REASON,
+  ];
+
+  return isEqualPrevAndNextFormikValues<POAuthToPurchasePayload>({
+    prevFormikProps,
+    nextFormikProps,
+    formKeysNeedRender,
+  });
+});

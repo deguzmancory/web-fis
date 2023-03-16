@@ -1,4 +1,5 @@
 import { Grid, Typography } from '@mui/material';
+import { isEqual } from 'lodash';
 import React from 'react';
 import { Input } from 'src/components/common';
 import { POAuthToPurchasePayload } from 'src/queries/PurchaseOrders';
@@ -14,9 +15,7 @@ const FormCompleted: React.FC<Props> = ({ formikProps }) => {
 
   return (
     <>
-      <Typography variant="body2" mt={2}>
-        Form Completed by
-      </Typography>
+      <Typography variant="body2">Form Completed by</Typography>
       <Grid container>
         <Grid item xs={6}>
           <Input
@@ -33,4 +32,9 @@ type Props = {
   formikProps: CommonFormikProps<POAuthToPurchasePayload>;
 };
 
-export default FormCompleted;
+export default React.memo(FormCompleted, (prevProps, nextProps) => {
+  const prevFormikProps = prevProps.formikProps.values.formCompletedBy;
+  const nextFormikProps = nextProps.formikProps.values.formCompletedBy;
+
+  return isEqual(prevFormikProps, nextFormikProps);
+});

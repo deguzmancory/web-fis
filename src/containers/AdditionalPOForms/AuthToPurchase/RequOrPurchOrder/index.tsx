@@ -2,7 +2,7 @@ import { Grid, Typography } from '@mui/material';
 import React from 'react';
 import { Input } from 'src/components/common';
 import { POAuthToPurchasePayload } from 'src/queries/PurchaseOrders';
-import { getErrorMessage } from 'src/utils';
+import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_AUTH_TO_PURCHASE_KEY } from '../enum';
 
@@ -56,10 +56,18 @@ type Props = {
 };
 
 export default React.memo(PurchaseInfo, (prevProps, nextProps) => {
-  console.log('prevProps: ', prevProps);
-  console.log('nextProps: ', nextProps);
   const prevFormikProps = prevProps.formikProps;
   const nextFormikProps = nextProps.formikProps;
 
-  return false;
+  const formKeysNeedRender = [
+    PO_AUTH_TO_PURCHASE_KEY.GRANT_NUMBER,
+    PO_AUTH_TO_PURCHASE_KEY.CONTRACT_NUMBER,
+    PO_AUTH_TO_PURCHASE_KEY.ACCOUNT_NUMBER,
+  ];
+
+  return isEqualPrevAndNextFormikValues<POAuthToPurchasePayload>({
+    prevFormikProps,
+    nextFormikProps,
+    formKeysNeedRender,
+  });
 });
