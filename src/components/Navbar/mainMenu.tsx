@@ -7,6 +7,7 @@ import { PATHS } from 'src/appConfig/paths';
 import { dashboardItems } from 'src/containers/Dashboard/helpers';
 import { Navigator, PermissionsService } from 'src/services';
 import { isEmpty } from 'src/validations';
+
 const clsPrefix = 'ctn-navbar-desktop';
 
 type Props = {

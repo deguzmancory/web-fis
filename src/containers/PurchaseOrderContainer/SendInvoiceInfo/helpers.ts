@@ -1,21 +1,5 @@
 import { PO_FORM_KEY } from '../enums';
 
-export enum PRESET_INSTRUCTIONS {
-  TRAVEL_AGENCY_REFUND_NOTICE = 'Travel Agency Refund Notice',
-  OTHER = 'Other (Specify)',
-}
-
-export const presetInstructionOptions = [
-  {
-    label: PRESET_INSTRUCTIONS.TRAVEL_AGENCY_REFUND_NOTICE,
-    value: PRESET_INSTRUCTIONS.TRAVEL_AGENCY_REFUND_NOTICE,
-  },
-  {
-    label: PRESET_INSTRUCTIONS.OTHER,
-    value: PRESET_INSTRUCTIONS.OTHER,
-  },
-];
-
 export const resetAllField = ({ setFieldValue, setFieldTouched }) => {
   setFieldValue(PO_FORM_KEY.SEND_INVOICE_TO, '');
   setFieldValue(PO_FORM_KEY.SEND_INVOICE_TO_FA_EMAIL, '');

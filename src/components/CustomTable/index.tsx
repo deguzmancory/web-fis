@@ -102,7 +102,7 @@ const renderRows = <
         <TableRow
           sx={{
             ...row.style,
-            border: hasError ? COLOR_CODE.DEFAULT_TABLE_ERROR_BORDER : undefined,
+            border: hasError ? COLOR_CODE.DEFAULT_ROW_ERROR_BORDER : undefined,
           }}
           className={row.className}
         >

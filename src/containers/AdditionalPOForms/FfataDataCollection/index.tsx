@@ -8,10 +8,10 @@ import { optionYesNoValue } from 'src/appConfig/options';
 import { PATHS } from 'src/appConfig/paths';
 import { Input, RadioButton, TextareaAutosize } from 'src/components/common';
 import SectionLayout from 'src/containers/shared/SectionLayout';
-import { emptyUpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/constants';
+import { initialFfataValue } from 'src/containers/PurchaseOrderContainer/constants';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import { FfataPayload } from 'src/queries/PurchaseOrders';
-import { setFormData } from 'src/redux/form/formSlice';
+import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator } from 'src/services';
 import { getErrorMessage, getUncontrolledInputFieldProps } from 'src/utils';
@@ -23,6 +23,7 @@ const FfataDataCollectionForm: React.FC<Props> = ({
   formData,
   onSetFormData,
   disabled,
+  onSetIsImmutableFormData,
 }) => {
   const history = useHistory();
 
@@ -34,11 +35,12 @@ const FfataDataCollectionForm: React.FC<Props> = ({
   };
 
   const handleResetForm = () => {
-    onSetFormData<UpsertPOFormValue>({ ...formData, ffata: emptyUpsertPOFormValue.ffata });
+    onSetFormData<UpsertPOFormValue>({ ...formData, ffata: initialFfataValue });
+    onSetIsImmutableFormData(true);
   };
 
   const formik = useFormik<FfataPayload>({
-    initialValues: formData?.ffata,
+    initialValues: formData?.ffata || initialFfataValue,
     validationSchema: null,
     enableReinitialize: true,
     onSubmit: handleFormSubmit,
@@ -59,7 +61,8 @@ const FfataDataCollectionForm: React.FC<Props> = ({
 
   const handleSaveForm = React.useCallback(() => {
     onSetFormData<UpsertPOFormValue>({ ...formData, ffata: values });
-  }, [formData, onSetFormData, values]);
+    onSetIsImmutableFormData(true);
+  }, [formData, onSetFormData, onSetIsImmutableFormData, values]);
 
   React.useEffect(() => {
     return history.listen(() => {
@@ -279,10 +282,12 @@ type Props = ReturnType<typeof mapStateToProps> &
 
 const mapStateToProps = (state: IRootState<UpsertPOFormValue>) => ({
   formData: state.form.formData,
+  isImmutableFormData: state.form.isImmutableFormData,
 });
 
 const mapDispatchToProps = {
   onSetFormData: setFormData,
+  onSetIsImmutableFormData: setIsImmutableFormData,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FfataDataCollectionForm);

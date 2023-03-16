@@ -1,5 +1,6 @@
 import React from 'react';
 import { useQuery, useQueryClient, UseQueryOptions } from 'react-query';
+import { isEmpty } from 'src/validations';
 import apiClient from '../apiClient';
 import { ApiResponseType, getResponseData, responseWrapper } from '../helpers';
 import { API_QUERIES } from '../keys';
@@ -24,7 +25,7 @@ export const useSearchVendors = (
         return responseWrapper<ApiResponseType<Vendor[]>>(apiClient.searchVendors, params);
       },
       select: getResponseData,
-      enabled: false,
+      enabled: !isEmpty(searchVendorParams),
       ...options,
     }
   );

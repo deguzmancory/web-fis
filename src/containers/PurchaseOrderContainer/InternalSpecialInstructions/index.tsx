@@ -1,5 +1,6 @@
 import { Box, Divider, Grid, Typography } from '@mui/material';
 import React from 'react';
+import { NO_OPENER } from 'src/appConfig/constants';
 import { Link, RadioButton, TextareaAutosize } from 'src/components/common';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { PO_FORM_KEY } from '../enums';
@@ -25,9 +26,16 @@ const InternalSpecialInstructions: React.FC<Props> = ({ formikProps, disabled = 
         <Grid item xs={4}>
           <RadioButton
             subLabel={
-              //TODO: huy_dang add link explain
               <Typography fontWeight="bold" variant="h5" mb={1}>
-                A. Record of Competition <Link textVariant="h6">explain</Link>
+                A. Record of Competition{' '}
+                <Link
+                  textVariant="h6"
+                  href="https://www.rcuh.com/2-000/2-100/"
+                  target={'_blank'}
+                  rel={NO_OPENER}
+                >
+                  explain
+                </Link>
               </Typography>
             }
             columns={1}
@@ -50,10 +58,17 @@ const InternalSpecialInstructions: React.FC<Props> = ({ formikProps, disabled = 
             disabled={disabled}
           />
         </Grid>
-        {/* TODO: huy_dang add link explain */}
         <Grid item xs={4}>
           <Typography fontWeight="bold" variant="h5" mb={1}>
-            B. Confirming Purchase Order <Link textVariant="h6">explain</Link>
+            B. Confirming Purchase Order{' '}
+            <Link
+              textVariant="h6"
+              href="https://www.rcuh.com/2-000/2-200/2-201/"
+              target={'_blank'}
+              rel={NO_OPENER}
+            >
+              explain
+            </Link>
           </Typography>
           <Typography variant="body2">(Provide Justification)</Typography>
         </Grid>

@@ -40,8 +40,10 @@ export const COLOR_CODE = {
   PRIMARY_200: '#d9d9d9',
   PRIMARY_100: '#ececec',
   PRIMARY_50: '#f8f8f8',
+  GRAY: '#686868',
   DEFAULT_BORDER: '1px solid #ccc',
-  DEFAULT_TABLE_ERROR_BORDER: '2px solid #DB0012',
+  DEFAULT_TABLE_ERROR_BORDER: '3px solid #DB0012',
+  DEFAULT_ROW_ERROR_BORDER: '2px solid #DB0012',
 };
 
 export const COMMON_STYLE = {

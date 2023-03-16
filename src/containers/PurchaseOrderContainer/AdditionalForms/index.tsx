@@ -1,15 +1,16 @@
 import { Box, Grid, Typography } from '@mui/material';
-import React, { Fragment } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Button, Select } from 'src/components/common';
 import { SelectOption } from 'src/components/common/Select';
-import TypographyLink from 'src/components/TypographyLink';
+import { PO_ADDITIONAL_FORM_KEY } from 'src/containers/AdditionalPOForms/enum';
 import { AdditionalPOForm } from 'src/queries/PurchaseOrders';
+import { setFormData } from 'src/redux/form/formSlice';
 import { Navigator } from 'src/services';
+import { externalFormAttachments } from '../constants';
 import { PO_FORM_KEY } from '../enums';
 import { AdditionalPOFormValue, UpsertPOFormikProps } from '../types';
-import { setFormData } from 'src/redux/form/formSlice';
-import { PO_ADDITIONAL_FORM_KEY } from 'src/containers/AdditionalPOForms/enum';
+import FormAttachmentItem from './formAttachmentItem';
 
 const AdditionalForms: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const [selectedForm, setSelectedForm] = React.useState<AdditionalPOForm>(null);
@@ -108,25 +109,15 @@ const AdditionalForms: React.FC<Props> = ({ formikProps, disabled = false }) => 
                 isDisabled={disabled}
               />
             </Grid>
-            {currentFormAttachments.map((formAttachment) => {
-              return (
-                <Fragment key={formAttachment.code}>
-                  <Grid item xs={10}>
-                    <Typography>{formAttachment.name}</Typography>
-                  </Grid>
-                  <Grid item xs={1}>
-                    <TypographyLink onClick={() => handleEditFormClick(formAttachment)}>
-                      {formAttachment.isExternalLink ? 'Link' : 'Edit'}
-                    </TypographyLink>
-                  </Grid>
-                  <Grid item xs={1}>
-                    <TypographyLink onClick={() => handleRemoveForm(formAttachment)}>
-                      Remove
-                    </TypographyLink>
-                  </Grid>
-                </Fragment>
-              );
-            })}
+            <FormAttachmentItem
+              formAttachments={currentFormAttachments}
+              onEditClick={handleEditFormClick}
+              onRemoveClick={handleRemoveForm}
+            />
+            <FormAttachmentItem
+              formAttachments={externalFormAttachments}
+              onEditClick={handleEditFormClick}
+            />
           </Grid>
         </Grid>
 

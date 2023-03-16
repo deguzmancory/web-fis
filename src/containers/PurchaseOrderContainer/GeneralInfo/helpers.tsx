@@ -2,11 +2,19 @@ import { Box } from '@mui/material';
 import { SelectOption } from 'src/components/common/Select';
 import { FinancialProject } from 'src/queries/Projects/types';
 import { Vendor } from 'src/queries/Vendors';
-import { getDateDisplay } from 'src/utils';
+import { getDateDisplay, getOptionsByEnum } from 'src/utils';
 import { isEmpty } from 'src/validations';
 
 export const VARIOUS_PROJECT_VALUE = 'Various';
 export const VARIOUS_PROJECT_NAME = 'PO WILL USE MORE THAN 1 PROJECT NUMBER';
+export enum SHIP_VIA_VALUE {
+  LOCAL_DELIVERY = 'Local Delivery',
+  WILL_CALL = 'Will-Call',
+  BEST_WAY = 'Best Way',
+  OTHER = 'Other (Specify)',
+}
+
+export const shipViaOptions = getOptionsByEnum(SHIP_VIA_VALUE);
 
 export const emptyVariousProject = {
   label: (

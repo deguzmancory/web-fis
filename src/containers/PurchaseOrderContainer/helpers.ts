@@ -1,13 +1,12 @@
-import { FormikErrors } from 'formik';
-import { get } from 'lodash';
 import { PATHS } from 'src/appConfig/paths';
 import { MyProfile } from 'src/queries';
 import { AdditionalPOForm, UpsertPOPayload } from 'src/queries/PurchaseOrders';
-import { Callback } from 'src/redux/types';
 import { ErrorService, Yup } from 'src/services';
 import { DateFormat, isoFormat, localTimeToHawaii } from 'src/utils';
-import { emptyUpsertPOFormValue } from './constants';
+import { isEmpty } from 'src/validations';
+import { emptyUpsertPOFormValue, externalFormAttachments } from './constants';
 import { PO_ACTION, PO_ADDITIONAL_FORM_CODE, PO_ADDITIONAL_FORM_EXTERNAL_LINK } from './enums';
+import { isVariousProject } from './GeneralInfo/helpers';
 import { AdditionalPOFormValue, UpsertPOFormValue } from './types';
 
 export const getExternalLinkFromFormCode = (formCode: PO_ADDITIONAL_FORM_CODE) => {
@@ -40,6 +39,25 @@ export const getAdditionalPOFormValue = (forms: AdditionalPOForm[]) => {
   });
 };
 
+export const getAvailableFormsFromResponse = (forms: AdditionalPOForm[]) => {
+  return forms
+    .filter((availableForm) => {
+      const isExternalLink = [
+        PO_ADDITIONAL_FORM_CODE.AGREEMENT_UH,
+        PO_ADDITIONAL_FORM_CODE.AGREEMENT,
+      ].includes(availableForm.code as PO_ADDITIONAL_FORM_CODE);
+
+      return !isExternalLink;
+    })
+    .map((availableForm) => {
+      return {
+        ...availableForm,
+        isExternalLink: false,
+        href: `${PATHS.poAdditionalForm}/${availableForm.code}`,
+      };
+    });
+};
+
 export const isSavePOAction = (action: PO_ACTION) => {
   return action === PO_ACTION.SAVE;
 };
@@ -50,25 +68,60 @@ export const isSubmitToFaPOAction = (action: PO_ACTION) => {
 export const getPOFormValidationSchema = ({ action }: { action: PO_ACTION }) => {
   const isSubmitAction = isSubmitToFaPOAction(action);
 
-  return Yup.object().shape({
-    projectTitle: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
-    projectNumber: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
-    vendorName: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
-    vendorCode: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
-    vendorAddress: isSubmitAction
-      ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
-      : Yup.string().nullable(),
-    shipTo: isSubmitAction
-      ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
-      : Yup.string().nullable(),
-    directInquiriesTo: isSubmitAction
-      ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
-      : Yup.string().nullable(),
-    faStaffReviewer: isSubmitAction
-      ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
-      : Yup.string().nullable(),
-    lineItems: Yup.array().min(2, 'At least one Project # is Required'),
-  });
+  return Yup.object().shape(
+    {
+      projectTitle: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
+      projectNumber: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
+      vendorName: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
+      vendorCode: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
+      vendorAddress: isSubmitAction
+        ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
+        : Yup.string().nullable(),
+      shipTo: isSubmitAction
+        ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
+        : Yup.string().nullable(),
+      directInquiriesTo: isSubmitAction
+        ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
+        : Yup.string().nullable(),
+      faStaffReviewer: isSubmitAction
+        ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
+        : Yup.string().nullable(),
+      lineItems: Yup.array().when(['lineItems', 'projectNumber'], (lineItems, projectNumber) => {
+        if (isEmpty(lineItems) || lineItems.length < 2) {
+          return Yup.array().test('min-length', 'At least one Project # is Required', (value) => {
+            if (value.length < 2) {
+              return false;
+            }
+
+            return true;
+          });
+        }
+
+        return Yup.array().of<any>(
+          Yup.lazy((_item, options: any) => {
+            const isLastItem = options.parent?.length === options?.index + 1;
+
+            if (!isLastItem) {
+              return Yup.object().shape({
+                itemProjectNumber: isVariousProject(projectNumber)
+                  ? Yup.string()
+                      .required(ErrorService.MESSAGES.shortRequired)
+                      .typeError(ErrorService.MESSAGES.shortRequired)
+                  : Yup.string().nullable(),
+                budgetCategory: Yup.string()
+                  .required(ErrorService.MESSAGES.shortRequired)
+                  .typeError(ErrorService.MESSAGES.shortRequired),
+                description: Yup.string().required().typeError(ErrorService.MESSAGES.required),
+              });
+            }
+
+            return Yup.object().nullable();
+          })
+        );
+      }),
+    },
+    [['lineItems', 'lineItems']]
+  );
 };
 
 export const getInitialPOFormValue = ({ profile }: { profile: MyProfile }): UpsertPOFormValue => {
@@ -78,60 +131,6 @@ export const getInitialPOFormValue = ({ profile }: { profile: MyProfile }): Upse
     date: localTimeToHawaii(new Date(), DateFormat),
     action: null,
   };
-};
-
-export const checkRowStateAndSetValue = <TRecord = any, TValue = any>({
-  value,
-  name,
-  index,
-  records,
-  setFieldValue,
-  onRemoveRow,
-  onAddRow,
-  callback,
-}: {
-  name: string;
-  value: TValue;
-  index: number;
-  records: TRecord[];
-  setFieldValue: (
-    field: string,
-    value: any,
-    shouldValidate?: boolean
-  ) => Promise<void> | Promise<FormikErrors<any>>;
-  onRemoveRow: (index: number) => void;
-  onAddRow: Callback;
-  callback?: Callback;
-}) => {
-  const currentRow = get(records, index);
-
-  // if !value and other cell of current row do not have value => remove row
-  if (
-    !value &&
-    !Object.entries(currentRow).some(([key, value]) => {
-      // exclude the current field cause "currentRow" references to the previous data now
-      if (name.includes(key)) return false;
-      return !!value;
-    })
-  ) {
-    // not remove the last field
-    if (index === records.length - 1) return;
-
-    onRemoveRow(index);
-  }
-  // add new row if the current row is the last row
-  else {
-    const rowAbove = get(records, `${index + 1}`);
-    if (!rowAbove) {
-      onAddRow();
-    }
-
-    setFieldValue(name, value);
-
-    if (callback) {
-      callback();
-    }
-  }
 };
 
 export const hasIncludeAdditionalForm = ({
@@ -155,6 +154,8 @@ export const getCreatePOPayload = ({
     ...formValues,
     action: action,
     date: localTimeToHawaii(new Date(), isoFormat),
+    lineItems: formValues.lineItems.slice(0, -1),
+
     projectTitle:
       typeof formValues.projectTitle === 'string'
         ? formValues.projectTitle
@@ -176,12 +177,21 @@ export const getCreatePOPayload = ({
       code: availableForm.code,
       accessKey: availableForm.accessKey,
     })),
-    formAttachments: formValues.formAttachments.map((formAttachment) => ({
-      id: formAttachment?.id,
-      name: formAttachment.name,
-      code: formAttachment.code,
-      accessKey: formAttachment.accessKey,
-    })),
+    formAttachments: formValues.formAttachments
+      .map((formAttachment) => ({
+        id: formAttachment?.id,
+        name: formAttachment.name,
+        code: formAttachment.code,
+        accessKey: formAttachment.accessKey,
+      }))
+      .concat(
+        externalFormAttachments.map((externalFormAttachment) => ({
+          id: undefined,
+          name: externalFormAttachment.name,
+          code: externalFormAttachment.code,
+          accessKey: externalFormAttachment.accessKey,
+        }))
+      ),
     determination: hasIncludeAdditionalForm({
       formAttachments: formValues.formAttachments,
       formCode: PO_ADDITIONAL_FORM_CODE.DETERMINATION,

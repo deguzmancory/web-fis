@@ -52,7 +52,6 @@ export function useGetFinancialProjects(
     notifyOnChangeProps: ['data', 'isFetching'],
     keepPreviousData: true,
     enabled: !isEmpty(params),
-
     ...options,
   });
 

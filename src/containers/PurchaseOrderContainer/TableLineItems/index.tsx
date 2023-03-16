@@ -9,11 +9,14 @@ import {
 import CustomTable from 'src/components/CustomTable';
 import { BodyBasicRows, CellType } from 'src/components/CustomTable/types';
 import { POLineItemPayload } from 'src/queries/PurchaseOrders';
-import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
+import {
+  checkRowStateAndSetValue,
+  getErrorMessage,
+  isEqualPrevAndNextFormikValues,
+} from 'src/utils';
 import { initialLineItemValue } from '../constants';
 import { PO_FORM_KEY, PO_LINE_ITEM_KEY } from '../enums';
 import { isVariousProject } from '../GeneralInfo/helpers';
-import { checkRowStateAndSetValue } from '../helpers';
 import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
 
 const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
@@ -25,7 +28,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
     [values.projectNumber]
   );
 
-  const _getErrorMessage = (fieldName: PO_FORM_KEY) => {
+  const _getErrorMessage = (fieldName) => {
     return getErrorMessage(fieldName, { touched, errors });
   };
 
@@ -55,18 +58,27 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
     }) => {
       let updatedSubtotal = values.subtotal;
 
-      if (!lineItemRow?.quantity || !isNumber(lineItemRow?.unitPrice)) {
+      // subtract from subtotal in case no unit price entered
+      if (!isNumber(lineItemRow?.unitPrice)) {
         updatedSubtotal = values.subtotal - (lineItemRow.ext || 0);
 
-        setFieldValue(`${prefixLineItem}.${PO_LINE_ITEM_KEY.EXT}`, null);
+        setFieldValue(`${prefixLineItem}.${PO_LINE_ITEM_KEY.EXT}`, 0);
         setFieldValue(PO_FORM_KEY.SUBTOTAL, updatedSubtotal);
         return;
       }
 
-      const currentLineItemExt = Number(lineItemRow?.quantity) * Number(lineItemRow?.unitPrice);
+      // When input data on Unit price only, default value for Quantity = 1
+      if (!lineItemRow?.quantity) {
+        setFieldValue(`${prefixLineItem}.${PO_LINE_ITEM_KEY.QUANTITY}`, 1);
+      }
+
+      // calculate extension
+      const currentLineItemExt =
+        Number(lineItemRow?.quantity || 1) * Number(lineItemRow?.unitPrice);
 
       setFieldValue(`${prefixLineItem}.${PO_LINE_ITEM_KEY.EXT}`, currentLineItemExt);
 
+      // calculate subtotal
       updatedSubtotal = lineItemsValue.reduce((total, currentLineItem, currentIndex) => {
         if (index === currentIndex) return total + currentLineItemExt;
 
@@ -136,7 +148,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
       style: {
         verticalAlign: 'top',
       },
-      errorMessage: lineItemsValue.length === 1 ? _getErrorMessage(PO_FORM_KEY.LINE_ITEMS) : '', //TODO: add validation for row
+      errorMessage: '',
       columns: [
         {
           label: 'Line',
@@ -151,10 +163,13 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
         },
         {
           type: CellType.INPUT,
-          label: 'Project #',
+          label: 'Project # *',
           content: (
             <EllipsisTooltipInput
               {...getFieldProps(`${prefixLineItem}.${PO_LINE_ITEM_KEY.ITEM_PROJECT_NUMBER}`)}
+              errorMessage={_getErrorMessage(
+                `${prefixLineItem}.${PO_LINE_ITEM_KEY.ITEM_PROJECT_NUMBER}`
+              )}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                 handleInputChange({
                   index,
@@ -198,6 +213,9 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
           content: (
             <EllipsisTooltipInput
               {...getFieldProps(`${prefixLineItem}.${PO_LINE_ITEM_KEY.BUDGET_CATEGORY}`)}
+              errorMessage={_getErrorMessage(
+                `${prefixLineItem}.${PO_LINE_ITEM_KEY.BUDGET_CATEGORY}`
+              )}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                 handleInputChange({
                   index,
@@ -209,7 +227,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
               hideEllipsisTooltip
               maxLength={4}
               disabled={disabled}
-              // errorMessage={'Required'} //TODO: add validation for cell
+              required
             />
           ),
           width: hideProjectNumberColumn ? 90 : 75,
@@ -241,6 +259,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
           content: (
             <TextareaAutosize
               {...getFieldProps(`${prefixLineItem}.${PO_LINE_ITEM_KEY.DESCRIPTION}`)}
+              errorMessage={_getErrorMessage(`${prefixLineItem}.${PO_LINE_ITEM_KEY.DESCRIPTION}`)}
               onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
                 handleInputChange({
                   index,
@@ -248,6 +267,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
                   value: event.target.value,
                 })
               }
+              required
               style={{ width: hideProjectNumberColumn ? 240 : 200, paddingTop: '4px' }}
               disabled={disabled}
             />
@@ -336,12 +356,19 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
     };
   });
 
+  const tableError =
+    touched.lineItems && lineItemsValue.length === 1
+      ? hideProjectNumberColumn
+        ? 'Budget Category is required. Description is required.'
+        : 'At least one Project # is Required'
+      : '';
+
   return (
     <Box>
       {/* //todo: implement validation */}
       <CustomTable.Basic
         bodyList={lineItemRows}
-        // errorMessage={'At least one record'} //TODO: add validation for table
+        errorMessage={tableError} // validation for table
       />
     </Box>
   );

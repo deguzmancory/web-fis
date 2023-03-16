@@ -5,18 +5,16 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Input, InputPhone, Link, Select, TextArea } from 'src/components/common';
 import { SelectOption } from 'src/components/common/Select';
-import { useContents } from 'src/queries';
 import { FinancialProject } from 'src/queries/Projects/types';
 import { Vendor } from 'src/queries/Vendors';
 import { showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { getDateDisplay, getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
-import { getContentOptions } from 'src/utils/contentUtils';
 import { PO_FORM_KEY } from '../enums';
 import usePOSearchProject, { SearchProjectsType } from '../hooks/usePOSearchProject';
 import usePOSearchVender, { SearchVendorsType } from '../hooks/usePOSearchVender';
 import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
-import { isVariousProject, VARIOUS_PROJECT_VALUE } from './helpers';
+import { isVariousProject, shipViaOptions, VARIOUS_PROJECT_VALUE } from './helpers';
 import SuperQuote from './superQuote';
 
 const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
@@ -42,9 +40,8 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const { setSearchVendors, isLoadingSearchVendors, vendorNameOptions, vendorCodeOptions } =
     usePOSearchVender({ currentVendorName, currentVendorCode });
 
-  const { contents } = useContents();
-
-  const shipViaOptions = getContentOptions(contents, 'shipVia');
+  // const { contents } = useContents();
+  // const shipViaOptions = getContentOptions(contents, 'shipVia');
 
   const updateProjectFields = (value: FinancialProject) => {
     setFieldValue(PO_FORM_KEY.PROJECT_TITLE, value);
@@ -104,6 +101,8 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
 
   // Debouncing search projects inputs
   const debounceSearchProjectsInput = debounce((key: keyof SearchProjectsType, value: string) => {
+    if (!value) return;
+
     setSearchProjects((prevState) => ({
       ...prevState,
       [key]: value,
@@ -112,6 +111,8 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
 
   // Debouncing search vendors inputs
   const debounceSearchVendorsInput = debounce((key: keyof SearchVendorsType, value: string) => {
+    if (!value) return;
+
     setSearchVendors((prevState) => ({
       ...prevState,
       [key]: value,

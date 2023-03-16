@@ -14,14 +14,7 @@ const usePOSearchVender = ({ currentVendorName, currentVendorCode }) => {
     code: '',
   });
 
-  const {
-    vendors,
-    isLoading: isLoadingSearchVendors,
-    setSearchVendorParams,
-  } = useSearchVendors({
-    enabled:
-      !!searchVendors.name || !!searchVendors.code || !!currentVendorName || !!currentVendorCode,
-  });
+  const { vendors, isLoading: isLoadingSearchVendors, setSearchVendorParams } = useSearchVendors();
 
   const vendorNameOptions: SelectOption[] = React.useMemo(() => {
     if (isLoadingSearchVendors || (!searchVendors.name && !currentVendorName)) {
@@ -41,6 +34,7 @@ const usePOSearchVender = ({ currentVendorName, currentVendorCode }) => {
     });
   }, [vendors, searchVendors.code, currentVendorCode, isLoadingSearchVendors]);
 
+  // fetch options on search name input change
   React.useEffect(() => {
     if (!searchVendors.name) return;
 
@@ -49,6 +43,7 @@ const usePOSearchVender = ({ currentVendorName, currentVendorCode }) => {
     });
   }, [searchVendors.name, setSearchVendorParams]);
 
+  // fetch options on search code input change
   React.useEffect(() => {
     if (!searchVendors.code) return;
 
@@ -56,6 +51,35 @@ const usePOSearchVender = ({ currentVendorName, currentVendorCode }) => {
       search: searchVendors.code,
     });
   }, [searchVendors.code, setSearchVendorParams]);
+
+  // fetch vendor first mounted with data from get PO response
+  React.useEffect(() => {
+    if (!!currentVendorCode && typeof currentVendorCode === 'string') {
+      setSearchVendorParams({
+        search: currentVendorCode,
+      });
+
+      return;
+    }
+
+    if (!!currentVendorName && typeof currentVendorName === 'string') {
+      setSearchVendorParams({
+        search: currentVendorName,
+      });
+
+      return;
+    }
+  }, [currentVendorCode, currentVendorName, setSearchVendorParams]);
+
+  // fetch project first mounted when just back from additional forms
+  React.useLayoutEffect(() => {
+    if (!!currentVendorCode && typeof currentVendorCode !== 'string') {
+      setSearchVendorParams({
+        search: currentVendorCode.code,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return {
     setSearchVendors,

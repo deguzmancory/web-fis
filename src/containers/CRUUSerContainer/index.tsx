@@ -1,7 +1,6 @@
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { FormikProps, useFormik } from 'formik';
 import { Location } from 'history';
-import _ from 'lodash';
 import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -40,6 +39,7 @@ import {
 } from './helper';
 import SectionLayout from '../shared/SectionLayout';
 import './styles.scss';
+import { isEqual } from 'lodash';
 
 const AuditInformation = React.lazy(() => import('./AuditInformation'));
 const UserType = React.lazy(() => import('./UserType'));
@@ -259,7 +259,7 @@ const CRUUserContainer: React.FC<Props> = ({
   }, []);
 
   const blockCondition = (location: Location<string>) => {
-    const equalValue = _.isEqual(initialFormValue, values);
+    const equalValue = isEqual(initialFormValue, values);
     let condition: boolean;
     if (!successCreateUser && equalValue) {
       condition = false;

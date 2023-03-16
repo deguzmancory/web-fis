@@ -8,6 +8,7 @@ export function useCreatePO(
 ) {
   const {
     mutate: createPO,
+    data,
     isLoading,
     isSuccess,
   } = useMutation<ApiResponseType<PODetailResponse>, Error, UpsertPOPayload>({
@@ -17,6 +18,7 @@ export function useCreatePO(
 
   return {
     createPO,
+    data,
     isLoading,
     isSuccess,
   };

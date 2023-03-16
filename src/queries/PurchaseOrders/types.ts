@@ -69,6 +69,9 @@ export interface SharedPODetail {
   address2: string;
   address3: string;
 
+  //response purpose
+  status?: string;
+
   //unknown //TODO: huy_dang check unused key
   documentType?: string;
   majorVersion?: string;
@@ -120,21 +123,17 @@ export interface PODetailResponse extends SharedPODetail {
   finalApprovedDate: string;
   approved: any; //TODO: update type
   vendorName2: string;
-
-  // zipcode: string;
   modifiedDate: string;
   originalTaxTotal: number;
   originalSubtotal: number;
   originalTotal: number;
   originalShippingTotal: number;
-  status: string;
   userType: string;
   printedDate: string;
   balance: number;
   hasChangeDocument: boolean;
   hasFinalPdf: boolean;
   isHistorical: boolean;
-  // reasonForChange: string;
   updateVersionNumber: number;
   paymentDirectInquiriesTo: string;
   paymentPhoneNumber: string;

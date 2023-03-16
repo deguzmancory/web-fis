@@ -26,7 +26,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
     const taxRateValue = (taxTotalValue / subTotalValue) * 100;
 
     setFieldValue(name, taxTotalValue);
-    setFieldValue(PO_FORM_KEY.TAX_RATE, taxRateValue);
+    setFieldValue(PO_FORM_KEY.TAX_RATE, taxRateValue.toFixed(3));
   };
 
   // update taxTotal when subTotal or taxRate change
@@ -137,6 +137,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
           <Grid item xs={3}>
             <EllipsisTooltipInput
               {...getFieldProps(PO_FORM_KEY.TAX_RATE)}
+              value={values.taxRate || ''}
               lengthShowTooltip={8}
               type="number"
               hideArrowTypeNumber

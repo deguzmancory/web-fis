@@ -26,13 +26,7 @@ const usePOSearchProject = ({ currentProjectTitle, currentProjectNumber }) => {
     financialProjects,
     setParams: setParamsSearchProject,
     isLoading: isLoadingSearchProjects,
-  } = useGetFinancialProjects({
-    enabled:
-      !!searchProjects.title ||
-      !!searchProjects.number ||
-      !!currentProjectTitle ||
-      !!currentProjectNumber,
-  });
+  } = useGetFinancialProjects();
 
   const projectTitleOptions: SelectOption[] = React.useMemo(() => {
     if (isLoadingSearchProjects || (!searchProjects.title && !currentProjectTitle)) {
@@ -87,6 +81,7 @@ const usePOSearchProject = ({ currentProjectTitle, currentProjectNumber }) => {
     [getSearchProjectsParamsByRole, currentUserRole]
   );
 
+  // fetch options on search title input change
   React.useEffect(() => {
     if (!searchProjects.title) return;
 
@@ -96,9 +91,11 @@ const usePOSearchProject = ({ currentProjectTitle, currentProjectNumber }) => {
       codes: searchProjectsParams?.codes || '',
       projectNumbers: searchProjectsParams?.projectNumbers || '',
     });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchProjects.title, currentUserRole, setParamsSearchProject]);
 
+  // fetch options on search number input change
   React.useEffect(() => {
     if (!searchProjects.number) return;
 
@@ -108,8 +105,36 @@ const usePOSearchProject = ({ currentProjectTitle, currentProjectNumber }) => {
       codes: searchProjectsParams?.codes,
       projectNumbers: searchProjectsParams?.projectNumbers,
     });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchProjects.number, currentUserRole, setParamsSearchProject]);
+
+  // fetch project first mounted with data from get PO response
+  React.useEffect(() => {
+    if (!!currentProjectNumber && typeof currentProjectNumber === 'string') {
+      setParamsSearchProject({
+        searchNumber: currentProjectNumber,
+      });
+
+      return;
+    }
+
+    if (!!currentProjectTitle && typeof currentProjectTitle === 'string') {
+      setParamsSearchProject({
+        searchName: currentProjectTitle,
+      });
+    }
+  }, [currentProjectNumber, currentProjectTitle, setParamsSearchProject]);
+
+  // fetch project first mounted when just back from additional forms
+  React.useLayoutEffect(() => {
+    if (!!currentProjectNumber && typeof currentProjectNumber !== 'string') {
+      setParamsSearchProject({
+        searchNumber: currentProjectNumber.number,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return {
     setSearchProjects,

@@ -39,6 +39,16 @@ export const initialAvailableForms: AdditionalPOFormValue[] = [
     href: `${PATHS.poAdditionalForm}/${PO_ADDITIONAL_FORM_CODE.SUBCONTRACTOR}`,
   },
   {
+    name: 'FFATA Data Collection for Subcontractor/Vendor',
+    code: PO_ADDITIONAL_FORM_CODE.FFATA,
+    accessKey: '9',
+    isExternalLink: false,
+    href: `${PATHS.poAdditionalForm}/${PO_ADDITIONAL_FORM_CODE.FFATA}`,
+  },
+];
+
+export const externalFormAttachments = [
+  {
     name: 'Agreement for Services (UH Projects)',
     code: PO_ADDITIONAL_FORM_CODE.AGREEMENT_UH,
     accessKey: '7',
@@ -51,13 +61,6 @@ export const initialAvailableForms: AdditionalPOFormValue[] = [
     accessKey: '8',
     isExternalLink: true,
     href: PO_ADDITIONAL_FORM_EXTERNAL_LINK.AGREEMENT,
-  },
-  {
-    name: 'FFATA Data Collection for Subcontractor/Vendor',
-    code: PO_ADDITIONAL_FORM_CODE.FFATA,
-    accessKey: '9',
-    isExternalLink: false,
-    href: `${PATHS.poAdditionalForm}/${PO_ADDITIONAL_FORM_CODE.FFATA}`,
   },
 ];
 
@@ -76,7 +79,7 @@ export const initialLineItemValue = {
   quantity: '',
   unit: '',
   unitPrice: null,
-  ext: null,
+  ext: 0,
 };
 
 export const initialFileAttachmentValue = {
@@ -123,22 +126,22 @@ export const initialDeterminationValue = {
   reason1: '',
   reason1Ref: '',
   reason2: '',
-  reason2Ref: null, //todo: update type
-  reason3: null, //todo: update type
-  reason3Ref: null, //todo: update type
-  reason4: null, //todo: update type
-  reason4Ref: null, //todo: update type
-  reason5: null, //todo: update type
-  reason5Ref: null, //todo: update type
-  reason6: null, //todo: update type
-  reason6Ref: null, //todo: update type
-  reason6PoNumber: null, //todo: update type
-  reason6ContractNumber: null, //todo: update type
-  reason7: null, //todo: update type
+  reason2Ref: '',
+  reason3: '',
+  reason3Ref: '',
+  reason4: '',
+  reason4Ref: '',
+  reason5: '',
+  reason5Ref: '',
+  reason6: '',
+  reason6Ref: '',
+  reason6PoNumber: '',
+  reason6ContractNumber: '',
+  reason7: '',
   costJustification: '',
   departmentHead: '',
   departmentHeadDate: '',
-  approvedDuo: null, //todo: update type
+  approvedDuo: '',
   approvedDuoDate: '',
   requestForQuotationsLessThanThree: null, //todo: update type
   requestForQuotationsInvitationForBidOnlyOne: null, //todo: update type
@@ -341,8 +344,8 @@ export const emptyUpsertPOFormValue = {
   formNumber: '',
   taxRate: null,
   taxTotal: null,
-  subtotal: null,
-  total: null,
+  subtotal: 0,
+  total: 0,
   shippingTotal: null,
   fedAttachment: '',
   internalA: '',
@@ -352,7 +355,7 @@ export const emptyUpsertPOFormValue = {
   presetInstructions: '',
   externalSpecialInstructions: '',
   sendInvoiceTo: '',
-  sendInvoiceToClearFlag: null,
+  sendInvoiceToClearFlag: false,
   sendInvoiceToFaEmail: '',
   invoiceDept: '',
   invoiceStreetAddress: '',

@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-object-injection */
 import dayjs from 'dayjs';
 import { Location } from 'history';
 import _, { get, isEqual } from 'lodash';
@@ -154,3 +155,12 @@ export const isEqualPrevAndNextObjByPath = <T>({
     ? prev.length === next.length
     : isEqual(prev, next);
 };
+
+export function getOptionsByEnum(enumObject) {
+  if (isEmpty(enumObject)) return [];
+
+  return Object.keys(enumObject).map((key) => ({
+    label: enumObject[key],
+    value: enumObject[key],
+  }));
+}

@@ -7,14 +7,20 @@ import { PATHS } from 'src/appConfig/paths';
 import { Input } from 'src/components/common';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import { POSoleSourcePayload } from 'src/queries/PurchaseOrders';
-import { setFormData } from 'src/redux/form/formSlice';
+import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator } from 'src/services';
 import { getErrorMessage, getUncontrolledInputFieldProps } from 'src/utils';
 import { PO_ADDITIONAL_FORM_KEY, PO_ADDITIONAL_FORM_PARAMS } from '../enum';
 import { PO_SOLE_SOURCE_FORM_KEY } from './enum';
 
-const SoleSourceForm: React.FC<Props> = ({ formRef, formData, onSetFormData, disabled }) => {
+const SoleSourceForm: React.FC<Props> = ({
+  formRef,
+  formData,
+  onSetFormData,
+  disabled,
+  onSetIsImmutableFormData,
+}) => {
   const history = useHistory();
 
   const handleFormSubmit = () => {
@@ -49,7 +55,8 @@ const SoleSourceForm: React.FC<Props> = ({ formRef, formData, onSetFormData, dis
 
   const handleSaveForm = React.useCallback(() => {
     onSetFormData<UpsertPOFormValue>({ ...formData, soleSource: values });
-  }, [formData, onSetFormData, values]);
+    onSetIsImmutableFormData(true);
+  }, [formData, onSetFormData, onSetIsImmutableFormData, values]);
 
   React.useEffect(() => {
     return history.listen(() => {
@@ -109,6 +116,7 @@ const mapStateToProps = (state: IRootState<UpsertPOFormValue>) => ({
 
 const mapDispatchToProps = {
   onSetFormData: setFormData,
+  onSetIsImmutableFormData: setIsImmutableFormData,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SoleSourceForm);

@@ -5,6 +5,7 @@ export interface IFormState<T = any> {
   activeStep: number;
   maxValidStep: number;
   formSteps: Array<T>;
+  isImmutableFormData: boolean;
 }
 export const FIRST_STEP = 0;
 
@@ -13,6 +14,7 @@ const initialState: IFormState = {
   maxValidStep: 0,
   formData: null,
   formSteps: [],
+  isImmutableFormData: false,
 };
 
 export const formSlice = createSlice({
@@ -42,6 +44,9 @@ export const formSlice = createSlice({
         state.activeStep = action.payload;
       }
     },
+    setIsImmutableFormData: (state, action: PayloadAction<boolean>) => {
+      state.isImmutableFormData = action.payload;
+    },
     clearFormState: (state) => {
       state.activeStep = initialState.activeStep;
       state.formSteps = initialState.formSteps;
@@ -59,6 +64,7 @@ export const {
   clearFormState,
   setMaxValidStep,
   clearFormSteps,
+  setIsImmutableFormData,
 } = formSlice.actions;
 
 export const formState = formSlice.getInitialState();

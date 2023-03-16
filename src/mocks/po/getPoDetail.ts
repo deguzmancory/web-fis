@@ -50,7 +50,7 @@ export const mockPoDetail = {
   modifiedDate: '2023-03-02T14:59:16.952Z',
   confirming: true,
   getExempt: true,
-  taxRate: 0,
+  taxRate: null,
   taxTotal: 0,
   subtotal: 0,
   total: 0,
