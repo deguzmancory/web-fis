@@ -264,7 +264,7 @@ export interface POFileAttachmentPayload {
 export interface PODeterminationPayload {
   id?: string;
   to: string;
-  dDate: string;
+  dDate: Date;
   from: string;
   phone: string;
   department: string;
@@ -301,12 +301,12 @@ export interface PODeterminationPayload {
   reason7: string;
   costJustification: string;
   departmentHead: string;
-  departmentHeadDate: string;
-  approvedDuo: any; //todo: update type;
-  approvedDuoDate: string;
-  requestForQuotationsLessThanThree: any; //todo: update type;
-  requestForQuotationsInvitationForBidOnlyOne: any; //todo: update type;
-  requestForQuotationsInvitationForBidLowest: any; //todo: update type;
+  departmentHeadDate: Date;
+  approvedDuo: string;
+  approvedDuoDate: Date;
+  requestForQuotationsLessThanThree: any; //TODO: Tuyen Tran will remove it
+  requestForQuotationsInvitationForBidOnlyOne: string;
+  requestForQuotationsInvitationForBidLowest: string;
 }
 
 export interface POSoleSourcePayload {

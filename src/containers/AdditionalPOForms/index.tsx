@@ -20,6 +20,7 @@ import EquipmentInventory from './EquipmentInventory';
 import FfataDataCollectionForm from './FfataDataCollection';
 import SoleSource from './SoleSource';
 import AuthToPurchaseForm from './AuthToPurchase';
+import DeterminationForm from './Determination';
 
 const PurchaseOrderContainer: React.FC<Props> = ({
   formData,
@@ -52,6 +53,8 @@ const PurchaseOrderContainer: React.FC<Props> = ({
         return <FfataDataCollectionForm disabled={false} formRef={formRef} />;
       case PO_ADDITIONAL_FORM_CODE.AUTH_TO_PURCHASE:
         return <AuthToPurchaseForm disabled={false} formRef={formRef} />;
+      case PO_ADDITIONAL_FORM_CODE.DETERMINATION:
+        return <DeterminationForm disabled={false} formRef={formRef} />;
 
       //return anther additional forms here
       default:
@@ -70,6 +73,8 @@ const PurchaseOrderContainer: React.FC<Props> = ({
         return 'FFATA DATA COLLECTION FOR SUBCONTRACTOR/VENDOR *';
       case PO_ADDITIONAL_FORM_CODE.AUTH_TO_PURCHASE:
         return 'AUTHORIZATION TO PURCHASE EQUIPMENT WITH FEDERAL CONTRACT OR GRANT FUNDS *';
+      case PO_ADDITIONAL_FORM_CODE.DETERMINATION:
+        return 'DETERMINATION OF COST OR PRICE REASONABLENESS *';
 
       //return anther additional forms here
       default:

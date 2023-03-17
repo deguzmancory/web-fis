@@ -25,7 +25,7 @@ const CheckAndFill: React.FC<Props> = ({ formikProps }) => {
         // eslint-disable-next-line security/detect-object-injection
         PO_AUTH_TO_PURCHASE_LABEL[nameFieldValue]
       );
-    } else setFieldValue(PO_AUTH_TO_PURCHASE_KEY.REQUIRES_PRIOR_APPROVAL, '');
+    } else setFieldValue(nameFieldValue, '');
   };
 
   return (

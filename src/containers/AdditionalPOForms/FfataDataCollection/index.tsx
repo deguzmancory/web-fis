@@ -96,7 +96,7 @@ const FfataDataCollectionForm: React.FC<Props> = ({
           </Typography>
           <Grid item container spacing={2} sx={{ mt: 1 }}>
             <Grid item xs={3}>
-              <Input label={'Purchase Order No'} defaultValue="To be Assigned" disabled={true} />
+              <Input label={'Purchase Order No'} value={formData?.number} disabled />
             </Grid>
             <Grid item xs={3}>
               <Input

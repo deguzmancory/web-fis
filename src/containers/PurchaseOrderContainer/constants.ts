@@ -103,7 +103,7 @@ export const initialFormAttachmentValue = {
 export const initialDeterminationValue = {
   id: '',
   to: '',
-  dDate: '',
+  dDate: null,
   from: '',
   phone: '',
   department: '',
@@ -140,12 +140,12 @@ export const initialDeterminationValue = {
   reason7: '',
   costJustification: '',
   departmentHead: '',
-  departmentHeadDate: '',
+  departmentHeadDate: null,
   approvedDuo: '',
-  approvedDuoDate: '',
-  requestForQuotationsLessThanThree: null, //todo: update type
-  requestForQuotationsInvitationForBidOnlyOne: null, //todo: update type
-  requestForQuotationsInvitationForBidLowest: null, //todo: update type
+  approvedDuoDate: null,
+  requestForQuotationsLessThanThree: null, //TODO: Tuyen Tran will remove it if not need
+  requestForQuotationsInvitationForBidOnlyOne: '',
+  requestForQuotationsInvitationForBidLowest: '',
 };
 
 export const initialSoleSourceValue = {
