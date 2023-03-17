@@ -10,7 +10,7 @@ import {
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
-import { fedAttachmentOptions, FED_ATTACHMENT_VALUE } from './helpers';
+import { fedAttachmentOptions, FED_ATTACHMENT_VALUE, MAX_TAX_NUMBER } from './helpers';
 
 const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const { values, errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } =
@@ -29,19 +29,32 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
     setFieldValue(PO_FORM_KEY.TAX_RATE, taxRateValue.toFixed(3));
   };
 
-  // update taxTotal when subTotal or taxRate change
+  const handleTaxRateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const subTotalValue = values.subtotal || 0;
+    const taxRateValue = Number(event.target.value);
+    const taxTotalValue = (subTotalValue * taxRateValue) / 100;
+
+    setFieldValue(PO_FORM_KEY.TAX_RATE, taxRateValue);
+    setFieldValue(PO_FORM_KEY.TAX_TOTAL, taxTotalValue);
+  };
+
+  // update taxTotal when subTotal change
   React.useEffect(() => {
     const subTotalValue = values.subtotal || 0;
     const taxRateValue = values.taxRate || 0;
     const taxTotalValue = (subTotalValue * taxRateValue) / 100;
 
     setFieldValue(PO_FORM_KEY.TAX_TOTAL, taxTotalValue);
-  }, [setFieldValue, values.subtotal, values.taxRate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setFieldValue, values.subtotal]);
 
   // update totalValue when subTotal or taxTotal or shippingTotal change
   React.useEffect(() => {
     const subTotalValue = values.subtotal || 0;
-    const taxTotalValue = values.taxTotal || 0;
+    // taxTotal can not over 1,000,000$
+    const taxTotalValue =
+      values.taxTotal && Number(values.taxTotal) < MAX_TAX_NUMBER ? Number(values.taxTotal) : 0;
+
     const shippingTotalValue = values.shippingTotal || 0;
 
     const totalValue = subTotalValue + taxTotalValue + shippingTotalValue;
@@ -137,6 +150,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
           <Grid item xs={3}>
             <EllipsisTooltipInput
               {...getFieldProps(PO_FORM_KEY.TAX_RATE)}
+              onChange={handleTaxRateChange}
               value={values.taxRate || ''}
               lengthShowTooltip={8}
               type="number"

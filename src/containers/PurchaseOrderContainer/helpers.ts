@@ -1,12 +1,18 @@
 import { PATHS } from 'src/appConfig/paths';
 import { MyProfile } from 'src/queries';
-import { AdditionalPOForm, UpsertPOPayload } from 'src/queries/PurchaseOrders';
+import { AdditionalPOForm, PODetailResponse, UpsertPOPayload } from 'src/queries/PurchaseOrders';
 import { ErrorService, Yup } from 'src/services';
-import { DateFormat, isoFormat, localTimeToHawaii } from 'src/utils';
+import {
+  DateFormat,
+  getDateDisplay,
+  getRoleInfoOfProfile,
+  isoFormat,
+  localTimeToHawaii,
+} from 'src/utils';
 import { isEmpty } from 'src/validations';
-import { emptyUpsertPOFormValue, externalFormAttachments } from './constants';
+import { emptyUpsertPOFormValue, externalFormAttachments, initialLineItemValue } from './constants';
 import { PO_ACTION, PO_ADDITIONAL_FORM_CODE, PO_ADDITIONAL_FORM_EXTERNAL_LINK } from './enums';
-import { isVariousProject } from './GeneralInfo/helpers';
+import { isVariousProject, SHIP_VIA_VALUE } from './GeneralInfo/helpers';
 import { AdditionalPOFormValue, UpsertPOFormValue } from './types';
 
 export const getExternalLinkFromFormCode = (formCode: PO_ADDITIONAL_FORM_CODE) => {
@@ -74,6 +80,11 @@ export const getPOFormValidationSchema = ({ action }: { action: PO_ACTION }) => 
       projectNumber: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
       vendorName: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
       vendorCode: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
+      shipOther: Yup.string().when('shipVia', {
+        is: SHIP_VIA_VALUE.OTHER,
+        then: Yup.string().required().typeError(ErrorService.MESSAGES.required),
+        otherwise: Yup.string().nullable(),
+      }),
       vendorAddress: isSubmitAction
         ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
         : Yup.string().nullable(),
@@ -125,10 +136,26 @@ export const getPOFormValidationSchema = ({ action }: { action: PO_ACTION }) => 
 };
 
 export const getInitialPOFormValue = ({ profile }: { profile: MyProfile }): UpsertPOFormValue => {
+  const roleInfo = getRoleInfoOfProfile({ profile });
+
+  const shipTo = roleInfo
+    ? `${roleInfo.sendInvoiceTo && `${roleInfo.sendInvoiceTo}\n`}${
+        roleInfo.department && `${roleInfo.department}\n`
+      }${roleInfo.sendInvoiceToEmail && `${roleInfo.sendInvoiceToEmail}\n`}${
+        roleInfo.addressStreet && `${roleInfo.addressStreet}\n`
+      }${roleInfo.addressCity && `${roleInfo.addressCity} `}${
+        roleInfo.addressState && `${roleInfo.addressState} `
+      }${roleInfo.addressZip && `${roleInfo.addressZip} `}${
+        roleInfo.addressZip4 && `${roleInfo.addressZip4} `
+      }${roleInfo.addressCountry && `${roleInfo.addressCountry} `}
+  `
+    : '';
+
   return {
     ...emptyUpsertPOFormValue,
     loginName: profile.username,
     date: localTimeToHawaii(new Date(), DateFormat),
+    shipTo: shipTo,
     action: null,
   };
 };
@@ -143,19 +170,33 @@ export const hasIncludeAdditionalForm = ({
   return formAttachments.some((formAttachment) => formAttachment.code === formCode);
 };
 
-export const getCreatePOPayload = ({
+export const getPOFormValueFromResponse = (response: PODetailResponse): UpsertPOFormValue => {
+  return {
+    ...response,
+    date: getDateDisplay(response.date),
+    availableForms: getAvailableFormsFromResponse(response.availableForms),
+    formAttachments: getAvailableFormsFromResponse(response.formAttachments),
+    lineItems: [...response.lineItems, initialLineItemValue],
+    action: null,
+  };
+};
+
+export const getUpsertPOPayload = ({
   formValues,
   action,
 }: {
   formValues: UpsertPOFormValue;
   action: PO_ACTION;
 }): UpsertPOPayload => {
+  const isEdit = !!formValues?.id;
+
   return {
     ...formValues,
     action: action,
-    date: localTimeToHawaii(new Date(), isoFormat),
+    date: isEdit ? formValues.date : localTimeToHawaii(new Date(), isoFormat),
     lineItems: formValues.lineItems.slice(0, -1),
-
+    agreement: null,
+    agreementUh: null,
     projectTitle:
       typeof formValues.projectTitle === 'string'
         ? formValues.projectTitle
@@ -209,18 +250,6 @@ export const getCreatePOPayload = ({
       formCode: PO_ADDITIONAL_FORM_CODE.EQUIPMENT_INVENTORY,
     })
       ? formValues.equipmentInventory
-      : null,
-    agreement: hasIncludeAdditionalForm({
-      formAttachments: formValues.formAttachments,
-      formCode: PO_ADDITIONAL_FORM_CODE.AGREEMENT,
-    })
-      ? formValues.agreement
-      : null,
-    agreementUh: hasIncludeAdditionalForm({
-      formAttachments: formValues.formAttachments,
-      formCode: PO_ADDITIONAL_FORM_CODE.AGREEMENT_UH,
-    })
-      ? formValues.agreementUh
       : null,
     ffata: hasIncludeAdditionalForm({
       formAttachments: formValues.formAttachments,

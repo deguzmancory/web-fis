@@ -122,3 +122,7 @@ export enum PO_ACTION {
   DISAPPROVE = 'disapprove',
   ADDITIONAL_INFO = 'additionalInfo',
 }
+
+export enum SUBMITTED_PO_QUERY {
+  PO_NUMBER = 'poNumber',
+}

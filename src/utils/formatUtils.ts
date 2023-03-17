@@ -6,7 +6,7 @@ import {
 } from 'react-phone-number-input';
 import { isEmpty } from 'src/validations';
 
-export const moneyReg = /[\d,]+\.{0,1}\d{0,}/;
+export const moneyReg = /-?[\d,]+\.{0,1}\d{0,}/;
 
 export const MoneyInputDetect = (value) => `${value}`.match(moneyReg)?.[0] || '';
 

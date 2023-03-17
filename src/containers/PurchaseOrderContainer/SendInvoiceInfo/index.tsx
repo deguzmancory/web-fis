@@ -78,6 +78,7 @@ const SendInvoiceInfo: React.FC<Props> = ({ formikProps, disabled = false }) => 
       </Stack>
       <Divider />
 
+      {/* TODO: huy_dang check disable default */}
       <Checkbox.Item
         label="Leave Blank"
         {...getFieldProps(PO_FORM_KEY.SEND_INVOICE_TO_CLEAR_FLAG)}

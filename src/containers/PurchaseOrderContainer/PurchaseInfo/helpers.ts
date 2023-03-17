@@ -1,5 +1,7 @@
 import { getOptionsByEnum } from 'src/utils';
 
+export const MAX_TAX_NUMBER = 1000000000;
+
 export enum FED_ATTACHMENT_VALUE {
   ATTACHMENT_32A = 'Attachment 32a, Terms and Conditions Applicable to Contracts/Subcontracts/Purchase Orders (Under Federal Grants)',
   ATTACHMENT_32B = 'Attachment 32b, Federal Provisions Government Subcontract Provisions Incorporated in all Subcontracts/Purchase Orders (Under Federal Prime Contracts)',
@@ -9,4 +11,4 @@ export enum FED_ATTACHMENT_VALUE {
   UH_SUBAWARD = 'UH Subaward',
 }
 
-export const fedAttachmentOptions = getOptionsByEnum(FED_ATTACHMENT_VALUE);
+export const fedAttachmentOptions = getOptionsByEnum(FED_ATTACHMENT_VALUE).slice(0, -1); //remove last item (UH_SUBAWARD) for custom input field inline purpose

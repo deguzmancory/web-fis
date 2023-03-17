@@ -1,7 +1,6 @@
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { FormikProps, useFormik } from 'formik';
 import { Location } from 'history';
-import { isEqual } from 'lodash';
 import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
@@ -10,10 +9,13 @@ import { PATHS } from 'src/appConfig/paths';
 import { Button, Link, LoadingCommon } from 'src/components/common';
 import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundary';
 import NoPermission from 'src/components/NoPermission';
-import { useProfile } from 'src/queries';
-import { useGetPODetail } from 'src/queries/PurchaseOrders';
-import { PO_DETAIL_STATUS } from 'src/queries/PurchaseOrders/enums';
-import { useCreatePO } from 'src/queries/PurchaseOrders/useCreatePO';
+import {
+  PO_DETAIL_STATUS,
+  useCreatePO,
+  useGetPODetail,
+  useProfile,
+  useUpdatePO,
+} from 'src/queries';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, Toastify } from 'src/services';
@@ -23,21 +25,22 @@ import {
   getUncontrolledInputFieldProps,
   handleScrollToTopError,
 } from 'src/utils';
+import { isEmpty } from 'src/validations';
 import { PO_ADDITIONAL_FORM_KEY, PO_ADDITIONAL_FORM_PARAMS } from '../AdditionalPOForms/enum';
 import SectionLayout from '../shared/SectionLayout';
 import AdditionalForms from './AdditionalForms';
 import AuthorizedBy from './AuthorizedBy';
 import BreadcrumbsPODetail from './breadcrumbs';
-import { emptyUpsertPOFormValue, initialLineItemValue } from './constants';
-import { PO_ACTION, PO_FORM_KEY } from './enums';
+import { emptyUpsertPOFormValue } from './constants';
+import { PO_ACTION, PO_FORM_KEY, SUBMITTED_PO_QUERY } from './enums';
 import ErrorWrapperPO from './ErrorWrapper/index.';
 import ExternalSpecialInstructions from './ExternalSpecialInstructions';
 import GeneralInfo from './GeneralInfo';
 import {
-  getAvailableFormsFromResponse,
-  getCreatePOPayload,
   getInitialPOFormValue,
   getPOFormValidationSchema,
+  getPOFormValueFromResponse,
+  getUpsertPOPayload,
 } from './helpers';
 import InternalComments from './InternalComments';
 import InternalSpecialInstructions from './InternalSpecialInstructions';
@@ -45,6 +48,7 @@ import PurchaseInfo from './PurchaseInfo';
 import SendInvoiceInfo from './SendInvoiceInfo';
 import TableLineItems from './TableLineItems';
 import { UpsertPOFormikProps, UpsertPOFormValue } from './types';
+import { handleShowErrorMsg } from 'src/utils';
 
 const PurchaseOrderContainer: React.FC<Props> = ({
   formData,
@@ -70,13 +74,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   const { onGetPOById } = useGetPODetail({
     id: id,
     onSuccess: (data) => {
-      const formValue: UpsertPOFormValue = {
-        ...data,
-        availableForms: getAvailableFormsFromResponse(data.availableForms),
-        formAttachments: getAvailableFormsFromResponse(data.formAttachments),
-        lineItems: [...data.lineItems, initialLineItemValue],
-        action: null,
-      };
+      const formValue: UpsertPOFormValue = getPOFormValueFromResponse(data);
 
       onSetFormData<UpsertPOFormValue>(formValue);
     },
@@ -91,23 +89,57 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   const {
     createPO,
     data: createPOResponse,
-    isLoading,
+    isLoading: createPOLoading,
     isSuccess: isCreatePOSuccess,
   } = useCreatePO({
     onSuccess: () => {
       onSetFormData(null);
-
       //continue navigate to success page with use effect above => for ignore prompt check url when crate succeed purpose
+    },
+    onError: (error) => {
+      handleShowErrorMsg(error);
     },
   });
 
-  // Navigate to create PO success page
+  const {
+    updatePO,
+    data: updatePOResponse,
+    isLoading: updatePOLoading,
+    isSuccess: isUpdatePOSuccess,
+  } = useUpdatePO({
+    onSuccess: () => {
+      onSetFormData(null);
+      //continue navigate to success page with use effect above => for ignore prompt check url when crate succeed purpose
+    },
+    onError: (error) => {
+      handleShowErrorMsg(error);
+    },
+  });
+
+  // Navigate to submitted PO success page
   React.useEffect(() => {
-    if (isCreatePOSuccess) {
-      Navigator.navigate(`${PATHS.purchaseOrderDetail}/${createPOResponse.data.id}`);
+    if (isCreatePOSuccess || isUpdatePOSuccess) {
+      const responseData = isCreatePOSuccess ? createPOResponse : updatePOResponse;
+
+      switch (formAction) {
+        case PO_ACTION.SAVE:
+          Toastify.success(`Save PO successfully.`);
+          Navigator.navigate(`${PATHS.purchaseOrderDetail}/${responseData.data.id}`);
+          return;
+        case PO_ACTION.SUBMIT:
+          Navigator.navigate(
+            `${PATHS.submittedPurchaseOrder}/${responseData.data.id}?${SUBMITTED_PO_QUERY.PO_NUMBER}=${responseData.data.number}`
+          );
+          return;
+
+        default:
+          return;
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isCreatePOSuccess]);
+  }, [isCreatePOSuccess, isUpdatePOSuccess]);
+
+  const isLoading = createPOLoading || updatePOLoading;
 
   /* INIT DATA */
   // get initial data when first time mounted
@@ -166,15 +198,15 @@ const PurchaseOrderContainer: React.FC<Props> = ({
 
   const handleFormSubmit = (values: UpsertPOFormValue) => {
     if (isEditPOMode) {
+      const editPOPayload = getUpsertPOPayload({ formValues: values, action: values.action });
+      updatePO(editPOPayload);
     } else {
-      const createPOPayload = getCreatePOPayload({ formValues: values, action: values.action });
+      const createPOPayload = getUpsertPOPayload({ formValues: values, action: values.action });
       createPO(createPOPayload);
     }
   };
 
-  const initialFormValue = React.useMemo(() => {
-    return formData || emptyUpsertPOFormValue;
-  }, [formData]);
+  const initialFormValue = React.useMemo(() => formData || emptyUpsertPOFormValue, [formData]);
 
   const validationSchema = React.useMemo(
     () => getPOFormValidationSchema({ action: formAction }),
@@ -247,25 +279,29 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   }, [isTriedSubmit]);
 
   const blockCondition = (location: Location<string>) => {
-    const equalValue = isEqual(initialFormValue, values);
-    let condition: boolean;
-
-    if (location.pathname.includes(`${PATHS.poAdditionalForm}/`)) {
-      condition = false;
-    } else if (!isEditPOMode) {
-      condition = !location.pathname.includes(`${PATHS.createPurchaseOrders}/`) && !equalValue;
-    } else if (isEditPOMode) {
-      if (!isCreatePOSuccess && equalValue) {
-        condition = false;
-      } else if (isCreatePOSuccess) {
-        condition = false;
-      } else {
-        condition = !location.pathname.includes(`${PATHS.purchaseOrderDetail}/`) && !equalValue;
-      }
+    if (location.pathname.includes(PATHS.poAdditionalForm)) {
+      return false;
     }
 
-    return condition;
+    const createMode = !isEditPOMode;
+    const success = createMode ? isUpdatePOSuccess : isCreatePOSuccess;
+
+    if (!success && isEmpty(touched)) {
+      return false;
+    }
+
+    const acceptablePaths = [PATHS.createPurchaseOrders, PATHS.purchaseOrderDetail];
+    const isAcceptablePath = acceptablePaths.some((path) => location.pathname.includes(path));
+
+    return isAcceptablePath || !isEmpty(touched);
   };
+
+  if (!formData)
+    return (
+      <Box minHeight="80vh" p={4}>
+        <LoadingCommon />
+      </Box>
+    );
 
   return (
     <Prompt

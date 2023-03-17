@@ -57,6 +57,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
       default:
         return null;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getFormTitle = React.useCallback((code: PO_ADDITIONAL_FORM_CODE) => {

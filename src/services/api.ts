@@ -297,6 +297,16 @@ const create = (baseURL = appConfig.API_URL) => {
     );
   };
 
+  const updatePO = (payload: UpsertPOPayload) => {
+    return api.put(
+      `/financial-svc/v1/purchase-orders?action=${payload.action}`,
+      {
+        ...payload,
+      },
+      newCancelToken()
+    );
+  };
+
   // Global Settings
   const getAllGlobalSettings = () => {
     return api.get('/financial-svc/v1/global-settings', {}, newCancelToken());
@@ -379,6 +389,7 @@ const create = (baseURL = appConfig.API_URL) => {
     // ====================== PO ======================
     getPO,
     createPO,
+    updatePO,
 
     // Global Settings
     getAllGlobalSettings,

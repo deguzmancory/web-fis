@@ -35,6 +35,7 @@ const EmptyScreen = React.lazy(() => import('./UAMContainer/ChangePasswordExpire
 const PurchaseOrderContainer = React.lazy(() => import('./PurchaseOrderContainer'));
 const AdditionalPOFormsContainer = React.lazy(() => import('./AdditionalPOForms'));
 const VendorsManagement = React.lazy(() => import('./VendorsManagement'));
+const SubmittedPurchaseOrder = React.lazy(() => import('./PurchaseOrderContainer/SubmittedPO'));
 
 const Routing: React.FC<{ location: Location }> = (props) => {
   Navigator.setTopHistory(useHistory());
@@ -79,6 +80,11 @@ const Routing: React.FC<{ location: Location }> = (props) => {
               pageRequiredAuth
               path={`${PATHS.poAdditionalForm}/:formCode`}
               component={AdditionalPOFormsContainer}
+            />
+            <CustomRoute
+              pageRequiredAuth
+              path={`${PATHS.submittedPurchaseOrder}/:id`}
+              component={SubmittedPurchaseOrder}
             />
             <CustomRoute
               pageRequiredAuth

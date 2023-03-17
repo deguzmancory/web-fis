@@ -68,19 +68,19 @@ export const isEqualPrevAndNextFormikValues = <TFormValue = any>({
     touched: nextFormikTouched,
   } = nextFormikProps;
 
-  return formKeysNeedRender.every(
+  return !formKeysNeedRender.some(
     (key) =>
-      isEqualPrevAndNextObjByPath({
+      !isEqualPrevAndNextObjByPath({
         prevValues: prevFormikValues,
         nextValues: nextFormikValues,
         path: key,
-      }) &&
-      isEqualPrevAndNextObjByPath({
+      }) ||
+      !isEqualPrevAndNextObjByPath({
         prevValues: prevFormikErrors,
         nextValues: nextFormikErrors,
         path: key,
-      }) &&
-      isEqualPrevAndNextObjByPath({
+      }) ||
+      !isEqualPrevAndNextObjByPath({
         prevValues: prevFormikTouched,
         nextValues: nextFormikTouched,
         path: key,
