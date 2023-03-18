@@ -79,6 +79,9 @@ export enum PO_FORM_KEY {
   //Authorized by
   SIGNATURE = 'signature',
 
+  //Audit
+  AUDIT_TRAILS = 'auditTrails',
+
   //payload only
   ADDRESS_1 = 'address1',
   ADDRESS_2 = 'address2',

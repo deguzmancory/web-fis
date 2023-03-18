@@ -69,8 +69,9 @@ export interface SharedPODetail {
   address2: string;
   address3: string;
 
-  //response purpose
+  //get from response for logic and view purpose
   status?: string;
+  auditTrails?: POAuditTrails[];
 
   //unknown //TODO: huy_dang check unused key
   documentType?: string;
@@ -185,8 +186,6 @@ export interface PODetailResponse extends SharedPODetail {
   equipmentInventory: POEquipmentInventoryResponse;
   subcontractor: SubcontractorResponse;
   ffata: FfataReponse;
-
-  auditTrails: POAuditTrails[];
 }
 
 export interface POCommonResponse {

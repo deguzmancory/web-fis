@@ -49,6 +49,7 @@ import SendInvoiceInfo from './SendInvoiceInfo';
 import TableLineItems from './TableLineItems';
 import { UpsertPOFormikProps, UpsertPOFormValue } from './types';
 import { handleShowErrorMsg } from 'src/utils';
+import AuditInformation from './AuditInformation';
 
 const PurchaseOrderContainer: React.FC<Props> = ({
   formData,
@@ -368,6 +369,11 @@ const PurchaseOrderContainer: React.FC<Props> = ({
                 <SectionLayout>
                   <AuthorizedBy formikProps={formikProps} />
                 </SectionLayout>
+                {isEditPOMode && (
+                  <SectionLayout>
+                    <AuditInformation formikProps={formikProps} />
+                  </SectionLayout>
+                )}
                 <SectionLayout>
                   <InternalComments formikProps={formikProps} />
                 </SectionLayout>
