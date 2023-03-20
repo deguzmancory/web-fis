@@ -124,7 +124,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
 
       switch (formAction) {
         case PO_ACTION.SAVE:
-          Toastify.success(`Save PO successfully.`);
+          Toastify.success(`Saved form successfully.`);
           Navigator.navigate(`${PATHS.purchaseOrderDetail}/${responseData.data.id}`);
           return;
         case PO_ACTION.SUBMIT:

@@ -189,22 +189,30 @@ export const getUpsertPOPayload = ({
   action: PO_ACTION;
 }): UpsertPOPayload => {
   const isEdit = !!formValues?.id;
+  const lineItemsFormValue = formValues.lineItems.slice(0, -1);
+  const projectNumberPayload =
+    typeof formValues.projectNumber === 'string'
+      ? formValues.projectNumber
+      : formValues.projectNumber.number;
+  const ineItemsPayload = isVariousProject(formValues.projectNumber)
+    ? lineItemsFormValue
+    : lineItemsFormValue.map((lineItem) => ({
+        ...lineItem,
+        itemProjectNumber: projectNumberPayload,
+      }));
 
   return {
     ...formValues,
     action: action,
     date: isEdit ? formValues.date : localTimeToHawaii(new Date(), isoFormat),
-    lineItems: formValues.lineItems.slice(0, -1),
+    lineItems: ineItemsPayload,
     agreement: null,
     agreementUh: null,
     projectTitle:
       typeof formValues.projectTitle === 'string'
         ? formValues.projectTitle
         : formValues.projectTitle.name,
-    projectNumber:
-      typeof formValues.projectNumber === 'string'
-        ? formValues.projectNumber
-        : formValues.projectNumber.number,
+    projectNumber: projectNumberPayload,
     vendorName:
       typeof formValues.vendorName === 'string'
         ? formValues.vendorName
