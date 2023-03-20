@@ -1,9 +1,11 @@
 import { Box, Stack, Typography } from '@mui/material';
 import cn from 'classnames';
 import { MUIDataTableColumn, MUIDataTableMeta } from 'mui-datatables';
+import { PATHS } from 'src/appConfig/paths';
 import { EllipsisTypographyTooltip } from 'src/components/common';
 import TypographyLink from 'src/components/TypographyLink';
 import { VendorList, VENDOR_KEY } from 'src/queries/Vendors';
+import { Navigator } from 'src/services';
 import { isEmpty } from 'src/validations';
 import ActionsButton from './actionsButton';
 
@@ -19,6 +21,7 @@ export const allColumns = (): MUIDataTableColumn[] => [
         meta: MUIDataTableMeta | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: VendorList[] })
       ) => {
         const rowData = meta.tableData[meta.rowIndex] as VendorList;
+        const isVendorRegistration = true; //TODO: check response vendor is registration
         return (
           <Stack direction="row" alignItems={'center'}>
             <Box
@@ -27,15 +30,33 @@ export const allColumns = (): MUIDataTableColumn[] => [
                 maxWidth: 60,
               }}
               className={cn({ 'marquee-left': _value.length > 10 })}
+              onClick={(event) => {
+                event.stopPropagation();
+                event.preventDefault();
+
+                Navigator.navigate(`${PATHS.addVendorRegistration}/${rowData.code}`, {
+                  isViewOnly: true,
+                  isFromForm: 'VIEW_VENDOR_REGISTRATION',
+                });
+              }}
             >
-              <TypographyLink
-                variant="body2"
-                className={_value.length > 10 ? 'marquee-left__text' : ''}
-              >
-                {_value ?? '--'}
-              </TypographyLink>
+              {isVendorRegistration ? (
+                <TypographyLink
+                  variant="body2"
+                  className={_value.length > 10 ? 'marquee-left__text' : ''}
+                >
+                  {_value ?? '--'}
+                </TypographyLink>
+              ) : (
+                <Typography
+                  variant="body2"
+                  className={_value.length > 10 ? 'marquee-left__text' : ''}
+                >
+                  {_value ?? '--'}
+                </Typography>
+              )}
             </Box>
-            <ActionsButton data={rowData} />
+            <ActionsButton vendor={rowData} />
           </Stack>
         );
       },

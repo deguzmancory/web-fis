@@ -7,7 +7,7 @@ export const PATHS = {
   dashboard: '/dashboard',
   logout: '/logout',
 
-  // ======== Profile ========
+  // Profile
   myProfile: '/me',
   changePassword: '/me/change-password',
   editMyProfile: '/me/edit',
@@ -29,10 +29,12 @@ export const PATHS = {
   globalSettings: '/global-settings',
   expiredPassword: '/expired-password',
 
-  // Vendors
+  // miscellaneous / Vendors
   vendors: '/miscellaneous/vendors',
-  addVendor: '/miscellaneous/vendors/add',
-  vendorDetail: '/miscellaneous/vendors/vendor-detail',
+  addVendorMaster: '/miscellaneous/vendors/vendor-master/add',
+  editVendorMaster: '/miscellaneous/vendors/vendor-master/edit',
+  addVendorRegistration: '/miscellaneous/vendors/vendor-registration/add',
+  viewVendorRegistration: '/miscellaneous/vendors/vendor-registration/edit',
 };
 
 export const PATH_HEADERS = {

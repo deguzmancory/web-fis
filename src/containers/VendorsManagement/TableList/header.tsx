@@ -8,14 +8,14 @@ import { Navigator, PermissionsService } from 'src/services';
 // import CustomFilterUsersManagement from './CustomFilter';
 
 const HeaderTable: React.FC<Props> = ({ onRefreshTable, isLoading }) => {
-  const canCreatePermission = PermissionsService.user().canCreate;
+  const canCreatePermission = PermissionsService.vendorMaster().canUpdate;
   return (
     <Box>
       <Stack mb={2} flexDirection={'row'} justifyContent={'space-between'} alignItems={'flex-end'}>
         <Box width={'40%'}>
           <CustomSearchTable
-            label="Search User Documents"
-            placeholder="Search by Username, Name, Email"
+            label="Search Vendors"
+            placeholder="Search by vendor code or vendor name"
           />
         </Box>
 
@@ -35,18 +35,27 @@ const HeaderTable: React.FC<Props> = ({ onRefreshTable, isLoading }) => {
             <Button
               icon={<Add />}
               onClick={() => {
-                Navigator.navigate(PATHS.addVendor);
+                Navigator.navigate(PATHS.addVendorMaster);
               }}
               disabled={isLoading}
             >
-              Add Vendor
+              Add Vendor Master
             </Button>
           )}
+          <Button
+            icon={<Add />}
+            onClick={() => {
+              Navigator.navigate(PATHS.addVendorRegistration);
+            }}
+            className="ml-16"
+            disabled={isLoading}
+          >
+            Vendor Registration
+          </Button>
         </Box>
       </Stack>
       {/* <Stack mb={2} flexDirection={'row'} justifyContent={'flex-end'} alignItems={'center'}>
         <CustomFilterUsersManagement />
-        <DownloadAllUsers isLoading={isLoading} />
       </Stack> */}
     </Box>
   );

@@ -3,13 +3,11 @@ import { MUIDataTableOptions } from 'mui-datatables';
 import React from 'react';
 import { connect } from 'react-redux';
 import { muiResponsive } from 'src/appConfig/constants';
-import { PATHS } from 'src/appConfig/paths';
 import { Table } from 'src/components/common';
 import EmptyTable from 'src/components/EmptyTable';
 import { GetPropertiesParams } from 'src/queries/helpers';
 import { useGetAllVendors } from 'src/queries/Vendors/useGetAllVendors';
 import { IRootState } from 'src/redux/rootReducer';
-import { Navigator } from 'src/services';
 import { handleShowErrorMsg } from 'src/utils';
 import { allColumns } from './allColumns';
 // import {
@@ -29,7 +27,7 @@ const TableList: React.FC<Props> = () => {
     onError: (error) => handleShowErrorMsg(error),
   });
 
-  const handleGetAccounts = (params: GetPropertiesParams) => {
+  const handleGetVendors = (params: GetPropertiesParams) => {
     // const userTypes = filter[FILTER_USERS_INDEX.USER_TYPE]
     //   ?.replaceAll(PREFIX_FILTER_USERS.USER_TYPE, '')
     //   .split(',');
@@ -43,9 +41,9 @@ const TableList: React.FC<Props> = () => {
   const handleViewVendorDetail = React.useCallback(
     (_value: string[], meta: { rowIndex: number }) => {
       const index = meta.rowIndex;
-      // eslint-disable-next-line security/detect-object-injection
-      const vendor = vendors[index];
-      Navigator.navigate(`${PATHS.vendorDetail}/${vendor.code}`);
+      const vendor = vendors[`${index}`];
+      console.log('vendor: ', vendor);
+      // Navigator.navigate(`${PATHS.editVendorMaster}/${vendor.code}`);
     },
     [vendors]
   );
@@ -59,7 +57,7 @@ const TableList: React.FC<Props> = () => {
       searchAlwaysOpen: false,
       searchOpen: false,
       search: false,
-      tableBodyMaxHeight: isTabletScreen ? '100%' : 'calc(100vh - 366px)', // content height
+      tableBodyMaxHeight: isTabletScreen ? '100%' : 'calc(100vh - 314px)', // content height
     }),
     [handleViewVendorDetail, isTabletScreen, totalRecords]
   );
@@ -71,7 +69,7 @@ const TableList: React.FC<Props> = () => {
       <HeaderTable onRefreshTable={() => onGetAllVendors()} isLoading={isFetching} />
       <Table
         title={''}
-        onAction={handleGetAccounts}
+        onAction={handleGetVendors}
         isLoading={isFetching}
         data={vendors}
         tableOptions={tableOptions}

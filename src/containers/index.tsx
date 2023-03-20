@@ -35,6 +35,8 @@ const EmptyScreen = React.lazy(() => import('./UAMContainer/ChangePasswordExpire
 const PurchaseOrderContainer = React.lazy(() => import('./PurchaseOrderContainer'));
 const AdditionalPOFormsContainer = React.lazy(() => import('./AdditionalPOForms'));
 const VendorsManagement = React.lazy(() => import('./VendorsManagement'));
+const EditVendorsMaster = React.lazy(() => import('./Vendors/VendorMaster'));
+const VendorRegistration = React.lazy(() => import('./Vendors/VendorRegistration'));
 const SubmittedPurchaseOrder = React.lazy(() => import('./PurchaseOrderContainer/SubmittedPO'));
 
 const Routing: React.FC<{ location: Location }> = (props) => {
@@ -94,7 +96,23 @@ const Routing: React.FC<{ location: Location }> = (props) => {
             {/* PO */}
 
             {/* Vendors */}
+            <CustomRoute
+              pageRequiredAuth
+              path={`${PATHS.addVendorRegistration}`}
+              component={VendorRegistration}
+            />
+            <CustomRoute
+              pageRequiredAuth
+              path={`${PATHS.editVendorMaster}/:vendorCode`}
+              component={EditVendorsMaster}
+            />
+            <CustomRoute
+              pageRequiredAuth
+              path={`${PATHS.addVendorMaster}`}
+              component={EditVendorsMaster}
+            />
             <CustomRoute pageRequiredAuth path={PATHS.vendors} component={VendorsManagement} />
+
             {/* Vendors */}
 
             <CustomRoute pageRequiredAuth path={PATHS.switchUser} component={SwitchUser} />

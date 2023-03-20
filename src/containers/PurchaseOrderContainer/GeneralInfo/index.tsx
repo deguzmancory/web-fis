@@ -3,12 +3,14 @@ import { Box, Grid, Typography } from '@mui/material';
 import { debounce } from 'lodash';
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { PATHS } from 'src/appConfig/paths';
 import { Input, InputPhone, Link, Select, TextArea } from 'src/components/common';
 import { SelectOption } from 'src/components/common/Select';
 import { FinancialProject } from 'src/queries/Projects/types';
 import { Vendor } from 'src/queries/Vendors';
 import { showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
+import { Navigator } from 'src/services';
 import { getDateDisplay, getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { PO_FORM_KEY } from '../enums';
 import usePOSearchProject, { SearchProjectsType } from '../hooks/usePOSearchProject';
@@ -80,7 +82,9 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
   };
 
   const handleCreateNewVenderLinkClick = () => {
-    console.log('createNewVenderLinkClick');
+    Navigator.navigate(PATHS.addVendorRegistration, {
+      isFromForm: 'PO',
+    });
   };
 
   const handleImportSuperQuoteClick = () => {
