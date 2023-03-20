@@ -39,6 +39,7 @@ export { default as Select } from './Select';
 export { default as Signature } from './Signature';
 export { default as Table } from './Table';
 export { default as TableBasic } from './TableBasic';
+export { default as TabsBar } from './TabsBar';
 export { default as Tag } from './Tag';
 export { default as Text } from './Text';
 export { default as TextArea } from './TextArea';

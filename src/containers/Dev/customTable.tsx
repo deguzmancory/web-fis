@@ -358,4 +358,4 @@ const mapDispatchToProps = {
   onHideAllDialog: hideAllDialog,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CustomTableContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(React.memo(CustomTableContainer));

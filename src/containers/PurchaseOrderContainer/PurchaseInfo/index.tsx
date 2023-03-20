@@ -74,7 +74,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
         </Box>
         <Box mb={2}>
           <Checkbox.Item
-            label="RCUH considers this P.O. exempt form the Hawaii General Excise Tax."
+            label="RCUH considers this P.O. exempt from the Hawaii General Excise Tax."
             {...getFieldProps(PO_FORM_KEY.GET_EXEMPT)}
             errorMessage={_getErrorMessage(PO_FORM_KEY.GET_EXEMPT)}
             disabled={disabled}
@@ -86,7 +86,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
           </Typography>
           <Typography variant="body2">
             The Research Corporation of the University of Hawaii considers this purchase to be
-            exempt form the payment of the State of Hawaii general excise tax in accordance with
+            exempt from the payment of the State of Hawaii general excise tax in accordance with
             Section 237-26, HRS, as amended.
           </Typography>
         </Box>

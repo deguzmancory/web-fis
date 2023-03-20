@@ -36,6 +36,7 @@ import { IRootState } from 'src/redux/store';
 import { Toastify } from 'src/services';
 import { emptyFunction } from 'src/utils';
 import CustomTableContainer from './customTable';
+import VerticalTabs from './verticalTabs';
 
 const Dev: React.FC<Props> = ({ location, onShowDialog, onHideDialog, onHideAllDialog }) => {
   const currentLocation = useLocation();
@@ -184,6 +185,11 @@ const Dev: React.FC<Props> = ({ location, onShowDialog, onHideDialog, onHideAllD
 
   return (
     <Container maxWidth="lg">
+      <View className="mt-32">
+        <h2>Vertical Tabs</h2>
+        <VerticalTabs />
+      </View>
+
       <View className="mt-32">
         <h2>Report table</h2>
         <CustomTableContainer />

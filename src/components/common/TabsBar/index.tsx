@@ -1,4 +1,4 @@
-import { Box, Tab, Tabs } from '@mui/material';
+import { Box, Tab, Tabs, SxProps } from '@mui/material';
 import React from 'react';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import { Text, View } from 'src/components/common';
@@ -6,13 +6,24 @@ import { Callback } from 'src/redux/types';
 import './styles.scss';
 
 export interface TabList {
-  label: string;
+  label: React.ReactNode;
   value: string;
   hidden?: boolean;
   count?: number;
+  sx?: SxProps;
 }
 
-const TabsBar: React.FC<Props> = ({ value, tabsList, buttons, color = 'primary', onChange }) => {
+const TabsBar: React.FC<Props> = ({
+  value,
+  tabsList,
+  buttons,
+  color = 'primary',
+  orientation = 'horizontal',
+  variant = 'scrollable',
+  sx,
+  onChange,
+  ...props
+}) => {
   return (
     <Box display={'flex'} justifyContent={'space-between'}>
       <Tabs
@@ -20,10 +31,13 @@ const TabsBar: React.FC<Props> = ({ value, tabsList, buttons, color = 'primary',
         indicatorColor={color}
         textColor={color}
         onChange={onChange}
-        variant="scrollable"
+        variant={variant}
+        orientation={orientation}
         scrollButtons="auto"
         sx={{
           maxWidth: '92vw',
+          maxHeight: '70vh',
+          ...sx,
         }}
         TabIndicatorProps={{
           sx: {
@@ -33,12 +47,17 @@ const TabsBar: React.FC<Props> = ({ value, tabsList, buttons, color = 'primary',
       >
         {tabsList.map((tab, _index) => {
           if (tab.hidden) return null;
+
           return (
             <Tab
               label={
                 !!tab.count ? (
                   <View isRow>
-                    <Text className={``}>{tab.label} </Text>
+                    {React.isValidElement(tab.label) ? (
+                      tab.label
+                    ) : (
+                      <Text className={``}>{tab.label} </Text>
+                    )}
                     <View style={tagStyles}>{tab.count}</View>
                   </View>
                 ) : (
@@ -51,12 +70,14 @@ const TabsBar: React.FC<Props> = ({ value, tabsList, buttons, color = 'primary',
                 textTransform: 'capitalize',
                 padding: '16px 12px',
                 fontWeight: 'bold',
+                borderBottom: orientation === 'vertical' && COLOR_CODE.DEFAULT_BORDER,
                 '&.Mui-selected': {
                   color: COLOR_CODE.WHITE,
                   bgcolor: COLOR_CODE.PRIMARY,
                 },
+                ...tab.sx,
               }}
-              key={tab.value}
+              key={`tab-${tab.value}`}
             />
           );
         })}
@@ -83,6 +104,9 @@ type Props = {
   buttons?: React.ReactNode;
   color?: 'primary' | 'secondary';
   dataLength?: number;
+  orientation?: 'horizontal' | 'vertical';
+  variant?: 'fullWidth' | 'scrollable' | 'standard';
+  sx?: SxProps;
   onChange: Callback;
 };
 
