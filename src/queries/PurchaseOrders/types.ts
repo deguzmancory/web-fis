@@ -322,9 +322,9 @@ export interface POSoleSourcePayload {
   explanation: string;
   statementFrom: string;
   departmentHead: string;
-  departmentHeadDate: string;
+  departmentHeadDate: Date;
   approvedDuo: string;
-  approvedDuoDate: string;
+  approvedDuoDate: Date;
 }
 
 export interface POAuthToPurchasePayload {
@@ -382,15 +382,15 @@ export interface SubcontractorPayload {
   businessAddressAndTaxIdNumber: string;
   contractNumber: string;
   grantNumber: string;
-  startDate: string;
-  endDate: string;
+  startDate: Date;
+  endDate: Date;
   expenditures: string;
-  executedDate: string;
+  executedDate: null;
   principalInvestigator: string;
   subcontractorSignature: string;
   rcuhSignature: string;
   socSubcontractorName: string;
-  socSubcontractorDate: string;
+  socSubcontractorDate: Date;
   socSubcontractorSignature: string;
   socSubcontractorTitle: string;
 }

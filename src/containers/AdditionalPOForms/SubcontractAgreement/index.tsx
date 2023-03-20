@@ -1,24 +1,25 @@
-import { Box, Container } from '@mui/material';
+import { Box, Container, Stack } from '@mui/material';
 import { FormikProps, useFormik } from 'formik';
 import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
+import { TextareaAutosize } from 'src/components/common';
+import { emptyUpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/constants';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
-import { POSoleSourcePayload } from 'src/queries/PurchaseOrders';
+import { SubcontractorPayload } from 'src/queries';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator } from 'src/services';
-import { getUncontrolledInputFieldProps } from 'src/utils';
+import { getErrorMessage, getUncontrolledInputFieldProps } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_ADDITIONAL_FORM_KEY, PO_ADDITIONAL_FORM_PARAMS } from '../enum';
-import SoleSourceInfo from './SoleSourceInfo';
-import SoleSourceSubject from './SoleSubject';
-import SoleSourceStatement from './SoleSourceStatement';
-import SoleSourceCertificate from './SoleSourceCertificate';
+import { PO_SUBCONTRACT_AGREEMENT_KEY } from './enum';
+import StandardsLayout from './StanDards';
+import WitnessethFormLayout from './Witnesseth';
 
-const SoleSourceForm: React.FC<Props> = ({
+const SubcontractAgreementForm: React.FC<Props> = ({
   formRef,
   formData,
   onSetFormData,
@@ -34,11 +35,20 @@ const SoleSourceForm: React.FC<Props> = ({
     );
   };
 
-  const formik = useFormik<POSoleSourcePayload>({
-    initialValues: formData?.soleSource,
+  const handleResetForm = () => {
+    onSetFormData<UpsertPOFormValue>({
+      ...formData,
+      subcontractor: emptyUpsertPOFormValue.subcontractor,
+    });
+    onSetIsImmutableFormData(true);
+  };
+
+  const formik = useFormik<SubcontractorPayload>({
+    initialValues: formData?.subcontractor,
     validationSchema: null,
     enableReinitialize: true,
     onSubmit: handleFormSubmit,
+    onReset: handleResetForm,
   });
 
   React.useImperativeHandle(formRef, () => ({
@@ -47,20 +57,7 @@ const SoleSourceForm: React.FC<Props> = ({
 
   const { values, errors, touched, setFieldValue, setFieldTouched, getFieldProps } = formik;
 
-  const handleSaveForm = React.useCallback(() => {
-    onSetFormData<UpsertPOFormValue>({ ...formData, soleSource: values });
-    onSetIsImmutableFormData(true);
-  }, [formData, onSetFormData, onSetIsImmutableFormData, values]);
-
-  React.useEffect(() => {
-    return history.listen(() => {
-      if (history.action === 'POP') {
-        handleSaveForm();
-      }
-    });
-  }, [history, handleSaveForm]);
-
-  const formikProps: CommonFormikProps<POSoleSourcePayload> = {
+  const formikProps: CommonFormikProps<SubcontractorPayload> = {
     values,
     errors,
     touched,
@@ -74,23 +71,48 @@ const SoleSourceForm: React.FC<Props> = ({
     }),
   };
 
+  const handleSaveForm = React.useCallback(() => {
+    onSetFormData<UpsertPOFormValue>({ ...formData, subcontractor: values });
+    onSetIsImmutableFormData(true);
+  }, [formData, onSetFormData, onSetIsImmutableFormData, values]);
+
+  React.useEffect(() => {
+    return history.listen(() => {
+      if (history.action === 'POP') {
+        handleSaveForm();
+      }
+    });
+  }, [history, handleSaveForm]);
+
+  const _getUncontrolledFieldProps = getUncontrolledInputFieldProps({
+    values,
+    setFieldTouched,
+    setFieldValue,
+  });
+
+  const _getErrorMessage = (fieldName: PO_SUBCONTRACT_AGREEMENT_KEY) => {
+    return getErrorMessage(fieldName, { touched, errors });
+  };
+
   return (
     <Box>
       <Container maxWidth="lg">
+        <Stack alignItems={'center'}>
+          <TextareaAutosize
+            resize="none"
+            containerClassName={'form-element-content'}
+            style={{ width: '100%', padding: '2px 16px', marginTop: '10px' }}
+            errorMessage={_getErrorMessage(PO_SUBCONTRACT_AGREEMENT_KEY.SUBCONTRACTOR)}
+            {..._getUncontrolledFieldProps(PO_SUBCONTRACT_AGREEMENT_KEY.SUBCONTRACTOR)}
+          />
+        </Stack>
+
         <SectionLayout>
-          <SoleSourceInfo />
+          <WitnessethFormLayout formikProps={formikProps} />
         </SectionLayout>
 
         <SectionLayout>
-          <SoleSourceSubject formikProps={formikProps} />
-        </SectionLayout>
-
-        <SectionLayout>
-          <SoleSourceStatement formikProps={formikProps} />
-        </SectionLayout>
-
-        <SectionLayout>
-          <SoleSourceCertificate formikProps={formikProps} />
+          <StandardsLayout formikProps={formikProps} />
         </SectionLayout>
       </Container>
     </Box>
@@ -105,6 +127,7 @@ type Props = ReturnType<typeof mapStateToProps> &
 
 const mapStateToProps = (state: IRootState<UpsertPOFormValue>) => ({
   formData: state.form.formData,
+  isImmutableFormData: state.form.isImmutableFormData,
 });
 
 const mapDispatchToProps = {
@@ -112,4 +135,4 @@ const mapDispatchToProps = {
   onSetIsImmutableFormData: setIsImmutableFormData,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SoleSourceForm);
+export default connect(mapStateToProps, mapDispatchToProps)(SubcontractAgreementForm);

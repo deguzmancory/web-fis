@@ -21,6 +21,7 @@ import FfataDataCollectionForm from './FfataDataCollection';
 import SoleSource from './SoleSource';
 import AuthToPurchaseForm from './AuthToPurchase';
 import DeterminationForm from './Determination';
+import SubcontractAgreementForm from './SubcontractAgreement';
 
 const PurchaseOrderContainer: React.FC<Props> = ({
   formData,
@@ -55,6 +56,8 @@ const PurchaseOrderContainer: React.FC<Props> = ({
         return <AuthToPurchaseForm disabled={false} formRef={formRef} />;
       case PO_ADDITIONAL_FORM_CODE.DETERMINATION:
         return <DeterminationForm disabled={false} formRef={formRef} />;
+      case PO_ADDITIONAL_FORM_CODE.SUBCONTRACTOR:
+        return <SubcontractAgreementForm disabled={false} formRef={formRef} />;
 
       //return anther additional forms here
       default:
@@ -75,6 +78,8 @@ const PurchaseOrderContainer: React.FC<Props> = ({
         return 'AUTHORIZATION TO PURCHASE EQUIPMENT WITH FEDERAL CONTRACT OR GRANT FUNDS *';
       case PO_ADDITIONAL_FORM_CODE.DETERMINATION:
         return 'DETERMINATION OF COST OR PRICE REASONABLENESS *';
+      case PO_ADDITIONAL_FORM_CODE.SUBCONTRACTOR:
+        return 'AGREEMENT BETWEEN THE RESEARCH CORPORATION OF THE UNIVERSITY OF HAWAII';
 
       //return anther additional forms here
       default:

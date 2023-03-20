@@ -1,5 +1,6 @@
 import { Typography } from '@mui/material';
 import React from 'react';
+import { NO_OPENER } from 'src/appConfig/constants';
 import { Link } from 'src/components/common';
 
 const PurposeAndInstruction: React.FC = () => {
@@ -22,6 +23,7 @@ const PurposeAndInstruction: React.FC = () => {
         1. Complete all sections. See{' '}
         <Link
           target="_blank"
+          rel={NO_OPENER}
           href="https://www.rcuh.com/document-library/2-000/procurement-contracts/attachment-58-sample-sole-source-justifications/"
         >
           Sample Price and Cost Analyses.

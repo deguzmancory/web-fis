@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import React from 'react';
+import { NO_OPENER } from 'src/appConfig/constants';
 import {
   Checkbox,
   EllipsisTooltipInput,
@@ -45,7 +46,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           label={
             <>
               Sole source{' '}
-              <Link target="_blank" href="https://www.rcuh.com/2-000/2-100/2-106/">
+              <Link target="_blank" rel={NO_OPENER} href="https://www.rcuh.com/2-000/2-100/2-106/">
                 (Policy 2.106)
               </Link>
             </>
@@ -61,7 +62,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           label={
             <>
               Emergency procurement{' '}
-              <Link target="_blank" href="https://www.rcuh.com/2-000/2-100/2-108/">
+              <Link target="_blank" rel={NO_OPENER} href="https://www.rcuh.com/2-000/2-100/2-108/">
                 (Policy 2.108)
               </Link>{' '}
               where only one quote is received
@@ -79,7 +80,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
             <>
               Request for Quotations or Invitations for Bid (where the solicitation is publicly
               posted) where only one (1) quote/bid is received{' '}
-              <Link target="_blank" href="https://www.rcuh.com/2-000/2-100/2-103/">
+              <Link target="_blank" rel={NO_OPENER} href="https://www.rcuh.com/2-000/2-100/2-103/">
                 (Policy 2.103
               </Link>{' '}
               and{' '}
@@ -116,7 +117,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           label={
             <>
               Request for Proposals{' '}
-              <Link target="_blank" href="https://www.rcuh.com/2-000/2-100/2-104/">
+              <Link target="_blank" rel={NO_OPENER} href="https://www.rcuh.com/2-000/2-100/2-104/">
                 (Policy 2.104)
               </Link>
             </>
@@ -162,7 +163,11 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
               <div style={{ display: 'contents' }}>
                 <div style={{ display: 'contents' }}>
                   Exempt procurement{' '}
-                  <Link target="_blank" href="https://www.rcuh.com/2-000/2-100/2-107/">
+                  <Link
+                    target="_blank"
+                    rel={NO_OPENER}
+                    href="https://www.rcuh.com/2-000/2-100/2-107/"
+                  >
                     (Policy 2.107)
                   </Link>
                   , UH Exemption No.
@@ -189,7 +194,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           label={
             <>
               Professional services procurement{' '}
-              <Link target="_blank" href="https://www.rcuh.com/2-000/2-200/2-210/">
+              <Link target="_blank" rel={NO_OPENER} href="https://www.rcuh.com/2-000/2-200/2-210/">
                 (Policy 2.210)
               </Link>
             </>
@@ -206,7 +211,11 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
             <>
               <div>
                 Extension of an existing contract past its initial term{' '}
-                <Link target="_blank" href="https://www.rcuh.com/2-000/2-200/2-205/">
+                <Link
+                  target="_blank"
+                  rel={NO_OPENER}
+                  href="https://www.rcuh.com/2-000/2-200/2-205/"
+                >
                   (Policy 2.205)
                 </Link>
               </div>

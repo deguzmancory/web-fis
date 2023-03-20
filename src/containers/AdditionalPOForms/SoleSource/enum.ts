@@ -1,5 +1,16 @@
 export enum PO_SOLE_SOURCE_FORM_KEY {
-  DEPARTMENT_HEAD = 'departmentHead',
+  TO = 'to',
+  SS_DATE = 'ssDate',
+  FROM = 'from',
+  PHONE = 'phone',
+  DEPARTMENT = 'department',
   PRIOR_REFERENCE_NUMBER = 'priorReferenceNumber',
+  STATEMENT_REASONS = 'statementReasons',
   SERVICE_UNACCEPTABLE_REASONS = 'serviceUnacceptableReasons',
+  EXPLANATION = 'explanation',
+  STATEMENT_FROM = 'statementFrom',
+  DEPARTMENT_HEAD = 'departmentHead',
+  DEPARTMENT_HEAD_DATE = 'departmentHeadDate',
+  APPROVED_DUO = 'approvedDuo',
+  APPROVED_DUO_DATE = 'approvedDuoDate',
 }

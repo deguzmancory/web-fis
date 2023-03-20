@@ -160,9 +160,9 @@ export const initialSoleSourceValue = {
   explanation: '',
   statementFrom: '',
   departmentHead: '',
-  departmentHeadDate: '',
+  departmentHeadDate: null,
   approvedDuo: '',
-  approvedDuoDate: '',
+  approvedDuoDate: null,
 };
 
 export const initialAuthToPurchaseLineItemsValue = {
@@ -222,15 +222,15 @@ export const initialSubcontractorValue = {
   businessAddressAndTaxIdNumber: '',
   contractNumber: '',
   grantNumber: '',
-  startDate: '',
-  endDate: '',
+  startDate: null,
+  endDate: null,
   expenditures: '',
-  executedDate: '',
+  executedDate: null,
   principalInvestigator: '',
   subcontractorSignature: '',
   rcuhSignature: '',
   socSubcontractorName: '',
-  socSubcontractorDate: '',
+  socSubcontractorDate: null,
   socSubcontractorSignature: '',
   socSubcontractorTitle: '',
 };
