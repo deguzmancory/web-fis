@@ -16,7 +16,7 @@ import { PO_ADDITIONAL_FORM_KEY, PO_ADDITIONAL_FORM_PARAMS } from '../enum';
 import SoleSourceInfo from './SoleSourceInfo';
 import SoleSourceSubject from './SoleSubject';
 import SoleSourceStatement from './SoleSourceStatement';
-import SoleSourceCertificate from './SoleSourceCertificate';
+import Certification from '../Determination/Certification';
 
 const SoleSourceForm: React.FC<Props> = ({
   formRef,
@@ -90,7 +90,7 @@ const SoleSourceForm: React.FC<Props> = ({
         </SectionLayout>
 
         <SectionLayout>
-          <SoleSourceCertificate formikProps={formikProps} />
+          <Certification formikProps={formikProps} haveRequestText={false} />
         </SectionLayout>
       </Container>
     </Box>

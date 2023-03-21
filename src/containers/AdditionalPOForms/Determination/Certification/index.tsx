@@ -2,12 +2,11 @@ import { Box, Typography } from '@mui/material';
 import React from 'react';
 import { EllipsisTooltipInput, Link } from 'src/components/common';
 import SignatureBox from 'src/containers/shared/SignatureBox';
-import { PODeterminationPayload } from 'src/queries/PurchaseOrders';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
-import { PO_DETERMINATION_KEY } from '../enum';
+import { PO_CERTIFICATE_KEY } from './enum';
 
-const Certification: React.FC<Props> = ({ formikProps }) => {
+const Certification: React.FC<Props> = ({ formikProps, haveRequestText }) => {
   const {
     values,
     errors,
@@ -18,7 +17,7 @@ const Certification: React.FC<Props> = ({ formikProps }) => {
     setFieldTouched,
   } = formikProps;
 
-  const _getErrorMessage = (fieldName: PO_DETERMINATION_KEY) => {
+  const _getErrorMessage = (fieldName: PO_CERTIFICATE_KEY) => {
     return getErrorMessage(fieldName, { touched, errors });
   };
 
@@ -40,14 +39,14 @@ const Certification: React.FC<Props> = ({ formikProps }) => {
           <Box maxWidth={'50%'}>
             <EllipsisTooltipInput
               maxLength={250}
-              errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.DEPARTMENT_HEAD)}
-              {...getUncontrolledFieldProps(PO_DETERMINATION_KEY.DEPARTMENT_HEAD)}
+              errorMessage={_getErrorMessage(PO_CERTIFICATE_KEY.DEPARTMENT_HEAD)}
+              {...getUncontrolledFieldProps(PO_CERTIFICATE_KEY.DEPARTMENT_HEAD)}
             />
           </Box>
           <SignatureBox
             maxWidth={'50%'}
-            {...getFieldProps(PO_DETERMINATION_KEY.DEPARTMENT_HEAD_DATE)}
-            nameDate={PO_DETERMINATION_KEY.DEPARTMENT_HEAD_DATE}
+            {...getFieldProps(PO_CERTIFICATE_KEY.DEPARTMENT_HEAD_DATE)}
+            nameDate={PO_CERTIFICATE_KEY.DEPARTMENT_HEAD_DATE}
             setFieldValue={setFieldValue}
             setFieldTouched={setFieldTouched}
             selected={values.departmentHeadDate}
@@ -64,34 +63,38 @@ const Certification: React.FC<Props> = ({ formikProps }) => {
         <Box maxWidth={'50%'}>
           <EllipsisTooltipInput
             maxLength={250}
-            errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.APPROVED_DUO)}
-            {...getUncontrolledFieldProps(PO_DETERMINATION_KEY.APPROVED_DUO)}
+            errorMessage={_getErrorMessage(PO_CERTIFICATE_KEY.APPROVED_DUO)}
+            {...getUncontrolledFieldProps(PO_CERTIFICATE_KEY.APPROVED_DUO)}
           />
         </Box>
         <SignatureBox
           maxWidth={'50%'}
-          {...getFieldProps(PO_DETERMINATION_KEY.APPROVED_DUO_DATE)}
-          nameDate={PO_DETERMINATION_KEY.APPROVED_DUO_DATE}
+          {...getFieldProps(PO_CERTIFICATE_KEY.APPROVED_DUO_DATE)}
+          nameDate={PO_CERTIFICATE_KEY.APPROVED_DUO_DATE}
           setFieldValue={setFieldValue}
           setFieldTouched={setFieldTouched}
           selected={values.approvedDuoDate}
         />
       </Box>
 
-      <Typography variant="body2" mt={4}>
-        Requests for non-competitive purchases utilizing federal contract funds in excess of
-        $750,000 must also be accompanied by cost or pricing data and a certification (refer to
-        <Link target="_blank" href="https://www.rcuh.com/2-000/2-300/2-303/">
-          Policy 2.303
-        </Link>{' '}
-        Certification Statements Required for Federal Purchases).
-      </Typography>
+      {haveRequestText ? (
+        <Typography variant="body2" mt={4}>
+          Requests for non-competitive purchases utilizing federal contract funds in excess of
+          $750,000 must also be accompanied by cost or pricing data and a certification (refer to{' '}
+          <Link target="_blank" href="https://www.rcuh.com/2-000/2-300/2-303/">
+            Policy 2.303
+          </Link>{' '}
+          Certification Statements Required for Federal Purchases).
+        </Typography>
+      ) : null}
     </>
   );
 };
 
 type Props = {
-  formikProps: CommonFormikProps<PODeterminationPayload>;
+  // TODO: Tuyen Tran add type for payload
+  formikProps: CommonFormikProps<any>;
+  haveRequestText: Boolean;
 };
 
 export default React.memo(Certification, (prevProps, nextProps) => {
@@ -99,13 +102,13 @@ export default React.memo(Certification, (prevProps, nextProps) => {
   const nextFormikProps = nextProps.formikProps;
 
   const formKeysNeedRender = [
-    PO_DETERMINATION_KEY.DEPARTMENT_HEAD,
-    PO_DETERMINATION_KEY.DEPARTMENT_HEAD_DATE,
-    PO_DETERMINATION_KEY.APPROVED_DUO,
-    PO_DETERMINATION_KEY.APPROVED_DUO_DATE,
+    PO_CERTIFICATE_KEY.DEPARTMENT_HEAD,
+    PO_CERTIFICATE_KEY.DEPARTMENT_HEAD_DATE,
+    PO_CERTIFICATE_KEY.APPROVED_DUO,
+    PO_CERTIFICATE_KEY.APPROVED_DUO_DATE,
   ];
 
-  return isEqualPrevAndNextFormikValues<PODeterminationPayload>({
+  return isEqualPrevAndNextFormikValues<any>({
     prevFormikProps,
     nextFormikProps,
     formKeysNeedRender,

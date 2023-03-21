@@ -100,7 +100,7 @@ const DeterminationForm: React.FC<Props> = ({
         </SectionLayout>
 
         <SectionLayout>
-          <Certification formikProps={formikProps} />
+          <Certification formikProps={formikProps} haveRequestText={true} />
         </SectionLayout>
       </Container>
     </Box>
