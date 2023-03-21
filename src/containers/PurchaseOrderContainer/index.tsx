@@ -1,3 +1,4 @@
+import { Error } from '@mui/icons-material';
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { FormikProps, useFormik } from 'formik';
 import { Location } from 'history';
@@ -10,6 +11,9 @@ import { Button, Link, LoadingCommon } from 'src/components/common';
 import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundary';
 import NoPermission from 'src/components/NoPermission';
 import { useCreatePO, useGetPODetail, useProfile, useUpdatePO } from 'src/queries';
+import { ROLE_NAME } from 'src/queries/Profile/helpers';
+import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
+import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, RoleService, Toastify } from 'src/services';
@@ -18,27 +22,30 @@ import {
   getUncontrolledCurrencyInputFieldProps,
   getUncontrolledInputFieldProps,
   handleScrollToTopError,
+  handleShowErrorMsg,
 } from 'src/utils';
 import { isEmpty } from 'src/validations';
 import { PO_ADDITIONAL_FORM_KEY, PO_ADDITIONAL_FORM_PARAMS } from '../AdditionalPOForms/enum';
 import SectionLayout from '../shared/SectionLayout';
 import AdditionalForms from './AdditionalForms';
+import AuditInformation from './AuditInformation';
 import AuthorizedBy from './AuthorizedBy';
 import BreadcrumbsPODetail from './breadcrumbs';
 import { emptyUpsertPOFormValue } from './constants';
+import DeletePOWarning from './deletePOWarning';
 import { PO_ACTION, PO_FORM_KEY, SUBMITTED_PO_QUERY } from './enums';
 import ErrorWrapperPO from './ErrorWrapper/index.';
 import ExternalSpecialInstructions from './ExternalSpecialInstructions';
 import GeneralInfo from './GeneralInfo';
 import {
-  checkIsFAReviewMode,
-  checkIsFinalMode,
-  checkIsViewOnlyMode,
+  getCurrentPOEditMode,
   getInitialPOFormValue,
   getPOFormValidationSchema,
   getPOFormValueFromResponse,
   getUpsertPOPayload,
-  isPIPendingSubmittalPOStatus,
+  isCUReviewPOMode,
+  isFAReviewPOMode,
+  isPiSuEditPOMode,
   isPOAdditionalInfoAction,
   isPOApprovedAction,
   isPODisapproveAction,
@@ -51,14 +58,6 @@ import PurchaseInfo from './PurchaseInfo';
 import SendInvoiceInfo from './SendInvoiceInfo';
 import TableLineItems from './TableLineItems';
 import { UpsertPOFormikProps, UpsertPOFormValue } from './types';
-import { handleShowErrorMsg } from 'src/utils';
-import AuditInformation from './AuditInformation';
-import { useDeletePO } from 'src/queries/PurchaseOrders/useDeletePO';
-import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
-import { DIALOG_TYPES } from 'src/redux/dialog/type';
-import { Error } from '@mui/icons-material';
-import { ROLE_NAME } from 'src/queries/Profile/helpers';
-import DeletePOWarning from './deletePOWarning';
 
 const PurchaseOrderContainer: React.FC<Props> = ({
   formData,
@@ -66,7 +65,6 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   onSetFormData,
   onSetIsImmutableFormData,
   onShowDialog,
-  onHideDialog,
 }) => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
@@ -81,14 +79,15 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   const hasPermission = true; //TODO: huy_dang check logic
   const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
   const poStatus = React.useMemo(() => formData?.status, [formData?.status]);
-  const showDeleteButton = isPIPendingSubmittalPOStatus(poStatus);
-  const showApproveButton = true;
-  const showDisapproveButton = true;
-  const showRequestMoreInfoButton = true;
-  const isViewOnlyMode = checkIsViewOnlyMode(poStatus, currentRole);
-  const isFinalStatus = checkIsFinalMode(poStatus);
-  const isFAReviewMode = checkIsFAReviewMode(poStatus, currentRole);
-  const isCUReviewMode = checkIsFAReviewMode(poStatus, currentRole);
+  const currentPOMode = React.useMemo(
+    () => getCurrentPOEditMode({ id, poStatus, currentRole }),
+    [id, poStatus, currentRole]
+  );
+  const showDeleteButton = isPiSuEditPOMode(currentPOMode);
+  const showApproveButton = isFAReviewPOMode(currentPOMode) || isCUReviewPOMode(currentPOMode);
+  const showDisapproveButton = isFAReviewPOMode(currentPOMode);
+  const showRequestMoreInfoButton =
+    isFAReviewPOMode(currentPOMode) || isCUReviewPOMode(currentPOMode);
 
   const { profile } = useProfile();
   const { onGetPOById } = useGetPODetail({

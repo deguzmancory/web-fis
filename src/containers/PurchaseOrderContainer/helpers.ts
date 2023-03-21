@@ -1,6 +1,6 @@
 import { PATHS } from 'src/appConfig/paths';
 import { MyProfile } from 'src/queries';
-import { isCU, isFA, ROLE_NAME } from 'src/queries/Profile/helpers';
+import { isCU, isFA, isPI, isSU, ROLE_NAME } from 'src/queries/Profile/helpers';
 import {
   AdditionalPOForm,
   PODetailResponse,
@@ -17,7 +17,12 @@ import {
 } from 'src/utils';
 import { isEmpty } from 'src/validations';
 import { emptyUpsertPOFormValue, externalFormAttachments, initialLineItemValue } from './constants';
-import { PO_ACTION, PO_ADDITIONAL_FORM_CODE, PO_ADDITIONAL_FORM_EXTERNAL_LINK } from './enums';
+import {
+  PO_ACTION,
+  PO_ADDITIONAL_FORM_CODE,
+  PO_ADDITIONAL_FORM_EXTERNAL_LINK,
+  PO_MODE,
+} from './enums';
 import { isVariousProject, SHIP_VIA_VALUE } from './GeneralInfo/helpers';
 import { AdditionalPOFormValue, UpsertPOFormValue } from './types';
 
@@ -57,6 +62,25 @@ export const isRCUHPendingRCUHApprovalPOStatus = (status: PO_DETAIL_STATUS) => {
 };
 export const isFinalPOStatus = (status: PO_DETAIL_STATUS) => {
   return status === PO_DETAIL_STATUS.FINAL;
+};
+
+export const isCreatePOMode = (action: PO_MODE) => {
+  return action === PO_MODE.CREATE;
+};
+export const isPiSuEditPOMode = (action: PO_MODE) => {
+  return action === PO_MODE.PI_SU_EDIT_PENDING_SUBMITTAL;
+};
+export const isViewOnlyPOMode = (action: PO_MODE) => {
+  return action === PO_MODE.VIEW_ONLY;
+};
+export const isFinalPOMode = (action: PO_MODE) => {
+  return action === PO_MODE.FINAL;
+};
+export const isFAReviewPOMode = (action: PO_MODE) => {
+  return action === PO_MODE.FA_REVIEW;
+};
+export const isCUReviewPOMode = (action: PO_MODE) => {
+  return action === PO_MODE.CU_REVIEW;
 };
 
 export const getExternalLinkFromFormCode = (formCode: PO_ADDITIONAL_FORM_CODE) => {
@@ -218,7 +242,7 @@ export const preFillSendInvoiceDataInFAReviewMode = ({
   if (!response) return;
   const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
 
-  if (checkIsFAReviewMode(response.status, currentRole)) {
+  if (checkIsFAReviewMode({ poStatus: response.status, currentRole })) {
     return {
       sendInvoiceToClearFlag: false,
       sendInvoiceTo: profile.fisFaInfo.sendInvoiceTo || '',
@@ -243,6 +267,12 @@ export const getPOFormValueFromResponse = ({
   response: PODetailResponse;
   profile: MyProfile;
 }): UpsertPOFormValue => {
+  const transformedLineItems = response.lineItems.map((lineItem) => ({
+    ...lineItem,
+    unitPrice: lineItem.unitPrice ? Number(lineItem.unitPrice || 0) : null,
+    ext: Number(lineItem.unitPrice || 0),
+  }));
+
   return {
     ...response,
     ...preFillSendInvoiceDataInFAReviewMode({ response, profile }),
@@ -254,7 +284,7 @@ export const getPOFormValueFromResponse = ({
     taxRate: Number(response.taxRate || 0),
     total: Number(response.total || 0),
     shippingTotal: Number(response.shippingTotal || 0),
-    lineItems: [...response.lineItems, initialLineItemValue],
+    lineItems: [...transformedLineItems, initialLineItemValue],
     action: null,
   };
 };
@@ -358,7 +388,27 @@ export const getUpsertPOPayload = ({
   };
 };
 
-export const checkIsViewOnlyMode = (poStatus: PO_DETAIL_STATUS, currentRole: ROLE_NAME) => {
+export const checkIsPiOrSuEditMode = ({
+  poStatus,
+  currentRole,
+}: {
+  poStatus: PO_DETAIL_STATUS;
+  currentRole: ROLE_NAME;
+}) => {
+  if (!poStatus) return false;
+
+  const isAccessableRole = isPI(currentRole) || isSU(currentRole);
+
+  return isAccessableRole && isPIPendingSubmittalPOStatus(poStatus);
+};
+
+export const checkIsViewOnlyMode = ({
+  poStatus,
+  currentRole,
+}: {
+  poStatus: PO_DETAIL_STATUS;
+  currentRole: ROLE_NAME;
+}) => {
   if (!poStatus) return false;
 
   switch (currentRole) {
@@ -385,14 +435,55 @@ export const checkIsViewOnlyMode = (poStatus: PO_DETAIL_STATUS, currentRole: ROL
   }
 };
 
-export const checkIsFinalMode = (poStatus: PO_DETAIL_STATUS) => {
+export const checkIsFinalMode = ({ poStatus }: { poStatus: PO_DETAIL_STATUS }) => {
   return isFinalPOStatus(poStatus);
 };
 
-export const checkIsFAReviewMode = (poStatus: PO_DETAIL_STATUS, currentRole: ROLE_NAME) => {
+export const checkIsFAReviewMode = ({
+  poStatus,
+  currentRole,
+}: {
+  poStatus: PO_DETAIL_STATUS;
+  currentRole: ROLE_NAME;
+}) => {
   return isFA(currentRole) && isFAPendingApprovalPOStatus(poStatus);
 };
 
-export const checkIsCUReviewMode = (poStatus: PO_DETAIL_STATUS, currentRole: ROLE_NAME) => {
+export const checkIsCUReviewMode = ({
+  poStatus,
+  currentRole,
+}: {
+  poStatus: PO_DETAIL_STATUS;
+  currentRole: ROLE_NAME;
+}) => {
   return isCU(currentRole) && isRCUHPendingRCUHApprovalPOStatus(poStatus);
+};
+
+export const getCurrentPOEditMode = ({
+  id,
+  poStatus,
+  currentRole,
+}: {
+  id: string;
+  poStatus: PO_DETAIL_STATUS;
+  currentRole: ROLE_NAME;
+}) => {
+  if (!id) {
+    return PO_MODE.CREATE;
+  }
+  if (checkIsFinalMode({ poStatus })) {
+    return PO_MODE.FINAL;
+  }
+  if (checkIsPiOrSuEditMode({ poStatus, currentRole })) {
+    return PO_MODE.PI_SU_EDIT_PENDING_SUBMITTAL;
+  }
+  if (checkIsFAReviewMode({ poStatus, currentRole })) {
+    return PO_MODE.FA_REVIEW;
+  }
+  if (checkIsCUReviewMode({ poStatus, currentRole })) {
+    return PO_MODE.CU_REVIEW;
+  }
+  if (checkIsViewOnlyMode({ poStatus, currentRole })) {
+    return PO_MODE.VIEW_ONLY;
+  }
 };
