@@ -103,7 +103,7 @@ export const initialFormAttachmentValue = {
 export const initialDeterminationValue = {
   id: '',
   to: '',
-  dDate: null,
+  dDate: new Date(),
   from: '',
   phone: '',
   department: '',
@@ -150,7 +150,7 @@ export const initialDeterminationValue = {
 
 export const initialSoleSourceValue = {
   to: '',
-  ssDate: '',
+  ssDate: new Date(),
   from: '',
   phone: '',
   department: '',
@@ -216,7 +216,7 @@ export const initialEquipmentInventoryValue = {
 
 export const initialSubcontractorValue = {
   subcontractor: '',
-  date: '',
+  date: new Date(),
   project: '',
   subcontractorName: '',
   businessAddressAndTaxIdNumber: '',

@@ -10,6 +10,7 @@ import {
 import { ErrorService, RoleService, Yup } from 'src/services';
 import {
   DateFormat,
+  getDate,
   getDateDisplay,
   getRoleInfoOfProfile,
   isoFormat,
@@ -285,6 +286,41 @@ export const getPOFormValueFromResponse = ({
     total: Number(response.total || 0),
     shippingTotal: Number(response.shippingTotal || 0),
     lineItems: [...transformedLineItems, initialLineItemValue],
+    determination: response.determination
+      ? {
+          ...response.determination,
+          dDate: getDate(response.determination?.dDate),
+          departmentHeadDate: getDate(response.determination?.departmentHeadDate),
+          approvedDuoDate: getDate(response.determination?.approvedDuoDate),
+        }
+      : null,
+    soleSource: response.soleSource
+      ? {
+          ...response.soleSource,
+          ssDate: getDate(response.soleSource?.ssDate),
+          departmentHeadDate: getDate(response.soleSource?.departmentHeadDate),
+          approvedDuoDate: getDate(response.soleSource?.approvedDuoDate),
+        }
+      : null,
+    subcontractor: response.subcontractor
+      ? {
+          ...response.subcontractor,
+          date: getDate(response.subcontractor?.date),
+          startDate: getDate(response.subcontractor?.startDate),
+          endDate: getDate(response.subcontractor?.endDate),
+          executedDate: getDate(response.subcontractor?.executedDate),
+          socSubcontractorDate: getDate(response.subcontractor?.socSubcontractorDate),
+        }
+      : null,
+    authToPurchase: response.authToPurchase
+      ? {
+          ...response.authToPurchase,
+          responses: response.authToPurchase?.responses.map((authToPurchaseResponse) => ({
+            ...authToPurchaseResponse,
+            attachmentDate: getDate(authToPurchaseResponse?.attachmentDate),
+          })),
+        }
+      : null,
     action: null,
   };
 };

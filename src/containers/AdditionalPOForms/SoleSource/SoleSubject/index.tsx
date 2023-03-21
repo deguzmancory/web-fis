@@ -4,11 +4,10 @@ import { connect } from 'react-redux';
 import {
   DatePicker,
   EllipsisTooltipInput,
-  InputPhone,
   Input,
   InputCurrency,
+  InputPhone,
 } from 'src/components/common';
-import dayjs from 'dayjs';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import { POSoleSourcePayload } from 'src/queries';
 import { IRootState } from 'src/redux/rootReducer';
@@ -18,6 +17,7 @@ import { PO_SOLE_SOURCE_FORM_KEY } from '../enum';
 
 const SoleSourceSubject: React.FC<Props> = ({ formikProps, formData }) => {
   const {
+    values,
     errors,
     touched,
     getUncontrolledFieldProps,
@@ -49,9 +49,9 @@ const SoleSourceSubject: React.FC<Props> = ({ formikProps, formData }) => {
             {...getFieldProps(PO_SOLE_SOURCE_FORM_KEY.SS_DATE)}
             name={PO_SOLE_SOURCE_FORM_KEY.SS_DATE}
             placeholder={'MM/DD/YYYY'}
+            selected={values.ssDate as Date}
             onChange={setFieldValue}
             onBlur={setFieldTouched}
-            value={dayjs(new Date().toISOString()).format('DD/MM/YYYY')}
             errorMessage={_getErrorMessage(PO_SOLE_SOURCE_FORM_KEY.SS_DATE)}
           />
         </Grid>

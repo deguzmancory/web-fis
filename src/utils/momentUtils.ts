@@ -55,3 +55,8 @@ export const formatDateUtc = (value: Date | string) => {
     return dayjs(value).utc().format();
   }
 };
+
+export const getDate = (date: string | Date) => {
+  if (!date) return null;
+  return dayjs(date).toDate();
+};

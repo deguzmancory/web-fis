@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import { TextareaAutosize } from 'src/components/common';
-import { emptyUpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/constants';
+import { initialSubcontractorValue } from 'src/containers/PurchaseOrderContainer/constants';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
 import { SubcontractorPayload } from 'src/queries';
@@ -38,13 +38,13 @@ const SubcontractAgreementForm: React.FC<Props> = ({
   const handleResetForm = () => {
     onSetFormData<UpsertPOFormValue>({
       ...formData,
-      subcontractor: emptyUpsertPOFormValue.subcontractor,
+      subcontractor: initialSubcontractorValue,
     });
     onSetIsImmutableFormData(true);
   };
 
   const formik = useFormik<SubcontractorPayload>({
-    initialValues: formData?.subcontractor,
+    initialValues: formData?.subcontractor || initialSubcontractorValue,
     validationSchema: null,
     enableReinitialize: true,
     onSubmit: handleFormSubmit,

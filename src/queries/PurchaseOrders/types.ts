@@ -265,7 +265,7 @@ export interface POFileAttachmentPayload {
 export interface PODeterminationPayload {
   id?: string;
   to: string;
-  dDate: Date;
+  dDate: Date | string;
   from: string;
   phone: string;
   department: string;
@@ -302,9 +302,9 @@ export interface PODeterminationPayload {
   reason7: string;
   costJustification: string;
   departmentHead: string;
-  departmentHeadDate: Date;
+  departmentHeadDate: Date | string;
   approvedDuo: string;
-  approvedDuoDate: Date;
+  approvedDuoDate: Date | string;
   requestForQuotationsLessThanThree: any; //TODO: Tuyen Tran will remove it
   requestForQuotationsInvitationForBidOnlyOne: string;
   requestForQuotationsInvitationForBidLowest: string;
@@ -313,7 +313,7 @@ export interface PODeterminationPayload {
 export interface POSoleSourcePayload {
   id?: string;
   to: string;
-  ssDate: string;
+  ssDate: string | Date;
   from: string;
   phone: string;
   department: string;
@@ -323,9 +323,9 @@ export interface POSoleSourcePayload {
   explanation: string;
   statementFrom: string;
   departmentHead: string;
-  departmentHeadDate: Date;
+  departmentHeadDate: Date | string;
   approvedDuo: string;
-  approvedDuoDate: Date;
+  approvedDuoDate: Date | string;
 }
 
 export interface POAuthToPurchasePayload {
@@ -358,7 +358,7 @@ export interface AuthToPurchaseResponse {
   id?: string;
   attachmentName: string;
   attachmentResponse: string;
-  attachmentDate: Date;
+  attachmentDate: Date | string;
 }
 
 export interface POEquipmentInventoryPayload {
@@ -377,16 +377,16 @@ export interface POEquipmentInventoryPayload {
 export interface SubcontractorPayload {
   id?: string;
   subcontractor: string;
-  date: string;
+  date: string | Date;
   project: string;
   subcontractorName: string;
   businessAddressAndTaxIdNumber: string;
   contractNumber: string;
   grantNumber: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: Date | string;
+  endDate: Date | string;
   expenditures: string;
-  executedDate: null;
+  executedDate: Date;
   principalInvestigator: string;
   subcontractorSignature: string;
   rcuhSignature: string;

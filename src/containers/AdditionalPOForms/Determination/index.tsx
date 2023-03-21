@@ -4,7 +4,7 @@ import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
-import { emptyUpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/constants';
+import { initialDeterminationValue } from 'src/containers/PurchaseOrderContainer/constants';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
 import { PODeterminationPayload } from 'src/queries/PurchaseOrders';
@@ -38,13 +38,13 @@ const DeterminationForm: React.FC<Props> = ({
   const handleResetForm = () => {
     onSetFormData<UpsertPOFormValue>({
       ...formData,
-      determination: emptyUpsertPOFormValue.determination,
+      determination: initialDeterminationValue,
     });
     onSetIsImmutableFormData(true);
   };
 
   const formik = useFormik<PODeterminationPayload>({
-    initialValues: formData?.determination,
+    initialValues: formData?.determination || initialDeterminationValue,
     validationSchema: null,
     enableReinitialize: true,
     onSubmit: handleFormSubmit,

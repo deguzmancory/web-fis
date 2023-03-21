@@ -17,6 +17,7 @@ import SoleSourceInfo from './SoleSourceInfo';
 import SoleSourceSubject from './SoleSubject';
 import SoleSourceStatement from './SoleSourceStatement';
 import Certification from '../shared/Certification';
+import { initialSoleSourceValue } from 'src/containers/PurchaseOrderContainer/constants';
 
 const SoleSourceForm: React.FC<Props> = ({
   formRef,
@@ -34,11 +35,20 @@ const SoleSourceForm: React.FC<Props> = ({
     );
   };
 
+  const handleResetForm = () => {
+    onSetFormData<UpsertPOFormValue>({
+      ...formData,
+      soleSource: initialSoleSourceValue,
+    });
+    onSetIsImmutableFormData(true);
+  };
+
   const formik = useFormik<POSoleSourcePayload>({
-    initialValues: formData?.soleSource,
+    initialValues: formData?.soleSource || initialSoleSourceValue,
     validationSchema: null,
     enableReinitialize: true,
     onSubmit: handleFormSubmit,
+    onReset: handleResetForm,
   });
 
   React.useImperativeHandle(formRef, () => ({

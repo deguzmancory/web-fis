@@ -1,5 +1,4 @@
 import { Box, Divider, Grid, Typography } from '@mui/material';
-import dayjs from 'dayjs';
 import React from 'react';
 import { DatePicker, Input, TextareaAutosize } from 'src/components/common';
 import { getAfterDate } from 'src/containers/CRUUSerContainer/UserType/GrantDelegation/helpers';
@@ -36,7 +35,7 @@ const WitnessethFormLayout: React.FC<Props> = ({ formikProps }) => {
               placeholder={'MM/DD/YYYY'}
               onChange={setFieldValue}
               onBlur={setFieldTouched}
-              value={dayjs(new Date().toISOString()).format('DD/MM/YYYY')}
+              selected={values.date as Date}
               errorMessage={_getErrorMessage(PO_SUBCONTRACT_AGREEMENT_KEY.DATE)}
             />
           </div>
@@ -153,10 +152,10 @@ const WitnessethFormLayout: React.FC<Props> = ({ formikProps }) => {
                     <DatePicker
                       {...getFieldProps(PO_SUBCONTRACT_AGREEMENT_KEY.START_DATE)}
                       name={PO_SUBCONTRACT_AGREEMENT_KEY.START_DATE}
-                      selected={values.startDate}
+                      selected={values.startDate as Date}
                       onChange={setFieldValue}
                       onBlur={setFieldTouched}
-                      maxDate={values.endDate}
+                      maxDate={values.endDate as Date}
                       errorMessage={_getErrorMessage(PO_SUBCONTRACT_AGREEMENT_KEY.START_DATE)}
                     />
                   </div>
@@ -165,7 +164,7 @@ const WitnessethFormLayout: React.FC<Props> = ({ formikProps }) => {
                     <DatePicker
                       {...getFieldProps(PO_SUBCONTRACT_AGREEMENT_KEY.END_DATE)}
                       name={PO_SUBCONTRACT_AGREEMENT_KEY.END_DATE}
-                      selected={values.endDate}
+                      selected={values.endDate as Date}
                       onChange={setFieldValue}
                       onBlur={setFieldTouched}
                       minDate={getAfterDate(values.startDate, new Date())}
@@ -387,7 +386,7 @@ const WitnessethFormLayout: React.FC<Props> = ({ formikProps }) => {
             <DatePicker
               {...getFieldProps(PO_SUBCONTRACT_AGREEMENT_KEY.EXECUTED_DATE)}
               name={PO_SUBCONTRACT_AGREEMENT_KEY.EXECUTED_DATE}
-              selected={values.executedDate}
+              selected={values.executedDate as Date}
               onChange={setFieldValue}
               onBlur={setFieldTouched}
               errorMessage={_getErrorMessage(PO_SUBCONTRACT_AGREEMENT_KEY.EXECUTED_DATE)}

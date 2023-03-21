@@ -100,7 +100,7 @@ const StandardsLayout: React.FC<Props> = ({ formikProps }) => {
             nameDate={PO_SUBCONTRACT_AGREEMENT_KEY.SOC_SUBCONTRACTOR_DATE}
             setFieldValue={setFieldValue}
             setFieldTouched={setFieldTouched}
-            selected={values.socSubcontractorDate}
+            selected={values.socSubcontractorDate as Date}
           />
 
           <Grid container flexDirection={'column'} xs={6} spacing={2} mt={1}>

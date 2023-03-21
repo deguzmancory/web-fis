@@ -1,5 +1,4 @@
 import { Grid, Typography } from '@mui/material';
-import dayjs from 'dayjs';
 import React from 'react';
 import { connect } from 'react-redux';
 import {
@@ -18,6 +17,7 @@ import { PO_DETERMINATION_KEY } from '../enum';
 
 const SubjectDetermination: React.FC<Props> = ({ formikProps, formData }) => {
   const {
+    values,
     errors,
     touched,
     getUncontrolledFieldProps,
@@ -47,10 +47,10 @@ const SubjectDetermination: React.FC<Props> = ({ formikProps, formData }) => {
             label="Date"
             {...getFieldProps(PO_DETERMINATION_KEY.D_DATE)}
             name={PO_DETERMINATION_KEY.D_DATE}
+            selected={values.dDate as Date}
             placeholder={'MM/DD/YYYY'}
             onChange={setFieldValue}
             onBlur={setFieldTouched}
-            value={dayjs(new Date().toISOString()).format('DD/MM/YYYY')}
             errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.D_DATE)}
           />
         </Grid>
