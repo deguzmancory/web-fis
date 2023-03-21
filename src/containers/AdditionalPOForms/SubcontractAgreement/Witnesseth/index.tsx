@@ -4,7 +4,7 @@ import React from 'react';
 import { DatePicker, Input, TextareaAutosize } from 'src/components/common';
 import { getAfterDate } from 'src/containers/CRUUSerContainer/UserType/GrantDelegation/helpers';
 import { SubcontractorPayload } from 'src/queries';
-import { getErrorMessage } from 'src/utils';
+import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_SUBCONTRACT_AGREEMENT_KEY } from '../enum';
 import './styles.scss';
@@ -46,14 +46,20 @@ const WitnessethFormLayout: React.FC<Props> = ({ formikProps }) => {
             is 2800 Woodlawn Drive, Suite 200, Honolulu, Hawaii 96822, for the benefit of
           </div>{' '}
           <div style={{ display: 'inline-block', width: '70%' }}>
-            <Input
+            <TextareaAutosize
+              maxLength={250}
+              resize="none"
+              style={{ padding: '0 2px', marginTop: '2px' }}
               errorMessage={_getErrorMessage(PO_SUBCONTRACT_AGREEMENT_KEY.PROJECT)}
               {...getUncontrolledFieldProps(PO_SUBCONTRACT_AGREEMENT_KEY.PROJECT)}
             />
           </div>
           <div style={{ display: 'contents' }}> , hereinafter called the "Project", and </div>
           <div style={{ display: 'inline-block', width: '50%', marginTop: '2px' }}>
-            <Input
+            <TextareaAutosize
+              maxLength={250}
+              resize="none"
+              style={{ padding: '0 2px', marginTop: '2px' }}
               errorMessage={_getErrorMessage(PO_SUBCONTRACT_AGREEMENT_KEY.SUBCONTRACTOR_NAME)}
               {...getUncontrolledFieldProps(PO_SUBCONTRACT_AGREEMENT_KEY.SUBCONTRACTOR_NAME)}
             />
@@ -85,14 +91,20 @@ const WitnessethFormLayout: React.FC<Props> = ({ formikProps }) => {
             the CFDA number, if applicable,
           </div>
           <div style={{ display: 'inline-block', width: '44%' }}>
-            <Input
+            <TextareaAutosize
+              maxLength={250}
+              resize="none"
+              style={{ padding: '0 2px', marginTop: '2px' }}
               errorMessage={_getErrorMessage(PO_SUBCONTRACT_AGREEMENT_KEY.CONTRACT_NUMBER)}
               {...getUncontrolledFieldProps(PO_SUBCONTRACT_AGREEMENT_KEY.CONTRACT_NUMBER)}
             />
           </div>
           <div style={{ display: 'contents' }}> , entitled " </div>
           <div style={{ display: 'inline-block', width: '44%' }}>
-            <Input
+            <TextareaAutosize
+              maxLength={250}
+              resize="none"
+              style={{ padding: '0 2px', marginTop: '2px' }}
               errorMessage={_getErrorMessage(PO_SUBCONTRACT_AGREEMENT_KEY.GRANT_NUMBER)}
               {...getUncontrolledFieldProps(PO_SUBCONTRACT_AGREEMENT_KEY.GRANT_NUMBER)}
             />
@@ -474,4 +486,29 @@ type Props = {
   formikProps: CommonFormikProps<SubcontractorPayload>;
 };
 
-export default WitnessethFormLayout;
+export default React.memo(WitnessethFormLayout, (prevProps, nextProps) => {
+  const prevFormikProps = prevProps.formikProps;
+  const nextFormikProps = nextProps.formikProps;
+
+  const formKeysNeedRender = [
+    PO_SUBCONTRACT_AGREEMENT_KEY.DATE,
+    PO_SUBCONTRACT_AGREEMENT_KEY.PROJECT,
+    PO_SUBCONTRACT_AGREEMENT_KEY.SUBCONTRACTOR_NAME,
+    PO_SUBCONTRACT_AGREEMENT_KEY.BUSINESS_ADDRESS_AND_TAX_ID_NUMBER,
+    PO_SUBCONTRACT_AGREEMENT_KEY.CONTRACT_NUMBER,
+    PO_SUBCONTRACT_AGREEMENT_KEY.GRANT_NUMBER,
+    PO_SUBCONTRACT_AGREEMENT_KEY.START_DATE,
+    PO_SUBCONTRACT_AGREEMENT_KEY.END_DATE,
+    PO_SUBCONTRACT_AGREEMENT_KEY.CONTRACT_NUMBER,
+    PO_SUBCONTRACT_AGREEMENT_KEY.EXECUTED_DATE,
+    PO_SUBCONTRACT_AGREEMENT_KEY.PRINCIPAL_INVESTIGATOR,
+    PO_SUBCONTRACT_AGREEMENT_KEY.SUBCONTRACTOR_SIGNATURE,
+    PO_SUBCONTRACT_AGREEMENT_KEY.RCUH_SIGNATURE,
+  ];
+
+  return isEqualPrevAndNextFormikValues<SubcontractorPayload>({
+    prevFormikProps,
+    nextFormikProps,
+    formKeysNeedRender,
+  });
+});

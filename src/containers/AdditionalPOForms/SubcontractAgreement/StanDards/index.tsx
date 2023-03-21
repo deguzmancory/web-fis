@@ -3,7 +3,7 @@ import React from 'react';
 import { Input } from 'src/components/common';
 import SignatureBox from 'src/containers/shared/SignatureBox';
 import { SubcontractorPayload } from 'src/queries';
-import { getErrorMessage } from 'src/utils';
+import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_SUBCONTRACT_AGREEMENT_KEY } from '../enum';
 
@@ -135,4 +135,20 @@ type Props = {
   formikProps: CommonFormikProps<SubcontractorPayload>;
 };
 
-export default StandardsLayout;
+export default React.memo(StandardsLayout, (prevProps, nextProps) => {
+  const prevFormikProps = prevProps.formikProps;
+  const nextFormikProps = nextProps.formikProps;
+
+  const formKeysNeedRender = [
+    PO_SUBCONTRACT_AGREEMENT_KEY.SOC_SUBCONTRACTOR_NAME,
+    PO_SUBCONTRACT_AGREEMENT_KEY.SOC_SUBCONTRACTOR_DATE,
+    PO_SUBCONTRACT_AGREEMENT_KEY.SOC_SUBCONTRACTOR_SIGNATURE,
+    PO_SUBCONTRACT_AGREEMENT_KEY.SOC_SUBCONTRACTOR_TITLE,
+  ];
+
+  return isEqualPrevAndNextFormikValues<SubcontractorPayload>({
+    prevFormikProps,
+    nextFormikProps,
+    formKeysNeedRender,
+  });
+});
