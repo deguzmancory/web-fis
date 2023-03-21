@@ -14,7 +14,7 @@ import { Navigator } from 'src/services';
 import { getUncontrolledInputFieldProps } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_ADDITIONAL_FORM_KEY, PO_ADDITIONAL_FORM_PARAMS } from '../enum';
-import Certification from './Certification';
+import Certification from '../shared/Certification';
 import ConditionsAndCost from './ConditionsAndCost';
 import PurposeAndInstruction from './PurposeAndInstruction';
 import SubjectDetermination from './SubjectDetermination';

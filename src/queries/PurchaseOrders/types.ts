@@ -1,4 +1,5 @@
 import { PO_ACTION } from 'src/containers/PurchaseOrderContainer/enums';
+import { PO_DETAIL_STATUS } from './enums';
 
 export interface SharedPODetail {
   //general info
@@ -70,7 +71,7 @@ export interface SharedPODetail {
   address3: string;
 
   //get from response for logic and view purpose
-  status?: string;
+  status?: PO_DETAIL_STATUS;
   auditTrails?: POAuditTrails[];
 
   //unknown //TODO: huy_dang check unused key

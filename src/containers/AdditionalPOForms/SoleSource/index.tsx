@@ -16,7 +16,7 @@ import { PO_ADDITIONAL_FORM_KEY, PO_ADDITIONAL_FORM_PARAMS } from '../enum';
 import SoleSourceInfo from './SoleSourceInfo';
 import SoleSourceSubject from './SoleSubject';
 import SoleSourceStatement from './SoleSourceStatement';
-import Certification from '../Determination/Certification';
+import Certification from '../shared/Certification';
 
 const SoleSourceForm: React.FC<Props> = ({
   formRef,

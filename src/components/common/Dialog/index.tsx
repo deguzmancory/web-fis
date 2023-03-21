@@ -31,6 +31,7 @@ const Dialog: React.FC<
     disabledButton?: boolean;
     hideTitle?: boolean;
     showTitleDivider?: boolean;
+    hideFooter?: boolean;
     onClose?: Callback;
   }
 > = ({
@@ -46,6 +47,7 @@ const Dialog: React.FC<
   hideTitle,
   open,
   showTitleDivider = false,
+  hideFooter = false,
   onClose,
   ...dialogProps
 }) => {
@@ -104,7 +106,7 @@ const Dialog: React.FC<
       >
         {children}
       </DialogContent>
-      {!isEmpty(dialogActions) && (
+      {!isEmpty(dialogActions) && !hideFooter && (
         <DialogActions
           classes={{
             root: 'cmp-dialog__footer',

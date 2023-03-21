@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import React from 'react';
 import { TextareaAutosize } from 'src/components/common';
 import { POSoleSourcePayload } from 'src/queries';

@@ -3,7 +3,8 @@ import React from 'react';
 import { US_ZIP_CODE_LENGTH } from 'src/appConfig/constants';
 import { Checkbox, Input, InputMask, LoadingCommon, Select } from 'src/components/common';
 import { useZipCode } from 'src/queries';
-import { StateService } from 'src/services';
+import { isFA } from 'src/queries/Profile/helpers';
+import { RoleService, StateService } from 'src/services';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import InfoTooltip from '../../shared/InfoTooltip';
 import { PO_FORM_KEY } from '../enums';
@@ -21,9 +22,12 @@ const SendInvoiceInfo: React.FC<Props> = ({ formikProps, disabled = false }) => 
     setFieldTouched,
   } = formikProps;
 
-  const isLeaveBlank = React.useMemo(
-    () => values.sendInvoiceToClearFlag,
-    [values.sendInvoiceToClearFlag]
+  const currentRole = RoleService.getCurrentRole();
+  const allowEdit = isFA(currentRole);
+
+  const isDisabledFields = React.useMemo(
+    () => (allowEdit ? values.sendInvoiceToClearFlag : true),
+    [values.sendInvoiceToClearFlag, allowEdit]
   );
 
   const statesOptions = React.useMemo(() => {
@@ -84,7 +88,7 @@ const SendInvoiceInfo: React.FC<Props> = ({ formikProps, disabled = false }) => 
         {...getFieldProps(PO_FORM_KEY.SEND_INVOICE_TO_CLEAR_FLAG)}
         errorMessage={_getErrorMessage(PO_FORM_KEY.SEND_INVOICE_TO_CLEAR_FLAG)}
         onChange={handleLeaveBlankChange}
-        disabled={disabled}
+        disabled={disabled || !allowEdit}
         className="my-16"
       />
 
@@ -94,7 +98,7 @@ const SendInvoiceInfo: React.FC<Props> = ({ formikProps, disabled = false }) => 
             label={'Name'}
             errorMessage={_getErrorMessage(PO_FORM_KEY.SEND_INVOICE_TO)}
             {...getUncontrolledFieldProps(PO_FORM_KEY.SEND_INVOICE_TO)}
-            disabled={disabled || isLeaveBlank}
+            disabled={disabled || isDisabledFields}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
@@ -102,7 +106,7 @@ const SendInvoiceInfo: React.FC<Props> = ({ formikProps, disabled = false }) => 
             label={'Department'}
             errorMessage={_getErrorMessage(PO_FORM_KEY.INVOICE_DEPT)}
             {...getUncontrolledFieldProps(PO_FORM_KEY.INVOICE_DEPT)}
-            disabled={disabled || isLeaveBlank}
+            disabled={disabled || isDisabledFields}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
@@ -110,7 +114,7 @@ const SendInvoiceInfo: React.FC<Props> = ({ formikProps, disabled = false }) => 
             label={'FA Email'}
             errorMessage={_getErrorMessage(PO_FORM_KEY.SEND_INVOICE_TO_FA_EMAIL)}
             {...getUncontrolledFieldProps(PO_FORM_KEY.SEND_INVOICE_TO_FA_EMAIL)}
-            disabled={disabled || isLeaveBlank}
+            disabled={disabled || isDisabledFields}
           />
         </Grid>
         <Grid item xs={12}>
@@ -118,7 +122,7 @@ const SendInvoiceInfo: React.FC<Props> = ({ formikProps, disabled = false }) => 
             label={'Address (number, street, and apt. or suite no.)'}
             errorMessage={_getErrorMessage(PO_FORM_KEY.INVOICE_STREET_ADDRESS)}
             {...getUncontrolledFieldProps(PO_FORM_KEY.INVOICE_STREET_ADDRESS)}
-            disabled={disabled || isLeaveBlank}
+            disabled={disabled || isDisabledFields}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
@@ -126,7 +130,7 @@ const SendInvoiceInfo: React.FC<Props> = ({ formikProps, disabled = false }) => 
             label={'Country'}
             errorMessage={_getErrorMessage(PO_FORM_KEY.INVOICE_COUNTRY)}
             {...getUncontrolledFieldProps(PO_FORM_KEY.INVOICE_COUNTRY)}
-            disabled={disabled || isLeaveBlank}
+            disabled={disabled || isDisabledFields}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
@@ -140,7 +144,7 @@ const SendInvoiceInfo: React.FC<Props> = ({ formikProps, disabled = false }) => 
                 {...getFieldProps(PO_FORM_KEY.INVOICE_ZIP)}
                 onChange={handleChangeZipCode}
                 autoComplete="zip-code"
-                disabled={disabled || isLeaveBlank}
+                disabled={disabled || isDisabledFields}
                 iconComponent={
                   isLoadingZipCode ? (
                     <LoadingCommon
@@ -165,7 +169,7 @@ const SendInvoiceInfo: React.FC<Props> = ({ formikProps, disabled = false }) => 
                 {...getFieldProps(PO_FORM_KEY.INVOICE_ZIP4)}
                 min={1}
                 mask={'9999'}
-                disabled={disabled || isLeaveBlank}
+                disabled={disabled || isDisabledFields}
               />
             </Grid>
           </Grid>
@@ -177,7 +181,7 @@ const SendInvoiceInfo: React.FC<Props> = ({ formikProps, disabled = false }) => 
             errorMessage={_getErrorMessage(PO_FORM_KEY.INVOICE_STATE)}
             {...getFieldProps(PO_FORM_KEY.INVOICE_STATE)}
             onChange={setFieldValue}
-            isDisabled={disabled || isLeaveBlank}
+            isDisabled={disabled || isDisabledFields}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={2}>
@@ -185,7 +189,7 @@ const SendInvoiceInfo: React.FC<Props> = ({ formikProps, disabled = false }) => 
             label={'City'}
             errorMessage={_getErrorMessage(PO_FORM_KEY.INVOICE_CITY)}
             {...getUncontrolledFieldProps(PO_FORM_KEY.INVOICE_CITY)}
-            disabled={disabled || isLeaveBlank}
+            disabled={disabled || isDisabledFields}
           />
         </Grid>
       </Grid>

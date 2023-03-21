@@ -20,13 +20,15 @@ const DialogRenderer: React.FC<Props> = ({
     hideTitle = false,
     maxWidth = 'sm',
     okText = '',
-    onCancel,
-    onOk,
     overflowVisible = false,
     reconfirm,
     title = '',
     hideCloseButton,
     showTitleDivider = false,
+    iconTitle,
+    hideFooter = false,
+    onCancel,
+    onOk,
   } = data;
 
   const onNoClick = () => {
@@ -121,6 +123,8 @@ const DialogRenderer: React.FC<Props> = ({
       fullScreen={fullScreen}
       disabledButton={hideCloseButton}
       showTitleDivider={showTitleDivider}
+      iconTitle={iconTitle}
+      hideFooter={hideFooter}
     >
       {content}
       {/* <DialogBody dialogType={dialogType} content={content as React.ReactElement} /> */}

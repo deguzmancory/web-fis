@@ -124,6 +124,9 @@ export enum PO_ACTION {
   APPROVE = 'approve',
   DISAPPROVE = 'disapprove',
   ADDITIONAL_INFO = 'additionalInfo',
+
+  //for loading purpose
+  DELETE = 'delete',
 }
 
 export enum SUBMITTED_PO_QUERY {

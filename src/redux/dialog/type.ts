@@ -42,12 +42,13 @@ export interface ConfirmDialogData {
   content?: string | React.ReactElement;
   okText?: string;
   cancelText?: string;
-  onOk?: (...arg: any[]) => void;
-  onCancel?: (...arg: any[]) => void;
   overflowVisible?: boolean;
   hideCloseButton?: boolean;
   showTitleDivider?: boolean;
   maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
+  hideFooter?: boolean;
+  onOk?: (...arg: any[]) => void;
+  onCancel?: (...arg: any[]) => void;
 }
 
 export enum DIALOG_TYPES {

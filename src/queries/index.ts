@@ -5,5 +5,6 @@ export * from './Permissions';
 export * from './Profile';
 export * from './Projects';
 export * from './PurchaseOrders';
+export * from './SuperQuotes';
 export * from './UAM';
 export * from './Vendors';

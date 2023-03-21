@@ -1,7 +1,13 @@
 import { PATHS } from 'src/appConfig/paths';
 import { MyProfile } from 'src/queries';
-import { AdditionalPOForm, PODetailResponse, UpsertPOPayload } from 'src/queries/PurchaseOrders';
-import { ErrorService, Yup } from 'src/services';
+import { isCU, isFA, ROLE_NAME } from 'src/queries/Profile/helpers';
+import {
+  AdditionalPOForm,
+  PODetailResponse,
+  PO_DETAIL_STATUS,
+  UpsertPOPayload,
+} from 'src/queries/PurchaseOrders';
+import { ErrorService, RoleService, Yup } from 'src/services';
 import {
   DateFormat,
   getDateDisplay,
@@ -14,6 +20,44 @@ import { emptyUpsertPOFormValue, externalFormAttachments, initialLineItemValue }
 import { PO_ACTION, PO_ADDITIONAL_FORM_CODE, PO_ADDITIONAL_FORM_EXTERNAL_LINK } from './enums';
 import { isVariousProject, SHIP_VIA_VALUE } from './GeneralInfo/helpers';
 import { AdditionalPOFormValue, UpsertPOFormValue } from './types';
+
+export const isPOSaveAction = (action: PO_ACTION) => {
+  return action === PO_ACTION.SAVE;
+};
+export const isPOSubmitAction = (action: PO_ACTION) => {
+  return action === PO_ACTION.SUBMIT;
+};
+export const isPOApprovedAction = (action: PO_ACTION) => {
+  return action === PO_ACTION.APPROVE;
+};
+export const isPODisapproveAction = (action: PO_ACTION) => {
+  return action === PO_ACTION.DISAPPROVE;
+};
+export const isPOAdditionalInfoAction = (action: PO_ACTION) => {
+  return action === PO_ACTION.ADDITIONAL_INFO;
+};
+
+export const isPIPendingSubmittalPOStatus = (status: PO_DETAIL_STATUS) => {
+  return status === PO_DETAIL_STATUS.PI_PENDING_SUBMITTAL;
+};
+export const isFAPendingApprovalPOStatus = (status: PO_DETAIL_STATUS) => {
+  return status === PO_DETAIL_STATUS.FA_PENDING_APPROVAL;
+};
+export const isPIAdditionalInfoRequestedPOStatus = (status: PO_DETAIL_STATUS) => {
+  return status === PO_DETAIL_STATUS.PI_ADDITIONAL_INFO_REQUESTED;
+};
+export const isPIDisapprovedPOStatus = (status: PO_DETAIL_STATUS) => {
+  return status === PO_DETAIL_STATUS.PI_DISAPPROVED;
+};
+export const isFAAdditionalInfoRequestedPOStatus = (status: PO_DETAIL_STATUS) => {
+  return status === PO_DETAIL_STATUS.FA_ADDITIONAL_INFO_REQUESTED_RCUH;
+};
+export const isRCUHPendingRCUHApprovalPOStatus = (status: PO_DETAIL_STATUS) => {
+  return status === PO_DETAIL_STATUS.RCUH_PENDING_RCUH_APPROVAL;
+};
+export const isFinalPOStatus = (status: PO_DETAIL_STATUS) => {
+  return status === PO_DETAIL_STATUS.FINAL;
+};
 
 export const getExternalLinkFromFormCode = (formCode: PO_ADDITIONAL_FORM_CODE) => {
   switch (formCode) {
@@ -64,15 +108,8 @@ export const getAvailableFormsFromResponse = (forms: AdditionalPOForm[]) => {
     });
 };
 
-export const isSavePOAction = (action: PO_ACTION) => {
-  return action === PO_ACTION.SAVE;
-};
-export const isSubmitToFaPOAction = (action: PO_ACTION) => {
-  return action === PO_ACTION.SUBMIT;
-};
-
 export const getPOFormValidationSchema = ({ action }: { action: PO_ACTION }) => {
-  const isSubmitAction = isSubmitToFaPOAction(action);
+  const isSubmitAction = isPOSubmitAction(action);
 
   return Yup.object().shape(
     {
@@ -170,12 +207,53 @@ export const hasIncludeAdditionalForm = ({
   return formAttachments.some((formAttachment) => formAttachment.code === formCode);
 };
 
-export const getPOFormValueFromResponse = (response: PODetailResponse): UpsertPOFormValue => {
+// apply for FA Review mode
+export const preFillSendInvoiceDataInFAReviewMode = ({
+  response,
+  profile,
+}: {
+  response: PODetailResponse;
+  profile: MyProfile;
+}) => {
+  if (!response) return;
+  const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
+
+  if (checkIsFAReviewMode(response.status, currentRole)) {
+    return {
+      sendInvoiceToClearFlag: false,
+      sendInvoiceTo: profile.fisFaInfo.sendInvoiceTo || '',
+      sendInvoiceToFAEmail: profile.fisFaInfo.sendInvoiceToEmail || '',
+      invoiceDept: profile.fisFaInfo.department || '',
+      invoiceState: profile.fisFaInfo.addressState || '',
+      invoiceStreetAddress: profile.fisFaInfo.addressStreet || '',
+      invoiceCity: profile.fisFaInfo.addressCity || '',
+      invoiceZip: profile.fisFaInfo.addressZip || '',
+      invoiceZip4: profile.fisFaInfo.addressZip4 || '',
+      invoiceCountry: profile.fisFaInfo.addressCountry || '',
+    };
+  }
+
+  return;
+};
+
+export const getPOFormValueFromResponse = ({
+  response,
+  profile,
+}: {
+  response: PODetailResponse;
+  profile: MyProfile;
+}): UpsertPOFormValue => {
   return {
     ...response,
+    ...preFillSendInvoiceDataInFAReviewMode({ response, profile }),
     date: getDateDisplay(response.date),
     availableForms: getAvailableFormsFromResponse(response.availableForms),
     formAttachments: getAvailableFormsFromResponse(response.formAttachments),
+    taxTotal: Number(response.taxTotal || 0),
+    subtotal: Number(response.subtotal || 0),
+    taxRate: Number(response.taxRate || 0),
+    total: Number(response.total || 0),
+    shippingTotal: Number(response.shippingTotal || 0),
     lineItems: [...response.lineItems, initialLineItemValue],
     action: null,
   };
@@ -278,4 +356,43 @@ export const getUpsertPOPayload = ({
       ? formValues.subcontractor
       : null,
   };
+};
+
+export const checkIsViewOnlyMode = (poStatus: PO_DETAIL_STATUS, currentRole: ROLE_NAME) => {
+  if (!poStatus) return false;
+
+  switch (currentRole) {
+    case ROLE_NAME.SU:
+    case ROLE_NAME.PI:
+      return isFAPendingApprovalPOStatus(poStatus) || isRCUHPendingRCUHApprovalPOStatus(poStatus);
+    case ROLE_NAME.FA:
+      return (
+        isPIPendingSubmittalPOStatus(poStatus) ||
+        isRCUHPendingRCUHApprovalPOStatus(poStatus) ||
+        isFAAdditionalInfoRequestedPOStatus(poStatus) ||
+        isPIDisapprovedPOStatus(poStatus)
+      );
+    case ROLE_NAME.CU:
+      return (
+        isPIPendingSubmittalPOStatus(poStatus) ||
+        isFAPendingApprovalPOStatus(poStatus) ||
+        isFAAdditionalInfoRequestedPOStatus(poStatus) ||
+        isPIDisapprovedPOStatus(poStatus)
+      );
+
+    default:
+      return false;
+  }
+};
+
+export const checkIsFinalMode = (poStatus: PO_DETAIL_STATUS) => {
+  return isFinalPOStatus(poStatus);
+};
+
+export const checkIsFAReviewMode = (poStatus: PO_DETAIL_STATUS, currentRole: ROLE_NAME) => {
+  return isFA(currentRole) && isFAPendingApprovalPOStatus(poStatus);
+};
+
+export const checkIsCUReviewMode = (poStatus: PO_DETAIL_STATUS, currentRole: ROLE_NAME) => {
+  return isCU(currentRole) && isRCUHPendingRCUHApprovalPOStatus(poStatus);
 };

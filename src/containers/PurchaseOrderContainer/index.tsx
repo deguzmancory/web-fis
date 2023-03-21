@@ -9,16 +9,10 @@ import { PATHS } from 'src/appConfig/paths';
 import { Button, Link, LoadingCommon } from 'src/components/common';
 import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundary';
 import NoPermission from 'src/components/NoPermission';
-import {
-  PO_DETAIL_STATUS,
-  useCreatePO,
-  useGetPODetail,
-  useProfile,
-  useUpdatePO,
-} from 'src/queries';
+import { useCreatePO, useGetPODetail, useProfile, useUpdatePO } from 'src/queries';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
-import { Navigator, Toastify } from 'src/services';
+import { Navigator, RoleService, Toastify } from 'src/services';
 import Prompt from 'src/services/Prompt';
 import {
   getUncontrolledCurrencyInputFieldProps,
@@ -37,10 +31,19 @@ import ErrorWrapperPO from './ErrorWrapper/index.';
 import ExternalSpecialInstructions from './ExternalSpecialInstructions';
 import GeneralInfo from './GeneralInfo';
 import {
+  checkIsFAReviewMode,
+  checkIsFinalMode,
+  checkIsViewOnlyMode,
   getInitialPOFormValue,
   getPOFormValidationSchema,
   getPOFormValueFromResponse,
   getUpsertPOPayload,
+  isPIPendingSubmittalPOStatus,
+  isPOAdditionalInfoAction,
+  isPOApprovedAction,
+  isPODisapproveAction,
+  isPOSaveAction,
+  isPOSubmitAction,
 } from './helpers';
 import InternalComments from './InternalComments';
 import InternalSpecialInstructions from './InternalSpecialInstructions';
@@ -50,12 +53,20 @@ import TableLineItems from './TableLineItems';
 import { UpsertPOFormikProps, UpsertPOFormValue } from './types';
 import { handleShowErrorMsg } from 'src/utils';
 import AuditInformation from './AuditInformation';
+import { useDeletePO } from 'src/queries/PurchaseOrders/useDeletePO';
+import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
+import { DIALOG_TYPES } from 'src/redux/dialog/type';
+import { Error } from '@mui/icons-material';
+import { ROLE_NAME } from 'src/queries/Profile/helpers';
+import DeletePOWarning from './deletePOWarning';
 
 const PurchaseOrderContainer: React.FC<Props> = ({
   formData,
   isImmutableFormData,
   onSetFormData,
   onSetIsImmutableFormData,
+  onShowDialog,
+  onHideDialog,
 }) => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
@@ -65,17 +76,25 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   const [isTriedSubmit, setIsTriedSubmit] = React.useState<boolean>(false);
   const formRef = React.useRef<FormikProps<UpsertPOFormValue>>(null);
   const scrollToParam = query.get(PO_ADDITIONAL_FORM_PARAMS.SCROLL_TO) || null;
+
   const isEditPOMode = !!id;
   const hasPermission = true; //TODO: huy_dang check logic
-  const showDeleteButton = React.useMemo(
-    () => formData?.status === PO_DETAIL_STATUS.PI_PENDING_SUBMITTAL,
-    [formData?.status]
-  );
+  const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
+  const poStatus = React.useMemo(() => formData?.status, [formData?.status]);
+  const showDeleteButton = isPIPendingSubmittalPOStatus(poStatus);
+  const showApproveButton = true;
+  const showDisapproveButton = true;
+  const showRequestMoreInfoButton = true;
+  const isViewOnlyMode = checkIsViewOnlyMode(poStatus, currentRole);
+  const isFinalStatus = checkIsFinalMode(poStatus);
+  const isFAReviewMode = checkIsFAReviewMode(poStatus, currentRole);
+  const isCUReviewMode = checkIsFAReviewMode(poStatus, currentRole);
 
+  const { profile } = useProfile();
   const { onGetPOById } = useGetPODetail({
     id: id,
     onSuccess: (data) => {
-      const formValue: UpsertPOFormValue = getPOFormValueFromResponse(data);
+      const formValue: UpsertPOFormValue = getPOFormValueFromResponse({ response: data, profile });
 
       onSetFormData<UpsertPOFormValue>(formValue);
     },
@@ -84,9 +103,6 @@ const PurchaseOrderContainer: React.FC<Props> = ({
     },
     suspense: true,
   });
-
-  const { profile } = useProfile();
-
   const {
     createPO,
     data: createPOResponse,
@@ -101,7 +117,6 @@ const PurchaseOrderContainer: React.FC<Props> = ({
       handleShowErrorMsg(error);
     },
   });
-
   const {
     updatePO,
     data: updatePOResponse,
@@ -109,7 +124,11 @@ const PurchaseOrderContainer: React.FC<Props> = ({
     isSuccess: isUpdatePOSuccess,
   } = useUpdatePO({
     onSuccess: () => {
-      onSetFormData(null);
+      if (!isPOSaveAction(formAction)) {
+        onSetFormData(null);
+      }
+
+      window.scrollTo(0, 0);
       //continue navigate to success page with use effect above => for ignore prompt check url when crate succeed purpose
     },
     onError: (error) => {
@@ -158,7 +177,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEditPOMode, profile, onGetPOById, onSetFormData]);
+  }, [isEditPOMode, profile, onSetFormData]);
 
   // edit mode
   // using useEffect for fetch data from api
@@ -168,7 +187,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEditPOMode, profile, onGetPOById, onSetFormData]);
+  }, [isEditPOMode, formData, onGetPOById]);
 
   // else formData && isImmutableFormData
   // => just back from additional forms mode => not fetching anything
@@ -263,10 +282,21 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   };
 
   const handleCancelClick = () => {
+    onSetFormData(null);
     Navigator.navigate(PATHS.dashboard);
   };
 
-  const handleDeleteClick = () => {};
+  const handleDeleteClick = () => {
+    onShowDialog({
+      type: DIALOG_TYPES.CONTENT_DIALOG,
+      data: {
+        title: 'Delete',
+        iconTitle: <Error color="error" sx={{ mt: '2px' }} />,
+        hideFooter: true,
+        content: <DeletePOWarning id={id} />,
+      },
+    });
+  };
 
   // handle submit form after updated the form's validation schema
   React.useEffect(() => {
@@ -284,17 +314,16 @@ const PurchaseOrderContainer: React.FC<Props> = ({
       return false;
     }
 
-    const createMode = !isEditPOMode;
-    const success = createMode ? isUpdatePOSuccess : isCreatePOSuccess;
+    const success = isEditPOMode ? isUpdatePOSuccess : isCreatePOSuccess;
 
-    if (!success && isEmpty(touched)) {
-      return false;
+    if (!success) {
+      return !isEmpty(touched);
     }
 
     const acceptablePaths = [PATHS.createPurchaseOrders, PATHS.purchaseOrderDetail];
     const isAcceptablePath = acceptablePaths.some((path) => location.pathname.includes(path));
 
-    return isAcceptablePath || !isEmpty(touched);
+    return !isAcceptablePath;
   };
 
   if (!formData)
@@ -386,13 +415,48 @@ const PurchaseOrderContainer: React.FC<Props> = ({
               Cancel
             </Button>
             {showDeleteButton && (
-              <Button variant="outline" className="mr-8" onClick={handleDeleteClick}>
+              <Button
+                variant="outline"
+                className="mr-8"
+                onClick={handleDeleteClick}
+                disabled={isLoading}
+              >
                 Delete
+              </Button>
+            )}
+            {showApproveButton && (
+              <Button
+                onClick={() => handleSubmitButtonClick({ action: PO_ACTION.APPROVE })}
+                isLoading={isLoading && isPOApprovedAction(formAction)}
+                disabled={isLoading}
+                className="mr-8"
+              >
+                Approve
+              </Button>
+            )}
+            {showDisapproveButton && (
+              <Button
+                onClick={() => handleSubmitButtonClick({ action: PO_ACTION.DISAPPROVE })}
+                isLoading={isLoading && isPODisapproveAction(formAction)}
+                disabled={isLoading}
+                className="mr-8"
+              >
+                Disapprove
+              </Button>
+            )}
+            {showRequestMoreInfoButton && (
+              <Button
+                onClick={() => handleSubmitButtonClick({ action: PO_ACTION.ADDITIONAL_INFO })}
+                isLoading={isLoading && isPOAdditionalInfoAction(formAction)}
+                disabled={isLoading}
+                className="mr-8"
+              >
+                Request More Info
               </Button>
             )}
             <Button
               onClick={() => handleSubmitButtonClick({ action: PO_ACTION.SAVE })}
-              isLoading={isLoading}
+              isLoading={isLoading && isPOSaveAction(formAction)}
               disabled={isLoading}
               className="mr-8"
             >
@@ -400,7 +464,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
             </Button>
             <Button
               onClick={() => handleSubmitButtonClick({ action: PO_ACTION.SUBMIT })}
-              isLoading={isLoading}
+              isLoading={isLoading && isPOSubmitAction(formAction)}
               disabled={isLoading}
             >
               Submit to FA
@@ -438,6 +502,8 @@ const mapStateToProps = (state: IRootState<UpsertPOFormValue>) => ({
 const mapDispatchToProps = {
   onSetFormData: setFormData,
   onSetIsImmutableFormData: setIsImmutableFormData,
+  onShowDialog: showDialog,
+  onHideDialog: hideDialog,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PurchaseOrderContainerWrapper);

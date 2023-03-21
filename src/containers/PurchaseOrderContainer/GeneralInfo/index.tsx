@@ -92,12 +92,12 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
 
     dispatch(
       showDialog({
-        type: DIALOG_TYPES.YESNO_DIALOG,
+        type: DIALOG_TYPES.CONTENT_DIALOG,
         data: {
           title: 'Import Data from SuperQUOTE',
           content: <SuperQuote formikProps={formikProps} disabled={disabled} />,
           showTitleDivider: true,
-          okText: 'Import',
+          hideFooter: true,
         },
       })
     );

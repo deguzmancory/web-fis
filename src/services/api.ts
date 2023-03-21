@@ -11,6 +11,7 @@ import {
 import { GetPresignedPayload, UploadFilePayload } from 'src/queries/File/types';
 import { GetPropertiesParams } from 'src/queries/helpers';
 import { UpsertPOPayload } from 'src/queries/PurchaseOrders';
+import { SearchQuoteParams } from 'src/queries/SuperQuotes/types';
 import {
   ChangePasswordPayload,
   CompleteNewPasswordPayload,
@@ -282,6 +283,12 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.get(`/financial-svc/v1/vendors/search?${queryString}`, {}, newCancelToken());
   };
 
+  // ====================== Super Quotes ======================
+  const searchSuperQuotes = (params: SearchQuoteParams & GetPropertiesParams) => {
+    const queryString = stringify(params);
+    return api.get(`/financial-svc/v1/super-quotes/numbers?${queryString}`, {}, newCancelToken());
+  };
+
   // ====================== PO ======================
   const getPO = (params: { id: string }) => {
     return api.get(`/financial-svc/v1/purchase-orders/${params.id}`, {}, newCancelToken());
@@ -299,12 +306,16 @@ const create = (baseURL = appConfig.API_URL) => {
 
   const updatePO = (payload: UpsertPOPayload) => {
     return api.put(
-      `/financial-svc/v1/purchase-orders?action=${payload.action}`,
+      `/financial-svc/v1/purchase-orders/${payload.id}?action=${payload.action}`,
       {
         ...payload,
       },
       newCancelToken()
     );
+  };
+
+  const deletePO = (params: { id: string }) => {
+    return api.delete(`/financial-svc/v1/purchase-orders/${params.id}`, {}, newCancelToken());
   };
 
   // Global Settings
@@ -386,10 +397,14 @@ const create = (baseURL = appConfig.API_URL) => {
     searchVendors,
     getAllVendors,
 
+    // ====================== Super Quotes ======================
+    searchSuperQuotes,
+
     // ====================== PO ======================
     getPO,
     createPO,
     updatePO,
+    deletePO,
 
     // Global Settings
     getAllGlobalSettings,

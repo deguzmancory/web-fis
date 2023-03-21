@@ -1,18 +1,15 @@
 import React from 'react';
-import { Box } from '@mui/material';
-import { Input } from 'src/components/common';
+import { Box, Stack } from '@mui/material';
+import { Button, Input } from 'src/components/common';
 import { UpsertPOFormikProps } from '../types';
 import { debounce } from 'lodash';
+import { useSearchSuperQuotes } from 'src/queries';
 
 const SuperQuote: React.FC<Props> = ({ formikProps, disabled = false }) => {
-  // const { setFieldValue} = formikProps;
-
-  const handleSearchSuperQuote = (searchString: string) => {
-    console.log('searchString: ', searchString); //TODO: huy_dang handle search super quote
-  };
+  const { superQuotes, isSuccess, setSearchSuperQuoteParams } = useSearchSuperQuotes();
 
   const debounceSearchSuperQuote = debounce((event: React.ChangeEvent<HTMLInputElement>) => {
-    handleSearchSuperQuote(event.target.value);
+    setSearchSuperQuoteParams({ search: event.target.value });
   }, 500);
 
   return (
@@ -23,6 +20,13 @@ const SuperQuote: React.FC<Props> = ({ formikProps, disabled = false }) => {
         disabled={disabled}
         placeholder="XXXXX"
       />
+
+      <Stack direction={'row'} justifyContent="flex-end" mt={3}>
+        <Button variant="outline" className="mr-16">
+          Cancel
+        </Button>
+        <Button>Import</Button>
+      </Stack>
     </Box>
   );
 };

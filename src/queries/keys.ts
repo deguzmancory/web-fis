@@ -28,6 +28,9 @@ export enum API_QUERIES {
   SEARCH_VENDOR = '/vendor/search',
   VENDORS = '/vendors',
 
+  // Super Quotes
+  SEARCH_QUOTE = '/super-quotes/numbers',
+
   // Financial
   GET_FINANCIAL_PROJECTS = '/financial-svc/v1/projects',
   SEARCH_FINANCIAL_PROJECTS = '/financial-svc/v1/projects/search',
