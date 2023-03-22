@@ -3,15 +3,17 @@ import React from 'react';
 import { US_ZIP_CODE_LENGTH } from 'src/appConfig/constants';
 import { Checkbox, Input, InputMask, LoadingCommon, Select } from 'src/components/common';
 import { useZipCode } from 'src/queries';
-import { isFA } from 'src/queries/Profile/helpers';
-import { RoleService, StateService } from 'src/services';
+import { StateService } from 'src/services';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import InfoTooltip from '../../shared/InfoTooltip';
-import { PO_FORM_KEY } from '../enums';
+import { PO_FORM_KEY, PO_MODE } from '../enums';
+import { isFAReviewPOMode } from '../helpers';
 import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
 import { resetAllField } from './helpers';
 
-const SendInvoiceInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
+const SendInvoiceInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPOMode }) => {
+  const isFAReviewMode = isFAReviewPOMode(currentPOMode);
+  const allowEdit = isFAReviewMode;
   const {
     values,
     errors,
@@ -21,9 +23,6 @@ const SendInvoiceInfo: React.FC<Props> = ({ formikProps, disabled = false }) => 
     setFieldValue,
     setFieldTouched,
   } = formikProps;
-
-  const currentRole = RoleService.getCurrentRole();
-  const allowEdit = isFA(currentRole);
 
   const isDisabledFields = React.useMemo(
     () => (allowEdit ? values.sendInvoiceToClearFlag : true),
@@ -42,7 +41,6 @@ const SendInvoiceInfo: React.FC<Props> = ({ formikProps, disabled = false }) => 
       setFieldTouched(PO_FORM_KEY.INVOICE_CITY, false);
       setFieldTouched(PO_FORM_KEY.INVOICE_STATE, false);
     },
-    onError(error, variables, context) {},
   });
 
   const handleChangeZipCode = (event) => {
@@ -200,6 +198,7 @@ const SendInvoiceInfo: React.FC<Props> = ({ formikProps, disabled = false }) => 
 interface Props {
   formikProps: UpsertPOFormikProps;
   disabled?: boolean;
+  currentPOMode: PO_MODE;
 }
 
 export default React.memo(SendInvoiceInfo, (prevProps, nextProps) => {

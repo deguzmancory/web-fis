@@ -26,61 +26,61 @@ import {
 import { isVariousProject, SHIP_VIA_VALUE } from './GeneralInfo/helpers';
 import { AdditionalPOFormValue, UpsertPOFormValue } from './types';
 
-export const isPOSaveAction = (action: PO_ACTION) => {
-  return action === PO_ACTION.SAVE;
+export const isPOSaveAction = (currentAction: PO_ACTION) => {
+  return currentAction === PO_ACTION.SAVE;
 };
-export const isPOSubmitAction = (action: PO_ACTION) => {
-  return action === PO_ACTION.SUBMIT;
+export const isPOSubmitAction = (currentAction: PO_ACTION) => {
+  return currentAction === PO_ACTION.SUBMIT;
 };
-export const isPOApprovedAction = (action: PO_ACTION) => {
-  return action === PO_ACTION.APPROVE;
+export const isPOApprovedAction = (currentAction: PO_ACTION) => {
+  return currentAction === PO_ACTION.APPROVE;
 };
-export const isPODisapproveAction = (action: PO_ACTION) => {
-  return action === PO_ACTION.DISAPPROVE;
+export const isPODisapproveAction = (currentAction: PO_ACTION) => {
+  return currentAction === PO_ACTION.DISAPPROVE;
 };
-export const isPOAdditionalInfoAction = (action: PO_ACTION) => {
-  return action === PO_ACTION.ADDITIONAL_INFO;
-};
-
-export const isPIPendingSubmittalPOStatus = (status: PO_DETAIL_STATUS) => {
-  return status === PO_DETAIL_STATUS.PI_PENDING_SUBMITTAL;
-};
-export const isFAPendingApprovalPOStatus = (status: PO_DETAIL_STATUS) => {
-  return status === PO_DETAIL_STATUS.FA_PENDING_APPROVAL;
-};
-export const isPIAdditionalInfoRequestedPOStatus = (status: PO_DETAIL_STATUS) => {
-  return status === PO_DETAIL_STATUS.PI_ADDITIONAL_INFO_REQUESTED;
-};
-export const isPIDisapprovedPOStatus = (status: PO_DETAIL_STATUS) => {
-  return status === PO_DETAIL_STATUS.PI_DISAPPROVED;
-};
-export const isFAAdditionalInfoRequestedPOStatus = (status: PO_DETAIL_STATUS) => {
-  return status === PO_DETAIL_STATUS.FA_ADDITIONAL_INFO_REQUESTED_RCUH;
-};
-export const isRCUHPendingRCUHApprovalPOStatus = (status: PO_DETAIL_STATUS) => {
-  return status === PO_DETAIL_STATUS.RCUH_PENDING_RCUH_APPROVAL;
-};
-export const isFinalPOStatus = (status: PO_DETAIL_STATUS) => {
-  return status === PO_DETAIL_STATUS.FINAL;
+export const isPOAdditionalInfoAction = (currentAction: PO_ACTION) => {
+  return currentAction === PO_ACTION.ADDITIONAL_INFO;
 };
 
-export const isCreatePOMode = (action: PO_MODE) => {
-  return action === PO_MODE.CREATE;
+export const isPIPendingSubmittalPOStatus = (currentPOStatus: PO_DETAIL_STATUS) => {
+  return currentPOStatus === PO_DETAIL_STATUS.PI_PENDING_SUBMITTAL;
 };
-export const isPiSuEditPOMode = (action: PO_MODE) => {
-  return action === PO_MODE.PI_SU_EDIT_PENDING_SUBMITTAL;
+export const isFAPendingApprovalPOStatus = (currentPOStatus: PO_DETAIL_STATUS) => {
+  return currentPOStatus === PO_DETAIL_STATUS.FA_PENDING_APPROVAL;
 };
-export const isViewOnlyPOMode = (action: PO_MODE) => {
-  return action === PO_MODE.VIEW_ONLY;
+export const isPIAdditionalInfoRequestedPOStatus = (currentPOStatus: PO_DETAIL_STATUS) => {
+  return currentPOStatus === PO_DETAIL_STATUS.PI_ADDITIONAL_INFO_REQUESTED;
 };
-export const isFinalPOMode = (action: PO_MODE) => {
-  return action === PO_MODE.FINAL;
+export const isPIDisapprovedPOStatus = (currentPOStatus: PO_DETAIL_STATUS) => {
+  return currentPOStatus === PO_DETAIL_STATUS.PI_DISAPPROVED;
 };
-export const isFAReviewPOMode = (action: PO_MODE) => {
-  return action === PO_MODE.FA_REVIEW;
+export const isFAAdditionalInfoRequestedPOStatus = (currentPOStatus: PO_DETAIL_STATUS) => {
+  return currentPOStatus === PO_DETAIL_STATUS.FA_ADDITIONAL_INFO_REQUESTED_RCUH;
 };
-export const isCUReviewPOMode = (action: PO_MODE) => {
-  return action === PO_MODE.CU_REVIEW;
+export const isRCUHPendingRCUHApprovalPOStatus = (currentPOStatus: PO_DETAIL_STATUS) => {
+  return currentPOStatus === PO_DETAIL_STATUS.RCUH_PENDING_RCUH_APPROVAL;
+};
+export const isFinalPOStatus = (currentPOStatus: PO_DETAIL_STATUS) => {
+  return currentPOStatus === PO_DETAIL_STATUS.FINAL;
+};
+
+export const isCreatePOMode = (currentMode: PO_MODE) => {
+  return currentMode === PO_MODE.CREATE;
+};
+export const isPiSuEditPOMode = (currentMode: PO_MODE) => {
+  return currentMode === PO_MODE.PI_SU_EDIT_PENDING_SUBMITTAL;
+};
+export const isViewOnlyPOMode = (currentMode: PO_MODE) => {
+  return currentMode === PO_MODE.VIEW_ONLY;
+};
+export const isFinalPOMode = (currentMode: PO_MODE) => {
+  return currentMode === PO_MODE.FINAL;
+};
+export const isFAReviewPOMode = (currentMode: PO_MODE) => {
+  return currentMode === PO_MODE.FA_REVIEW;
+};
+export const isCUReviewPOMode = (currentMode: PO_MODE) => {
+  return currentMode === PO_MODE.CU_REVIEW;
 };
 
 export const getExternalLinkFromFormCode = (formCode: PO_ADDITIONAL_FORM_CODE) => {

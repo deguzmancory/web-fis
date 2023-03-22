@@ -8,11 +8,16 @@ import {
   RadioButton,
 } from 'src/components/common';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
-import { PO_FORM_KEY } from '../enums';
+import { PO_FORM_KEY, PO_MODE } from '../enums';
+import { isCUReviewPOMode, isFAReviewPOMode } from '../helpers';
 import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
 import { fedAttachmentOptions, FED_ATTACHMENT_VALUE, MAX_TAX_NUMBER } from './helpers';
 
-const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
+const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPOMode }) => {
+  const isFAReviewMode = isFAReviewPOMode(currentPOMode);
+  const isCUReviewMode = isCUReviewPOMode(currentPOMode);
+  const isReviewMode = isFAReviewMode || isCUReviewMode;
+
   const { values, errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } =
     formikProps;
 
@@ -69,7 +74,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
             label="Confirming Purchase Order (Do not duplicate this order. This P.O is a formal authorization for an order sent earlier.)"
             {...getFieldProps(PO_FORM_KEY.CONFIRMING)}
             errorMessage={_getErrorMessage(PO_FORM_KEY.CONFIRMING)}
-            disabled={disabled}
+            disabled={disabled || isReviewMode}
           />
         </Box>
         <Box mb={2}>
@@ -77,7 +82,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
             label="RCUH considers this P.O. exempt from the Hawaii General Excise Tax."
             {...getFieldProps(PO_FORM_KEY.GET_EXEMPT)}
             errorMessage={_getErrorMessage(PO_FORM_KEY.GET_EXEMPT)}
-            disabled={disabled}
+            disabled={disabled || isReviewMode}
           />
         </Box>
         <Box mb={2}>
@@ -100,7 +105,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
             label="Attachment 31, General Terms and Conditions Applicable to All Purchase Orders"
             {...getFieldProps(PO_FORM_KEY.ATTACHMENT_31)}
             errorMessage={_getErrorMessage(PO_FORM_KEY.ATTACHMENT_31)}
-            disabled={disabled}
+            disabled={disabled || isReviewMode}
           />
         </Box>
         <Box mb={2}>
@@ -118,7 +123,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
                       {...getUncontrolledFieldProps(PO_FORM_KEY.UH_SUBAWARD_NUMBER)}
                       errorMessage={_getErrorMessage(PO_FORM_KEY.UH_SUBAWARD_NUMBER)}
                       // disabled={values.fedAttachment !== FED_ATTACHMENT_VALUE.UH_SUBAWARD}
-                      disabled={disabled}
+                      disabled={disabled || isReviewMode}
                     />
                   </Box>
                 ),
@@ -128,6 +133,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
             errorMessage={_getErrorMessage(PO_FORM_KEY.FED_ATTACHMENT)}
             onChange={setFieldValue}
             itemClassName="mb-except-last-16"
+            disabled={disabled || isReviewMode}
           />
         </Box>
       </Grid>
@@ -155,7 +161,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
               lengthShowTooltip={8}
               type="number"
               hideArrowTypeNumber
-              disabled={disabled}
+              disabled={disabled || isReviewMode}
             />
           </Grid>
           <Grid item xs={2} className="justify-flex-end">
@@ -167,7 +173,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
               onChange={handleTaxTotalChange}
               textAlign="right"
               lengthShowTooltip={14}
-              disabled={disabled}
+              disabled={disabled || isReviewMode}
             />
           </Grid>
           <Grid item xs={8} className="justify-flex-end">
@@ -181,7 +187,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
               onChange={setFieldValue}
               textAlign="right"
               lengthShowTooltip={14}
-              disabled={disabled}
+              disabled={disabled || isReviewMode}
             />
           </Grid>
           <Grid item xs={12}>
@@ -209,6 +215,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
 interface Props {
   formikProps: UpsertPOFormikProps;
   disabled?: boolean;
+  currentPOMode: PO_MODE;
 }
 
 export default React.memo(PurchaseInfo, (prevProps, nextProps) => {

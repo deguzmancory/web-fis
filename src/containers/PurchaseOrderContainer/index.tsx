@@ -5,13 +5,12 @@ import { Location } from 'history';
 import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
-import { NO_OPENER } from 'src/appConfig/constants';
 import { PATHS } from 'src/appConfig/paths';
-import { Button, Link, LoadingCommon } from 'src/components/common';
+import { Button, LoadingCommon } from 'src/components/common';
 import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundary';
 import NoPermission from 'src/components/NoPermission';
 import { useCreatePO, useGetPODetail, useProfile, useUpdatePO } from 'src/queries';
-import { ROLE_NAME } from 'src/queries/Profile/helpers';
+import { isPI, isSU, ROLE_NAME } from 'src/queries/Profile/helpers';
 import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
@@ -37,6 +36,7 @@ import { PO_ACTION, PO_FORM_KEY, SUBMITTED_PO_QUERY } from './enums';
 import ErrorWrapperPO from './ErrorWrapper/index.';
 import ExternalSpecialInstructions from './ExternalSpecialInstructions';
 import GeneralInfo from './GeneralInfo';
+import HeaderOfSection from './headerOfSection';
 import {
   getCurrentPOEditMode,
   getInitialPOFormValue,
@@ -45,12 +45,14 @@ import {
   getUpsertPOPayload,
   isCUReviewPOMode,
   isFAReviewPOMode,
+  isFinalPOMode,
   isPiSuEditPOMode,
   isPOAdditionalInfoAction,
   isPOApprovedAction,
   isPODisapproveAction,
   isPOSaveAction,
   isPOSubmitAction,
+  isViewOnlyPOMode,
 } from './helpers';
 import InternalComments from './InternalComments';
 import InternalSpecialInstructions from './InternalSpecialInstructions';
@@ -88,6 +90,11 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   const showDisapproveButton = isFAReviewPOMode(currentPOMode);
   const showRequestMoreInfoButton =
     isFAReviewPOMode(currentPOMode) || isCUReviewPOMode(currentPOMode);
+  const showSaveButton = !isViewOnlyPOMode(currentPOMode);
+  const showSubmitToFAButton = !isEditPOMode || isPiSuEditPOMode(currentPOMode);
+  const showViewVendorPrintModeButton = isFinalPOMode(currentPOMode);
+  const showCloneDocumentButton =
+    isFinalPOMode(currentPOMode) && (isPI(currentRole) || isSU(currentRole));
 
   const { profile } = useProfile();
   const { onGetPOById } = useGetPODetail({
@@ -297,6 +304,14 @@ const PurchaseOrderContainer: React.FC<Props> = ({
     });
   };
 
+  const handleViewVendorPrintMode = () => {
+    //TODO: implement
+  };
+
+  const handleCloneDocument = () => {
+    //TODO: implement
+  };
+
   // handle submit form after updated the form's validation schema
   React.useEffect(() => {
     if (formAction && isTriedSubmit) {
@@ -353,49 +368,57 @@ const PurchaseOrderContainer: React.FC<Props> = ({
               </SectionLayout>
             ) : (
               <>
-                <SectionLayout
-                  header={
-                    <Stack direction={'row'} alignItems={'center'} justifyContent="end">
-                      <Typography>
-                        <span className="has-text-danger fw-bold text-is-16">**</span> = required to
-                        Save
-                      </Typography>
-                      <Typography mx={1}>
-                        <span className="has-text-danger fw-bold text-is-16">*</span> = required to
-                        Submit/Approve RCUH
-                      </Typography>
-                      <Link
-                        href="https://www.rcuh.com/2-000/2-200/2-201/"
-                        target={'_blank'}
-                        rel={NO_OPENER}
-                      >
-                        RCUH Policy 2.201
-                      </Link>
-                    </Stack>
-                  }
-                >
-                  <GeneralInfo formikProps={formikProps} />
+                <SectionLayout header={<HeaderOfSection />}>
+                  <GeneralInfo
+                    formikProps={formikProps}
+                    disabled={isViewOnlyPOMode(currentPOMode)}
+                    currentPOMode={currentPOMode}
+                  />
                 </SectionLayout>
                 <SectionLayout>
-                  <TableLineItems formikProps={formikProps} />
+                  <TableLineItems
+                    formikProps={formikProps}
+                    disabled={isViewOnlyPOMode(currentPOMode)}
+                    currentPOMode={currentPOMode}
+                  />
                 </SectionLayout>
                 <SectionLayout>
-                  <PurchaseInfo formikProps={formikProps} />
+                  <PurchaseInfo
+                    formikProps={formikProps}
+                    disabled={isViewOnlyPOMode(currentPOMode)}
+                    currentPOMode={currentPOMode}
+                  />
                 </SectionLayout>
                 <SectionLayout>
-                  <AdditionalForms formikProps={formikProps} />
+                  <AdditionalForms
+                    formikProps={formikProps}
+                    disabled={isViewOnlyPOMode(currentPOMode)}
+                  />
                 </SectionLayout>
                 <SectionLayout>
-                  <InternalSpecialInstructions formikProps={formikProps} />
+                  <InternalSpecialInstructions
+                    formikProps={formikProps}
+                    disabled={isViewOnlyPOMode(currentPOMode)}
+                  />
                 </SectionLayout>
                 <SectionLayout>
-                  <ExternalSpecialInstructions formikProps={formikProps} />
+                  <ExternalSpecialInstructions
+                    formikProps={formikProps}
+                    disabled={isViewOnlyPOMode(currentPOMode)}
+                  />
                 </SectionLayout>
                 <SectionLayout>
-                  <SendInvoiceInfo formikProps={formikProps} />
+                  <SendInvoiceInfo
+                    formikProps={formikProps}
+                    disabled={isViewOnlyPOMode(currentPOMode)}
+                    currentPOMode={currentPOMode}
+                  />
                 </SectionLayout>
                 <SectionLayout>
-                  <AuthorizedBy formikProps={formikProps} />
+                  <AuthorizedBy
+                    formikProps={formikProps}
+                    disabled={isViewOnlyPOMode(currentPOMode)}
+                  />
                 </SectionLayout>
                 {isEditPOMode && (
                   <SectionLayout>
@@ -403,7 +426,10 @@ const PurchaseOrderContainer: React.FC<Props> = ({
                   </SectionLayout>
                 )}
                 <SectionLayout>
-                  <InternalComments formikProps={formikProps} />
+                  <InternalComments
+                    formikProps={formikProps}
+                    disabled={isViewOnlyPOMode(currentPOMode)}
+                  />
                 </SectionLayout>
               </>
             )}
@@ -421,6 +447,16 @@ const PurchaseOrderContainer: React.FC<Props> = ({
                 disabled={isLoading}
               >
                 Delete
+              </Button>
+            )}
+            {showViewVendorPrintModeButton && (
+              <Button onClick={handleViewVendorPrintMode} disabled={isLoading} className="mr-8">
+                Vendor Print Mode
+              </Button>
+            )}
+            {showCloneDocumentButton && (
+              <Button onClick={handleCloneDocument} disabled={isLoading} className="mr-8">
+                Clone Document
               </Button>
             )}
             {showApproveButton && (
@@ -453,21 +489,25 @@ const PurchaseOrderContainer: React.FC<Props> = ({
                 Request More Info
               </Button>
             )}
-            <Button
-              onClick={() => handleSubmitButtonClick({ action: PO_ACTION.SAVE })}
-              isLoading={isLoading && isPOSaveAction(formAction)}
-              disabled={isLoading}
-              className="mr-8"
-            >
-              Save
-            </Button>
-            <Button
-              onClick={() => handleSubmitButtonClick({ action: PO_ACTION.SUBMIT })}
-              isLoading={isLoading && isPOSubmitAction(formAction)}
-              disabled={isLoading}
-            >
-              Submit to FA
-            </Button>
+            {showSaveButton && (
+              <Button
+                onClick={() => handleSubmitButtonClick({ action: PO_ACTION.SAVE })}
+                isLoading={isLoading && isPOSaveAction(formAction)}
+                disabled={isLoading}
+                className="mr-8"
+              >
+                Save
+              </Button>
+            )}
+            {showSubmitToFAButton && (
+              <Button
+                onClick={() => handleSubmitButtonClick({ action: PO_ACTION.SUBMIT })}
+                isLoading={isLoading && isPOSubmitAction(formAction)}
+                disabled={isLoading}
+              >
+                Submit to FA
+              </Button>
+            )}
           </Stack>
         </Container>
       </Box>

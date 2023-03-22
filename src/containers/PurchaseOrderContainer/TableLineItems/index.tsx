@@ -15,11 +15,16 @@ import {
   isEqualPrevAndNextFormikValues,
 } from 'src/utils';
 import { initialLineItemValue } from '../constants';
-import { PO_FORM_KEY, PO_LINE_ITEM_KEY } from '../enums';
+import { PO_FORM_KEY, PO_LINE_ITEM_KEY, PO_MODE } from '../enums';
 import { isVariousProject } from '../GeneralInfo/helpers';
+import { isCUReviewPOMode, isFAReviewPOMode } from '../helpers';
 import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
 
-const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
+const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, currentPOMode }) => {
+  const isFAReviewMode = isFAReviewPOMode(currentPOMode);
+  const isCUReviewMode = isCUReviewPOMode(currentPOMode);
+  const isReviewMode = isFAReviewMode || isCUReviewMode;
+
   const { values, errors, touched, setFieldValue, getFieldProps } = formikProps;
 
   const lineItemsValue = React.useMemo(() => values.lineItems, [values.lineItems]);
@@ -179,7 +184,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
               }
               style={{ width: 90 }}
               lengthShowTooltip={8}
-              disabled={disabled}
+              disabled={disabled || isCUReviewMode}
               required
             />
           ),
@@ -202,7 +207,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
               style={{ width: hideProjectNumberColumn ? 90 : 75 }}
               hideEllipsisTooltip
               maxLength={5}
-              disabled={disabled}
+              disabled={disabled || isCUReviewMode}
             />
           ),
           width: hideProjectNumberColumn ? 90 : 75,
@@ -226,7 +231,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
               style={{ width: hideProjectNumberColumn ? 90 : 75 }}
               hideEllipsisTooltip
               maxLength={4}
-              disabled={disabled}
+              disabled={disabled || isCUReviewMode}
               required
             />
           ),
@@ -248,7 +253,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
               style={{ width: hideProjectNumberColumn ? 90 : 75 }}
               hideEllipsisTooltip
               maxLength={3}
-              disabled={disabled}
+              disabled={disabled || isCUReviewMode}
             />
           ),
           width: hideProjectNumberColumn ? 90 : 75,
@@ -269,7 +274,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
               }
               required
               style={{ width: hideProjectNumberColumn ? 240 : 200, paddingTop: '4px' }}
-              disabled={disabled}
+              disabled={disabled || isCUReviewMode}
             />
           ),
         },
@@ -293,7 +298,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
               style={{ width: 80 }}
               lengthShowTooltip={7}
               hideArrowTypeNumber
-              disabled={disabled}
+              disabled={disabled || isReviewMode}
             />
           ),
           width: 80,
@@ -313,7 +318,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
               }
               style={{ width: 80 }}
               lengthShowTooltip={7}
-              disabled={disabled}
+              disabled={disabled || isReviewMode}
             />
           ),
           width: 80,
@@ -336,7 +341,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
               }
               textAlign="right"
               lengthShowTooltip={14}
-              disabled={disabled}
+              disabled={disabled || isReviewMode}
             />
           ),
         },
@@ -365,11 +370,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
 
   return (
     <Box>
-      {/* //todo: implement validation */}
-      <CustomTable.Basic
-        bodyList={lineItemRows}
-        errorMessage={tableError} // validation for table
-      />
+      <CustomTable.Basic bodyList={lineItemRows} errorMessage={tableError} />
     </Box>
   );
 };
@@ -377,6 +378,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
 type Props = {
   formikProps: UpsertPOFormikProps;
   disabled?: boolean;
+  currentPOMode: PO_MODE;
 };
 
 export default React.memo(TableLineItems, (prevProps, nextProps) => {

@@ -12,15 +12,17 @@ import { showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { Navigator } from 'src/services';
 import { getDateDisplay, getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
-import { PO_FORM_KEY } from '../enums';
+import { PO_FORM_KEY, PO_MODE } from '../enums';
+import { isCUReviewPOMode, isFAReviewPOMode } from '../helpers';
 import usePOSearchProject, { SearchProjectsType } from '../hooks/usePOSearchProject';
 import usePOSearchVender, { SearchVendorsType } from '../hooks/usePOSearchVender';
 import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
 import { isVariousProject, shipViaOptions, VARIOUS_PROJECT_VALUE } from './helpers';
 import SuperQuote from './superQuote';
 
-const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
+const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPOMode }) => {
   const dispatch = useDispatch();
+  const inReviewMode = isFAReviewPOMode(currentPOMode) || isCUReviewPOMode(currentPOMode);
 
   const {
     values,
@@ -41,9 +43,6 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
 
   const { setSearchVendors, isLoadingSearchVendors, vendorNameOptions, vendorCodeOptions } =
     usePOSearchVender({ currentVendorName, currentVendorCode });
-
-  // const { contents } = useContents();
-  // const shipViaOptions = getContentOptions(contents, 'shipVia');
 
   const updateProjectFields = (value: FinancialProject) => {
     setFieldValue(PO_FORM_KEY.PROJECT_TITLE, value);
@@ -88,7 +87,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
   };
 
   const handleImportSuperQuoteClick = () => {
-    if (disabled) return;
+    if (disabled || inReviewMode) return;
 
     dispatch(
       showDialog({
@@ -181,7 +180,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
               isClearable={true}
               onChange={(_name, value) => updateProjectFields(value)}
               optionWithSubLabel
-              isDisabled={disabled}
+              isDisabled={disabled || inReviewMode}
               footer={
                 <Typography variant="body2">
                   Use “Various" if you want to use multiple projects.
@@ -221,7 +220,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
               isClearable={true}
               onChange={(_name, value) => updateProjectFields(value)}
               optionWithSubLabel
-              isDisabled={disabled}
+              isDisabled={disabled || inReviewMode}
               menuOptionPosition="right"
             />
           </Grid>
@@ -288,7 +287,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
               isClearable={true}
               onChange={(_name, value) => updateVendorFields(value)}
               optionWithSubLabel
-              isDisabled={disabled}
+              isDisabled={disabled || inReviewMode}
               menuStyle={{
                 width: '800px',
               }}
@@ -348,7 +347,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
               isClearable={true}
               onChange={(_name, value) => updateVendorFields(value)}
               optionWithSubLabel
-              isDisabled={disabled}
+              isDisabled={disabled || inReviewMode}
             />
           </Grid>
 
@@ -358,7 +357,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
               required
               errorMessage={_getErrorMessage(PO_FORM_KEY.VENDOR_ADDRESS)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.VENDOR_ADDRESS)}
-              disabled={disabled}
+              disabled={disabled || inReviewMode}
               style={{ minHeight: '100px' }}
             />
           </Grid>
@@ -368,7 +367,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
               required
               errorMessage={_getErrorMessage(PO_FORM_KEY.SHIP_TO)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.SHIP_TO)}
-              disabled={disabled}
+              disabled={disabled || inReviewMode}
               style={{ minHeight: '100px' }}
             />
           </Grid>
@@ -379,7 +378,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
               label={'Ship Via'}
               placeholder={'Select'}
               options={shipViaOptions}
-              isDisabled={disabled}
+              isDisabled={disabled || inReviewMode}
               onChange={setFieldValue}
               isSearchable={false}
               hideSearchIcon
@@ -390,7 +389,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
               label={'Ship Via Instructions'}
               errorMessage={_getErrorMessage(PO_FORM_KEY.SHIP_OTHER)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.SHIP_OTHER)}
-              disabled={disabled}
+              disabled={disabled || inReviewMode}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -398,7 +397,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
               label={'Delivery Required By'}
               errorMessage={_getErrorMessage(PO_FORM_KEY.DELIVERY_BY)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.DELIVERY_BY)}
-              disabled={disabled}
+              disabled={disabled || inReviewMode}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -406,7 +405,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
               label={'Discount Terms'}
               errorMessage={_getErrorMessage(PO_FORM_KEY.DISCOUNT_TERMS)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.DISCOUNT_TERMS)}
-              disabled={disabled}
+              disabled={disabled || inReviewMode}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -414,7 +413,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
               label={'Quotation No.'}
               errorMessage={_getErrorMessage(PO_FORM_KEY.QUOTATION_NUMBER)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.QUOTATION_NUMBER)}
-              disabled={disabled}
+              disabled={disabled || inReviewMode}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -453,6 +452,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
 type Props = {
   formikProps: UpsertPOFormikProps;
   disabled?: boolean;
+  currentPOMode: PO_MODE;
 };
 
 export default React.memo(GeneralInfo, (prevProps, nextProps) => {
