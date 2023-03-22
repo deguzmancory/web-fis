@@ -119,13 +119,14 @@ export enum PO_LINE_ITEM_KEY {
 }
 
 export enum PO_ACTION {
+  //for payload and state purpose
   SAVE = 'save',
   SUBMIT = 'submit',
   APPROVE = 'approve',
   DISAPPROVE = 'disapprove',
   ADDITIONAL_INFO = 'additionalInfo',
 
-  //for loading purpose
+  //for state purpose
   DELETE = 'delete',
 }
 

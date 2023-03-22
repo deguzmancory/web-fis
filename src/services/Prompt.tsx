@@ -2,10 +2,10 @@ import React from 'react';
 import { Beforeunload } from 'react-beforeunload';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import RouteLeavingGuard from 'src/components/RouteLeavingGuard';
+import { Callback } from 'src/redux/types';
 
 const Prompt: React.FC<Props> = ({
   history,
-  condition,
   children,
   message,
   title,
@@ -14,6 +14,8 @@ const Prompt: React.FC<Props> = ({
   cancelOkText,
   cancelText,
   confirmExitTabName,
+  condition,
+  onConfirmNavigationClick,
 }) => {
   return (
     <Beforeunload onBeforeunload={() => "You'll lose your data!"}>
@@ -27,6 +29,7 @@ const Prompt: React.FC<Props> = ({
         cancelOkText={cancelOkText}
         cancelText={cancelText}
         confirmExitTabName={confirmExitTabName}
+        onConfirmNavigationClick={onConfirmNavigationClick}
       />
       {children}
     </Beforeunload>
@@ -36,7 +39,6 @@ const Prompt: React.FC<Props> = ({
 type BaseProps = {};
 
 type Props = RouteComponentProps<BaseProps> & {
-  condition?: (location: any) => boolean;
   history?: any;
   children?: any;
   message?: string;
@@ -46,6 +48,8 @@ type Props = RouteComponentProps<BaseProps> & {
   cancelOkText?: string;
   cancelText?: string;
   confirmExitTabName?: any;
+  condition?: (location: any) => boolean;
+  onConfirmNavigationClick?: Callback;
 };
 
 export default withRouter(Prompt);

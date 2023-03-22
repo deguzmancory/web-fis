@@ -280,7 +280,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   }, [errors]);
 
   // set form action states for updating form's validation schema purpose
-  const handleSubmitButtonClick = ({ action }: { action: PO_ACTION }) => {
+  const handleSubmitClick = ({ action }: { action: PO_ACTION }) => {
     setFieldValue(PO_FORM_KEY.ACTION, action);
     setFormAction(action);
     setIsTriedSubmit(true);
@@ -288,8 +288,16 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   };
 
   const handleCancelClick = () => {
+    if (isEmpty(touched)) {
+      Navigator.navigate(PATHS.dashboard);
+      onSetFormData(null);
+    } else {
+      Navigator.navigate(PATHS.dashboard);
+    }
+  };
+
+  const handleConfirmCancel = () => {
     onSetFormData(null);
-    Navigator.navigate(PATHS.dashboard);
   };
 
   const handleDeleteClick = () => {
@@ -351,9 +359,10 @@ const PurchaseOrderContainer: React.FC<Props> = ({
     <Prompt
       title={'Leave site?'}
       message={'There are unsaved changes on the Form. Are you sure you want to leave this page?'}
-      condition={blockCondition}
       cancelOkText="Yes, leave"
       cancelText="No, stay"
+      condition={blockCondition}
+      onConfirmNavigationClick={handleConfirmCancel}
     >
       <Box py={4}>
         <Container maxWidth="lg">
@@ -436,7 +445,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
           </Suspense>
 
           <Stack my={4} flexDirection={'row'} justifyContent="center">
-            <Button variant="outline" className="mr-8" onClick={handleCancelClick}>
+            <Button variant="outline" className="mr-8" onClick={() => handleCancelClick()}>
               Cancel
             </Button>
             {showDeleteButton && (
@@ -461,7 +470,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
             )}
             {showApproveButton && (
               <Button
-                onClick={() => handleSubmitButtonClick({ action: PO_ACTION.APPROVE })}
+                onClick={() => handleSubmitClick({ action: PO_ACTION.APPROVE })}
                 isLoading={isLoading && isPOApprovedAction(formAction)}
                 disabled={isLoading}
                 className="mr-8"
@@ -471,7 +480,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
             )}
             {showDisapproveButton && (
               <Button
-                onClick={() => handleSubmitButtonClick({ action: PO_ACTION.DISAPPROVE })}
+                onClick={() => handleSubmitClick({ action: PO_ACTION.DISAPPROVE })}
                 isLoading={isLoading && isPODisapproveAction(formAction)}
                 disabled={isLoading}
                 className="mr-8"
@@ -481,7 +490,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
             )}
             {showRequestMoreInfoButton && (
               <Button
-                onClick={() => handleSubmitButtonClick({ action: PO_ACTION.ADDITIONAL_INFO })}
+                onClick={() => handleSubmitClick({ action: PO_ACTION.ADDITIONAL_INFO })}
                 isLoading={isLoading && isPOAdditionalInfoAction(formAction)}
                 disabled={isLoading}
                 className="mr-8"
@@ -491,7 +500,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
             )}
             {showSaveButton && (
               <Button
-                onClick={() => handleSubmitButtonClick({ action: PO_ACTION.SAVE })}
+                onClick={() => handleSubmitClick({ action: PO_ACTION.SAVE })}
                 isLoading={isLoading && isPOSaveAction(formAction)}
                 disabled={isLoading}
                 className="mr-8"
@@ -501,7 +510,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
             )}
             {showSubmitToFAButton && (
               <Button
-                onClick={() => handleSubmitButtonClick({ action: PO_ACTION.SUBMIT })}
+                onClick={() => handleSubmitClick({ action: PO_ACTION.SUBMIT })}
                 isLoading={isLoading && isPOSubmitAction(formAction)}
                 disabled={isLoading}
               >
