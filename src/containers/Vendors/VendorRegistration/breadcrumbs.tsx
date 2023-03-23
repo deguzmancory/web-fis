@@ -3,11 +3,12 @@ import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import TypographyLink from 'src/components/TypographyLink';
+import { VENDOR_REGISTRATION_NAVIGATE_FROM } from './enums';
 
 const BreadcrumbsVendorRegistration: React.FC<Props> = ({ isFrom }) => {
   const getSubLink = React.useCallback((): Array<React.ReactElement> => {
     switch (isFrom) {
-      case 'PO':
+      case VENDOR_REGISTRATION_NAVIGATE_FROM.PO:
         return [
           <Typography variant="body2">Purchasing (POs & PO Payments)</Typography>,
           <RouterLink to={PATHS.dashboard}>
@@ -16,7 +17,7 @@ const BreadcrumbsVendorRegistration: React.FC<Props> = ({ isFrom }) => {
           <Typography variant="body2">Create Vendor</Typography>,
         ];
 
-      case 'VIEW_VENDOR_REGISTRATION':
+      case VENDOR_REGISTRATION_NAVIGATE_FROM.VIEW_VENDOR_REGISTRATION:
         return [
           <Typography variant="body2">Miscellaneous</Typography>,
           <RouterLink to={PATHS.vendors}>
@@ -35,6 +36,7 @@ const BreadcrumbsVendorRegistration: React.FC<Props> = ({ isFrom }) => {
         ];
     }
   }, [isFrom]);
+
   return (
     <Breadcrumbs aria-label="breadcrumb">
       <RouterLink to={PATHS.dashboard}>
@@ -50,7 +52,7 @@ const BreadcrumbsVendorRegistration: React.FC<Props> = ({ isFrom }) => {
 };
 
 type Props = {
-  isFrom: 'PO' | 'NON_PO' | 'TRAVEL' | 'VIEW_VENDOR_REGISTRATION';
+  isFrom: VENDOR_REGISTRATION_NAVIGATE_FROM;
 };
 
 export default BreadcrumbsVendorRegistration;

@@ -5,6 +5,7 @@ import { LoadingCommon } from 'src/components/common';
 import { getLocationState } from 'src/utils';
 import BreadcrumbsVendorRegistration from './breadcrumbs';
 import NewVendorCheckList from './NewVendorChecklist';
+import { VendorRegistrationRouteState } from './types';
 
 const CreateVendorRegistration = React.lazy(() => import('./CreateVendorRegistration'));
 
@@ -20,7 +21,7 @@ const VendorRegistrationContainer: React.FC<Props> = ({ location }) => {
   );
 
   useLayoutEffect(() => {
-    const state = getLocationState(location);
+    const state: VendorRegistrationRouteState = getLocationState(location);
     if (state?.isFromForm) {
       setIsFromForm(state?.isFromForm);
     }
@@ -30,7 +31,7 @@ const VendorRegistrationContainer: React.FC<Props> = ({ location }) => {
   }, [location]);
 
   return (
-    <Box py={2} minHeight={'50vh'}>
+    <Box py={4} minHeight={'50vh'}>
       <Container maxWidth="lg">
         <BreadcrumbsVendorRegistration isFrom={isFromForm} />
         <Suspense fallback={<LoadingCommon />}>{currentPage}</Suspense>

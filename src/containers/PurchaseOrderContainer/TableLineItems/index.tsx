@@ -8,6 +8,7 @@ import {
 } from 'src/components/common';
 import CustomTable from 'src/components/CustomTable';
 import { BodyBasicRows, CellType } from 'src/components/CustomTable/types';
+import SearchProjectNumber from 'src/containers/shared/SearchProjectNumber';
 import { POLineItemPayload } from 'src/queries/PurchaseOrders';
 import {
   checkRowStateAndSetValue,
@@ -25,7 +26,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
   const isCUReviewMode = isCUReviewPOMode(currentPOMode);
   const isReviewMode = isFAReviewMode || isCUReviewMode;
 
-  const { values, errors, touched, setFieldValue, getFieldProps } = formikProps;
+  const { values, errors, touched, setFieldValue, getFieldProps, setFieldTouched } = formikProps;
 
   const lineItemsValue = React.useMemo(() => values.lineItems, [values.lineItems]);
   const hideProjectNumberColumn = React.useMemo(
@@ -165,6 +166,20 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
           style: {
             paddingTop: '16px',
           },
+        },
+        {
+          label: '4324S',
+          content: (
+            <SearchProjectNumber
+              fieldProps={{
+                ...getFieldProps(`${prefixLineItem}.${PO_LINE_ITEM_KEY.ITEM_PROJECT_NUMBER}`),
+              }}
+              errorMessage={_getErrorMessage(
+                `${prefixLineItem}.${PO_LINE_ITEM_KEY.ITEM_PROJECT_NUMBER}`
+              )}
+              setFieldTouched={setFieldTouched}
+            />
+          ),
         },
         {
           type: CellType.INPUT,

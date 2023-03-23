@@ -334,7 +334,15 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   }, [isTriedSubmit]);
 
   const blockCondition = (location: Location<string>) => {
-    if (location.pathname.includes(PATHS.poAdditionalForm)) {
+    const acceptablePaths = [
+      PATHS.createPurchaseOrders,
+      PATHS.purchaseOrderDetail,
+      PATHS.poAdditionalForm,
+      PATHS.addVendorRegistration,
+    ];
+    const isAcceptablePath = acceptablePaths.some((path) => location.pathname.includes(path));
+
+    if (isAcceptablePath) {
       return false;
     }
 
@@ -343,11 +351,6 @@ const PurchaseOrderContainer: React.FC<Props> = ({
     if (!success) {
       return !isEmpty(touched);
     }
-
-    const acceptablePaths = [PATHS.createPurchaseOrders, PATHS.purchaseOrderDetail];
-    const isAcceptablePath = acceptablePaths.some((path) => location.pathname.includes(path));
-
-    return !isAcceptablePath;
   };
 
   // if (!formData)

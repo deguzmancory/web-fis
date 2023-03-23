@@ -113,7 +113,6 @@ const Routing: React.FC<{ location: Location }> = (props) => {
               component={EditVendorsMaster}
             />
             <CustomRoute pageRequiredAuth path={PATHS.vendors} component={VendorsManagement} />
-
             {/* Vendors */}
 
             <CustomRoute pageRequiredAuth path={PATHS.switchUser} component={SwitchUser} />

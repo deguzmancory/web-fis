@@ -1,3 +1,4 @@
+import { PARAMS_SPLITTER } from 'src/appConfig/constants';
 import { PATHS } from 'src/appConfig/paths';
 import { MyProfile } from 'src/queries';
 import { isCU, isFA, isPI, isSU, ROLE_NAME } from 'src/queries/Profile/helpers';
@@ -526,4 +527,36 @@ export const getCurrentPOEditMode = ({
   if (checkIsViewOnlyMode({ poStatus, currentRole })) {
     return PO_MODE.VIEW_ONLY;
   }
+};
+
+export const getSearchProjectsParamsByRole = ({
+  role,
+  profile,
+}: {
+  role: ROLE_NAME;
+  profile: MyProfile;
+}): { codes: string; projectNumbers: string } | null => {
+  let roleInfo;
+
+  switch (role) {
+    case ROLE_NAME.PI:
+      roleInfo = profile.fisPiInfo;
+      break;
+    case ROLE_NAME.SU:
+      roleInfo = profile.fisSuInfo;
+      break;
+
+    default:
+      break;
+  }
+
+  if (!roleInfo) return null;
+
+  const codes = isPI(role)
+    ? profile.fisPiInfo.piCode
+    : roleInfo.userFisCodes?.map((code) => code.code).join(PARAMS_SPLITTER) ?? '';
+  const projectNumbers =
+    roleInfo.userFisProjects?.map((project) => project.projectNumber).join(PARAMS_SPLITTER) ?? '';
+
+  return { codes, projectNumbers };
 };

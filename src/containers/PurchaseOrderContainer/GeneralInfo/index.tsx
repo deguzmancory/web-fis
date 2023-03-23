@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { PATHS } from 'src/appConfig/paths';
 import { Input, InputPhone, Link, Select, TextArea } from 'src/components/common';
 import { SelectOption } from 'src/components/common/Select';
+import { VENDOR_REGISTRATION_NAVIGATE_FROM } from 'src/containers/Vendors/VendorRegistration/enums';
 import { FinancialProject } from 'src/queries/Projects/types';
 import { Vendor } from 'src/queries/Vendors';
 import { showDialog } from 'src/redux/dialog/dialogSlice';
@@ -13,7 +14,7 @@ import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { Navigator } from 'src/services';
 import { getDateDisplay, getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { PO_FORM_KEY, PO_MODE } from '../enums';
-import { isCUReviewPOMode, isFAReviewPOMode } from '../helpers';
+import { isCreatePOMode, isCUReviewPOMode, isFAReviewPOMode, isPiSuEditPOMode } from '../helpers';
 import usePOSearchProject, { SearchProjectsType } from '../hooks/usePOSearchProject';
 import usePOSearchVender, { SearchVendorsType } from '../hooks/usePOSearchVender';
 import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
@@ -23,6 +24,7 @@ import SuperQuote from './superQuote';
 const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPOMode }) => {
   const dispatch = useDispatch();
   const inReviewMode = isFAReviewPOMode(currentPOMode) || isCUReviewPOMode(currentPOMode);
+  const showActionLink = isCreatePOMode(currentPOMode) || isPiSuEditPOMode(currentPOMode);
 
   const {
     values,
@@ -81,8 +83,8 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
   };
 
   const handleCreateNewVenderLinkClick = () => {
-    Navigator.navigate(PATHS.addVendorRegistration, {
-      isFromForm: 'PO',
+    Navigator.navigate(`${PATHS.addVendorRegistration}?calling`, {
+      isFromForm: VENDOR_REGISTRATION_NAVIGATE_FROM.PO,
     });
   };
 
@@ -248,14 +250,16 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               {...getFieldProps(PO_FORM_KEY.SUPER_QUOTE_NUMBER)}
               disabled
               footer={
-                <Link
-                  type="icon-link"
-                  icon={<Add fontSize="small" />}
-                  textVariant="body2"
-                  onClick={handleImportSuperQuoteClick}
-                >
-                  Import from SuperQUOTE
-                </Link>
+                showActionLink ? (
+                  <Link
+                    type="icon-link"
+                    icon={<Add fontSize="small" />}
+                    textVariant="body2"
+                    onClick={handleImportSuperQuoteClick}
+                  >
+                    Import from SuperQUOTE
+                  </Link>
+                ) : null
               }
             />
           </Grid>
@@ -298,14 +302,16 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
                 width: '30%',
               }}
               footer={
-                <Link
-                  type="icon-link"
-                  icon={<Add fontSize="small" />}
-                  textVariant="body2"
-                  onClick={handleCreateNewVenderLinkClick}
-                >
-                  Create New Vendor
-                </Link>
+                showActionLink ? (
+                  <Link
+                    type="icon-link"
+                    icon={<Add fontSize="small" />}
+                    textVariant="body2"
+                    onClick={handleCreateNewVenderLinkClick}
+                  >
+                    Create New Vendor
+                  </Link>
+                ) : null
               }
             />
           </Grid>

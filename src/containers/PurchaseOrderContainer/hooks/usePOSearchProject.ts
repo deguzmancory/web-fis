@@ -1,11 +1,11 @@
 import React from 'react';
-import { PARAMS_SPLITTER } from 'src/appConfig/constants';
 import { SelectOption } from 'src/components/common/Select';
 import { useProfile } from 'src/queries';
-import { isPI, ROLE_NAME } from 'src/queries/Profile/helpers';
+import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { useGetFinancialProjects } from 'src/queries/Projects';
 import { RoleService } from 'src/services';
 import { getFinancialProjectOptions } from '../GeneralInfo/helpers';
+import { getSearchProjectsParamsByRole } from '../helpers';
 
 export type SearchProjectsType = {
   title: string;
@@ -46,39 +46,9 @@ const usePOSearchProject = ({ currentProjectTitle, currentProjectNumber }) => {
     });
   }, [financialProjects, searchProjects.number, currentProjectNumber, isLoadingSearchProjects]);
 
-  const getSearchProjectsParamsByRole = React.useCallback(
-    (role: ROLE_NAME): { codes: string; projectNumbers: string } | null => {
-      let roleInfo;
-
-      switch (role) {
-        case ROLE_NAME.PI:
-          roleInfo = profile.fisPiInfo;
-          break;
-        case ROLE_NAME.SU:
-          roleInfo = profile.fisSuInfo;
-          break;
-
-        default:
-          break;
-      }
-
-      if (!roleInfo) return null;
-
-      const codes = isPI(role)
-        ? profile.fisPiInfo.piCode
-        : roleInfo.userFisCodes?.map((code) => code.code).join(PARAMS_SPLITTER) ?? '';
-      const projectNumbers =
-        roleInfo.userFisProjects?.map((project) => project.projectNumber).join(PARAMS_SPLITTER) ??
-        '';
-
-      return { codes, projectNumbers };
-    },
-    [profile]
-  );
-
   const searchProjectsParams = React.useMemo(
-    () => getSearchProjectsParamsByRole(currentUserRole),
-    [getSearchProjectsParamsByRole, currentUserRole]
+    () => getSearchProjectsParamsByRole({ profile, role: currentUserRole }),
+    [currentUserRole, profile]
   );
 
   // fetch options on search title input change

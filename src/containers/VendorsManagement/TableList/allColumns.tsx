@@ -4,6 +4,7 @@ import { MUIDataTableColumn, MUIDataTableMeta } from 'mui-datatables';
 import { PATHS } from 'src/appConfig/paths';
 import { EllipsisTypographyTooltip } from 'src/components/common';
 import TypographyLink from 'src/components/TypographyLink';
+import { VENDOR_REGISTRATION_NAVIGATE_FROM } from 'src/containers/Vendors/VendorRegistration/enums';
 import { VendorList, VENDOR_KEY } from 'src/queries/Vendors';
 import { Navigator } from 'src/services';
 import { isEmpty } from 'src/validations';
@@ -36,7 +37,7 @@ export const allColumns = (): MUIDataTableColumn[] => [
 
                 Navigator.navigate(`${PATHS.addVendorRegistration}/${rowData.code}`, {
                   isViewOnly: true,
-                  isFromForm: 'VIEW_VENDOR_REGISTRATION',
+                  isFromForm: VENDOR_REGISTRATION_NAVIGATE_FROM.VIEW_VENDOR_REGISTRATION,
                 });
               }}
             >
