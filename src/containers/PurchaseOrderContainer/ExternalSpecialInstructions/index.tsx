@@ -4,11 +4,13 @@ import { RadioButton, TextareaAutosize } from 'src/components/common';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import InfoTooltip from '../../shared/InfoTooltip';
 import { PO_FORM_KEY } from '../enums';
+import { PRESET_INSTRUCTIONS } from './helpers';
 import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
 import { presetInstructionOptions } from './helpers';
 
 const ExternalSpecialInstructions: React.FC<Props> = ({ formikProps, disabled = false }) => {
-  const { errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } = formikProps;
+  const { values, errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } =
+    formikProps;
 
   const _getErrorMessage = (fieldName: PO_FORM_KEY) => {
     return getErrorMessage(fieldName, { touched, errors });
@@ -43,7 +45,9 @@ const ExternalSpecialInstructions: React.FC<Props> = ({ formikProps, disabled = 
         style={{
           width: '65%',
         }}
-        disabled={disabled}
+        disabled={
+          disabled || values.presetInstructions === PRESET_INSTRUCTIONS.TRAVEL_AGENCY_REFUND_NOTICE
+        }
       />
     </Box>
   );

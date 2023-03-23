@@ -7,6 +7,7 @@ import {
   PO_DETAIL_STATUS,
   UpsertPOPayload,
 } from 'src/queries/PurchaseOrders';
+import { PIDetail, SUDetail } from 'src/queries/Users';
 import { ErrorService, RoleService, Yup } from 'src/services';
 import {
   DateFormat,
@@ -198,7 +199,7 @@ export const getPOFormValidationSchema = ({ action }: { action: PO_ACTION }) => 
 };
 
 export const getInitialPOFormValue = ({ profile }: { profile: MyProfile }): UpsertPOFormValue => {
-  const roleInfo = getRoleInfoOfProfile({ profile });
+  const roleInfo = getRoleInfoOfProfile({ profile }) as SUDetail | PIDetail;
 
   const shipTo = roleInfo
     ? `${roleInfo.sendInvoiceTo && `${roleInfo.sendInvoiceTo}\n`}${
@@ -218,6 +219,9 @@ export const getInitialPOFormValue = ({ profile }: { profile: MyProfile }): Upse
     loginName: profile.username,
     date: localTimeToHawaii(new Date(), DateFormat),
     shipTo: shipTo,
+    directInquiriesTo: roleInfo?.directInquiriesTo || '',
+    phoneNumber: roleInfo?.phoneNumber || '',
+    faStaffReviewer: roleInfo?.faStaffToReview || '',
     action: null,
   };
 };

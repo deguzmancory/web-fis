@@ -89,7 +89,7 @@ const EditProfile: React.FC<Props> = ({
     const fisPiInfo = profile.fisPiInfo
       ? {
           ...profile.fisPiInfo,
-          profileFisCodes: profile.fisPiInfo.piCode
+          userFisCodes: profile.fisPiInfo.piCode
             ? [{ code: profile.fisPiInfo.piCode, codeType: ROLE_NAME.PI }]
             : [],
         }
