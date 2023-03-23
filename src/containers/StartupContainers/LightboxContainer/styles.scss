@@ -1,0 +1,23 @@
+@use 'src/scss/vars' as *;
+@use 'src/scss/mixin' as *;
+
+.ctn-lightbox {
+  &__download-btn {
+    background: none;
+    color: #fff;
+    outline: none;
+    cursor: pointer;
+    transform: translateY(2px);
+    padding: 12px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.4);
+    }
+  }
+}
+
+.lb-header {
+  & .lb-title {
+    padding-right: 0 !important;
+  }
+}

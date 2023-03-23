@@ -15,6 +15,7 @@ import DialogContainer from './StartupContainers/DialogContainer';
 import NotFound from './StartupContainers/NotFound';
 import SplashScreen from './StartupContainers/SplashScreen';
 import ToastContainer from './StartupContainers/ToastContainer';
+import LightboxContainer from './StartupContainers/LightboxContainer';
 
 import { Box } from '@mui/material';
 import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundary';
@@ -134,6 +135,7 @@ const Routing: React.FC<{ location: Location }> = (props) => {
       <AuthContainer />
       <ContentContainer />
       <DialogContainer />
+      <LightboxContainer />
       <ToastContainer />
       <ScrollToTop />
       <CheckPasswordExpiredContainer />

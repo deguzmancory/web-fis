@@ -13,6 +13,7 @@ const Accordion: React.FC<Props> = ({
   subTitle,
   onToggle,
   disabled,
+  id,
   ...props
 }) => {
   const [expanded, setExpanded] = useState<boolean>(isExpanded);
@@ -40,6 +41,7 @@ const Accordion: React.FC<Props> = ({
         },
         className
       )}
+      id={id}
     >
       <motion.header initial={false} onClick={handleToggle}>
         <View
@@ -102,6 +104,7 @@ type Props = MotionProps & {
   customIcon?: ReactSVGElement;
   onToggle?: (value: boolean) => void;
   disabled?: boolean;
+  id?: string;
 };
 
 export default Accordion;

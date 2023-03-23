@@ -33,6 +33,7 @@ export { default as Link } from './Link';
 export { default as Loading } from './Loading';
 export { default as LoadingCommon } from './LoadingCommon';
 export { default as NavLink } from './NavLink';
+export { default as PDFView } from './PDFView';
 export { default as RadioButton } from './RadioButton';
 export { default as Screen } from './Screen';
 export { default as Select } from './Select';

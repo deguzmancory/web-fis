@@ -22,11 +22,11 @@ export async function authResponseWrapper<T>(func: ApiCall, [...args]: any[] = [
   return new Promise(async (res, rej) => {
     try {
       const response = (await func(...args)) || {};
-      if (!response?.ok) {
-        rej(response?.data);
-      } else {
-        res(response);
-      }
+      // if (!response?.ok) { // TODO: huy_dang verify responses again
+      //   rej(response?.data);
+      // } else {
+      res(response);
+      // }
     } catch (err) {
       rej(err);
     }

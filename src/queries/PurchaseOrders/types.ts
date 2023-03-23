@@ -1,4 +1,5 @@
 import { PO_ACTION } from 'src/containers/PurchaseOrderContainer/enums';
+import { GetPresignedPayload } from '../File';
 import { PO_DETAIL_STATUS } from './enums';
 
 export interface SharedPODetail {
@@ -253,6 +254,8 @@ export interface POLineItemPayload {
 
 export interface POFileAttachmentPayload {
   id?: string;
+  createdAt: string;
+  updatedAt: string;
   name: string;
   uploadDate: string;
   size: string;
@@ -468,3 +471,23 @@ export interface FfataPayload {
   performanceSiteAddressCountry: string;
   performanceSiteAddressZip: string;
 }
+
+export interface GetPresignedPOPayload extends GetPresignedPayload {
+  id?: string;
+}
+
+export interface AddPoAttachmentPayload {
+  id: string;
+  name: string;
+  size: string;
+  description: string;
+  isArtifact: boolean;
+  url: string;
+}
+
+export interface DeletePoAttachmentPayload {
+  id: string;
+  attachmentId: string;
+}
+
+export interface GetPresignedPoAttachmentDownloadUrl extends DeletePoAttachmentPayload {}

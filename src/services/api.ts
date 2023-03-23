@@ -10,7 +10,13 @@ import {
 } from 'src/queries';
 import { GetPresignedPayload, UploadFilePayload } from 'src/queries/File/types';
 import { GetPropertiesParams } from 'src/queries/helpers';
-import { UpsertPOPayload } from 'src/queries/PurchaseOrders';
+import {
+  AddPoAttachmentPayload,
+  DeletePoAttachmentPayload,
+  GetPresignedPoAttachmentDownloadUrl,
+  GetPresignedPOPayload,
+  UpsertPOPayload,
+} from 'src/queries/PurchaseOrders';
 import { SearchQuoteParams } from 'src/queries/SuperQuotes/types';
 import {
   ChangePasswordPayload,
@@ -206,6 +212,7 @@ const create = (baseURL = appConfig.API_URL) => {
   const getPermissionCu = () => {
     return api.get('/account-svc/v1/permissions/cu', {}, newCancelToken());
   };
+
   // ====================== Users Management ======================
   const getAllUsers = (params: GetPropertiesParams) => {
     const queryString = stringify(params);
@@ -318,7 +325,41 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.delete(`/financial-svc/v1/purchase-orders/${params.id}`, {}, newCancelToken());
   };
 
-  // Global Settings
+  const getPoFileAttachmentPresignedUrl = (params: GetPresignedPOPayload) => {
+    return api.get(
+      `/financial-svc/v1/purchase-orders/${params.id}/attachments/presigned-url`,
+      params,
+      newCancelToken()
+    );
+  };
+
+  const getPoFileAttachmentPresignedDownloadUrl = (params: GetPresignedPoAttachmentDownloadUrl) => {
+    return api.get(
+      `/financial-svc/v1/purchase-orders/${params.id}/attachments/${params.attachmentId}/read`,
+      params,
+      newCancelToken()
+    );
+  };
+
+  const addPoAttachment = (payload: AddPoAttachmentPayload) => {
+    return api.put(
+      `/financial-svc/v1/purchase-orders/${payload.id}/attachments`,
+      {
+        ...payload,
+      },
+      newCancelToken()
+    );
+  };
+
+  const deletePOAttachment = (params: DeletePoAttachmentPayload) => {
+    return api.delete(
+      `/financial-svc/v1/purchase-orders/${params.id}/attachments/${params.attachmentId}`,
+      {},
+      newCancelToken()
+    );
+  };
+
+  // ====================== Global Settings ======================
   const getAllGlobalSettings = () => {
     return api.get('/financial-svc/v1/global-settings', {}, newCancelToken());
   };
@@ -405,8 +446,12 @@ const create = (baseURL = appConfig.API_URL) => {
     createPO,
     updatePO,
     deletePO,
+    getPoFileAttachmentPresignedUrl,
+    getPoFileAttachmentPresignedDownloadUrl,
+    addPoAttachment,
+    deletePOAttachment,
 
-    // Global Settings
+    // ====================== Global Settings ======================
     getAllGlobalSettings,
     updateGlobalSetting,
   };

@@ -1,13 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { Typography } from '@mui/material';
 import cn from 'classnames';
 import React, { useEffect, useState } from 'react';
 import { Accept, FileRejection, useDropzone } from 'react-dropzone';
 
-import { IoAttachOutline } from 'react-icons/io5';
+import { IoCloudUpload } from 'react-icons/io5';
 import appConfig from 'src/appConfig';
 import { COLOR_CODE, COMMON_TYPE } from 'src/appConfig/constants';
 import { Toastify } from 'src/services';
-import { Text, View } from '..';
+import { View } from '..';
 import './styles.scss';
 
 const FileUpload: React.FC<Props> = ({
@@ -17,7 +18,7 @@ const FileUpload: React.FC<Props> = ({
   numberAllow = null,
   onError,
   acceptFileType,
-  message = `Drop file here or select file`,
+  message = `Drop files to attach or browse`,
 }) => {
   const [myFiles, setMyFiles] = useState<File[]>([]);
   const [rejectFiles, setRejectFiles] = useState<FileRejection[]>([]);
@@ -71,11 +72,13 @@ const FileUpload: React.FC<Props> = ({
             style={{
               transform: 'translateY(2px)',
             }}
-            className="mr-1"
+            className="mr-8"
           >
-            <IoAttachOutline size={22} color={COLOR_CODE.PRIMARY} />
+            <IoCloudUpload size={22} color={COLOR_CODE.PRIMARY_400} />
           </i>
-          <Text className="has-text-primary fw-medium">{message}</Text>
+          <Typography variant="body2" color={COLOR_CODE.PRIMARY_400}>
+            {message}
+          </Typography>
         </View>
       </View>
     </View>

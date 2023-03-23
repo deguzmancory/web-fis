@@ -7,6 +7,7 @@ import commonReducer, { commonState, ICommonState } from './common/commonSlice';
 import dialogReducer, { dialogState, IDialogState } from './dialog/dialogSlice';
 import fileReducer, { fileState, IFileState } from './file/fileSlice';
 import formReducer, { formState, IFormState } from './form/formSlice';
+import lightboxReducer, { ILightboxState, lightboxState } from './lightbox/lightboxSlice';
 
 export interface IRootState<TFormData = any> {
   router: RouterState;
@@ -15,6 +16,7 @@ export interface IRootState<TFormData = any> {
   dialog: IDialogState;
   file: IFileState;
   form: IFormState<TFormData>;
+  lightbox: ILightboxState;
 }
 
 export const rootState: IRootState = {
@@ -24,6 +26,7 @@ export const rootState: IRootState = {
   dialog: dialogState,
   file: fileState,
   form: formState,
+  lightbox: lightboxState,
 };
 
 /* ------------- Assemble The Reducers ------------- */
@@ -35,6 +38,7 @@ const createRootReducer = (history: History) => {
     dialog: dialogReducer,
     file: fileReducer,
     form: formReducer,
+    lightbox: lightboxReducer,
   });
 };
 

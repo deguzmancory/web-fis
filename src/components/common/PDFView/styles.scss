@@ -1,0 +1,69 @@
+@use '~src/scss/vars' as *;
+@use '~src/scss/mixin' as *;
+
+.cmp-pdf-view {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &__backdrop {
+    z-index: 9999 !important;
+  }
+
+  &__pdf-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background: $color-black;
+    color: $color-white;
+    padding: 0 2rem;
+    z-index: 1;
+  }
+
+  &__pdf-action-button {
+    color: $color-white;
+    font-size: 1.5em;
+    margin-left: 10px;
+
+    @include focus {
+      box-shadow: none;
+    }
+  }
+
+  &__pdf-page {
+    overflow-y: auto;
+
+    margin-top: 50px; // header height
+    max-height: calc(100vh - 50px); // minus header height
+
+    canvas {
+      margin: auto;
+      width: auto !important;
+    }
+  }
+
+  &__pdf-page-turner {
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+  }
+
+  &__pdf-page-turner-page-number {
+    font-size: 0.8em;
+    padding: 0 0.5em;
+  }
+
+  & .react-pdf__message {
+    &--error {
+      font-size: 24px;
+      font-weight: bold;
+      color: $color-white;
+    }
+  }
+}

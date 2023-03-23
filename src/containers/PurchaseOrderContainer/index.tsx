@@ -27,7 +27,6 @@ import { isEmpty } from 'src/validations';
 import { PO_ADDITIONAL_FORM_KEY, PO_ADDITIONAL_FORM_PARAMS } from '../AdditionalPOForms/enum';
 import SectionLayout from '../shared/SectionLayout';
 import AdditionalForms from './AdditionalForms';
-import AuditInformation from './AuditInformation';
 import AuthorizedBy from './AuthorizedBy';
 import BreadcrumbsPODetail from './breadcrumbs';
 import { emptyUpsertPOFormValue } from './constants';
@@ -60,6 +59,9 @@ import PurchaseInfo from './PurchaseInfo';
 import SendInvoiceInfo from './SendInvoiceInfo';
 import TableLineItems from './TableLineItems';
 import { UpsertPOFormikProps, UpsertPOFormValue } from './types';
+
+const AuditInformation = React.lazy(() => import('./AuditInformation'));
+const FileAttachments = React.lazy(() => import('./FileAttachments'));
 
 const PurchaseOrderContainer: React.FC<Props> = ({
   formData,
@@ -348,12 +350,12 @@ const PurchaseOrderContainer: React.FC<Props> = ({
     return !isAcceptablePath;
   };
 
-  if (!formData)
-    return (
-      <Box minHeight="80vh" p={4}>
-        <LoadingCommon />
-      </Box>
-    );
+  // if (!formData)
+  //   return (
+  //     <Box minHeight="80vh" p={4}>
+  //       <LoadingCommon />
+  //     </Box>
+  //   );
 
   return (
     <Prompt
@@ -429,6 +431,11 @@ const PurchaseOrderContainer: React.FC<Props> = ({
                     disabled={isViewOnlyPOMode(currentPOMode)}
                   />
                 </SectionLayout>
+                {isEditPOMode && (
+                  <SectionLayout>
+                    <FileAttachments formikProps={formikProps} />
+                  </SectionLayout>
+                )}
                 {isEditPOMode && (
                   <SectionLayout>
                     <AuditInformation formikProps={formikProps} />

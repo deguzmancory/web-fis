@@ -1,5 +1,6 @@
 export enum PO_FORM_KEY {
   // general info
+  ID = 'id',
   LOGIN_NAME = 'loginName',
   DATE = 'date',
   NUMBER = 'number',
@@ -78,6 +79,9 @@ export enum PO_FORM_KEY {
 
   //Authorized by
   SIGNATURE = 'signature',
+
+  // File Attachments
+  FILE_ATTACHMENTS = 'fileAttachments',
 
   //Audit
   AUDIT_TRAILS = 'auditTrails',
