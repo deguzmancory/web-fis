@@ -1,12 +1,14 @@
 export { default as Accordion } from './Accordion';
 export { default as AnimatedTabPanel } from './AnimatedTabPanel';
 export { default as AttachmentUploadButton } from './AttachmentUploadButton';
+export { default as InputAutocomplete } from './Autocomplete';
 export { default as Badge } from './Badge';
 export { default as Banner } from './Banner';
 export { default as Button } from './Button';
 export { default as ButtonYesNo } from './ButtonYesNo';
 export { default as Checkbox } from './Checkbox';
 export { default as ConfirmationCodeField } from './ConfirmationCodeField';
+export { default as CustomPopperAutocomplete } from './CustomPopperAutocomplete';
 export { default as DatePicker } from './DatePicker';
 export { default as DateRangePicker } from './DateRangePicker';
 export { default as Dialog } from './Dialog';

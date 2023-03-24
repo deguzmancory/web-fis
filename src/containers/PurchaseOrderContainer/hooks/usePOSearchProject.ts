@@ -107,10 +107,10 @@ const usePOSearchProject = ({ currentProjectTitle, currentProjectNumber }) => {
   }, []);
 
   return {
-    setSearchProjects,
     isLoadingSearchProjects,
     projectTitleOptions,
     projectNumberOptions,
+    setSearchProjects,
   };
 };
 

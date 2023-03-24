@@ -9,7 +9,6 @@ import {
 import CustomTable from 'src/components/CustomTable';
 import { BodyBasicRows, CellType } from 'src/components/CustomTable/types';
 import SearchProjectNumber from 'src/containers/shared/SearchProjectNumber';
-import { POLineItemPayload } from 'src/queries/PurchaseOrders';
 import {
   checkRowStateAndSetValue,
   getErrorMessage,
@@ -19,7 +18,7 @@ import { initialLineItemValue } from '../constants';
 import { PO_FORM_KEY, PO_LINE_ITEM_KEY, PO_MODE } from '../enums';
 import { isVariousProject } from '../GeneralInfo/helpers';
 import { isCUReviewPOMode, isFAReviewPOMode } from '../helpers';
-import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
+import { POLineItemFormValue, UpsertPOFormikProps, UpsertPOFormValue } from '../types';
 
 const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, currentPOMode }) => {
   const isFAReviewMode = isFAReviewPOMode(currentPOMode);
@@ -57,10 +56,12 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
       lineItemRow,
       prefixLineItem,
       index,
+      isEditQuantity,
     }: {
-      lineItemRow: POLineItemPayload;
+      lineItemRow: POLineItemFormValue;
       prefixLineItem: string;
       index: number;
+      isEditQuantity: boolean;
     }) => {
       let updatedSubtotal = values.subtotal;
 
@@ -74,13 +75,15 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
       }
 
       // When input data on Unit price only, default value for Quantity = 1
-      if (!lineItemRow?.quantity) {
+      let defaultQuantity = 0;
+      if (!lineItemRow?.quantity && !isEditQuantity) {
+        defaultQuantity = 1;
         setFieldValue(`${prefixLineItem}.${PO_LINE_ITEM_KEY.QUANTITY}`, 1);
       }
 
       // calculate extension
       const currentLineItemExt =
-        Number(lineItemRow?.quantity || 1) * Number(lineItemRow?.unitPrice);
+        Number(lineItemRow?.quantity || defaultQuantity) * Number(lineItemRow?.unitPrice);
 
       setFieldValue(`${prefixLineItem}.${PO_LINE_ITEM_KEY.EXT}`, currentLineItemExt);
 
@@ -104,15 +107,17 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
       prefixLineItem,
       key,
       index,
+      isEditQuantity,
     }: {
       name: string;
       value: any;
-      lineItemRow: POLineItemPayload;
+      lineItemRow: POLineItemFormValue;
       prefixLineItem: string;
       key: PO_LINE_ITEM_KEY;
       index: number;
+      isEditQuantity: boolean;
     }) => {
-      checkRowStateAndSetValue<POLineItemPayload>({
+      checkRowStateAndSetValue<POLineItemFormValue>({
         name,
         value,
         index,
@@ -124,6 +129,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
           updateExtItem({
             index,
             prefixLineItem,
+            isEditQuantity,
             lineItemRow: {
               ...lineItemRow,
               [key]: value,
@@ -136,7 +142,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
   );
 
   const handleInputChange = ({ name, value, index }) => {
-    checkRowStateAndSetValue<POLineItemPayload>({
+    checkRowStateAndSetValue<POLineItemFormValue>({
       name,
       value,
       index,
@@ -168,7 +174,8 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
           },
         },
         {
-          label: '4324S',
+          type: CellType.INPUT,
+          label: 'Project # *',
           content: (
             <SearchProjectNumber
               fieldProps={{
@@ -178,32 +185,19 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
                 `${prefixLineItem}.${PO_LINE_ITEM_KEY.ITEM_PROJECT_NUMBER}`
               )}
               setFieldTouched={setFieldTouched}
-            />
-          ),
-        },
-        {
-          type: CellType.INPUT,
-          label: 'Project # *',
-          content: (
-            <EllipsisTooltipInput
-              {...getFieldProps(`${prefixLineItem}.${PO_LINE_ITEM_KEY.ITEM_PROJECT_NUMBER}`)}
-              errorMessage={_getErrorMessage(
-                `${prefixLineItem}.${PO_LINE_ITEM_KEY.ITEM_PROJECT_NUMBER}`
-              )}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              setFieldValue={setFieldValue}
+              sx={{ width: 160 }}
+              disabled={disabled || isCUReviewMode}
+              onChange={(name, value) => {
                 handleInputChange({
                   index,
-                  name: `${prefixLineItem}.${PO_LINE_ITEM_KEY.ITEM_PROJECT_NUMBER}`,
-                  value: event.target.value,
-                })
-              }
-              style={{ width: 90 }}
-              lengthShowTooltip={8}
-              disabled={disabled || isCUReviewMode}
-              required
+                  name,
+                  value,
+                });
+              }}
             />
           ),
-          width: 90,
+          width: 160,
           hide: hideProjectNumberColumn,
         },
         {
@@ -288,7 +282,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
                 })
               }
               required
-              style={{ width: hideProjectNumberColumn ? 240 : 200, paddingTop: '4px' }}
+              style={{ width: hideProjectNumberColumn ? 240 : 175, paddingTop: '4px' }}
               disabled={disabled || isCUReviewMode}
             />
           ),
@@ -304,19 +298,20 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
                   lineItemRow,
                   prefixLineItem,
                   index,
+                  isEditQuantity: true,
                   name: `${prefixLineItem}.${PO_LINE_ITEM_KEY.QUANTITY}`,
                   value: e.target.value,
                   key: PO_LINE_ITEM_KEY.QUANTITY,
                 });
               }}
               type="number"
-              style={{ width: 80 }}
-              lengthShowTooltip={7}
+              style={{ width: hideProjectNumberColumn ? 90 : 70 }}
+              lengthShowTooltip={hideProjectNumberColumn ? 7 : 5}
               hideArrowTypeNumber
               disabled={disabled || isReviewMode}
             />
           ),
-          width: 80,
+          width: hideProjectNumberColumn ? 90 : 70,
         },
         {
           type: CellType.INPUT,
@@ -331,12 +326,12 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
                   value: event.target.value,
                 })
               }
-              style={{ width: 80 }}
-              lengthShowTooltip={7}
+              style={{ width: hideProjectNumberColumn ? 90 : 70 }}
+              lengthShowTooltip={hideProjectNumberColumn ? 7 : 5}
               disabled={disabled || isReviewMode}
             />
           ),
-          width: 80,
+          width: hideProjectNumberColumn ? 90 : 70,
         },
         {
           type: CellType.CURRENCY_INPUT,
@@ -351,14 +346,17 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
                   lineItemRow,
                   prefixLineItem,
                   index,
+                  isEditQuantity: false,
                   key: PO_LINE_ITEM_KEY.UNIT_PRICE,
                 })
               }
               textAlign="right"
-              lengthShowTooltip={14}
+              lengthShowTooltip={hideProjectNumberColumn ? 14 : 11}
               disabled={disabled || isReviewMode}
+              style={{ width: hideProjectNumberColumn ? 125 : 105 }}
             />
           ),
+          width: hideProjectNumberColumn ? 125 : 105,
         },
         {
           type: CellType.CURRENCY_INPUT,
@@ -368,9 +366,11 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
               {...getFieldProps(`${prefixLineItem}.${PO_LINE_ITEM_KEY.EXT}`)}
               textAlign="right"
               disabled
-              lengthShowTooltip={14}
+              lengthShowTooltip={hideProjectNumberColumn ? 14 : 11}
+              style={{ width: hideProjectNumberColumn ? 120 : 105 }}
             />
           ),
+          width: hideProjectNumberColumn ? 120 : 105,
         },
       ],
     };

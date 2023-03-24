@@ -4,7 +4,7 @@ import { debounce } from 'lodash';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { PATHS } from 'src/appConfig/paths';
-import { Input, InputPhone, Link, Select, TextArea } from 'src/components/common';
+import { Input, InputPhone, Link, Select, TextareaAutosize } from 'src/components/common';
 import { SelectOption } from 'src/components/common/Select';
 import { VENDOR_REGISTRATION_NAVIGATE_FROM } from 'src/containers/Vendors/VendorRegistration/enums';
 import { FinancialProject } from 'src/queries/Projects/types';
@@ -13,6 +13,7 @@ import { showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { Navigator } from 'src/services';
 import { getDateDisplay, getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
+import { isEmpty } from 'src/validations';
 import { PO_FORM_KEY, PO_MODE } from '../enums';
 import { isCreatePOMode, isCUReviewPOMode, isFAReviewPOMode, isPiSuEditPOMode } from '../helpers';
 import usePOSearchProject, { SearchProjectsType } from '../hooks/usePOSearchProject';
@@ -35,16 +36,38 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
     setFieldValue,
     setFieldTouched,
   } = formikProps;
+
+  // ===============
   const currentProjectTitle = React.useMemo(() => values.projectTitle, [values.projectTitle]);
   const currentProjectNumber = React.useMemo(() => values.projectNumber, [values.projectNumber]);
   const currentVendorName = React.useMemo(() => values.vendorName, [values.vendorName]);
   const currentVendorCode = React.useMemo(() => values.vendorCode, [values.vendorCode]);
 
+  // check for case vendor first mounted with data from get PO response
+  // check for case vendor first mounted when just back from additional forms
+  // do not check the project because strange behavior of default Various project => fetch project when did mount in usePOSearchProject hook
+  const currentVendorNameInputValue =
+    typeof currentVendorName === 'string' ? currentVendorName : currentVendorName?.name;
+  const currentVendorCodeInputValue =
+    typeof currentVendorCode === 'string' ? currentVendorCode : currentVendorCode?.code;
+
   const { setSearchProjects, isLoadingSearchProjects, projectTitleOptions, projectNumberOptions } =
     usePOSearchProject({ currentProjectTitle, currentProjectNumber });
 
-  const { setSearchVendors, isLoadingSearchVendors, vendorNameOptions, vendorCodeOptions } =
-    usePOSearchVender({ currentVendorName, currentVendorCode });
+  const {
+    isClearedDefaultVendors,
+    isLoadingSearchVendors,
+    vendorNameOptions,
+    vendorCodeOptions,
+    setIsClearedDefaultVendors,
+    setSearchVendors,
+  } = usePOSearchVender({ currentVendorName, currentVendorCode });
+
+  const haveVendorNameValueButOptions =
+    !!currentVendorName && isEmpty(vendorNameOptions) && !isLoadingSearchVendors;
+  const haveVendorCodeValueButOptions =
+    !!currentVendorCode && isEmpty(vendorCodeOptions) && !isLoadingSearchVendors;
+  // ==============
 
   const updateProjectFields = (value: FinancialProject) => {
     setFieldValue(PO_FORM_KEY.PROJECT_TITLE, value);
@@ -105,24 +128,39 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
   };
 
   // Debouncing search projects inputs
-  const debounceSearchProjectsInput = debounce((key: keyof SearchProjectsType, value: string) => {
-    if (!value) return;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debounceSearchProjectsInput = React.useCallback(
+    debounce((key: keyof SearchProjectsType, value: string) => {
+      if (!value) return;
 
-    setSearchProjects((prevState) => ({
-      ...prevState,
-      [key]: value,
-    }));
-  }, 300);
+      setSearchProjects((prevState) => ({
+        ...prevState,
+        [key]: value,
+      }));
+    }, 300),
+    []
+  );
 
   // Debouncing search vendors inputs
-  const debounceSearchVendorsInput = debounce((key: keyof SearchVendorsType, value: string) => {
-    if (!value) return;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debounceSearchVendorsInput = React.useCallback(
+    debounce((key: keyof SearchVendorsType, value: string) => {
+      if (!value) {
+        if (haveVendorCodeValueButOptions || haveVendorNameValueButOptions) {
+          setIsClearedDefaultVendors(true);
+          updateVendorFields(null);
+        }
 
-    setSearchVendors((prevState) => ({
-      ...prevState,
-      [key]: value,
-    }));
-  }, 300);
+        return;
+      }
+
+      setSearchVendors((prevState) => ({
+        ...prevState,
+        [key]: value,
+      }));
+    }, 300),
+    []
+  );
 
   return (
     <Box>
@@ -273,6 +311,10 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               extraRequired
               options={vendorNameOptions}
               isLoading={isLoadingSearchVendors}
+              defaultInputValue={currentVendorNameInputValue}
+              {...(!isClearedDefaultVendors && {
+                inputValue: haveVendorNameValueButOptions ? currentVendorNameInputValue : undefined,
+              })}
               onInputChange={(value: string) => {
                 debounceSearchVendorsInput('name', value);
               }}
@@ -325,6 +367,10 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               extraRequired
               options={vendorCodeOptions}
               isLoading={isLoadingSearchVendors}
+              defaultInputValue={currentVendorCodeInputValue}
+              {...(!isClearedDefaultVendors && {
+                inputValue: haveVendorCodeValueButOptions ? currentVendorCodeInputValue : undefined,
+              })}
               onInputChange={(value: string) => {
                 debounceSearchVendorsInput('code', value);
               }}
@@ -358,7 +404,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <TextArea
+            <TextareaAutosize
               label={'Vendor Address, Street/PO Box, City, State, Zip Code'}
               required
               errorMessage={_getErrorMessage(PO_FORM_KEY.VENDOR_ADDRESS)}
@@ -368,7 +414,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextArea
+            <TextareaAutosize
               label={'Ship To Information (Name, Address)'}
               required
               errorMessage={_getErrorMessage(PO_FORM_KEY.SHIP_TO)}

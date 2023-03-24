@@ -9,6 +9,7 @@ export type SearchVendorsType = {
 };
 
 const usePOSearchVender = ({ currentVendorName, currentVendorCode }) => {
+  const [isClearedDefaultVendors, setIsClearedDefaultVendors] = React.useState<boolean>(false);
   const [searchVendors, setSearchVendors] = React.useState<SearchVendorsType>({
     name: '',
     code: '',
@@ -52,40 +53,42 @@ const usePOSearchVender = ({ currentVendorName, currentVendorCode }) => {
     });
   }, [searchVendors.code, setSearchVendorParams]);
 
-  // fetch vendor first mounted with data from get PO response
-  React.useEffect(() => {
-    if (!!currentVendorCode && typeof currentVendorCode === 'string') {
-      setSearchVendorParams({
-        search: currentVendorCode,
-      });
+  // // fetch vendor first mounted with data from get PO response
+  // React.useEffect(() => {
+  //   if (!!currentVendorCode && typeof currentVendorCode === 'string') {
+  //     setSearchVendorParams({
+  //       search: currentVendorCode,
+  //     });
 
-      return;
-    }
+  //     return;
+  //   }
 
-    if (!!currentVendorName && typeof currentVendorName === 'string') {
-      setSearchVendorParams({
-        search: currentVendorName,
-      });
+  //   if (!!currentVendorName && typeof currentVendorName === 'string') {
+  //     setSearchVendorParams({
+  //       search: currentVendorName,
+  //     });
 
-      return;
-    }
-  }, [currentVendorCode, currentVendorName, setSearchVendorParams]);
+  //     return;
+  //   }
+  // }, [currentVendorCode, currentVendorName, setSearchVendorParams]);
 
-  // fetch project first mounted when just back from additional forms
-  React.useLayoutEffect(() => {
-    if (!!currentVendorCode && typeof currentVendorCode !== 'string') {
-      setSearchVendorParams({
-        search: currentVendorCode.code,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // // fetch project first mounted when just back from additional forms
+  // React.useLayoutEffect(() => {
+  //   if (!!currentVendorCode && typeof currentVendorCode !== 'string') {
+  //     setSearchVendorParams({
+  //       search: currentVendorCode.code,
+  //     });
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   return {
-    setSearchVendors,
     isLoadingSearchVendors,
     vendorNameOptions,
     vendorCodeOptions,
+    isClearedDefaultVendors,
+    setSearchVendors,
+    setIsClearedDefaultVendors,
   };
 };
 

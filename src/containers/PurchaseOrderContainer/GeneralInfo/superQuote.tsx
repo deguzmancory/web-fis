@@ -38,7 +38,7 @@ const SuperQuote: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const handleCloseDialog = () => dispatch(hideDialog());
 
   const handleImport = () => {
-    if (error || isLoading) {
+    if (isEmpty(superQuotes) && (error || isLoading)) {
       return;
     }
 
@@ -60,7 +60,7 @@ const SuperQuote: React.FC<Props> = ({ formikProps, disabled = false }) => {
         onChange={debounceSearchSuperQuote}
         disabled={disabled}
         placeholder="XXXXX"
-        errorMessage={error}
+        errorMessage={isLoading || !isEmpty(superQuotes) ? '' : error}
         defaultValue={values.superquoteNumber || ''}
         iconComponent={isLoading ? <LoadingCommon /> : null}
       />

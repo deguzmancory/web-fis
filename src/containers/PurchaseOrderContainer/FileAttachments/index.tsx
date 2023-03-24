@@ -80,7 +80,7 @@ const FileAttachments: React.FC<Props> = ({ formikProps }) => {
       ...prevFile,
       file: files[0],
       size: niceBytes(files[0].size),
-      isArtifact: false, //TODO: should check this value
+      isArtifact: true, //TODO: should check this value
     }));
   };
 

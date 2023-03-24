@@ -179,9 +179,7 @@ export const getPOFormValidationSchema = ({ action }: { action: PO_ACTION }) => 
             if (!isLastItem) {
               return Yup.object().shape({
                 itemProjectNumber: isVariousProject(projectNumber)
-                  ? Yup.string()
-                      .required(ErrorService.MESSAGES.shortRequired)
-                      .typeError(ErrorService.MESSAGES.shortRequired)
+                  ? Yup.mixed().required(ErrorService.MESSAGES.shortRequired)
                   : Yup.string().nullable(),
                 budgetCategory: Yup.string()
                   .required(ErrorService.MESSAGES.shortRequired)
@@ -205,13 +203,13 @@ export const getInitialPOFormValue = ({ profile }: { profile: MyProfile }): Upse
   const shipTo = roleInfo
     ? `${roleInfo.sendInvoiceTo && `${roleInfo.sendInvoiceTo}\n`}${
         roleInfo.department && `${roleInfo.department}\n`
-      }${roleInfo.sendInvoiceToEmail && `${roleInfo.sendInvoiceToEmail}\n`}${
-        roleInfo.addressStreet && `${roleInfo.addressStreet}\n`
-      }${roleInfo.addressCity && `${roleInfo.addressCity} `}${
-        roleInfo.addressState && `${roleInfo.addressState} `
-      }${roleInfo.addressZip && `${roleInfo.addressZip} `}${
-        roleInfo.addressZip4 && `${roleInfo.addressZip4} `
-      }${roleInfo.addressCountry && `${roleInfo.addressCountry} `}
+      }${roleInfo.addressStreet && `${roleInfo.addressStreet}\n`}${
+        roleInfo.addressCity && `${roleInfo.addressCity} `
+      }${roleInfo.addressState && `${roleInfo.addressState} `}${
+        roleInfo.addressZip && `${roleInfo.addressZip} `
+      }${roleInfo.addressZip4 && `${roleInfo.addressZip4} `}${
+        roleInfo.addressCountry && `${roleInfo.addressCountry} `
+      }
   `
     : '';
 
@@ -338,17 +336,29 @@ export const getUpsertPOPayload = ({
   action: PO_ACTION;
 }): UpsertPOPayload => {
   const isEdit = !!formValues?.id;
+
+  //ignore last row of line items
   const lineItemsFormValue = formValues.lineItems.slice(0, -1);
-  const projectNumberPayload =
+  //get project number value
+  const notVariousProjectNumberPayload =
     typeof formValues.projectNumber === 'string'
       ? formValues.projectNumber
       : formValues.projectNumber.number;
-  const ineItemsPayload = isVariousProject(formValues.projectNumber)
-    ? lineItemsFormValue
-    : lineItemsFormValue.map((lineItem) => ({
-        ...lineItem,
-        itemProjectNumber: projectNumberPayload,
-      }));
+  const ineItemsPayload =
+    //various project can have multiple project number's line items
+    isVariousProject(formValues.projectNumber)
+      ? lineItemsFormValue.map((lineItem) => ({
+          ...lineItem,
+          itemProjectNumber:
+            typeof lineItem.itemProjectNumber === 'string'
+              ? lineItem.itemProjectNumber
+              : lineItem.itemProjectNumber.number,
+        }))
+      : //non-various project only have one project number for all line items
+        lineItemsFormValue.map((lineItem) => ({
+          ...lineItem,
+          itemProjectNumber: notVariousProjectNumberPayload,
+        }));
 
   return {
     ...formValues,
@@ -361,7 +371,7 @@ export const getUpsertPOPayload = ({
       typeof formValues.projectTitle === 'string'
         ? formValues.projectTitle
         : formValues.projectTitle.name,
-    projectNumber: projectNumberPayload,
+    projectNumber: notVariousProjectNumberPayload,
     vendorName:
       typeof formValues.vendorName === 'string'
         ? formValues.vendorName

@@ -1,41 +1,50 @@
-import { Box } from '@mui/material';
+import { Box, SxProps } from '@mui/material';
 import { FieldInputProps } from 'formik';
 import { debounce } from 'lodash';
 import React from 'react';
-import { EllipsisTooltipInput, Select } from 'src/components/common';
+import { Select } from 'src/components/common';
 import { SelectOption } from 'src/components/common/Select';
-import { getFinancialProjectOptions } from 'src/containers/PurchaseOrderContainer/GeneralInfo/helpers';
 import { getSearchProjectsParamsByRole } from 'src/containers/PurchaseOrderContainer/helpers';
 import { FinancialProject, useGetFinancialProjects, useProfile } from 'src/queries';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { RoleService } from 'src/services';
+import { isEmpty } from 'src/validations';
+import { getFinancialProjectNumberOptions } from './helpers';
 
 const SearchProjectNumber: React.FC<Props> = ({
   errorMessage,
-  disabled = false,
   fieldProps,
+  disabled = false,
+  sx,
   setFieldTouched,
+  onChange,
 }) => {
   const [searchProjects, setSearchProjects] = React.useState<string>('');
-  const [options, setOptions] = React.useState<FinancialProject[]>([]);
-  const currentUserRole = RoleService.getCurrentRole() as ROLE_NAME;
-  const { profile } = useProfile();
+  const [isClearedDefaultValue, setIsClearedDefaultValue] = React.useState<boolean>(false);
 
+  const { value, name } = fieldProps;
+  const currentUserRole = RoleService.getCurrentRole() as ROLE_NAME;
+  const selectedProjectNumber = typeof value === 'string' ? value : value?.number;
+
+  const { profile } = useProfile();
   const {
     financialProjects,
     setParams: setParamsSearchProject,
     isLoading: isLoadingSearchProjects,
   } = useGetFinancialProjects();
 
-  const projectNumberOptions: SelectOption[] = React.useMemo(() => {
+  const filteredProjectNumberOptions = React.useMemo(() => {
     if (isLoadingSearchProjects || !searchProjects) {
       return [];
     }
 
-    return getFinancialProjectOptions({
-      financialProjects,
+    return getFinancialProjectNumberOptions({
+      financialProjects: financialProjects,
     });
   }, [financialProjects, searchProjects, isLoadingSearchProjects]);
+
+  const haveValueButOptions =
+    !!value && isEmpty(filteredProjectNumberOptions) && !isLoadingSearchProjects;
 
   const searchProjectsParams = React.useMemo(
     () => getSearchProjectsParamsByRole({ profile, role: currentUserRole }),
@@ -43,27 +52,71 @@ const SearchProjectNumber: React.FC<Props> = ({
   );
 
   // Debouncing search projects inputs
-  const debounceSearchProjectsInput = debounce((name, value: string) => {
-    if (!value) return;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debounceSearchProjectsInput = React.useCallback(
+    debounce((value: string) => {
+      setParamsSearchProject({
+        search: value,
+        userType: currentUserRole,
+        codes: searchProjectsParams?.codes,
+        projectNumbers: searchProjectsParams?.projectNumbers,
+      });
+    }, 300),
+    []
+  );
 
-    setParamsSearchProject({
-      search: searchProjects,
-      userType: currentUserRole,
-      codes: searchProjectsParams?.codes,
-      projectNumbers: searchProjectsParams?.projectNumbers,
-    });
-  }, 300);
+  const handleInputChange = (value: string) => {
+    //handle case try to clear default value
+    if (!value) {
+      if (haveValueButOptions) {
+        setIsClearedDefaultValue(true);
+        onChange(name, null);
+      }
+
+      return;
+    }
+
+    setSearchProjects(value);
+  };
+
+  React.useEffect(() => {
+    debounceSearchProjectsInput(searchProjects);
+  }, [searchProjects, debounceSearchProjectsInput]);
 
   return (
-    <Box>
-      <EllipsisTooltipInput
+    <Box sx={sx}>
+      <Select
         {...fieldProps}
         errorMessage={errorMessage}
-        // onChange={debounceSearchProjectsInput}
-        hideEllipsisTooltip
-        maxLength={4}
-        // disabled={disabled || isCUReviewMode}
-        required
+        onBlur={setFieldTouched}
+        label={''}
+        placeholder={'Search'}
+        options={filteredProjectNumberOptions}
+        isLoading={isLoadingSearchProjects}
+        onInputChange={handleInputChange}
+        defaultInputValue={selectedProjectNumber} //first mounted with data get from PO response
+        {...(!isClearedDefaultValue && {
+          inputValue: haveValueButOptions ? selectedProjectNumber : undefined,
+        })} //available in case have value but lack of options
+        getOptionLabel={(option: SelectOption<FinancialProject>) => {
+          return option.value?.number;
+        }}
+        customSelectedOptionValue={
+          filteredProjectNumberOptions.find(
+            (option: SelectOption<FinancialProject>) => option.value?.number === value
+          ) || null
+        }
+        filterOption={(_option, _inputValue) => {
+          return true; //ignore default filter option by label
+        }}
+        menuStyle={{
+          width: '760px',
+        }}
+        hideSearchIcon
+        isClearable={true}
+        onChange={onChange}
+        optionWithSubLabel
+        isDisabled={disabled}
       />
     </Box>
   );
@@ -71,9 +124,12 @@ const SearchProjectNumber: React.FC<Props> = ({
 
 type Props = {
   errorMessage: string;
+  fieldProps: FieldInputProps<FinancialProject | string>;
   disabled?: boolean;
-  fieldProps: FieldInputProps<any>;
-  setFieldTouched?: any;
+  sx?: SxProps;
+  setFieldTouched?: (field: string, touched?: boolean, shouldValidate?: boolean) => void;
+  setFieldValue?: (field: string, value: any, shouldValidate?: boolean) => void;
+  onChange: (name, value) => void;
 };
 
 export default SearchProjectNumber;

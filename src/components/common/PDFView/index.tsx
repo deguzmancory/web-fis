@@ -15,8 +15,8 @@ import {
   BiX,
 } from 'react-icons/bi';
 import './styles.scss';
-import { Backdrop } from '@material-ui/core';
 import { useKeyPress } from 'src/hooks';
+import { Backdrop } from '@mui/material';
 
 const PDFView: React.FC<Props> = ({
   className,
