@@ -1,5 +1,14 @@
-import { AppBar, Backdrop, Box, CircularProgress, Stack, Toolbar } from '@mui/material';
+import {
+  AppBar,
+  Backdrop,
+  Box,
+  CircularProgress,
+  LinearProgress,
+  Stack,
+  Toolbar,
+} from '@mui/material';
 import React from 'react';
+import { useIsFetching } from 'react-query';
 import { connect, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { COLOR_CODE } from 'src/appConfig/constants';
@@ -18,6 +27,8 @@ const Navbar: React.FC<Props> = ({ userProfile, currentRole }) => {
   const { showNavbar } = useSelector((state: IRootState) => state.common);
   const { fullName } = userProfile || {};
   const [isClickedLogout, setIsClickedLogout] = React.useState(false);
+
+  const isFetching = useIsFetching();
 
   if (!showNavbar) return null;
 
@@ -52,6 +63,7 @@ const Navbar: React.FC<Props> = ({ userProfile, currentRole }) => {
             </Box>
           </Stack>
         </Toolbar>
+        <Box width={'100%'}>{!!isFetching && <LinearProgress variant="indeterminate" />}</Box>
       </AppBar>
     </>
   );
