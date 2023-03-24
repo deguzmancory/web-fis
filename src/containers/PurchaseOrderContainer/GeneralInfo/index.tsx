@@ -16,8 +16,8 @@ import { getDateDisplay, getErrorMessage, isEqualPrevAndNextFormikValues } from 
 import { isEmpty } from 'src/validations';
 import { PO_FORM_KEY, PO_MODE } from '../enums';
 import { isCreatePOMode, isCUReviewPOMode, isFAReviewPOMode, isPiSuEditPOMode } from '../helpers';
-import usePOSearchProject, { SearchProjectsType } from '../hooks/usePOSearchProject';
-import usePOSearchVender, { SearchVendorsType } from '../hooks/usePOSearchVender';
+import usePOSearchProject, { SearchProjectsType } from './hooks/usePOSearchProject';
+import usePOSearchVender, { SearchVendorsType } from './hooks/usePOSearchVender';
 import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
 import { isVariousProject, shipViaOptions, VARIOUS_PROJECT_VALUE } from './helpers';
 import SuperQuote from './superQuote';

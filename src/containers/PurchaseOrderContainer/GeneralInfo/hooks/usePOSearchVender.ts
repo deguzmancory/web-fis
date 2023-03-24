@@ -1,7 +1,7 @@
 import React from 'react';
 import { SelectOption } from 'src/components/common/Select';
 import { useSearchVendors } from 'src/queries/Vendors/useSearchVendors';
-import { getVendorOptions } from '../GeneralInfo/helpers';
+import { getVendorOptions } from '../helpers';
 
 export type SearchVendorsType = {
   name: string;

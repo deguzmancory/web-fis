@@ -4,8 +4,8 @@ import { useProfile } from 'src/queries';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { useGetFinancialProjects } from 'src/queries/Projects';
 import { RoleService } from 'src/services';
-import { getFinancialProjectOptions } from '../GeneralInfo/helpers';
-import { getSearchProjectsParamsByRole } from '../helpers';
+import { getSearchProjectsParamsByRole } from '../../helpers';
+import { getFinancialProjectOptions } from '../helpers';
 
 export type SearchProjectsType = {
   title: string;

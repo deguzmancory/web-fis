@@ -52,9 +52,8 @@ const ACCEPT_FILE_TYPE: Accept = {
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
 };
 
-const FileAttachments: React.FC<Props> = ({ formikProps }) => {
+const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const { fileAttachments, id: idPo } = formikProps.values;
-  console.log('formikProps.values: ', formikProps.values);
   const dispatch = useDispatch();
   const attachments = React.useMemo(() => {
     if (isEmpty(fileAttachments)) return [];
@@ -70,6 +69,9 @@ const FileAttachments: React.FC<Props> = ({ formikProps }) => {
     size: string;
     isArtifact: boolean;
   }>(null);
+
+  const allowUploadFile = !disabled;
+  const defaultExpandedAccordion = !isEmpty(attachments);
 
   const handleFileSelect = (files: File[]) => {
     if (isEmpty(files)) {
@@ -105,7 +107,7 @@ const FileAttachments: React.FC<Props> = ({ formikProps }) => {
   });
 
   const { addPoAttachment, isLoading: isLoadingAddPoAttachment } = useAddPOAttachment({
-    onSuccess(data, variables, context) {
+    onSuccess() {
       Toastify.success('Upload file attachment successfully');
 
       setUploadProgress(0);
@@ -127,11 +129,11 @@ const FileAttachments: React.FC<Props> = ({ formikProps }) => {
   };
 
   const { deletePOAttachment, isLoading } = useDeletePOAttachment({
-    onSuccess(data, variables, context) {
+    onSuccess() {
       Toastify.success('Delete file attachment successfully');
       dispatch(setFormData(null));
     },
-    onError(error, variables, context) {
+    onError(error) {
       handleShowErrorMsg(error);
     },
   });
@@ -171,17 +173,22 @@ const FileAttachments: React.FC<Props> = ({ formikProps }) => {
   }, [isLoadingGetPresignedUrl, isLoading, isLoadingAddPoAttachment]);
 
   return (
-    <Accordion title="File Attachments" id="file-attachments" isExpanded>
-      <FileUpload
-        acceptFileType={ACCEPT_FILE_TYPE}
-        onChange={(value: any) => handleFileSelect(value)}
-      />
+    <Accordion title="File Attachments" id="file-attachments" isExpanded={defaultExpandedAccordion}>
+      {allowUploadFile && (
+        <>
+          <FileUpload
+            acceptFileType={ACCEPT_FILE_TYPE}
+            onChange={(value: any) => handleFileSelect(value)}
+          />
 
-      <Stack direction={'row'} justifyContent="flex-end" mt={2} mb={1}>
-        <Typography variant="body2" fontStyle={'italic'} color={COLOR_CODE.PRIMARY_500}>
-          Please click Upload to save your document.
-        </Typography>
-      </Stack>
+          <Stack direction={'row'} justifyContent="flex-end" mt={2} mb={1}>
+            <Typography variant="body2" fontStyle={'italic'} color={COLOR_CODE.PRIMARY_500}>
+              Please click Upload to save your document.
+            </Typography>
+          </Stack>
+        </>
+      )}
+
       <TableContainer>
         <Table>
           <TableHead>
@@ -222,7 +229,7 @@ const FileAttachments: React.FC<Props> = ({ formikProps }) => {
             }}
           >
             {/* Upload file */}
-            {fileSelected && (
+            {allowUploadFile && fileSelected && (
               <StyledTableRow>
                 <StyledTableCell width={'20%'}>
                   <FilePreview.LocalFilePreview file={fileSelected.file} />
@@ -298,7 +305,7 @@ const FileAttachments: React.FC<Props> = ({ formikProps }) => {
                         onClick={() => {
                           handleDeleteAttachment(row);
                         }}
-                        disabled={loading}
+                        disabled={disabled || loading}
                       >
                         Remove
                       </Button>
@@ -315,9 +322,8 @@ const FileAttachments: React.FC<Props> = ({ formikProps }) => {
 };
 type Props = {
   formikProps: UpsertPOFormikProps;
+  disabled?: boolean;
 };
-
-// export default FileAttachments;
 
 export default React.memo(FileAttachments, (prevProps, nextProps) => {
   const prevFormikProps = prevProps.formikProps;
