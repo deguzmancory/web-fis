@@ -2,7 +2,6 @@ import { Autocomplete, CircularProgress, SxProps, TextField } from '@mui/materia
 import debounce from 'lodash/debounce';
 import React from 'react';
 import { isEmpty as isEmptyValue } from 'src/validations';
-import CustomPopperAutocomplete from '../CustomPopperAutocomplete';
 import './styles.scss';
 
 export interface AutocompleteOption {
@@ -80,7 +79,7 @@ const InputAutocomplete = <TData extends unknown, TValue = TData>({
       // filterOptions={option => option}
       // filterSelectedOptions
       getOptionLabel={getOptionLabel}
-      PopperComponent={CustomPopperAutocomplete}
+      // PopperComponent={CustomPopperAutocomplete}
       sx={sx}
       renderInput={(params) => (
         <div className="search-dropdown-box-input-container">

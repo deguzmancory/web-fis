@@ -8,7 +8,6 @@ export { default as Button } from './Button';
 export { default as ButtonYesNo } from './ButtonYesNo';
 export { default as Checkbox } from './Checkbox';
 export { default as ConfirmationCodeField } from './ConfirmationCodeField';
-export { default as CustomPopperAutocomplete } from './CustomPopperAutocomplete';
 export { default as DatePicker } from './DatePicker';
 export { default as DateRangePicker } from './DateRangePicker';
 export { default as Dialog } from './Dialog';
