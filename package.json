@@ -78,7 +78,7 @@
     "web-vitals": "^2.1.4",
     "workbox-cli": "6.5.4",
     "workbox-window": "6.5.4",
-    "yup": "0.32.11"
+    "yup": "1.0.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^14.1.0",
@@ -104,7 +104,6 @@
     "@types/react-signature-canvas": "1.0.2",
     "@types/shortid": "^0.0.29",
     "@types/url-join": "^4.0.0",
-    "@types/yup": "0.29.14",
     "@typescript-eslint/eslint-plugin": "^5.33.1",
     "@typescript-eslint/parser": "^5.33.1",
     "babel-eslint": "^10.1.0",

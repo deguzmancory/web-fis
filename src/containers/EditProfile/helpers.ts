@@ -25,14 +25,14 @@ export const editProfileFormSchema = Yup.object().shape(
     passwordSetDate: Yup.string().notRequired(),
     currentPassword: Yup.string().when('newPassword', {
       is: (newPassword) => !isEmpty(newPassword),
-      then: Yup.string().required(),
-      otherwise: Yup.string().notRequired(),
+      then: (schema) => schema.required().typeError(ErrorService.MESSAGES.required),
+      otherwise: (schema) => schema.notRequired().nullable(),
     }),
     newPassword: Yup.string().when(
       ['currentPassword', 'newPassword'],
-      (currentPassword, newPassword) => {
+      ([currentPassword, newPassword], schema) => {
         if (!isEmpty(currentPassword) || !isEmpty(newPassword)) {
-          return Yup.string()
+          return schema
             .password()
             .required()
             .test(
@@ -44,7 +44,7 @@ export const editProfileFormSchema = Yup.object().shape(
             );
         }
 
-        return Yup.string().notRequired();
+        return schema.notRequired();
       }
     ),
 

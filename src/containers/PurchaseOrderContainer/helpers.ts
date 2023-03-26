@@ -18,7 +18,6 @@ import {
   isoFormat,
   localTimeToHawaii,
 } from 'src/utils';
-import { isEmpty } from 'src/validations';
 import { emptyUpsertPOFormValue, externalFormAttachments, initialLineItemValue } from './constants';
 import {
   PO_ACTION,
@@ -138,63 +137,52 @@ export const getAvailableFormsFromResponse = (forms: AdditionalPOForm[]) => {
 export const getPOFormValidationSchema = ({ action }: { action: PO_ACTION }) => {
   const isSubmitAction = isPOSubmitAction(action);
 
-  return Yup.object().shape(
-    {
-      projectTitle: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
-      projectNumber: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
-      vendorName: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
-      vendorCode: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
-      shipOther: Yup.string().when('shipVia', {
-        is: SHIP_VIA_VALUE.OTHER,
-        then: Yup.string().required().typeError(ErrorService.MESSAGES.required),
-        otherwise: Yup.string().nullable(),
-      }),
-      vendorAddress: isSubmitAction
-        ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
-        : Yup.string().nullable(),
-      shipTo: isSubmitAction
-        ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
-        : Yup.string().nullable(),
-      directInquiriesTo: isSubmitAction
-        ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
-        : Yup.string().nullable(),
-      faStaffReviewer: isSubmitAction
-        ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
-        : Yup.string().nullable(),
-      lineItems: Yup.array().when(['lineItems', 'projectNumber'], (lineItems, projectNumber) => {
-        if (isEmpty(lineItems) || lineItems.length < 2) {
-          return Yup.array().test('min-length', 'At least one Project # is Required', (value) => {
-            if (value.length < 2) {
-              return false;
-            }
-
-            return true;
-          });
-        }
-
-        return Yup.array().of<any>(
-          Yup.lazy((_item, options: any) => {
-            const isLastItem = options.parent?.length === options?.index + 1;
-
-            if (!isLastItem) {
-              return Yup.object().shape({
-                itemProjectNumber: isVariousProject(projectNumber)
-                  ? Yup.mixed().required(ErrorService.MESSAGES.shortRequired)
-                  : Yup.string().nullable(),
-                budgetCategory: Yup.string()
-                  .required(ErrorService.MESSAGES.shortRequired)
-                  .typeError(ErrorService.MESSAGES.shortRequired),
-                description: Yup.string().required().typeError(ErrorService.MESSAGES.required),
-              });
-            }
-
-            return Yup.object().nullable();
+  return Yup.object().shape({
+    projectTitle: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
+    projectNumber: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
+    vendorName: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
+    vendorCode: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
+    shipOther: Yup.string().when('shipVia', {
+      is: SHIP_VIA_VALUE.OTHER,
+      then: (schema) => schema.required().typeError(ErrorService.MESSAGES.required),
+      otherwise: (schema) => schema.nullable(),
+    }),
+    vendorAddress: isSubmitAction
+      ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
+      : Yup.string().nullable(),
+    shipTo: isSubmitAction
+      ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
+      : Yup.string().nullable(),
+    directInquiriesTo: isSubmitAction
+      ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
+      : Yup.string().nullable(),
+    faStaffReviewer: isSubmitAction
+      ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
+      : Yup.string().nullable(),
+    lineItems: Yup.array().when(['projectNumber'], ([projectNumber], schema) => {
+      return schema
+        .min(
+          // currently min error will not work cause lineItems will return string or object => can't pass into jsx
+          2,
+          isVariousProject(projectNumber)
+            ? 'At least one Project # is Required'
+            : 'Budget Category is required. Description is required.'
+        )
+        .transform((fields: any[]) => fields.slice(0, -1))
+        .of(
+          Yup.object().shape({
+            itemProjectNumber: isVariousProject(projectNumber)
+              ? Yup.mixed().required(ErrorService.MESSAGES.shortRequired)
+              : Yup.string().nullable(),
+            budgetCategory: Yup.string()
+              .required(ErrorService.MESSAGES.shortRequired)
+              .typeError(ErrorService.MESSAGES.shortRequired),
+            description: Yup.string().required().typeError(ErrorService.MESSAGES.required),
           })
         );
-      }),
-    },
-    [['lineItems', 'lineItems']]
-  );
+    }),
+    sendInvoiceToFaEmail: Yup.string().notTrimmable().email().nullable().optional(),
+  });
 };
 
 export const getInitialPOFormValue = ({ profile }: { profile: MyProfile }): UpsertPOFormValue => {
