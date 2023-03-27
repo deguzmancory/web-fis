@@ -44,7 +44,7 @@ const AssigneeInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
           5. Enter the Taxpayer Identification Number (TIN) <RequiredSign />
         </Typography>
 
-        <Grid container spacing={3} mb={2}>
+        <Grid container spacing={2} mb={2}>
           <Grid item xs={5.8}>
             <InputMask
               label="Social Security Number (SSN)"
@@ -79,7 +79,7 @@ const AssigneeInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
         6. Enter the UH or RCUH Employee Number:
       </Typography>
 
-      <Grid container spacing={3} mb={2}>
+      <Grid container spacing={2} mb={2}>
         <Grid item xs={5.8}>
           <InputMask
             label="UH Employee Number"
@@ -111,7 +111,7 @@ const AssigneeInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
         7. This vendor registration form was completed by:
       </Typography>
 
-      <Grid container spacing={3} mb={2}>
+      <Grid container spacing={2} mb={2}>
         <Grid item xs={12} sm={6} md={4}>
           <Input
             label="Name"

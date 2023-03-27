@@ -95,7 +95,7 @@ const VendorInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
           Individual
         </Typography>
 
-        <Grid container spacing={3} mb={2}>
+        <Grid container spacing={2} mb={2}>
           <Grid item xs={6} md={4}>
             <Input
               label="First Name"
@@ -114,7 +114,7 @@ const VendorInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
               maxLength={20}
             />
           </Grid>
-          <Grid item xs={12} md={4} container spacing={3}>
+          <Grid item xs={12} md={4} container spacing={2}>
             <Grid item xs={5}>
               <Input
                 label="MI"
@@ -156,7 +156,7 @@ const VendorInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
         3. Enter the vendor’s address (only a U.S. address is allowed).
       </Typography>
 
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid item xs={4}>
           <Input
             label={'Department/Office'}

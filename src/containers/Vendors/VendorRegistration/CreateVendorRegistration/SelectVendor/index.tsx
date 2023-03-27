@@ -110,7 +110,7 @@ const SelectVendor: React.FC<Props> = ({ formikProps, disabled = false }) => {
           ]}
           {...getFieldProps(VENDOR_REGISTRATION_FORM_KEY.FED_TAX_CLASS)}
           onChange={handleSelectVendorClass}
-          itemClassName="mb-except-last-16"
+          itemClassName="mb-except-last-4"
           disabled={disabled}
         />
       </Box>

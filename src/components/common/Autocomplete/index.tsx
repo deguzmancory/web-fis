@@ -2,7 +2,6 @@ import { Autocomplete, CircularProgress, SxProps, TextField } from '@mui/materia
 import debounce from 'lodash/debounce';
 import React from 'react';
 import { isEmpty as isEmptyValue } from 'src/validations';
-import './styles.scss';
 
 export interface AutocompleteOption {
   label: string;

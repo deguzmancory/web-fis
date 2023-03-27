@@ -26,6 +26,7 @@ import {
   PO_MODE,
 } from './enums';
 import { isVariousProject, SHIP_VIA_VALUE } from './GeneralInfo/helpers';
+import { FED_ATTACHMENT_VALUE } from './PurchaseInfo/helpers';
 import { AdditionalPOFormValue, UpsertPOFormValue } from './types';
 
 export const isPOSaveAction = (currentAction: PO_ACTION) => {
@@ -180,6 +181,11 @@ export const getPOFormValidationSchema = ({ action }: { action: PO_ACTION }) => 
             description: Yup.string().required().typeError(ErrorService.MESSAGES.required),
           })
         );
+    }),
+    uhSubawardNumber: Yup.string().when('fedAttachment', {
+      is: FED_ATTACHMENT_VALUE.UH_SUBAWARD,
+      then: (schema) => schema.required().typeError(ErrorService.MESSAGES.required),
+      otherwise: (schema) => schema.nullable(),
     }),
     sendInvoiceToFaEmail: Yup.string().notTrimmable().email().nullable().optional(),
   });

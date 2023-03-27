@@ -357,13 +357,6 @@ const PurchaseOrderContainer: React.FC<Props> = ({
     }
   };
 
-  // if (!formData)
-  //   return (
-  //     <Box minHeight="80vh" p={4}>
-  //       <LoadingCommon />
-  //     </Box>
-  //   );
-
   return (
     <Prompt
       title={'Leave site?'}

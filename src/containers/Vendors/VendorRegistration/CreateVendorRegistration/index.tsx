@@ -1,5 +1,6 @@
 import { Box, Stack } from '@mui/material';
 import { FormikProps, useFormik } from 'formik';
+import { Location } from 'history';
 import React from 'react';
 import { connect } from 'react-redux';
 import { useLocation } from 'react-router-dom';
@@ -14,11 +15,13 @@ import { useCreateVendorRegistration, useGetPODetail, useProfile } from 'src/que
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/store';
 import { Navigator, Toastify } from 'src/services';
+import Prompt from 'src/services/Prompt';
 import {
   getUncontrolledInputFieldProps,
   handleScrollToTopError,
   handleShowErrorMsg,
 } from 'src/utils';
+import { isEmpty } from 'src/validations';
 import urljoin from 'url-join';
 import { VENDOR_REGISTRATION_NAVIGATE_FROM, VENDOR_REGISTRATION_PARAMS } from '../enums';
 import AssigneeInfo from './AssigneeInfo';
@@ -43,8 +46,11 @@ const CreateVendorRegistration: React.FC<Props> = ({
   ) as VENDOR_REGISTRATION_NAVIGATE_FROM;
   const documentId = query.get(VENDOR_REGISTRATION_PARAMS.DOCUMENT_ID) || '';
 
-  const { createVendorRegistration, isLoading: isVendorRegistrationLoading } =
-    useCreateVendorRegistration();
+  const {
+    createVendorRegistration,
+    isLoading: isVendorRegistrationLoading,
+    isSuccess: isCreateVendorRegistrationSuccess,
+  } = useCreateVendorRegistration();
   const { profile } = useProfile();
   const { onGetPOById } = useGetPODetail({
     id: documentId,
@@ -59,6 +65,7 @@ const CreateVendorRegistration: React.FC<Props> = ({
     createVendorRegistration(payload, {
       onSuccess: async (data) => {
         const mockRes = mockCreateVendorRegistrationRes; //TODO: huy_dang remove mock data
+
         if (redirectSection === VENDOR_REGISTRATION_NAVIGATE_FROM.PO) {
           const vendor = {
             name: mockRes.vendorName,
@@ -79,6 +86,7 @@ const CreateVendorRegistration: React.FC<Props> = ({
             address3: mockRes.address3,
           };
 
+          //if there's no formData => redirect page have no data => fetch data to prepari
           if (!formData) {
             const { data: poDataResponse } = await onGetPOById();
 
@@ -97,11 +105,13 @@ const CreateVendorRegistration: React.FC<Props> = ({
 
           onSetIsImmutableFormData(true);
 
-          if (documentId) {
-            Navigator.navigate(urljoin(PATHS.purchaseOrderDetail, documentId));
-          } else {
-            Navigator.navigate(PATHS.createPurchaseOrders);
-          }
+          setTimeout(() => {
+            if (documentId) {
+              Navigator.navigate(urljoin(PATHS.purchaseOrderDetail, documentId));
+            } else {
+              Navigator.navigate(PATHS.createPurchaseOrders);
+            }
+          });
         }
       },
       onError: (error) => {
@@ -194,45 +204,76 @@ const CreateVendorRegistration: React.FC<Props> = ({
     }),
   };
 
-  const handleCancelClick = () => {};
+  const handleCancelClick = () => {
+    onSetIsImmutableFormData(true);
+
+    switch (redirectSection) {
+      case VENDOR_REGISTRATION_NAVIGATE_FROM.PO:
+        if (documentId) {
+          return Navigator.navigate(urljoin(PATHS.purchaseOrderDetail, documentId));
+        } else {
+          return Navigator.navigate(PATHS.createPurchaseOrders);
+        }
+
+      default:
+        Navigator.navigate(PATHS.dashboard);
+        return;
+    }
+  };
+
+  const blockCondition = (location: Location<string>) => {
+    if (isCreateVendorRegistrationSuccess) {
+      return false;
+    }
+
+    return !isEmpty(touched);
+  };
 
   return (
-    <Box>
-      <CreateVendorRegistrationTitle />
+    <Prompt
+      title={'Leave site?'}
+      message={'There are unsaved changes on the Form. Are you sure you want to leave this page?'}
+      cancelOkText="Yes, leave"
+      cancelText="No, stay"
+      condition={blockCondition}
+    >
+      <Box>
+        <CreateVendorRegistrationTitle />
 
-      <SectionLayout>
-        <VendorInfo formikProps={formikProps} />
-      </SectionLayout>
-      <SectionLayout>
-        <SelectVendor formikProps={formikProps} />
-      </SectionLayout>
-      <SectionLayout>
-        <AssigneeInfo formikProps={formikProps} />
-      </SectionLayout>
+        <SectionLayout>
+          <VendorInfo formikProps={formikProps} />
+        </SectionLayout>
+        <SectionLayout>
+          <SelectVendor formikProps={formikProps} />
+        </SectionLayout>
+        <SectionLayout>
+          <AssigneeInfo formikProps={formikProps} />
+        </SectionLayout>
 
-      <Stack my={4} flexDirection={'row'} justifyContent="center">
-        <Button
-          variant="outline"
-          className="mr-8"
-          disabled={isVendorRegistrationLoading}
-          onClick={handleCancelClick}
-        >
-          Cancel
-        </Button>
-        <Button
-          className="mr-8"
-          onClick={async () => {
-            handleSubmit();
-            const errors = await validateForm();
-            _handleScrollToTopError(errors);
-          }}
-          isLoading={isVendorRegistrationLoading}
-          disabled={isVendorRegistrationLoading}
-        >
-          Submit
-        </Button>
-      </Stack>
-    </Box>
+        <Stack my={4} flexDirection={'row'} justifyContent="center">
+          <Button
+            variant="outline"
+            className="mr-8"
+            disabled={isVendorRegistrationLoading}
+            onClick={handleCancelClick}
+          >
+            Cancel
+          </Button>
+          <Button
+            className="mr-8"
+            onClick={async () => {
+              handleSubmit();
+              const errors = await validateForm();
+              _handleScrollToTopError(errors);
+            }}
+            isLoading={isVendorRegistrationLoading}
+            disabled={isVendorRegistrationLoading}
+          >
+            Submit
+          </Button>
+        </Stack>
+      </Box>
+    </Prompt>
   );
 };
 

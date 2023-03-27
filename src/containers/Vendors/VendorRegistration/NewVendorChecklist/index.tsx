@@ -101,6 +101,7 @@ const NewVendorCheckList: React.FC<Props> = ({ onNextPage }) => {
         </Typography>
         <Button
           onClick={() => {
+            //TODO: save form when back
             Navigator.goBack(PATHS.vendors);
           }}
         >

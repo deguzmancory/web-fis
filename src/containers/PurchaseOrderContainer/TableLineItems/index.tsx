@@ -186,7 +186,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
               )}
               setFieldTouched={setFieldTouched}
               setFieldValue={setFieldValue}
-              sx={{ width: 160 }}
+              sx={{ width: 155 }}
               disabled={disabled || isCUReviewMode}
               onChange={(name, value) => {
                 handleInputChange({
@@ -197,7 +197,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
               }}
             />
           ),
-          width: 160,
+          width: 155,
           hide: hideProjectNumberColumn,
         },
         {
@@ -213,13 +213,13 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
                   value: event.target.value,
                 })
               }
-              style={{ width: hideProjectNumberColumn ? 90 : 75 }}
+              style={{ width: hideProjectNumberColumn ? 90 : 85 }}
               hideEllipsisTooltip
               maxLength={5}
               disabled={disabled || isCUReviewMode}
             />
           ),
-          width: hideProjectNumberColumn ? 90 : 75,
+          width: hideProjectNumberColumn ? 90 : 85,
         },
         {
           type: CellType.INPUT,
@@ -237,14 +237,14 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
                   value: event.target.value,
                 })
               }
-              style={{ width: hideProjectNumberColumn ? 90 : 75 }}
+              style={{ width: hideProjectNumberColumn ? 90 : 85 }}
               hideEllipsisTooltip
               maxLength={4}
               disabled={disabled || isCUReviewMode}
               required
             />
           ),
-          width: hideProjectNumberColumn ? 90 : 75,
+          width: hideProjectNumberColumn ? 90 : 85,
         },
         {
           type: CellType.INPUT,
@@ -259,13 +259,13 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
                   value: event.target.value,
                 })
               }
-              style={{ width: hideProjectNumberColumn ? 90 : 75 }}
+              style={{ width: hideProjectNumberColumn ? 90 : 85 }}
               hideEllipsisTooltip
               maxLength={3}
               disabled={disabled || isCUReviewMode}
             />
           ),
-          width: hideProjectNumberColumn ? 90 : 75,
+          width: hideProjectNumberColumn ? 90 : 85,
         },
         {
           type: CellType.INPUT,
@@ -282,7 +282,11 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
                 })
               }
               required
-              style={{ width: hideProjectNumberColumn ? 240 : 175, paddingTop: '4px' }}
+              style={{
+                width: hideProjectNumberColumn ? 265 : 190,
+                paddingTop: '4px',
+                paddingBottom: 0,
+              }}
               disabled={disabled || isCUReviewMode}
             />
           ),
@@ -305,13 +309,13 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
                 });
               }}
               type="number"
-              style={{ width: hideProjectNumberColumn ? 90 : 70 }}
+              style={{ width: hideProjectNumberColumn ? 100 : 80 }}
               lengthShowTooltip={hideProjectNumberColumn ? 7 : 5}
               hideArrowTypeNumber
               disabled={disabled || isReviewMode}
             />
           ),
-          width: hideProjectNumberColumn ? 90 : 70,
+          width: hideProjectNumberColumn ? 100 : 80,
         },
         {
           type: CellType.INPUT,
@@ -326,12 +330,12 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
                   value: event.target.value,
                 })
               }
-              style={{ width: hideProjectNumberColumn ? 90 : 70 }}
+              style={{ width: hideProjectNumberColumn ? 100 : 80 }}
               lengthShowTooltip={hideProjectNumberColumn ? 7 : 5}
               disabled={disabled || isReviewMode}
             />
           ),
-          width: hideProjectNumberColumn ? 90 : 70,
+          width: hideProjectNumberColumn ? 100 : 80,
         },
         {
           type: CellType.CURRENCY_INPUT,
@@ -353,10 +357,10 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
               textAlign="right"
               lengthShowTooltip={hideProjectNumberColumn ? 14 : 11}
               disabled={disabled || isReviewMode}
-              style={{ width: hideProjectNumberColumn ? 125 : 105 }}
+              style={{ width: hideProjectNumberColumn ? 130 : 115 }}
             />
           ),
-          width: hideProjectNumberColumn ? 125 : 105,
+          width: hideProjectNumberColumn ? 130 : 115,
         },
         {
           type: CellType.CURRENCY_INPUT,
@@ -367,10 +371,10 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
               textAlign="right"
               disabled
               lengthShowTooltip={hideProjectNumberColumn ? 14 : 11}
-              style={{ width: hideProjectNumberColumn ? 120 : 105 }}
+              style={{ width: hideProjectNumberColumn ? 130 : 115 }}
             />
           ),
-          width: hideProjectNumberColumn ? 120 : 105,
+          width: hideProjectNumberColumn ? 130 : 115,
         },
       ],
     };

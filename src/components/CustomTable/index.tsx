@@ -58,11 +58,11 @@ export const cellCurrencyValueStyles = {
 };
 export const cellCurrencyInputStyles = {
   ...cellCurrencyValueStyles,
-  padding: '8px',
+  padding: '4px',
 };
 export const cellInputStyles = {
   ...cellBaseStyles,
-  padding: '8px',
+  padding: '4px',
 };
 
 const getDefaultCellStyleByType = (cellType: CellType) => {

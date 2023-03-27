@@ -185,7 +185,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
   return (
     <Box>
       <Grid container spacing={2}>
-        <Grid item container spacing={3}>
+        <Grid item container spacing={2}>
           <Grid item xs={12} sm={6} md={4}>
             <Input
               label={'Login Name'}

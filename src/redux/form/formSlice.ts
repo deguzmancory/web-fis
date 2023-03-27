@@ -44,6 +44,7 @@ export const formSlice = createSlice({
         state.activeStep = action.payload;
       }
     },
+    // for keep form data immutable between pages and components
     setIsImmutableFormData: (state, action: PayloadAction<boolean>) => {
       state.isImmutableFormData = action.payload;
     },
