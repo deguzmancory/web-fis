@@ -101,7 +101,6 @@ export const initialFormAttachmentValue = {
 };
 
 export const initialDeterminationValue = {
-  id: '',
   to: '',
   dDate: new Date(),
   from: '',

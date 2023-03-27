@@ -24,7 +24,7 @@ import {
   handleShowErrorMsg,
 } from 'src/utils';
 import { isEmpty } from 'src/validations';
-import { PO_ADDITIONAL_FORM_KEY, PO_ADDITIONAL_FORM_PARAMS } from '../AdditionalPOForms/enum';
+import { PO_FORM_ELEMENT_ID, PO_FORM_PARAMS } from './enums';
 import SectionLayout from '../shared/SectionLayout';
 import AdditionalForms from './AdditionalForms';
 import AuthorizedBy from './AuthorizedBy';
@@ -77,7 +77,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   const [formAction, setFormAction] = React.useState<PO_ACTION>(null);
   const [isTriedSubmit, setIsTriedSubmit] = React.useState<boolean>(false);
   const formRef = React.useRef<FormikProps<UpsertPOFormValue>>(null);
-  const scrollToParam = query.get(PO_ADDITIONAL_FORM_PARAMS.SCROLL_TO) || null;
+  const scrollToParam = query.get(PO_FORM_PARAMS.SCROLL_TO) || null;
 
   const isEditPOMode = !!id;
   const hasPermission = true; //TODO: huy_dang check logic
@@ -203,8 +203,8 @@ const PurchaseOrderContainer: React.FC<Props> = ({
 
   // Auto scroll to additional form section base on scrollToParam
   React.useEffect(() => {
-    if (scrollToParam && scrollToParam === PO_ADDITIONAL_FORM_KEY.ADDITIONAL_FORMS) {
-      const additionalFormId = document.getElementById(PO_ADDITIONAL_FORM_KEY.ADDITIONAL_FORMS);
+    if (scrollToParam && scrollToParam === PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS) {
+      const additionalFormId = document.getElementById(PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS);
 
       if (additionalFormId) {
         setTimeout(() => {
@@ -334,6 +334,10 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   }, [isTriedSubmit]);
 
   const blockCondition = (location: Location<string>) => {
+    if (isEditPOMode && location.pathname.includes(PATHS.createPurchaseOrders)) {
+      return true;
+    }
+
     const acceptablePaths = [
       PATHS.createPurchaseOrders,
       PATHS.purchaseOrderDetail,
@@ -455,7 +459,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
           </Suspense>
 
           <Stack my={4} flexDirection={'row'} justifyContent="center">
-            <Button variant="outline" className="mr-8" onClick={() => handleCancelClick()}>
+            <Button variant="outline" className="mr-8" onClick={handleCancelClick}>
               Cancel
             </Button>
             {showDeleteButton && (

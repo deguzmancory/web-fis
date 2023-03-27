@@ -376,6 +376,8 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
     };
   });
 
+  // currently can't using lineItems error because it return string or object => can't pass into jsx
+  // defined table error manually
   const tableError =
     touched.lineItems && lineItemsValue.length === 1
       ? hideProjectNumberColumn

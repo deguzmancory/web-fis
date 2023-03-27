@@ -6,23 +6,35 @@ import { useDispatch } from 'react-redux';
 import { PATHS } from 'src/appConfig/paths';
 import { Input, InputPhone, Link, Select, TextareaAutosize } from 'src/components/common';
 import { SelectOption } from 'src/components/common/Select';
-import { VENDOR_REGISTRATION_NAVIGATE_FROM } from 'src/containers/Vendors/VendorRegistration/enums';
+import {
+  VENDOR_REGISTRATION_NAVIGATE_FROM,
+  VENDOR_REGISTRATION_PARAMS,
+} from 'src/containers/Vendors/VendorRegistration/enums';
 import { FinancialProject } from 'src/queries/Projects/types';
 import { Vendor } from 'src/queries/Vendors';
 import { showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { Navigator } from 'src/services';
-import { getDateDisplay, getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
+import { getDateDisplay, getErrorMessage, isString } from 'src/utils';
 import { isEmpty } from 'src/validations';
 import { PO_FORM_KEY, PO_MODE } from '../enums';
 import { isCreatePOMode, isCUReviewPOMode, isFAReviewPOMode, isPiSuEditPOMode } from '../helpers';
 import usePOSearchProject, { SearchProjectsType } from './hooks/usePOSearchProject';
 import usePOSearchVender, { SearchVendorsType } from './hooks/usePOSearchVender';
-import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
-import { isVariousProject, shipViaOptions, VARIOUS_PROJECT_VALUE } from './helpers';
+import { UpsertPOFormikProps } from '../types';
+import {
+  getVendorAddress,
+  getVendorOptions,
+  isVariousProject,
+  shipViaOptions,
+  VARIOUS_PROJECT_VALUE,
+} from './helpers';
 import SuperQuote from './superQuote';
+import { useParams } from 'react-router-dom';
+import { setFormData } from 'src/redux/form/formSlice';
 
 const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPOMode }) => {
+  const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
   const inReviewMode = isFAReviewPOMode(currentPOMode) || isCUReviewPOMode(currentPOMode);
   const showActionLink = isCreatePOMode(currentPOMode) || isPiSuEditPOMode(currentPOMode);
@@ -37,37 +49,52 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
     setFieldTouched,
   } = formikProps;
 
-  // ===============
   const currentProjectTitle = React.useMemo(() => values.projectTitle, [values.projectTitle]);
   const currentProjectNumber = React.useMemo(() => values.projectNumber, [values.projectNumber]);
   const currentVendorName = React.useMemo(() => values.vendorName, [values.vendorName]);
   const currentVendorCode = React.useMemo(() => values.vendorCode, [values.vendorCode]);
 
-  // check for case vendor first mounted with data from get PO response
-  // check for case vendor first mounted when just back from additional forms
-  // do not check the project because strange behavior of default Various project => fetch project when did mount in usePOSearchProject hook
-  const currentVendorNameInputValue =
-    typeof currentVendorName === 'string' ? currentVendorName : currentVendorName?.name;
-  const currentVendorCodeInputValue =
-    typeof currentVendorCode === 'string' ? currentVendorCode : currentVendorCode?.code;
-
-  const { setSearchProjects, isLoadingSearchProjects, projectTitleOptions, projectNumberOptions } =
-    usePOSearchProject({ currentProjectTitle, currentProjectNumber });
+  const {
+    setSearchProjects,
+    isLoadingSearchProjects,
+    searchedProjectTitleOptions,
+    searchedProjectNumberOptions,
+  } = usePOSearchProject({ currentProjectTitle, currentProjectNumber });
 
   const {
-    isClearedDefaultVendors,
     isLoadingSearchVendors,
-    vendorNameOptions,
-    vendorCodeOptions,
-    setIsClearedDefaultVendors,
+    searchedVendorNameOptions,
+    searchedVendorCodeOptions,
     setSearchVendors,
   } = usePOSearchVender({ currentVendorName, currentVendorCode });
 
-  const haveVendorNameValueButOptions =
-    !!currentVendorName && isEmpty(vendorNameOptions) && !isLoadingSearchVendors;
-  const haveVendorCodeValueButOptions =
-    !!currentVendorCode && isEmpty(vendorCodeOptions) && !isLoadingSearchVendors;
-  // ==============
+  // check for case vendor first mounted with data from get PO response
+  // check for case vendor first mounted when just back from additional forms
+  // do not check the project because strange behavior of default Various project => fetch project when did mount in usePOSearchProject hook
+  const hasVendorNameValueButOptions =
+    !!currentVendorName && isEmpty(searchedVendorNameOptions) && !isLoadingSearchVendors;
+  const hasVendorCodeValueButOptions =
+    !!currentVendorCode && isEmpty(searchedVendorCodeOptions) && !isLoadingSearchVendors;
+
+  const vendorNameOptions = React.useMemo(() => {
+    if (hasVendorNameValueButOptions) {
+      return isString(currentVendorName)
+        ? [{ label: currentVendorName, value: currentVendorName, isDisabled: true }]
+        : getVendorOptions({ vendors: [currentVendorName] });
+    }
+
+    return searchedVendorNameOptions;
+  }, [currentVendorName, hasVendorNameValueButOptions, searchedVendorNameOptions]);
+
+  const vendorCodeOptions = React.useMemo(() => {
+    if (hasVendorCodeValueButOptions) {
+      return isString(currentVendorCode)
+        ? [{ label: currentVendorCode, value: currentVendorCode, isDisabled: true }]
+        : getVendorOptions({ vendors: [currentVendorCode] });
+    }
+
+    return searchedVendorCodeOptions;
+  }, [currentVendorCode, hasVendorCodeValueButOptions, searchedVendorCodeOptions]);
 
   const updateProjectFields = (value: FinancialProject) => {
     setFieldValue(PO_FORM_KEY.PROJECT_TITLE, value);
@@ -90,11 +117,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
     setFieldValue(PO_FORM_KEY.ADDRESS_2, value?.address2 || null);
     setFieldValue(PO_FORM_KEY.ADDRESS_3, value?.address3 || null);
     if (value) {
-      const { name2, address1, address2, address3 } = value || {};
-      const formattedAddress = `${name2 && `${name2}\n`}${address1 && `${address1}\n`}${
-        address2 && `${address2}\n`
-      }${address3}`;
-
+      const formattedAddress = getVendorAddress(value);
       setFieldValue(PO_FORM_KEY.VENDOR_ADDRESS, formattedAddress);
     } else {
       setFieldValue(PO_FORM_KEY.VENDOR_ADDRESS, '');
@@ -106,7 +129,11 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
   };
 
   const handleCreateNewVenderLinkClick = () => {
-    Navigator.navigate(`${PATHS.addVendorRegistration}?calling`, {
+    const callingFromParam = `?${VENDOR_REGISTRATION_PARAMS.CALLING_FROM}=${VENDOR_REGISTRATION_NAVIGATE_FROM.PO}`;
+    const documentIdParam = !!id ? `&${VENDOR_REGISTRATION_PARAMS.DOCUMENT_ID}=${id}` : '';
+
+    dispatch(setFormData(values));
+    Navigator.navigate(`${PATHS.addVendorRegistration}${callingFromParam}${documentIdParam}`, {
       isFromForm: VENDOR_REGISTRATION_NAVIGATE_FROM.PO,
     });
   };
@@ -145,14 +172,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceSearchVendorsInput = React.useCallback(
     debounce((key: keyof SearchVendorsType, value: string) => {
-      if (!value) {
-        if (haveVendorCodeValueButOptions || haveVendorNameValueButOptions) {
-          setIsClearedDefaultVendors(true);
-          updateVendorFields(null);
-        }
-
-        return;
-      }
+      if (!value) return;
 
       setSearchVendors((prevState) => ({
         ...prevState,
@@ -199,7 +219,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               label={'Project Title'}
               placeholder={'Search'}
               extraRequired
-              options={projectTitleOptions}
+              options={searchedProjectTitleOptions}
               isLoading={isLoadingSearchProjects}
               onInputChange={(value: string) => {
                 debounceSearchProjectsInput('title', value);
@@ -208,7 +228,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
                 return option.value.name;
               }}
               customSelectedOptionValue={
-                projectNumberOptions.find(
+                searchedProjectTitleOptions.find(
                   (option: SelectOption<FinancialProject>) =>
                     option.value?.name === values.projectTitle
                 ) || null
@@ -236,7 +256,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               label={'Project #'}
               placeholder={'Search'}
               extraRequired
-              options={projectNumberOptions}
+              options={searchedProjectNumberOptions}
               isLoading={isLoadingSearchProjects}
               onInputChange={(value: string) => {
                 debounceSearchProjectsInput('number', value);
@@ -245,7 +265,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
                 return option.value.number;
               }}
               customSelectedOptionValue={
-                projectNumberOptions.find(
+                searchedProjectNumberOptions.find(
                   (option: SelectOption<FinancialProject>) =>
                     option.value?.number === values.projectNumber
                 ) || null
@@ -311,24 +331,20 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               extraRequired
               options={vendorNameOptions}
               isLoading={isLoadingSearchVendors}
-              defaultInputValue={currentVendorNameInputValue}
-              {...(!isClearedDefaultVendors && {
-                inputValue: haveVendorNameValueButOptions ? currentVendorNameInputValue : undefined,
-              })}
               onInputChange={(value: string) => {
                 debounceSearchVendorsInput('name', value);
               }}
-              getOptionLabel={(option: SelectOption<Vendor>) => {
-                return option.value.name;
+              getOptionLabel={(option: SelectOption<Vendor | string>) => {
+                return isString(option.value) ? option.value : option.value.name;
+              }}
+              filterOption={(_option, _inputValue) => {
+                return true; //ignore default filter option by label
               }}
               customSelectedOptionValue={
                 vendorNameOptions.find(
                   (option: SelectOption<Vendor>) => option.value?.name === values.vendorName
                 ) || null
               }
-              filterOption={(_option, _inputValue) => {
-                return true; //ignore default filter option by label
-              }}
               hideSearchIcon
               isClearable={true}
               onChange={(_name, value) => updateVendorFields(value)}
@@ -367,15 +383,11 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               extraRequired
               options={vendorCodeOptions}
               isLoading={isLoadingSearchVendors}
-              defaultInputValue={currentVendorCodeInputValue}
-              {...(!isClearedDefaultVendors && {
-                inputValue: haveVendorCodeValueButOptions ? currentVendorCodeInputValue : undefined,
-              })}
               onInputChange={(value: string) => {
                 debounceSearchVendorsInput('code', value);
               }}
-              getOptionLabel={(option: SelectOption<Vendor>) => {
-                return option.value.code;
+              getOptionLabel={(option: SelectOption<Vendor | string>) => {
+                return isString(option.value) ? option.value : option.value.code;
               }}
               customSelectedOptionValue={
                 vendorCodeOptions.find(
@@ -507,37 +519,39 @@ type Props = {
   currentPOMode: PO_MODE;
 };
 
-export default React.memo(GeneralInfo, (prevProps, nextProps) => {
-  const prevFormikProps = prevProps.formikProps;
-  const nextFormikProps = nextProps.formikProps;
+// always update formikValues for jump to create new vendor registration purpose
+export default React.memo(GeneralInfo);
 
-  const formKeysNeedRender = [
-    PO_FORM_KEY.LOGIN_NAME,
-    PO_FORM_KEY.DATE,
-    PO_FORM_KEY.NUMBER,
-    PO_FORM_KEY.PROJECT_TITLE,
-    PO_FORM_KEY.PHONE_NUMBER,
-    PO_FORM_KEY.PI_NAME,
-    PO_FORM_KEY.PROJECT_PERIOD,
-    PO_FORM_KEY.SUPER_QUOTE_NUMBER,
-    PO_FORM_KEY.SUPER_QUOTE_BID_ID,
-    PO_FORM_KEY.VENDOR_NAME,
-    PO_FORM_KEY.VENDOR_CODE,
-    PO_FORM_KEY.VENDOR_ADDRESS,
-    PO_FORM_KEY.SHIP_OTHER,
-    PO_FORM_KEY.SHIP_VIA,
-    PO_FORM_KEY.SHIP_TO,
-    PO_FORM_KEY.DELIVERY_BY,
-    PO_FORM_KEY.DISCOUNT_TERMS,
-    PO_FORM_KEY.QUOTATION_NUMBER,
-    PO_FORM_KEY.DIRECT_INQUIRIES_TO,
-    PO_FORM_KEY.PHONE_NUMBER,
-    PO_FORM_KEY.FA_STAFF_REVIEWER,
-  ]; // only re-render if keys using in this component change
+// const prevFormikProps = prevProps.formikProps;
+// const nextFormikProps = nextProps.formikProps;
 
-  return isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
-    prevFormikProps,
-    nextFormikProps,
-    formKeysNeedRender,
-  });
-});
+// const formKeysNeedRender = [
+//   PO_FORM_KEY.LOGIN_NAME,
+//   PO_FORM_KEY.DATE,
+//   PO_FORM_KEY.NUMBER,
+//   PO_FORM_KEY.PROJECT_TITLE,
+//   PO_FORM_KEY.PHONE_NUMBER,
+//   PO_FORM_KEY.PI_NAME,
+//   PO_FORM_KEY.PROJECT_PERIOD,
+//   PO_FORM_KEY.SUPER_QUOTE_NUMBER,
+//   PO_FORM_KEY.SUPER_QUOTE_BID_ID,
+//   PO_FORM_KEY.VENDOR_NAME,
+//   PO_FORM_KEY.VENDOR_CODE,
+//   PO_FORM_KEY.VENDOR_ADDRESS,
+//   PO_FORM_KEY.SHIP_OTHER,
+//   PO_FORM_KEY.SHIP_VIA,
+//   PO_FORM_KEY.SHIP_TO,
+//   PO_FORM_KEY.DELIVERY_BY,
+//   PO_FORM_KEY.DISCOUNT_TERMS,
+//   PO_FORM_KEY.QUOTATION_NUMBER,
+//   PO_FORM_KEY.DIRECT_INQUIRIES_TO,
+//   PO_FORM_KEY.PHONE_NUMBER,
+//   PO_FORM_KEY.FA_STAFF_REVIEWER,
+// ]; // only re-render if keys using in this component change
+
+// return isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
+//   prevFormikProps,
+//   nextFormikProps,
+//   formKeysNeedRender,
+// });
+// });

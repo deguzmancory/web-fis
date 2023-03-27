@@ -89,3 +89,14 @@ export const getVendorOptions = ({ vendors }: { vendors: Vendor[] }): SelectOpti
     subLabel: `${vendor.address1}, ${vendor.address2}${vendor.address3 && `, ${vendor.address3}`}`,
   }));
 };
+
+export const getVendorAddress = (vendor: Partial<Vendor>) => {
+  if (!vendor) return '';
+
+  const { name2, address1, address2, address3 } = vendor || {};
+  const formattedAddress = `${name2 && `${name2}\n`}${address1 && `${address1}\n`}${
+    address2 && `${address2}\n`
+  }${address3}`;
+
+  return formattedAddress;
+};

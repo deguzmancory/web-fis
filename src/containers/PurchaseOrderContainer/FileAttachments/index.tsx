@@ -251,7 +251,7 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
                 <StyledTableCell width={'10%'}>{fileSelected.size}</StyledTableCell>
                 <StyledTableCell width={'30%'}>
                   <Stack direction="row" justifyContent={'flex-end'}>
-                    {!!uploadProgress && (
+                    {(!!uploadProgress || isLoadingGetPresignedUrl) && (
                       <CircularProgressWithLabel
                         variant="determinate"
                         value={uploadProgress}

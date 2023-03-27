@@ -1,18 +1,20 @@
 import { Box, Grid, Typography } from '@mui/material';
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { Button, Select } from 'src/components/common';
 import { SelectOption } from 'src/components/common/Select';
-import { PO_ADDITIONAL_FORM_KEY } from 'src/containers/AdditionalPOForms/enum';
+import { PO_ADDITIONAL_FORM_PARAMS } from 'src/containers/AdditionalPOForms/enum';
 import { AdditionalPOForm } from 'src/queries/PurchaseOrders';
 import { setFormData } from 'src/redux/form/formSlice';
 import { Navigator } from 'src/services';
 import { externalFormAttachments } from '../constants';
-import { PO_FORM_KEY } from '../enums';
+import { PO_FORM_ELEMENT_ID, PO_FORM_KEY } from '../enums';
 import { AdditionalPOFormValue, UpsertPOFormikProps } from '../types';
 import FormAttachmentItem from './formAttachmentItem';
 
 const AdditionalForms: React.FC<Props> = ({ formikProps, disabled = false }) => {
+  const { id } = useParams<{ id: string }>();
   const [selectedForm, setSelectedForm] = React.useState<AdditionalPOForm>(null);
   const dispatch = useDispatch();
 
@@ -82,15 +84,17 @@ const AdditionalForms: React.FC<Props> = ({ formikProps, disabled = false }) => 
       if (targetFormAttachment.isExternalLink) {
         window.open(targetFormAttachment.href, '_blank', 'noreferrer');
       } else {
+        const documentIdParam = !!id ? `?${PO_ADDITIONAL_FORM_PARAMS.DOCUMENT_ID}=${id}` : '';
+
         dispatch(setFormData(values));
-        Navigator.navigate(targetFormAttachment.href);
+        Navigator.navigate(`${targetFormAttachment.href}${documentIdParam}`);
       }
     },
-    [dispatch, values]
+    [dispatch, values, id]
   );
 
   return (
-    <Box id={PO_ADDITIONAL_FORM_KEY.ADDITIONAL_FORMS}>
+    <Box id={PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS}>
       <Typography variant="h5">Additional Forms included:</Typography>
 
       <Grid container mt={2}>

@@ -1,5 +1,4 @@
 import { Box, Grid } from '@mui/material';
-import _ from 'lodash';
 import React from 'react';
 import { TextArea } from 'src/components/common';
 import { getErrorMessage } from 'src/utils';
@@ -35,5 +34,6 @@ type Props = {
 export default React.memo(InternalComments, (prevProps, nextProps) => {
   const prevCommentsValues = prevProps.formikProps.values.comments;
   const nextCommentsValues = nextProps.formikProps.values.comments;
-  return _.isEqual(prevCommentsValues, nextCommentsValues);
+
+  return prevCommentsValues === nextCommentsValues;
 });

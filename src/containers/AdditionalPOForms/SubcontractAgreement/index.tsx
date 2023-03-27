@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import { TextareaAutosize } from 'src/components/common';
 import { initialSubcontractorValue } from 'src/containers/PurchaseOrderContainer/constants';
+import { PO_FORM_ELEMENT_ID, PO_FORM_PARAMS } from 'src/containers/PurchaseOrderContainer/enums';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
 import { SubcontractorPayload } from 'src/queries';
@@ -14,7 +15,7 @@ import { IRootState } from 'src/redux/rootReducer';
 import { Navigator } from 'src/services';
 import { getErrorMessage, getUncontrolledInputFieldProps } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
-import { PO_ADDITIONAL_FORM_KEY, PO_ADDITIONAL_FORM_PARAMS } from '../enum';
+import urljoin from 'url-join';
 import { PO_SUBCONTRACT_AGREEMENT_KEY } from './enum';
 import StandardsLayout from './StanDards';
 import WitnessethFormLayout from './Witnesseth';
@@ -22,17 +23,27 @@ import WitnessethFormLayout from './Witnesseth';
 const SubcontractAgreementForm: React.FC<Props> = ({
   formRef,
   formData,
-  onSetFormData,
   disabled,
+  documentId,
+  onSetFormData,
   onSetIsImmutableFormData,
 }) => {
   const history = useHistory();
 
   const handleFormSubmit = () => {
     handleSaveForm();
-    Navigator.navigate(
-      `${PATHS.createPurchaseOrders}?${PO_ADDITIONAL_FORM_PARAMS.SCROLL_TO}=${PO_ADDITIONAL_FORM_KEY.ADDITIONAL_FORMS}`
-    );
+
+    if (documentId) {
+      Navigator.navigate(
+        `${urljoin(PATHS.purchaseOrderDetail, documentId)}?${PO_FORM_PARAMS.SCROLL_TO}=${
+          PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS
+        }`
+      );
+    } else {
+      Navigator.navigate(
+        `${PATHS.createPurchaseOrders}?${PO_FORM_PARAMS.SCROLL_TO}=${PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS}`
+      );
+    }
   };
 
   const handleResetForm = () => {
@@ -123,6 +134,7 @@ type Props = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps & {
     disabled: boolean;
     formRef: RefObject<FormikProps<any>>;
+    documentId: string;
   };
 
 const mapStateToProps = (state: IRootState<UpsertPOFormValue>) => ({

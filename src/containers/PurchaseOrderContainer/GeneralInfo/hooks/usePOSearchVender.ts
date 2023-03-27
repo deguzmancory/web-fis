@@ -9,7 +9,6 @@ export type SearchVendorsType = {
 };
 
 const usePOSearchVender = ({ currentVendorName, currentVendorCode }) => {
-  const [isClearedDefaultVendors, setIsClearedDefaultVendors] = React.useState<boolean>(false);
   const [searchVendors, setSearchVendors] = React.useState<SearchVendorsType>({
     name: '',
     code: '',
@@ -17,7 +16,7 @@ const usePOSearchVender = ({ currentVendorName, currentVendorCode }) => {
 
   const { vendors, isLoading: isLoadingSearchVendors, setSearchVendorParams } = useSearchVendors();
 
-  const vendorNameOptions: SelectOption[] = React.useMemo(() => {
+  const searchedVendorNameOptions: SelectOption[] = React.useMemo(() => {
     if (isLoadingSearchVendors || (!searchVendors.name && !currentVendorName)) {
       return [];
     }
@@ -25,7 +24,7 @@ const usePOSearchVender = ({ currentVendorName, currentVendorCode }) => {
     return getVendorOptions({ vendors });
   }, [vendors, searchVendors.name, currentVendorName, isLoadingSearchVendors]);
 
-  const vendorCodeOptions: SelectOption[] = React.useMemo(() => {
+  const searchedVendorCodeOptions: SelectOption[] = React.useMemo(() => {
     if (isLoadingSearchVendors || (!searchVendors.code && !currentVendorCode)) {
       return [];
     }
@@ -84,11 +83,9 @@ const usePOSearchVender = ({ currentVendorName, currentVendorCode }) => {
 
   return {
     isLoadingSearchVendors,
-    vendorNameOptions,
-    vendorCodeOptions,
-    isClearedDefaultVendors,
+    searchedVendorNameOptions,
+    searchedVendorCodeOptions,
     setSearchVendors,
-    setIsClearedDefaultVendors,
   };
 };
 

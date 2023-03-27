@@ -28,7 +28,7 @@ const usePOSearchProject = ({ currentProjectTitle, currentProjectNumber }) => {
     isLoading: isLoadingSearchProjects,
   } = useGetFinancialProjects();
 
-  const projectTitleOptions: SelectOption[] = React.useMemo(() => {
+  const searchedProjectTitleOptions: SelectOption[] = React.useMemo(() => {
     if (isLoadingSearchProjects || (!searchProjects.title && !currentProjectTitle)) {
       return [];
     }
@@ -36,7 +36,7 @@ const usePOSearchProject = ({ currentProjectTitle, currentProjectNumber }) => {
     return getFinancialProjectOptions({ financialProjects });
   }, [financialProjects, searchProjects.title, currentProjectTitle, isLoadingSearchProjects]);
 
-  const projectNumberOptions: SelectOption[] = React.useMemo(() => {
+  const searchedProjectNumberOptions: SelectOption[] = React.useMemo(() => {
     if (isLoadingSearchProjects || (!searchProjects.number && !currentProjectNumber)) {
       return [];
     }
@@ -108,8 +108,8 @@ const usePOSearchProject = ({ currentProjectTitle, currentProjectNumber }) => {
 
   return {
     isLoadingSearchProjects,
-    projectTitleOptions,
-    projectNumberOptions,
+    searchedProjectTitleOptions,
+    searchedProjectNumberOptions,
     setSearchProjects,
   };
 };

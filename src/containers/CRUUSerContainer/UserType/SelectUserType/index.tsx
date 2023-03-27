@@ -72,5 +72,6 @@ type Props = {
 export default React.memo(SelectUserType, (prevProps, nextProps) => {
   const prevRolesValues = prevProps.formikProps.values.roles;
   const nextRolesValues = nextProps.formikProps.values.roles;
+
   return _.isEqual(prevRolesValues, nextRolesValues);
 });

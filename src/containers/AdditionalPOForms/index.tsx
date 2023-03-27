@@ -3,7 +3,7 @@ import { Stack } from '@mui/system';
 import { FormikProps } from 'formik';
 import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import { Button, LoadingCommon } from 'src/components/common';
 import NoPermission from 'src/components/NoPermission';
@@ -22,6 +22,8 @@ import SoleSource from './SoleSource';
 import AuthToPurchaseForm from './AuthToPurchase';
 import DeterminationForm from './Determination';
 import SubcontractAgreementForm from './SubcontractAgreement';
+import { PO_ADDITIONAL_FORM_PARAMS } from './enum';
+import urljoin from 'url-join';
 
 const PurchaseOrderContainer: React.FC<Props> = ({
   formData,
@@ -32,32 +34,43 @@ const PurchaseOrderContainer: React.FC<Props> = ({
 }) => {
   const { formCode } = useParams<{ formCode: string }>();
   const formRef = React.useRef<FormikProps<any>>(null);
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  const documentId = query.get(PO_ADDITIONAL_FORM_PARAMS.DOCUMENT_ID) || null;
 
   // const isEditPOMode = true;
   const hasPermission = true;
 
   React.useLayoutEffect(() => {
     if (!formData) {
-      Navigator.navigate(PATHS.createPurchaseOrders);
+      if (documentId) {
+        Navigator.navigate(urljoin(PATHS.purchaseOrderDetail, documentId));
+      } else {
+        Navigator.navigate(PATHS.createPurchaseOrders);
+      }
     }
-  }, [formData]);
+  }, [formData, documentId]);
 
   const renderForm = React.useCallback((code: PO_ADDITIONAL_FORM_CODE) => {
     if (!formData) return null;
 
     switch (code) {
       case PO_ADDITIONAL_FORM_CODE.SOLE_SOURCE:
-        return <SoleSource disabled={false} formRef={formRef} />;
+        return <SoleSource disabled={false} formRef={formRef} documentId={documentId} />;
       case PO_ADDITIONAL_FORM_CODE.EQUIPMENT_INVENTORY:
-        return <EquipmentInventory disabled={false} formRef={formRef} />;
+        return <EquipmentInventory disabled={false} formRef={formRef} />; //TODO: add document id
       case PO_ADDITIONAL_FORM_CODE.FFATA:
-        return <FfataDataCollectionForm disabled={false} formRef={formRef} />;
+        return (
+          <FfataDataCollectionForm disabled={false} formRef={formRef} documentId={documentId} />
+        );
       case PO_ADDITIONAL_FORM_CODE.AUTH_TO_PURCHASE:
-        return <AuthToPurchaseForm disabled={false} formRef={formRef} />;
+        return <AuthToPurchaseForm disabled={false} formRef={formRef} documentId={documentId} />;
       case PO_ADDITIONAL_FORM_CODE.DETERMINATION:
-        return <DeterminationForm disabled={false} formRef={formRef} />;
+        return <DeterminationForm disabled={false} formRef={formRef} documentId={documentId} />;
       case PO_ADDITIONAL_FORM_CODE.SUBCONTRACTOR:
-        return <SubcontractAgreementForm disabled={false} formRef={formRef} />;
+        return (
+          <SubcontractAgreementForm disabled={false} formRef={formRef} documentId={documentId} />
+        );
 
       //return anther additional forms here
       default:

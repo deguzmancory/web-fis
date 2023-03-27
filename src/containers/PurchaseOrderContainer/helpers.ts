@@ -163,7 +163,7 @@ export const getPOFormValidationSchema = ({ action }: { action: PO_ACTION }) => 
       return schema
         .min(
           // currently min error will not work cause lineItems will return string or object => can't pass into jsx
-          2,
+          1,
           isVariousProject(projectNumber)
             ? 'At least one Project # is Required'
             : 'Budget Category is required. Description is required.'

@@ -1,3 +1,12 @@
+export enum PO_FORM_ELEMENT_ID {
+  ADDITIONAL_FORMS = 'additional-forms',
+}
+
+export enum PO_FORM_PARAMS {
+  SCROLL_TO = 'scrollTo',
+  DOCUMENT_ID = 'documentId',
+}
+
 export enum PO_FORM_KEY {
   // general info
   ID = 'id',
