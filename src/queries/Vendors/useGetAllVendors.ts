@@ -9,13 +9,13 @@ import {
   responseWrapper,
 } from '../helpers';
 import { API_QUERIES } from '../keys';
-import { VendorList } from './types';
+import { Vendor } from './types';
 
 export function useGetAllVendors(
   options?: UseQueryOptions<
-    ApiResponseType<PaginationResponseType<VendorList>>,
+    ApiResponseType<PaginationResponseType<Vendor>>,
     Error,
-    PaginationResponseType<VendorList>
+    PaginationResponseType<Vendor>
   >
 ) {
   const [params, setParams] = useState<GetPropertiesParams>({});
@@ -26,14 +26,14 @@ export function useGetAllVendors(
     isFetching,
     refetch: onGetAllVendors,
   } = useQuery<
-    ApiResponseType<PaginationResponseType<VendorList>>,
+    ApiResponseType<PaginationResponseType<Vendor>>,
     Error,
-    PaginationResponseType<VendorList>
+    PaginationResponseType<Vendor>
   >([API_QUERIES.VENDORS, params], {
     queryFn: (query) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [_, ...params] = query.queryKey;
-      return responseWrapper<ApiResponseType<PaginationResponseType<VendorList>>>(
+      return responseWrapper<ApiResponseType<PaginationResponseType<Vendor>>>(
         apiClient.getAllVendors,
         params
       );

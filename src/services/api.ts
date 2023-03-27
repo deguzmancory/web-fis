@@ -33,7 +33,7 @@ import {
   UpdateUserPayload,
   User,
 } from 'src/queries/Users/types';
-import { SearchVendorsParams } from 'src/queries/Vendors';
+import { SearchVendorsParams, VendorRegistrationPayload } from 'src/queries/Vendors';
 import { newCancelToken, stringify } from 'src/utils';
 import {
   DelegationKeyService,
@@ -290,6 +290,16 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.get(`/financial-svc/v1/vendors/search?${queryString}`, {}, newCancelToken());
   };
 
+  const createVendorRegistration = (payload: VendorRegistrationPayload) => {
+    return api.post(
+      `/financial-svc/v1/vendor-registration`,
+      {
+        ...payload,
+      },
+      newCancelToken()
+    );
+  };
+
   // ====================== Super Quotes ======================
   const searchSuperQuotes = (params: SearchQuoteParams & GetPropertiesParams) => {
     const queryString = stringify(params);
@@ -437,6 +447,7 @@ const create = (baseURL = appConfig.API_URL) => {
     // ====================== Vendors ======================
     searchVendors,
     getAllVendors,
+    createVendorRegistration,
 
     // ====================== Super Quotes ======================
     searchSuperQuotes,

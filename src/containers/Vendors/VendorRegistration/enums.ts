@@ -1,3 +1,8 @@
+export enum VENDOR_REGISTRATION_PARAMS {
+  CALLING_FROM = 'callingFrom',
+  DOCUMENT_ID = 'documentId',
+}
+
 export enum VENDOR_REGISTRATION_NAVIGATE_FROM {
   PO = 'PO',
   NON_PO = 'NON_PO',

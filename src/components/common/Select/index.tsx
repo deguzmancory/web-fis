@@ -211,6 +211,7 @@ export interface SelectOption<T = any> {
   value: T;
   prefix?: string | React.ReactNode;
   subLabel?: string | React.ReactNode;
+  isDisabled?: boolean;
 }
 
 type Props = Omit<SelectProps, 'onBlur' | 'onChange'> & {

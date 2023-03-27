@@ -3,6 +3,22 @@ import * as yup from 'yup';
 import { ErrorService } from '.';
 import { isEmpty } from '../validations';
 
+export type ConditionalSchema<T> = T extends string
+  ? yup.StringSchema
+  : T extends number
+  ? yup.NumberSchema
+  : T extends boolean
+  ? yup.BooleanSchema
+  : T extends Record<any, any>
+  ? yup.AnyObjectSchema
+  : T extends Array<any>
+  ? yup.ArraySchema<any, any>
+  : yup.AnySchema;
+
+export type CustomShape<Fields> = {
+  [Key in keyof Fields]: ConditionalSchema<Fields[Key]>;
+};
+
 yup.setLocale({
   mixed: {
     required: ErrorService.MESSAGES.required,
@@ -161,7 +177,8 @@ yup.addMethod<yup.StringSchema>(yup.string, 'notTrimmable', function (message) {
     return true;
   });
 });
-yup.addMethod<yup.ArraySchema<any>>(
+
+yup.addMethod<yup.ArraySchema<any, any>>(
   yup.array,
   'uniqueOfficerIdentificationNumber',
   function (message, path) {
@@ -197,27 +214,5 @@ yup.addMethod<yup.StringSchema>(yup.string, 'letterAndNumber', function (message
     return true;
   });
 });
-yup.addMethod<yup.ArraySchema<any>>(
-  yup.array,
-  'uniqueOfficerIdentificationNumber',
-  function (message, path) {
-    return this.test('uniqueOfficerIdentificationNumber', message, function (lists) {
-      if (lists.length <= 1) return true;
-      for (let i = 0; i < lists.length - 1; i++) {
-        for (let j = i + 1; j < lists.length; j++) {
-          if (!isEmpty(lists[`${i}`]) && !isEmpty(lists[`${j}`])) {
-            if (
-              lists[`${i}`].identificationNumberType === lists[`${j}`].identificationNumberType &&
-              lists[`${i}`].identificationNumber === lists[`${j}`].identificationNumber
-            ) {
-              return this.createError({ path: `officers[${j}].${path}`, message });
-            }
-          }
-        }
-      }
-      return true;
-    });
-  }
-);
 
 export default yup;

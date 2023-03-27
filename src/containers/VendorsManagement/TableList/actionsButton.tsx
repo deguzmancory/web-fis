@@ -1,7 +1,7 @@
 import React from 'react';
 import { PATHS } from 'src/appConfig/paths';
 import { Button } from 'src/components/common';
-import { VendorList } from 'src/queries';
+import { Vendor } from 'src/queries';
 import { Navigator, PermissionsService } from 'src/services';
 
 const ActionsButton: React.FC<Props> = ({ vendor }) => {
@@ -24,7 +24,7 @@ const ActionsButton: React.FC<Props> = ({ vendor }) => {
 };
 
 type Props = {
-  vendor: VendorList;
+  vendor: Vendor;
 };
 
 export default ActionsButton;

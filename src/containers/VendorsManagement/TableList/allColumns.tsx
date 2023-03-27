@@ -5,7 +5,7 @@ import { PATHS } from 'src/appConfig/paths';
 import { EllipsisTypographyTooltip } from 'src/components/common';
 import TypographyLink from 'src/components/TypographyLink';
 import { VENDOR_REGISTRATION_NAVIGATE_FROM } from 'src/containers/Vendors/VendorRegistration/enums';
-import { VendorList, VENDOR_KEY } from 'src/queries/Vendors';
+import { Vendor, VENDOR_KEY } from 'src/queries/Vendors';
 import { Navigator } from 'src/services';
 import { isEmpty } from 'src/validations';
 import ActionsButton from './actionsButton';
@@ -19,9 +19,9 @@ export const allColumns = (): MUIDataTableColumn[] => [
       sort: true,
       customBodyRender: (
         _value: any,
-        meta: MUIDataTableMeta | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: VendorList[] })
+        meta: MUIDataTableMeta | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: Vendor[] })
       ) => {
-        const rowData = meta.tableData[meta.rowIndex] as VendorList;
+        const rowData = meta.tableData[meta.rowIndex] as Vendor;
         const isVendorRegistration = true; //TODO: check response vendor is registration
         return (
           <Stack direction="row" alignItems={'center'}>
@@ -144,9 +144,9 @@ export const allColumns = (): MUIDataTableColumn[] => [
       sort: false,
       customBodyRender: (
         value: any,
-        meta: MUIDataTableMeta | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: VendorList[] })
+        meta: MUIDataTableMeta | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: Vendor[] })
       ) => {
-        const rowData = meta.tableData[meta.rowIndex] as VendorList;
+        const rowData = meta.tableData[meta.rowIndex] as Vendor;
         const getAddress = () => {
           const string = [];
           if (!isEmpty(rowData.address1)) {

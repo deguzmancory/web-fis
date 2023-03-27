@@ -6,6 +6,8 @@ const MESSAGES = {
   invalidSSN: 'SSN number is invalid format',
   unknown: 'An error has occurred',
   required: 'This field is required',
+  selectRequired: 'Please select options above.',
+  yesNoRequired: 'Please select.',
   shortRequired: 'Required',
   accountNotExist: 'Username does not exist',
   accountExist: 'An account with this email already exists.',

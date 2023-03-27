@@ -110,6 +110,7 @@ export interface PODetailResponse extends SharedPODetail {
 
   createdAt: string;
   updatedAt: string;
+
   poChangeNumber: number;
   previousPoNumber: number;
   originalPoNumber: number;

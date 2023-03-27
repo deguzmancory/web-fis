@@ -158,14 +158,14 @@ export const isEqualPrevAndNextObjByPath = <T>({
     : isEqual(prev, next);
 };
 
-export function getOptionsByEnum(enumObject) {
+export const getOptionsByEnum = (enumObject) => {
   if (isEmpty(enumObject)) return [];
 
   return Object.keys(enumObject).map((key) => ({
     label: enumObject[key],
     value: enumObject[key],
   }));
-}
+};
 
 export const getRoleInfoOfProfile = ({ profile }: { profile: MyProfile }) => {
   const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
@@ -181,4 +181,8 @@ export const getRoleInfoOfProfile = ({ profile }: { profile: MyProfile }) => {
     default:
       return null;
   }
+};
+
+export const isString = (value: any): value is String => {
+  return typeof value === 'string';
 };

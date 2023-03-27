@@ -21,6 +21,7 @@ const Element: React.FC<Props> = ({
   infoTooltipMessage = '',
   infoTooltipPlacement = 'right',
   infoToolTipWithArrow = true,
+  showErrorBorder = false,
   ...props
 }) => {
   const hasError = !isEmpty(errorMessage);
@@ -29,42 +30,48 @@ const Element: React.FC<Props> = ({
 
   return (
     <View className={cn(className, 'form-element')} {...props}>
-      {hasLabel && (
-        <Typography
-          variant="body2"
-          classes={{
-            root: 'mb-1',
-          }}
-          sx={{
-            height: 24,
-          }}
-        >
-          {label} {required && <span className="has-text-danger fw-bold text-is-16">*</span>}
-          {extraRequired && <span className="has-text-danger fw-bold text-is-16">**</span>}
-          {infoTooltipMessage && (
-            <span>
-              <Tooltip
-                arrow={infoToolTipWithArrow}
-                title={<span style={{ whiteSpace: 'pre-line' }}>{infoTooltipMessage}</span>}
-                placement={infoTooltipPlacement}
-              >
-                <i className="cursor-pointer ml-1">
-                  <IoInformationCircle
-                    size={16}
-                    color={COLOR_CODE.INFO}
-                    style={{
-                      transform: 'translateY(2px)',
-                    }}
-                  />
-                </i>
-              </Tooltip>
-            </span>
-          )}
-        </Typography>
-      )}
+      <View
+        className={cn({
+          'form-element__error-border': showErrorBorder && hasError,
+        })}
+      >
+        {hasLabel && (
+          <Typography
+            variant="body2"
+            classes={{
+              root: 'mb-1',
+            }}
+            sx={{
+              height: 24,
+            }}
+          >
+            {label} {required && <span className="has-text-danger fw-bold text-is-16">*</span>}
+            {extraRequired && <span className="has-text-danger fw-bold text-is-16">**</span>}
+            {infoTooltipMessage && (
+              <span>
+                <Tooltip
+                  arrow={infoToolTipWithArrow}
+                  title={<span style={{ whiteSpace: 'pre-line' }}>{infoTooltipMessage}</span>}
+                  placement={infoTooltipPlacement}
+                >
+                  <i className="cursor-pointer ml-1">
+                    <IoInformationCircle
+                      size={16}
+                      color={COLOR_CODE.INFO}
+                      style={{
+                        transform: 'translateY(2px)',
+                      }}
+                    />
+                  </i>
+                </Tooltip>
+              </span>
+            )}
+          </Typography>
+        )}
 
-      {hasSubLabel && subLabel}
-      {children}
+        {hasSubLabel && subLabel}
+        {children}
+      </View>
       {hasError && (
         <Typography
           variant="subtitle1"
@@ -104,6 +111,7 @@ type Props = ViewProps & {
     | 'top-start'
     | 'top';
   infoToolTipWithArrow?: boolean;
+  showErrorBorder?: boolean;
 };
 
 export default Element;

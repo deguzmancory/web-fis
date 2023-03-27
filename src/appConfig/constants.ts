@@ -58,3 +58,8 @@ export enum BOOLEAN {
 export const NO_OPENER = 'noopener noreferrer';
 export const PARAMS_SPLITTER = ';';
 export const US_ZIP_CODE_LENGTH = 5;
+
+export const REGEX = {
+  SSN: /^\d{3}-?\d{2}-?\d{4}$/,
+  EIN: /^\d{2}-?\d{7}$/,
+};

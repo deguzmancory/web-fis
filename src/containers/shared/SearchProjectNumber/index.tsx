@@ -43,7 +43,7 @@ const SearchProjectNumber: React.FC<Props> = ({
     });
   }, [financialProjects, searchProjects, isLoadingSearchProjects]);
 
-  const haveValueButOptions =
+  const hasValueButOptions =
     !!value && isEmpty(filteredProjectNumberOptions) && !isLoadingSearchProjects;
 
   const searchProjectsParams = React.useMemo(
@@ -68,7 +68,7 @@ const SearchProjectNumber: React.FC<Props> = ({
   const handleInputChange = (value: string) => {
     //handle case try to clear default value
     if (!value) {
-      if (haveValueButOptions) {
+      if (hasValueButOptions) {
         setIsClearedDefaultValue(true);
         onChange(name, null);
       }
@@ -96,7 +96,7 @@ const SearchProjectNumber: React.FC<Props> = ({
         onInputChange={handleInputChange}
         defaultInputValue={selectedProjectNumber} //first mounted with data get from PO response
         {...(!isClearedDefaultValue && {
-          inputValue: haveValueButOptions ? selectedProjectNumber : undefined,
+          inputValue: hasValueButOptions ? selectedProjectNumber : undefined,
         })} //available in case have value but lack of options
         getOptionLabel={(option: SelectOption<FinancialProject>) => {
           return option.value?.number;

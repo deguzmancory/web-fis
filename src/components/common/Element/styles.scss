@@ -8,6 +8,11 @@
   label {
     margin-bottom: 4px;
   }
+
+  &__error-border {
+    border: 1px solid $danger;
+    padding: 4px;
+  }
 }
 
 .form-element-content {

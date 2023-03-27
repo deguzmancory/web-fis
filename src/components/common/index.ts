@@ -11,6 +11,7 @@ export { default as ConfirmationCodeField } from './ConfirmationCodeField';
 export { default as DatePicker } from './DatePicker';
 export { default as DateRangePicker } from './DateRangePicker';
 export { default as Dialog } from './Dialog';
+export { default as Element } from './Element';
 export { default as EllipsisTooltipBaseInput } from './EllipsisTooltipBaseInput';
 export { default as EllipsisTypographyTooltip } from './EllipsisTypographyTooltip';
 export { default as FileRenderer } from './FileRenderer';
