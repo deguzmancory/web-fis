@@ -1,13 +1,46 @@
 import { Box, Link, Stack, Typography } from '@mui/material';
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { COLOR_CODE, NO_OPENER } from 'src/appConfig/constants';
 import { PATHS } from 'src/appConfig/paths';
 import { Button } from 'src/components/common';
+import { setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { Callback } from 'src/redux/types';
 import { Navigator } from 'src/services';
+import urljoin from 'url-join';
+import { VENDOR_REGISTRATION_NAVIGATE_FROM, VENDOR_REGISTRATION_PARAMS } from '../enums';
 import CheckboxIcon from './checkboxIcon';
 
 const NewVendorCheckList: React.FC<Props> = ({ onNextPage }) => {
+  const dispatch = useDispatch();
+
+  // using params here to redirect to previous section instead of using state of location
+  // => increase more certain redirect
+  const location = useLocation();
+  const query = React.useMemo(() => new URLSearchParams(location.search), [location]);
+  const redirectSection = query.get(
+    VENDOR_REGISTRATION_PARAMS.CALLING_FROM
+  ) as VENDOR_REGISTRATION_NAVIGATE_FROM;
+  const documentId = query.get(VENDOR_REGISTRATION_PARAMS.DOCUMENT_ID) || '';
+
+  const handleCancelClick = () => {
+    switch (redirectSection) {
+      case VENDOR_REGISTRATION_NAVIGATE_FROM.PO: {
+        dispatch(setIsImmutableFormData(true));
+        if (documentId) {
+          return Navigator.navigate(urljoin(PATHS.purchaseOrderDetail, documentId));
+        } else {
+          return Navigator.navigate(PATHS.createPurchaseOrders);
+        }
+      }
+
+      default:
+        Navigator.navigate(PATHS.vendors);
+        return;
+    }
+  };
+
   return (
     <Box>
       {/* Title */}
@@ -99,14 +132,7 @@ const NewVendorCheckList: React.FC<Props> = ({ onNextPage }) => {
         <Typography variant="body2" mx={1}>
           Otherwise:
         </Typography>
-        <Button
-          onClick={() => {
-            //TODO: save form when back
-            Navigator.goBack(PATHS.vendors);
-          }}
-        >
-          Cancel
-        </Button>
+        <Button onClick={handleCancelClick}>Cancel</Button>
       </Stack>
       <Stack justifyContent={'center'} direction="row">
         <Typography variant="body2" mr={1}>

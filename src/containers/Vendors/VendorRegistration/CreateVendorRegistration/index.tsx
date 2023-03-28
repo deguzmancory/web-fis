@@ -39,6 +39,9 @@ const CreateVendorRegistration: React.FC<Props> = ({
   onSetIsImmutableFormData,
 }) => {
   const formRef = React.useRef<FormikProps<VendorRegistrationFormValue>>(null);
+
+  // using params here to redirect to previous section instead of using state of location
+  // => increase more certain redirect
   const location = useLocation();
   const query = React.useMemo(() => new URLSearchParams(location.search), [location]);
   const redirectSection = query.get(
@@ -205,18 +208,18 @@ const CreateVendorRegistration: React.FC<Props> = ({
   };
 
   const handleCancelClick = () => {
-    onSetIsImmutableFormData(true);
-
     switch (redirectSection) {
-      case VENDOR_REGISTRATION_NAVIGATE_FROM.PO:
+      case VENDOR_REGISTRATION_NAVIGATE_FROM.PO: {
+        onSetIsImmutableFormData(true);
         if (documentId) {
           return Navigator.navigate(urljoin(PATHS.purchaseOrderDetail, documentId));
         } else {
           return Navigator.navigate(PATHS.createPurchaseOrders);
         }
+      }
 
       default:
-        Navigator.navigate(PATHS.dashboard);
+        Navigator.navigate(PATHS.vendors);
         return;
     }
   };
