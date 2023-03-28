@@ -137,12 +137,16 @@
   border: 0.35rem solid transparent;
 }
 
-.react-datepicker__navigation--previous {
-  border-right-color: #6d7176;
+.react-datepicker__navigation-icon--previous {
+  &::before {
+    border-color: #6d7176;
+  }
 }
 
-.react-datepicker__navigation--next {
-  border-left-color: #6d7176;
+.react-datepicker__navigation-icon--next {
+  &::before {
+    border-color: #6d7176;
+  }
 }
 
 .react-datepicker__month-select,

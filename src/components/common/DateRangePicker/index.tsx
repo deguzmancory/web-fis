@@ -80,7 +80,7 @@ const DateRangePicker: React.FC<Props> = ({
   );
 };
 
-type Props = ReactDatePickerProps & {
+type Props = Omit<ReactDatePickerProps, 'onChange'> & {
   errorMessage?: string;
   containerClassName?: string;
   classNames?: string;
