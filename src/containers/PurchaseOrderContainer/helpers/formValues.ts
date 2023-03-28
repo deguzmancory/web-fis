@@ -198,6 +198,14 @@ export const getPOFormValueFromResponse = ({
           })),
         }
       : null,
+    equipmentInventory: response.equipmentInventory
+      ? {
+          ...response.equipmentInventory,
+          equipmentType: response.equipmentInventory.equipmentType
+            ? response.equipmentInventory.equipmentType.split(',')
+            : [],
+        }
+      : null,
     action: null,
   };
 };
@@ -290,7 +298,10 @@ export const getUpsertPOPayload = ({
       formAttachments: formValues.formAttachments,
       formCode: PO_ADDITIONAL_FORM_CODE.EQUIPMENT_INVENTORY,
     })
-      ? formValues.equipmentInventory
+      ? {
+          ...formValues.equipmentInventory,
+          equipmentType: formValues.equipmentInventory.equipmentType.join(','),
+        }
       : null,
     ffata: hasIncludeAdditionalForm({
       formAttachments: formValues.formAttachments,

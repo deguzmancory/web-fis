@@ -205,7 +205,7 @@ export const initialEquipmentInventoryValue = {
   buildingCode: '',
   equipmentDescription: '',
   equipmentLocation: '',
-  equipmentType: '',
+  equipmentType: [],
   decal: '',
   partOfFabrication: '',
   finishedProductName: '',

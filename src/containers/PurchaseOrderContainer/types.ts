@@ -1,5 +1,10 @@
 import { FinancialProject } from 'src/queries/Projects';
-import { AdditionalPOForm, POLineItemPayload, UpsertPOPayload } from 'src/queries/PurchaseOrders';
+import {
+  AdditionalPOForm,
+  POEquipmentInventoryPayload,
+  POLineItemPayload,
+  UpsertPOPayload,
+} from 'src/queries/PurchaseOrders';
 import { Vendor } from 'src/queries/Vendors';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 
@@ -10,6 +15,11 @@ export interface AdditionalPOFormValue extends AdditionalPOForm {
 
 export interface POLineItemFormValue extends Omit<POLineItemPayload, 'itemProjectNumber'> {
   itemProjectNumber: string | FinancialProject;
+}
+
+export interface POEquipmentInventoryFormValue
+  extends Omit<POEquipmentInventoryPayload, 'equipmentType'> {
+  equipmentType: string[];
 }
 
 export interface UpsertPOFormValue
@@ -23,6 +33,7 @@ export interface UpsertPOFormValue
     | 'vendorName'
     | 'vendorCode'
     | 'lineItems'
+    | 'equipmentInventory'
   > {
   projectTitle: string | FinancialProject;
   projectNumber: string | FinancialProject;
@@ -31,6 +42,7 @@ export interface UpsertPOFormValue
   availableForms: AdditionalPOFormValue[];
   formAttachments: AdditionalPOFormValue[];
   lineItems: POLineItemFormValue[];
+  equipmentInventory: POEquipmentInventoryFormValue;
 }
 
 export type UpsertPOFormikProps = CommonFormikProps<UpsertPOFormValue>;

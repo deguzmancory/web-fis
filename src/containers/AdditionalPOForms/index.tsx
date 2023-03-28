@@ -58,7 +58,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
       case PO_ADDITIONAL_FORM_CODE.SOLE_SOURCE:
         return <SoleSource disabled={false} formRef={formRef} documentId={documentId} />;
       case PO_ADDITIONAL_FORM_CODE.EQUIPMENT_INVENTORY:
-        return <EquipmentInventory disabled={false} formRef={formRef} />; //TODO: add document id
+        return <EquipmentInventory disabled={false} formRef={formRef} documentId={documentId} />;
       case PO_ADDITIONAL_FORM_CODE.FFATA:
         return (
           <FfataDataCollectionForm disabled={false} formRef={formRef} documentId={documentId} />

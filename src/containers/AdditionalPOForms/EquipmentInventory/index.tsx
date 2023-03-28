@@ -4,31 +4,50 @@ import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
-import { Checkbox, Input, TextareaAutosize } from 'src/components/common';
-import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
+import { Checkbox, EllipsisTooltipInput, Input, TextareaAutosize } from 'src/components/common';
+import { initialEquipmentInventoryValue } from 'src/containers/PurchaseOrderContainer/constants';
+import { PO_FORM_ELEMENT_ID, PO_FORM_PARAMS } from 'src/containers/PurchaseOrderContainer/enums';
+import {
+  POEquipmentInventoryFormValue,
+  UpsertPOFormValue,
+} from 'src/containers/PurchaseOrderContainer/types';
+import SectionLayout from 'src/containers/shared/SectionLayout';
 import { POEquipmentInventoryPayload } from 'src/queries/PurchaseOrders';
-import { setFormData } from 'src/redux/form/formSlice';
+import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator } from 'src/services';
 import { getErrorMessage, getUncontrolledInputFieldProps } from 'src/utils';
-import { PO_EQUIPMENT_INVENTORY_FORM_KEY, optionCheckboxValue } from './enum';
-import { PO_ADDITIONAL_FORM_KEY, PO_ADDITIONAL_FORM_PARAMS } from '../enum';
-import { initialEquipmentInventoryValue } from 'src/containers/PurchaseOrderContainer/constants';
-import Layout from 'src/containers/CRUUSerContainer/layout';
+import urljoin from 'url-join';
+import {
+  EQUIPMENT_INVENTORY_LABEL,
+  optionCheckboxValue,
+  PO_EQUIPMENT_INVENTORY_FORM_KEY,
+} from './enum';
 
 const EquipmentInventoryForm: React.FC<Props> = ({
   formRef,
   formData,
   onSetFormData,
   disabled,
+  documentId,
+  onSetIsImmutableFormData,
 }) => {
+  console.log('formData: ', formData);
   const history = useHistory();
 
   const handleFormSubmit = () => {
     handleSaveForm();
-    Navigator.navigate(
-      `${PATHS.createPurchaseOrders}?${PO_ADDITIONAL_FORM_PARAMS.SCROLL_TO}=${PO_ADDITIONAL_FORM_KEY.ADDITIONAL_FORMS}`
-    );
+    if (documentId) {
+      Navigator.navigate(
+        `${urljoin(PATHS.purchaseOrderDetail, documentId)}?${PO_FORM_PARAMS.SCROLL_TO}=${
+          PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS
+        }`
+      );
+    } else {
+      Navigator.navigate(
+        `${PATHS.createPurchaseOrders}?${PO_FORM_PARAMS.SCROLL_TO}=${PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS}`
+      );
+    }
   };
 
   const handleResetForm = () => {
@@ -36,9 +55,10 @@ const EquipmentInventoryForm: React.FC<Props> = ({
       ...formData,
       equipmentInventory: initialEquipmentInventoryValue,
     });
+    onSetIsImmutableFormData(true);
   };
 
-  const formik = useFormik<POEquipmentInventoryPayload>({
+  const formik = useFormik<POEquipmentInventoryFormValue>({
     initialValues: formData?.equipmentInventory || initialEquipmentInventoryValue,
     validationSchema: null,
     enableReinitialize: true,
@@ -59,8 +79,12 @@ const EquipmentInventoryForm: React.FC<Props> = ({
   });
 
   const handleSaveForm = React.useCallback(() => {
-    onSetFormData<UpsertPOFormValue>({ ...formData, equipmentInventory: values });
-  }, [formData, onSetFormData, values]);
+    onSetFormData<UpsertPOFormValue>({
+      ...formData,
+      equipmentInventory: values,
+    });
+    onSetIsImmutableFormData(true);
+  }, [formData, onSetFormData, onSetIsImmutableFormData, values]);
 
   React.useEffect(() => {
     return history.listen(() => {
@@ -74,10 +98,24 @@ const EquipmentInventoryForm: React.FC<Props> = ({
     return getErrorMessage(fieldName, { touched, errors });
   };
 
+  const handleChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = event.target?.checked;
+    const nameFieldValue = event.target.name;
+
+    // eslint-disable-next-line security/detect-object-injection
+    if (checked && !values[nameFieldValue]) {
+      setFieldValue(
+        nameFieldValue,
+        // eslint-disable-next-line security/detect-object-injection
+        EQUIPMENT_INVENTORY_LABEL[nameFieldValue]
+      );
+    } else setFieldValue(nameFieldValue, '');
+  };
+
   return (
     <Box>
       <Container maxWidth="lg">
-        <Layout>
+        <SectionLayout>
           <Grid container spacing={2}>
             <Grid item container spacing={3}>
               <Grid item xs={12} sm={6} md={4}>
@@ -92,34 +130,40 @@ const EquipmentInventoryForm: React.FC<Props> = ({
                   errorMessage={_getErrorMessage(
                     PO_EQUIPMENT_INVENTORY_FORM_KEY.EQUIPMENT_DESCRIPTION
                   )}
-                  {...getFieldProps(PO_EQUIPMENT_INVENTORY_FORM_KEY.EQUIPMENT_DESCRIPTION)}
+                  {..._getUncontrolledFieldProps(
+                    PO_EQUIPMENT_INVENTORY_FORM_KEY.EQUIPMENT_DESCRIPTION
+                  )}
                 />
               </Grid>
 
-              <Grid item xs={2.29} className="justify-flex-end">
-                <Typography variant="body1">2. Indicate Building Code</Typography>
-              </Grid>
-              <Grid item xs={3} sx={{ marginLeft: -2 }}>
-                <Input
-                  errorMessage={_getErrorMessage(PO_EQUIPMENT_INVENTORY_FORM_KEY.BUILDING_CODE)}
-                  {...getFieldProps(PO_EQUIPMENT_INVENTORY_FORM_KEY.BUILDING_CODE)}
-                  disabled={disabled}
-                />
-              </Grid>
-              <Grid item xs={6.6} className="justify-flex-end" sx={{ marginLeft: -3 }}>
-                <Typography variant="body1">
-                  (search for Building code in UH KFS Maintenance tab, System section, Building
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sx={{ marginTop: -2 }}>
-                <Typography variant="body1">
-                  lookup) or address of where the equipment is to be located:
-                </Typography>
+              <Grid item>
+                <div style={{ display: 'contents', lineHeight: '2.5' }}>
+                  <div style={{ display: 'contents' }}>2. Indicate Building Code</div>
+                  <span> </span>
+                  <div style={{ display: 'inline-block', width: '20%' }}>
+                    <TextareaAutosize
+                      maxLength={25}
+                      resize="none"
+                      style={{ padding: '0 2px', marginTop: '2px' }}
+                      errorMessage={_getErrorMessage(PO_EQUIPMENT_INVENTORY_FORM_KEY.BUILDING_CODE)}
+                      {..._getUncontrolledFieldProps(PO_EQUIPMENT_INVENTORY_FORM_KEY.BUILDING_CODE)}
+                    />
+                  </div>
+                  <span> </span>
+                  <div style={{ display: 'contents' }}>
+                    {' '}
+                    (search for Building code in UH KFS Maintenance tab, System section, Building
+                    lookup) or address of where the equipment is to be located:
+                  </div>
+                </div>
+
                 <TextareaAutosize
                   errorMessage={_getErrorMessage(
                     PO_EQUIPMENT_INVENTORY_FORM_KEY.EQUIPMENT_LOCATION
                   )}
-                  {...getFieldProps(PO_EQUIPMENT_INVENTORY_FORM_KEY.EQUIPMENT_LOCATION)}
+                  {..._getUncontrolledFieldProps(
+                    PO_EQUIPMENT_INVENTORY_FORM_KEY.EQUIPMENT_LOCATION
+                  )}
                 />
               </Grid>
             </Grid>
@@ -138,11 +182,13 @@ const EquipmentInventoryForm: React.FC<Props> = ({
                 />
                 <Grid item container sx={{ px: 2 }}>
                   <Grid item xs={6} sx={{ mb: 1 }}>
-                    <Input
+                    <EllipsisTooltipInput
                       label={'Please indicate Decal or P.O. No. for component to be incorporated.'}
                       errorMessage={_getErrorMessage(PO_EQUIPMENT_INVENTORY_FORM_KEY.DECAL)}
                       {...getFieldProps(PO_EQUIPMENT_INVENTORY_FORM_KEY.DECAL)}
+                      maxLength={250}
                       disabled={disabled}
+                      lengthShowTooltip={65}
                     />
                   </Grid>
                   <Checkbox.Item
@@ -154,26 +200,33 @@ const EquipmentInventoryForm: React.FC<Props> = ({
                       PO_EQUIPMENT_INVENTORY_FORM_KEY.PART_OF_FABRICATION
                     )}
                     disabled={disabled}
+                    onChange={handleChangeValue}
                   />
-                  <Grid item container spacing={2} sx={{ py: 1 }}>
+                  <Grid item container spacing={2} sx={{ py: 1, flexDirection: 'column' }}>
                     <Grid item xs={6}>
-                      <Input
+                      <EllipsisTooltipInput
                         label={'Please provide the name of the finished product.'}
                         errorMessage={_getErrorMessage(
                           PO_EQUIPMENT_INVENTORY_FORM_KEY.FINISHED_PRODUCT_NAME
                         )}
-                        {...getFieldProps(PO_EQUIPMENT_INVENTORY_FORM_KEY.FINISHED_PRODUCT_NAME)}
+                        {..._getUncontrolledFieldProps(
+                          PO_EQUIPMENT_INVENTORY_FORM_KEY.FINISHED_PRODUCT_NAME
+                        )}
+                        maxLength={250}
                         disabled={disabled}
+                        lengthShowTooltip={65}
                       />
                     </Grid>
                     <Grid item xs={6}>
-                      <Input
+                      <EllipsisTooltipInput
                         label={
                           'Please indicate Decal or P.O. No. for component to be incorporated.'
                         }
                         errorMessage={_getErrorMessage(PO_EQUIPMENT_INVENTORY_FORM_KEY.DECAL2)}
-                        {...getFieldProps(PO_EQUIPMENT_INVENTORY_FORM_KEY.DECAL2)}
+                        {..._getUncontrolledFieldProps(PO_EQUIPMENT_INVENTORY_FORM_KEY.DECAL2)}
+                        maxLength={250}
                         disabled={disabled}
+                        lengthShowTooltip={65}
                       />
                     </Grid>
                   </Grid>
@@ -188,19 +241,21 @@ const EquipmentInventoryForm: React.FC<Props> = ({
               PROCESSING.
             </Typography>
           </Grid>
-        </Layout>
-        <Layout>
+        </SectionLayout>
+        <SectionLayout>
           <Grid item container spacing={2}>
             <Grid item xs={6}>
-              <Input
-                label={'Form Completed By'}
+              <EllipsisTooltipInput
+                label={'Form Completed by'}
                 errorMessage={_getErrorMessage(PO_EQUIPMENT_INVENTORY_FORM_KEY.COMPLETED_BY)}
-                {...getFieldProps(PO_EQUIPMENT_INVENTORY_FORM_KEY.COMPLETED_BY)}
+                {..._getUncontrolledFieldProps(PO_EQUIPMENT_INVENTORY_FORM_KEY.COMPLETED_BY)}
+                maxLength={250}
                 disabled={disabled}
+                lengthShowTooltip={65}
               />
             </Grid>
           </Grid>
-        </Layout>
+        </SectionLayout>
       </Container>
     </Box>
   );
@@ -210,6 +265,7 @@ type Props = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps & {
     disabled: boolean;
     formRef: RefObject<FormikProps<any>>;
+    documentId: string;
   };
 
 const mapStateToProps = (state: IRootState<UpsertPOFormValue>) => ({
@@ -218,6 +274,7 @@ const mapStateToProps = (state: IRootState<UpsertPOFormValue>) => ({
 
 const mapDispatchToProps = {
   onSetFormData: setFormData,
+  onSetIsImmutableFormData: setIsImmutableFormData,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EquipmentInventoryForm);
