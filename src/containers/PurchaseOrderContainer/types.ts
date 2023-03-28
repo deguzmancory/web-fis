@@ -9,7 +9,7 @@ import { Vendor } from 'src/queries/Vendors';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 
 export interface AdditionalPOFormValue extends AdditionalPOForm {
-  isExternalLink: boolean;
+  isExternalUrl: boolean;
   href: string;
 }
 

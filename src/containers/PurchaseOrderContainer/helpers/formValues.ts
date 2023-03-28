@@ -37,15 +37,15 @@ export const getExternalLinkFromFormCode = (formCode: PO_ADDITIONAL_FORM_CODE) =
 
 export const getAdditionalPOFormValue = (forms: AdditionalPOForm[]) => {
   return forms.map((availableForm) => {
-    const isExternalLink = [
+    const isExternalUrl = [
       PO_ADDITIONAL_FORM_CODE.AGREEMENT_UH,
       PO_ADDITIONAL_FORM_CODE.AGREEMENT,
     ].includes(availableForm.code as PO_ADDITIONAL_FORM_CODE);
 
     return {
       ...availableForm,
-      isExternalLink,
-      href: isExternalLink
+      isExternalUrl,
+      href: isExternalUrl
         ? getExternalLinkFromFormCode(availableForm.code as PO_ADDITIONAL_FORM_CODE)
         : `${PATHS.poAdditionalForm}/${availableForm.code}`,
     };
@@ -55,17 +55,17 @@ export const getAdditionalPOFormValue = (forms: AdditionalPOForm[]) => {
 export const getAvailableFormsFromResponse = (forms: AdditionalPOForm[]) => {
   return forms
     .filter((availableForm) => {
-      const isExternalLink = [
+      const isExternalUrl = [
         PO_ADDITIONAL_FORM_CODE.AGREEMENT_UH,
         PO_ADDITIONAL_FORM_CODE.AGREEMENT,
       ].includes(availableForm.code as PO_ADDITIONAL_FORM_CODE);
 
-      return !isExternalLink;
+      return !isExternalUrl;
     })
     .map((availableForm) => {
       return {
         ...availableForm,
-        isExternalLink: false,
+        isExternalUrl: false,
         href: `${PATHS.poAdditionalForm}/${availableForm.code}`,
       };
     });

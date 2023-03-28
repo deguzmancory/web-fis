@@ -1,12 +1,18 @@
 import { ArrowDropDown } from '@mui/icons-material';
 import { Box, Divider, MenuItem, MenuList, Paper, Popover, Stack, Typography } from '@mui/material';
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import { PATHS } from 'src/appConfig/paths';
 import { useLogout } from 'src/queries';
 import { getRoleName } from 'src/queries/Profile/helpers';
 import { Callback } from 'src/redux/types';
-import { Navigator } from 'src/services';
+
+export interface MenuOption {
+  title: string;
+  onClick: Callback;
+  url?: string;
+}
 
 const UserMenu: React.FC<Props> = ({ setIsClickedLogout, currentRole, fullName }) => {
   const anchorRef = React.useRef(null);
@@ -23,21 +29,21 @@ const UserMenu: React.FC<Props> = ({ setIsClickedLogout, currentRole, fullName }
     setOpenPopover((prev) => !prev);
   };
 
-  const menuOptions = React.useMemo(() => {
+  const menuOptions: MenuOption[] = React.useMemo(() => {
     return [
       {
         title: 'Edit My Profile',
         onClick: () => {
-          Navigator.navigate(PATHS.myProfile);
           handleToggleMenu();
         },
+        url: `${PATHS.myProfile}`,
       },
       {
         title: 'Switch User',
         onClick: () => {
-          Navigator.navigate(PATHS.switchUser);
           handleToggleMenu();
         },
+        url: `${PATHS.switchUser}`,
       },
       {
         title: 'Log out',
@@ -45,6 +51,25 @@ const UserMenu: React.FC<Props> = ({ setIsClickedLogout, currentRole, fullName }
       },
     ];
   }, [handleLogout]);
+
+  const getMenuItem = (item: MenuOption) => (
+    <MenuItem
+      onClick={item.onClick}
+      key={item.title}
+      sx={{
+        '&:hover': {
+          bgcolor: COLOR_CODE.PRIMARY_700,
+          '& *': {
+            color: COLOR_CODE.INFO,
+          },
+        },
+      }}
+    >
+      <Typography color={COLOR_CODE.WHITE} variant="body2">
+        {item.title}
+      </Typography>
+    </MenuItem>
+  );
 
   return (
     <>
@@ -100,22 +125,7 @@ const UserMenu: React.FC<Props> = ({ setIsClickedLogout, currentRole, fullName }
           >
             <MenuList>
               {menuOptions.map((item) => (
-                <MenuItem
-                  onClick={item.onClick}
-                  key={item.title}
-                  sx={{
-                    '&:hover': {
-                      bgcolor: COLOR_CODE.PRIMARY_700,
-                      '& *': {
-                        color: COLOR_CODE.INFO,
-                      },
-                    },
-                  }}
-                >
-                  <Typography color={COLOR_CODE.WHITE} variant="body2">
-                    {item.title}
-                  </Typography>
-                </MenuItem>
+                <>{item.url ? <Link to={item.url}>{getMenuItem(item)}</Link> : getMenuItem(item)}</>
               ))}
             </MenuList>
           </Paper>

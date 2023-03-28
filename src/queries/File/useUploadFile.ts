@@ -1,6 +1,6 @@
 import { useMutation, UseMutationOptions } from 'react-query';
 import apiClient from '../apiClient';
-import { authResponseWrapper } from '../helpers';
+import { uploadFileResponseWrapper } from '../helpers';
 import { UploadFilePayload } from './types';
 
 export function useUploadFile(options?: UseMutationOptions<any, Error, UploadFilePayload>) {
@@ -11,7 +11,7 @@ export function useUploadFile(options?: UseMutationOptions<any, Error, UploadFil
     isLoading,
   } = useMutation<any, Error, UploadFilePayload>({
     mutationFn: (payload: UploadFilePayload) => {
-      return authResponseWrapper<any>(apiClient.uploadFileWithProgress, [payload]);
+      return uploadFileResponseWrapper<any>(apiClient.uploadFileWithProgress, [payload]);
     },
     ...options,
   });

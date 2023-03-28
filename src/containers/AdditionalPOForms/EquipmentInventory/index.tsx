@@ -12,7 +12,6 @@ import {
   UpsertPOFormValue,
 } from 'src/containers/PurchaseOrderContainer/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
-import { POEquipmentInventoryPayload } from 'src/queries/PurchaseOrders';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator } from 'src/services';
@@ -32,7 +31,6 @@ const EquipmentInventoryForm: React.FC<Props> = ({
   documentId,
   onSetIsImmutableFormData,
 }) => {
-  console.log('formData: ', formData);
   const history = useHistory();
 
   const handleFormSubmit = () => {

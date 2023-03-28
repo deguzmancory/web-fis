@@ -19,10 +19,10 @@ const FormAttachmentItem: React.FC<Props> = ({ formAttachments, onEditClick, onR
             </Grid>
             <Grid item xs={1}>
               <TypographyLink onClick={() => onEditClick(formAttachment)}>
-                {formAttachment.isExternalLink ? 'View' : 'Edit'}
+                {formAttachment.isExternalUrl ? 'View' : 'Edit'}
               </TypographyLink>
             </Grid>
-            {!formAttachment.isExternalLink && (
+            {!formAttachment.isExternalUrl && (
               <Grid item xs={1}>
                 <TypographyLink onClick={() => onRemoveClick(formAttachment)}>
                   Remove

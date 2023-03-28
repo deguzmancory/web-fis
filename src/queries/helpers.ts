@@ -22,11 +22,25 @@ export async function authResponseWrapper<T>(func: ApiCall, [...args]: any[] = [
   return new Promise(async (res, rej) => {
     try {
       const response = (await func(...args)) || {};
-      // if (!response?.ok) { // TODO: huy_dang verify responses again
-      //   rej(response?.data);
-      // } else {
+      if (!response?.ok) {
+        rej(response?.data);
+      } else {
+        res(response);
+      }
+    } catch (err) {
+      rej(err);
+    }
+  });
+}
+
+export async function uploadFileResponseWrapper<T>(
+  func: ApiCall,
+  [...args]: any[] = []
+): Promise<T> {
+  return new Promise(async (res, rej) => {
+    try {
+      const response = (await func(...args)) || {};
       res(response);
-      // }
     } catch (err) {
       rej(err);
     }

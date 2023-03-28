@@ -81,7 +81,7 @@ const AdditionalForms: React.FC<Props> = ({ formikProps, disabled = false }) => 
 
   const handleEditFormClick = React.useCallback(
     (targetFormAttachment: AdditionalPOFormValue) => {
-      if (targetFormAttachment.isExternalLink) {
+      if (targetFormAttachment.isExternalUrl) {
         window.open(targetFormAttachment.href, '_blank', 'noreferrer');
       } else {
         const documentIdParam = !!id ? `?${PO_ADDITIONAL_FORM_PARAMS.DOCUMENT_ID}=${id}` : '';
