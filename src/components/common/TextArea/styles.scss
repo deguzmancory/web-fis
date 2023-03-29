@@ -25,9 +25,9 @@
 
   &--disabled,
   &:disabled {
-    color: $color-black-100;
     background-color: #f5f5f5;
-    border: none;
+    // color: $color-black-100;
+    // border: none;
   }
 
   &__icon {

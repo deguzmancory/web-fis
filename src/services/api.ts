@@ -398,10 +398,6 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.patch(`/financial-svc/v1/purchase-orders/${params.id}/printed`);
   };
 
-  const getPurchaseOrderDetail = (params: GetPropertiesParams) => {
-    return api.get(`/financial-svc/v1/purchase-orders/${params.id}`);
-  };
-
   const getPOPaymentDetail = (params: GetPropertiesParams) => {
     return api.get(`/financial-svc/v1/po-payments/${params.id}`);
   };
@@ -487,7 +483,6 @@ const create = (baseURL = appConfig.API_URL) => {
     getAppPurchasingList,
     getFinalPdfPurchaseOrder,
     patchPrintedPurchaseOrder,
-    getPurchaseOrderDetail,
     getPOPaymentDetail,
 
     // Global Settings

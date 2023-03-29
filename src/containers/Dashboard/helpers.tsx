@@ -58,13 +58,13 @@ export const dashboardItems: DashboardItem[] = [
       },
       {
         title: 'Create PO Change Form',
-        url: '#',
+        url: `${PATHS.purchasingOrders}?workflowStatus=${PURCHASING_LIST_WORK_FLOW_STATUS_KEY.PO_CHANGE}`,
         isExternalUrl: false,
         roles: [ROLE_NAME.PI, ROLE_NAME.SU],
       },
       {
         title: 'Create PO Payment',
-        url: '#',
+        url: `${PATHS.purchasingOrders}?workflowStatus=${PURCHASING_LIST_WORK_FLOW_STATUS_KEY.PO_PAYMENT}`,
         isExternalUrl: false,
         roles: [ROLE_NAME.PI, ROLE_NAME.SU],
       },
