@@ -5,7 +5,8 @@ import { Vendor } from 'src/queries/Vendors';
 import { getDateDisplay, getOptionsByEnum } from 'src/utils';
 import { isEmpty } from 'src/validations';
 
-export const VARIOUS_PROJECT_VALUE = 'Various';
+export const VARIOUS_PROJECT_LABEL = 'Various';
+export const VARIOUS_PROJECT_VALUE = 'various';
 export const VARIOUS_PROJECT_NAME = 'PO WILL USE MORE THAN 1 PROJECT NUMBER';
 export enum SHIP_VIA_VALUE {
   LOCAL_DELIVERY = 'Local Delivery',
@@ -19,19 +20,19 @@ export const shipViaOptions = getOptionsByEnum(SHIP_VIA_VALUE);
 export const emptyVariousProject = {
   label: (
     <Box>
-      <span className="mr-4">{VARIOUS_PROJECT_VALUE}</span>
+      <span className="mr-4">{VARIOUS_PROJECT_LABEL}</span>
       <span>{VARIOUS_PROJECT_NAME}</span>
     </Box>
   ),
   value: {
-    name: VARIOUS_PROJECT_VALUE,
+    name: VARIOUS_PROJECT_LABEL,
     number: VARIOUS_PROJECT_VALUE,
     ac: null,
     campus: null,
     classification: null,
     endDate: null,
     faCode: null,
-    piName: VARIOUS_PROJECT_VALUE,
+    piName: VARIOUS_PROJECT_LABEL,
     id: null,
     inactive: false,
     piCode: null,

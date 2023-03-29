@@ -32,7 +32,7 @@ import {
   getVendorOptions,
   isVariousProject,
   shipViaOptions,
-  VARIOUS_PROJECT_VALUE,
+  VARIOUS_PROJECT_LABEL,
 } from './helpers';
 import SuperQuote from './superQuote';
 import { useParams } from 'react-router-dom';
@@ -109,7 +109,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
       PO_FORM_KEY.PROJECT_PERIOD,
       value
         ? isVariousProject(value.number)
-          ? VARIOUS_PROJECT_VALUE
+          ? VARIOUS_PROJECT_LABEL
           : `${getDateDisplay(value.startDate)} - ${getDateDisplay(value.endDate)}`
         : ''
     );
