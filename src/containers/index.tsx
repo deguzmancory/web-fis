@@ -39,6 +39,7 @@ const VendorsManagement = React.lazy(() => import('./VendorsManagement'));
 const EditVendorsMaster = React.lazy(() => import('./Vendors/VendorMaster'));
 const VendorRegistration = React.lazy(() => import('./Vendors/VendorRegistration'));
 const SubmittedPurchaseOrder = React.lazy(() => import('./PurchaseOrderContainer/SubmittedPO'));
+const PurchasingOrders = React.lazy(() => import('./POListing'));
 
 const Routing: React.FC<{ location: Location }> = (props) => {
   Navigator.setTopHistory(useHistory());
@@ -95,6 +96,14 @@ const Routing: React.FC<{ location: Location }> = (props) => {
               component={PurchaseOrderContainer}
             />
             {/* PO */}
+
+            {/* Purchasing List*/}
+            <CustomRoute
+              pageRequiredAuth
+              path={PATHS.purchasingOrders}
+              component={PurchasingOrders}
+            />
+            {/* Purchasing List*/}
 
             {/* Vendors */}
             <CustomRoute

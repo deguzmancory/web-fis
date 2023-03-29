@@ -385,6 +385,27 @@ const create = (baseURL = appConfig.API_URL) => {
     );
   };
 
+  const getAppPurchasingList = (params: GetPropertiesParams) => {
+    const queryString = stringify(params);
+    return api.get(`/financial-svc/v1/purchase-orders?${queryString}`, {}, newCancelToken());
+  };
+
+  const getFinalPdfPurchaseOrder = (params: GetPropertiesParams) => {
+    return api.get(`/financial-svc/v1/purchase-orders/${params.id}/final-pdf`);
+  };
+
+  const patchPrintedPurchaseOrder = (params: GetPropertiesParams) => {
+    return api.patch(`/financial-svc/v1/purchase-orders/${params.id}/printed`);
+  };
+
+  const getPurchaseOrderDetail = (params: GetPropertiesParams) => {
+    return api.get(`/financial-svc/v1/purchase-orders/${params.id}`);
+  };
+
+  const getPOPaymentDetail = (params: GetPropertiesParams) => {
+    return api.get(`/financial-svc/v1/po-payments/${params.id}`);
+  };
+
   //
   // Return back a collection of functions that we would consider our
   // interface.  Most of the time it'll be just the list of all the
@@ -462,7 +483,14 @@ const create = (baseURL = appConfig.API_URL) => {
     addPoAttachment,
     deletePOAttachment,
 
-    // ====================== Global Settings ======================
+    // ================== Purchasing List ===============
+    getAppPurchasingList,
+    getFinalPdfPurchaseOrder,
+    patchPrintedPurchaseOrder,
+    getPurchaseOrderDetail,
+    getPOPaymentDetail,
+
+    // Global Settings
     getAllGlobalSettings,
     updateGlobalSetting,
   };

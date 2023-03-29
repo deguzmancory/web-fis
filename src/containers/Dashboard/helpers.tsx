@@ -3,6 +3,7 @@ import { IoServer, IoWallet } from 'react-icons/io5';
 import { PATHS } from 'src/appConfig/paths';
 import { PERMISSION_VALUE } from 'src/queries/Permissions';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
+import { PURCHASING_LIST_WORK_FLOW_STATUS_KEY } from '../POListing/enum';
 
 export type DashboardItem = {
   title: string;
@@ -26,26 +27,26 @@ export const dashboardItems: DashboardItem[] = [
     items: [
       {
         title: 'Review/Approve PO Documents over $24,999',
-        url: '#',
+        url: `${PATHS.purchasingOrders}?workflowStatus=${PURCHASING_LIST_WORK_FLOW_STATUS_KEY.REVIEW_APPROVE_PO_DOCUMENTS}`,
         isExternalUrl: false,
         roles: [ROLE_NAME.CU],
         permissions: [PERMISSION_VALUE.APPROVAL_PO_PAYMENTS_OVER_24999],
       },
       {
         title: 'Review/Approve PO Documents',
-        url: '#',
+        url: `${PATHS.purchasingOrders}?workflowStatus=${PURCHASING_LIST_WORK_FLOW_STATUS_KEY.REVIEW_APPROVE_PO_DOCUMENTS}`,
         isExternalUrl: false,
         roles: [ROLE_NAME.FA],
       },
       {
         title: 'Pending PO Documents',
-        url: '#',
+        url: `${PATHS.purchasingOrders}?workflowStatus=${PURCHASING_LIST_WORK_FLOW_STATUS_KEY.PENDING_PO_DOCUMENTS}`,
         isExternalUrl: false,
         roles: [ROLE_NAME.CU, ROLE_NAME.FA],
       },
       {
         title: 'Outstanding PO Documents',
-        url: '#',
+        url: `${PATHS.purchasingOrders}?workflowStatus=${PURCHASING_LIST_WORK_FLOW_STATUS_KEY.OUTSTANDING_PO_DOCUMENTS}`,
         isExternalUrl: false,
         roles: [ROLE_NAME.CU, ROLE_NAME.FA],
       },
@@ -69,19 +70,19 @@ export const dashboardItems: DashboardItem[] = [
       },
       {
         title: 'Pending PO Document',
-        url: '#',
+        url: `${PATHS.purchasingOrders}?workflowStatus=${PURCHASING_LIST_WORK_FLOW_STATUS_KEY.PENDING_PO_DOCUMENTS}`,
         isExternalUrl: false,
         roles: [ROLE_NAME.PI, ROLE_NAME.SU],
       },
       {
         title: 'Approved PO Documents',
-        url: '#',
+        url: `${PATHS.purchasingOrders}?workflowStatus=${PURCHASING_LIST_WORK_FLOW_STATUS_KEY.APPROVED_PO_DOCUMENTS}`,
         isExternalUrl: false,
         roles: [ROLE_NAME.CU, ROLE_NAME.PI, ROLE_NAME.SU, ROLE_NAME.FA],
       },
       {
         title: 'Search PO Documents',
-        url: '#',
+        url: `${PATHS.purchasingOrders}?workflowStatus=${PURCHASING_LIST_WORK_FLOW_STATUS_KEY.SEARCH_PO_DOCUMENTS}`,
         isExternalUrl: false,
         roles: [ROLE_NAME.CU, ROLE_NAME.PI, ROLE_NAME.SU, ROLE_NAME.FA],
       },

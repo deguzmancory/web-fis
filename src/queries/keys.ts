@@ -34,6 +34,7 @@ export enum API_QUERIES {
   // Financial
   GET_FINANCIAL_PROJECTS = '/financial-svc/v1/projects',
   SEARCH_FINANCIAL_PROJECTS = '/financial-svc/v1/projects/search',
+  GET_PURCHASE_ORDERS = '/financial-svc/v1/purchase-orders',
 
   // Global Settings
   GLOBAL_SETTINGS = 'global-settings',

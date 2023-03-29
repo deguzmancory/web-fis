@@ -25,6 +25,14 @@ export const PATHS = {
   submittedPurchaseOrder: '/purchase-orders/submitted',
   poAdditionalForm: `/purchase-orders/additional-form`,
 
+  // Purchasing
+  purchasingOrders: '/purchasing-orders',
+
+  // PO Change Form
+  poChangeOptions: '/po-change-options',
+
+  // PO Payment
+
   // miscellaneous / Global settings
   globalSettings: '/global-settings',
   expiredPassword: '/expired-password',

@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import { muiResponsive } from 'src/appConfig/constants';
 import { Table } from 'src/components/common';
 import EmptyTable from 'src/components/EmptyTable';
+import { useGetAllVendors } from 'src/queries';
 import { GetPropertiesParams } from 'src/queries/helpers';
-import { useGetAllVendors } from 'src/queries/Vendors/useGetAllVendors';
 import { IRootState } from 'src/redux/rootReducer';
 import { handleShowErrorMsg } from 'src/utils';
 import { allColumns } from './allColumns';
@@ -42,7 +42,6 @@ const TableList: React.FC<Props> = () => {
     (_value: string[], meta: { rowIndex: number }) => {
       const index = meta.rowIndex;
       const vendor = vendors[`${index}`];
-      console.log('vendor: ', vendor);
       // Navigator.navigate(`${PATHS.editVendorMaster}/${vendor.code}`);
     },
     [vendors]
