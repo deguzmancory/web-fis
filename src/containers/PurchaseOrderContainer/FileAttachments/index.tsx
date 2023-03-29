@@ -71,6 +71,7 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
   }>(null);
 
   const allowUploadFile = !disabled;
+  const allowRemoveFile = !disabled;
   const defaultExpandedAccordion = !isEmpty(attachments);
 
   const handleFileSelect = (files: File[]) => {
@@ -107,15 +108,20 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
   });
 
   const { addPoAttachment, isLoading: isLoadingAddPoAttachment } = useAddPOAttachment({
-    onSuccess() {
+    onSuccess({ data }) {
       Toastify.success('Upload file attachment successfully');
 
       setUploadProgress(0);
       setFileSelected(null);
 
-      dispatch(setFormData(null));
+      dispatch(
+        setFormData({
+          ...formikProps.values,
+          fileAttachments: [...fileAttachments, data],
+        })
+      );
     },
-    onError(error, variables, context) {
+    onError(error) {
       handleShowErrorMsg(error);
     },
   });
@@ -129,10 +135,6 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
   };
 
   const { deletePOAttachment, isLoading } = useDeletePOAttachment({
-    onSuccess() {
-      Toastify.success('Delete file attachment successfully');
-      dispatch(setFormData(null));
-    },
     onError(error) {
       handleShowErrorMsg(error);
     },
@@ -154,10 +156,25 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
           okText: 'Yes, delete it',
           cancelText: 'Cancel',
           onOk: () => {
-            deletePOAttachment({
-              id: idPo,
-              attachmentId: attachment.id,
-            });
+            deletePOAttachment(
+              {
+                id: idPo,
+                attachmentId: attachment.id,
+              },
+              {
+                onSuccess() {
+                  Toastify.success('Delete file attachment successfully');
+                  dispatch(
+                    setFormData({
+                      ...formikProps.values,
+                      fileAttachments: fileAttachments.filter(
+                        (fileAttachment) => fileAttachment.id !== attachment.id
+                      ),
+                    })
+                  );
+                },
+              }
+            );
             dispatch(hideAllDialog());
           },
           onCancel: () => {
@@ -300,15 +317,17 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
                   <StyledTableCell width={'10%'}>{row.size}</StyledTableCell>
                   <StyledTableCell width={'30%'}>
                     <Stack direction="row" justifyContent={'flex-end'}>
-                      <Button
-                        variant="outline"
-                        onClick={() => {
-                          handleDeleteAttachment(row);
-                        }}
-                        disabled={disabled || loading}
-                      >
-                        Remove
-                      </Button>
+                      {allowRemoveFile && (
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            handleDeleteAttachment(row);
+                          }}
+                          disabled={disabled || loading}
+                        >
+                          Remove
+                        </Button>
+                      )}
                     </Stack>
                   </StyledTableCell>
                 </StyledTableRow>
@@ -328,6 +347,11 @@ type Props = {
 export default React.memo(FileAttachments, (prevProps, nextProps) => {
   const prevFormikProps = prevProps.formikProps;
   const nextFormikProps = nextProps.formikProps;
+
+  const allowUploadFile = !nextProps.disabled;
+  const allowRemoveFile = !nextProps.disabled;
+
+  if (allowUploadFile || allowRemoveFile) return false;
 
   return isEqualPrevAndNextFormikValues({
     prevFormikProps,

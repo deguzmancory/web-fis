@@ -1,17 +1,21 @@
 import { useMutation, UseMutationOptions } from 'react-query';
 import apiClient from '../apiClient';
-import { responseWrapper } from '../helpers';
-import { AddPoAttachmentPayload } from './types';
+import { ApiResponseType, responseWrapper } from '../helpers';
+import { AddPoAttachmentPayload, POFileAttachmentResponse } from './types';
 
 export function useAddPOAttachment(
-  options?: UseMutationOptions<any, Error, AddPoAttachmentPayload>
+  options?: UseMutationOptions<
+    ApiResponseType<POFileAttachmentResponse>,
+    Error,
+    AddPoAttachmentPayload
+  >
 ) {
   const {
     mutate: addPoAttachment,
     data,
     isLoading,
     isSuccess,
-  } = useMutation<any, Error, AddPoAttachmentPayload>({
+  } = useMutation<ApiResponseType<POFileAttachmentResponse>, Error, AddPoAttachmentPayload>({
     mutationFn: (payload: AddPoAttachmentPayload) =>
       responseWrapper(apiClient.addPoAttachment, [payload]),
     ...options,
