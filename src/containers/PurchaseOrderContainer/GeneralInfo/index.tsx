@@ -15,13 +15,18 @@ import { Vendor } from 'src/queries/Vendors';
 import { showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { Navigator } from 'src/services';
-import { getDateDisplay, getErrorMessage, isString } from 'src/utils';
+import {
+  getDateDisplay,
+  getErrorMessage,
+  isEqualPrevAndNextFormikValues,
+  isString,
+} from 'src/utils';
 import { isEmpty } from 'src/validations';
 import { PO_FORM_KEY, PO_MODE } from '../enums';
 import { isCreatePOMode, isCUReviewPOMode, isFAReviewPOMode, isPiSuEditPOMode } from '../helpers';
 import usePOSearchProject, { SearchProjectsType } from './hooks/usePOSearchProject';
 import usePOSearchVender, { SearchVendorsType } from './hooks/usePOSearchVender';
-import { UpsertPOFormikProps } from '../types';
+import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
 import {
   getVendorAddress,
   getVendorOptions,
@@ -519,39 +524,42 @@ type Props = {
   currentPOMode: PO_MODE;
 };
 
-// always update formikValues for jump to create new vendor registration purpose
-export default React.memo(GeneralInfo);
+export default React.memo(GeneralInfo, (prevProps, nextProps) => {
+  const prevFormikProps = prevProps.formikProps;
+  const nextFormikProps = nextProps.formikProps;
 
-// const prevFormikProps = prevProps.formikProps;
-// const nextFormikProps = nextProps.formikProps;
+  // always update formikValues for jump to create new vendor registration purpose
+  const showActionLink =
+    isCreatePOMode(nextProps.currentPOMode) || isPiSuEditPOMode(nextProps.currentPOMode);
+  if (showActionLink) return false;
 
-// const formKeysNeedRender = [
-//   PO_FORM_KEY.LOGIN_NAME,
-//   PO_FORM_KEY.DATE,
-//   PO_FORM_KEY.NUMBER,
-//   PO_FORM_KEY.PROJECT_TITLE,
-//   PO_FORM_KEY.PHONE_NUMBER,
-//   PO_FORM_KEY.PI_NAME,
-//   PO_FORM_KEY.PROJECT_PERIOD,
-//   PO_FORM_KEY.SUPER_QUOTE_NUMBER,
-//   PO_FORM_KEY.SUPER_QUOTE_BID_ID,
-//   PO_FORM_KEY.VENDOR_NAME,
-//   PO_FORM_KEY.VENDOR_CODE,
-//   PO_FORM_KEY.VENDOR_ADDRESS,
-//   PO_FORM_KEY.SHIP_OTHER,
-//   PO_FORM_KEY.SHIP_VIA,
-//   PO_FORM_KEY.SHIP_TO,
-//   PO_FORM_KEY.DELIVERY_BY,
-//   PO_FORM_KEY.DISCOUNT_TERMS,
-//   PO_FORM_KEY.QUOTATION_NUMBER,
-//   PO_FORM_KEY.DIRECT_INQUIRIES_TO,
-//   PO_FORM_KEY.PHONE_NUMBER,
-//   PO_FORM_KEY.FA_STAFF_REVIEWER,
-// ]; // only re-render if keys using in this component change
+  const formKeysNeedRender = [
+    PO_FORM_KEY.LOGIN_NAME,
+    PO_FORM_KEY.DATE,
+    PO_FORM_KEY.NUMBER,
+    PO_FORM_KEY.PROJECT_TITLE,
+    PO_FORM_KEY.PHONE_NUMBER,
+    PO_FORM_KEY.PI_NAME,
+    PO_FORM_KEY.PROJECT_PERIOD,
+    PO_FORM_KEY.SUPER_QUOTE_NUMBER,
+    PO_FORM_KEY.SUPER_QUOTE_BID_ID,
+    PO_FORM_KEY.VENDOR_NAME,
+    PO_FORM_KEY.VENDOR_CODE,
+    PO_FORM_KEY.VENDOR_ADDRESS,
+    PO_FORM_KEY.SHIP_OTHER,
+    PO_FORM_KEY.SHIP_VIA,
+    PO_FORM_KEY.SHIP_TO,
+    PO_FORM_KEY.DELIVERY_BY,
+    PO_FORM_KEY.DISCOUNT_TERMS,
+    PO_FORM_KEY.QUOTATION_NUMBER,
+    PO_FORM_KEY.DIRECT_INQUIRIES_TO,
+    PO_FORM_KEY.PHONE_NUMBER,
+    PO_FORM_KEY.FA_STAFF_REVIEWER,
+  ]; // only re-render if keys using in this component change
 
-// return isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
-//   prevFormikProps,
-//   nextFormikProps,
-//   formKeysNeedRender,
-// });
-// });
+  return isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
+    prevFormikProps,
+    nextFormikProps,
+    formKeysNeedRender,
+  });
+});

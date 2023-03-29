@@ -235,11 +235,13 @@ export const getUpsertPOPayload = ({
             typeof lineItem.itemProjectNumber === 'string'
               ? lineItem.itemProjectNumber
               : lineItem.itemProjectNumber.number,
+          quantity: lineItem.quantity ? lineItem.quantity.toString() : '',
         }))
       : //non-various project only have one project number for all line items
         lineItemsFormValue.map((lineItem) => ({
           ...lineItem,
           itemProjectNumber: notVariousProjectNumberPayload,
+          quantity: lineItem.quantity ? lineItem.quantity.toString() : '',
         }));
 
   return {

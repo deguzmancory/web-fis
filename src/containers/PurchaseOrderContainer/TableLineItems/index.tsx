@@ -160,7 +160,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
       style: {
         verticalAlign: 'top',
       },
-      errorMessage: '',
+      errorMessage: _getErrorMessage(`${prefixLineItem}.${PO_LINE_ITEM_KEY.EXT}`),
       columns: [
         {
           label: 'Line',

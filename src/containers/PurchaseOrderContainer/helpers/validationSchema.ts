@@ -48,6 +48,10 @@ export const getPOFormValidationSchema = ({ action }: { action: PO_ACTION }) => 
               .required(ErrorService.MESSAGES.shortRequired)
               .typeError(ErrorService.MESSAGES.shortRequired),
             description: Yup.string().required().typeError(ErrorService.MESSAGES.required),
+            ext: Yup.number()
+              .moreThan(0, 'Extension must be greater than $0.')
+              .lessThan(100000000, 'Extension must be less than $100,000,000.00.')
+              .typeError(ErrorService.MESSAGES.shortRequired),
           })
         );
     }),
