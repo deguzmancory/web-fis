@@ -1,4 +1,4 @@
-import { Box, Link as MuiLink, Stack, Typography } from '@mui/material';
+import { Box, Link as MuiLink, Typography } from '@mui/material';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { COLOR_CODE, NO_OPENER } from 'src/appConfig/constants';
@@ -12,20 +12,22 @@ const CardDashboard: React.FC<Props> = ({ card, userRole }) => {
   return (
     <Box
       minHeight={'100%'}
-      py={4}
+      py={5.5}
       px={3}
       bgcolor={COLOR_CODE.WHITE}
       border={COLOR_CODE.DEFAULT_BORDER}
     >
-      <Box>
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <Typography variant="h3" textAlign={'center'} color={COLOR_CODE.INFO}>
           {card.icon} {card.title}
-        </Typography>
-        <Typography variant="body2" textAlign={'center'} color={COLOR_CODE.PRIMARY_600}>
-          {card?.subTitle}
+          <Box sx={{ display: 'inline-flex' }}>
+            <Typography variant="body1" color={COLOR_CODE.INFO} sx={{ fontSize: 19 }}>
+              {card.subTitle}
+            </Typography>
+          </Box>
         </Typography>
       </Box>
-      <Box mt={2}>
+      <Box mt={1}>
         {card.items.map((item, index) => {
           const isShow = item.roles.some((role) => role === userRole);
           const needPermission = !isEmpty(item.permissions);
@@ -34,7 +36,7 @@ const CardDashboard: React.FC<Props> = ({ card, userRole }) => {
             item.permissions.some((permission) => myPermissions.includes(permission));
 
           return isShow && (needPermission ? hasPermission : true) ? (
-            <Box key={item.title} py={1} borderBottom={`1px solid ${COLOR_CODE.PRIMARY_100}`}>
+            <Box key={item.title} py={0.8} borderBottom={`1px solid ${COLOR_CODE.PRIMARY_100}`}>
               {item.isExternalUrl ? (
                 <MuiLink
                   sx={{

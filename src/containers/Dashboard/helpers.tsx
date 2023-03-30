@@ -22,7 +22,7 @@ export type DashboardItem = {
 export const dashboardItems: DashboardItem[] = [
   {
     title: 'Purchasing',
-    subTitle: 'POs and PO Payments',
+    subTitle: ' (POs & PO Payments)',
     icon: <IoServer size={21} />,
     items: [
       {
