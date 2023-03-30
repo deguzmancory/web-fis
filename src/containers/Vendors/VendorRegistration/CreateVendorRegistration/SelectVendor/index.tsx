@@ -27,53 +27,40 @@ const SelectVendor: React.FC<Props> = ({ formikProps, disabled = false }) => {
     return getErrorMessage(fieldName, { touched, errors });
   };
 
-  const handleSelectVendorClass = React.useCallback(
-    (name: string, value: VENDOR_OPTION_VALUE) => {
-      setFieldValue(name, value);
+  const handleSelectVendorClass = (name: string, value: VENDOR_OPTION_VALUE) => {
+    if (isVendorRequiredTIN(value)) {
+      setFieldValue(VENDOR_REGISTRATION_FORM_KEY.UH_ID, '');
+      setFieldValue(VENDOR_REGISTRATION_FORM_KEY.RCUH_ID, '');
+      setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.UH_ID, false);
+      setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.RCUH_ID, false);
+    } else if (isVendorRequiredRcuhNumber(value)) {
+      setFieldValue(VENDOR_REGISTRATION_FORM_KEY.SSN, '');
+      setFieldValue(VENDOR_REGISTRATION_FORM_KEY.EIN, '');
+      setFieldValue(VENDOR_REGISTRATION_FORM_KEY.UH_ID, '');
+      setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.SSN, false);
+      setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.EIN, false);
+      setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.UH_ID, false);
+      setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.HAS_SSN_OR_EIN, false);
+    } else if (isVendorRequiredUhNumber(value)) {
+      setFieldValue(VENDOR_REGISTRATION_FORM_KEY.SSN, '');
+      setFieldValue(VENDOR_REGISTRATION_FORM_KEY.EIN, '');
+      setFieldValue(VENDOR_REGISTRATION_FORM_KEY.RCUH_ID, '');
+      setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.SSN, false);
+      setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.EIN, false);
+      setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.RCUH_ID, false);
+      setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.HAS_SSN_OR_EIN, false);
+    } else if (isVendorRequiredEinNumber(value)) {
+      setFieldValue(VENDOR_REGISTRATION_FORM_KEY.SSN, '');
+      setFieldValue(VENDOR_REGISTRATION_FORM_KEY.UH_ID, '');
+      setFieldValue(VENDOR_REGISTRATION_FORM_KEY.RCUH_ID, '');
+      setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.SSN, false);
+      setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.UH_ID, false);
+      setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.RCUH_ID, false);
+      setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.HAS_SSN_OR_EIN, false);
+    }
 
-      if (isVendorRequiredTIN(value)) {
-        setFieldValue(VENDOR_REGISTRATION_FORM_KEY.UH_ID, '');
-        setFieldValue(VENDOR_REGISTRATION_FORM_KEY.RCUH_ID, '');
-        setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.UH_ID, false);
-        setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.RCUH_ID, false);
-        return;
-      }
-
-      if (isVendorRequiredRcuhNumber(value)) {
-        setFieldValue(VENDOR_REGISTRATION_FORM_KEY.SSN, '');
-        setFieldValue(VENDOR_REGISTRATION_FORM_KEY.EIN, '');
-        setFieldValue(VENDOR_REGISTRATION_FORM_KEY.UH_ID, '');
-        setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.SSN, false);
-        setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.EIN, false);
-        setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.UH_ID, false);
-        setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.HAS_SSN_OR_EIN, false);
-        return;
-      }
-
-      if (isVendorRequiredUhNumber(value)) {
-        setFieldValue(VENDOR_REGISTRATION_FORM_KEY.SSN, '');
-        setFieldValue(VENDOR_REGISTRATION_FORM_KEY.EIN, '');
-        setFieldValue(VENDOR_REGISTRATION_FORM_KEY.RCUH_ID, '');
-        setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.SSN, false);
-        setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.EIN, false);
-        setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.RCUH_ID, false);
-        setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.HAS_SSN_OR_EIN, false);
-        return;
-      }
-
-      if (isVendorRequiredEinNumber(value)) {
-        setFieldValue(VENDOR_REGISTRATION_FORM_KEY.SSN, '');
-        setFieldValue(VENDOR_REGISTRATION_FORM_KEY.UH_ID, '');
-        setFieldValue(VENDOR_REGISTRATION_FORM_KEY.RCUH_ID, '');
-        setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.SSN, false);
-        setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.UH_ID, false);
-        setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.RCUH_ID, false);
-        setFieldTouched(VENDOR_REGISTRATION_FORM_KEY.HAS_SSN_OR_EIN, false);
-        return;
-      }
-    },
-    [setFieldValue, setFieldTouched]
-  );
+    setFieldValue(name, value);
+  };
 
   return (
     <Element
@@ -130,6 +117,7 @@ export default React.memo(SelectVendor, (prevProps, nextProps) => {
   const formKeysNeedRender = [
     VENDOR_REGISTRATION_FORM_KEY.FED_TAX_CLASS,
     VENDOR_REGISTRATION_FORM_KEY.FED_TAX_CLASS_OTHER_DESCRIPTION,
+    VENDOR_REGISTRATION_FORM_KEY.FILE_ATTACHMENTS,
   ];
 
   return isEqualPrevAndNextFormikValues<VendorRegistrationFormValue>({

@@ -17,9 +17,9 @@ import { Accordion, Button, FileUpload, TextareaAutosize } from 'src/components/
 import { StyledTableCell, StyledTableRow } from 'src/components/CustomTable';
 import FilePreview from 'src/components/FilePreview';
 import {
-  POFileAttachmentPayload,
   useAddPOAttachment,
   useUploadPOFileAttachment,
+  VendorRegistrationAttachment,
 } from 'src/queries';
 import { useDeletePOAttachment } from 'src/queries/PurchaseOrders/useDeletePOAttachment';
 import { hideAllDialog, showDialog } from 'src/redux/dialog/dialogSlice';
@@ -35,12 +35,12 @@ import {
 } from 'src/utils';
 import { localTimeToHawaii } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
-import { PO_FORM_KEY } from '../enums';
-import { UpsertPOFormikProps } from '../types';
+import { VENDOR_REGISTRATION_FORM_KEY } from '../enums';
+import { VendorRegistrationFormikProps } from '../types';
 import DecodeFilePreview from './filePreview';
 
 const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => {
-  const { fileAttachments, id: idPo } = formikProps.values;
+  const { fileAttachments } = formikProps.values;
   const dispatch = useDispatch();
   const attachments = React.useMemo(() => {
     if (isEmpty(fileAttachments)) return [];
@@ -79,7 +79,7 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
   const { getPresignedUploadUrl, loading: isLoadingGetPresignedUrl } = useUploadPOFileAttachment({
     onUploadSuccess(data, variables, context) {
       addPoAttachment({
-        id: idPo,
+        id: undefined,
         name: fileSelected.file.name,
         size: fileSelected.size,
         description: fileSelected.descriptions,
@@ -91,7 +91,7 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
       handleShowErrorMsg(error);
     },
     setProgress: setUploadProgress,
-    id: idPo,
+    id: undefined,
   });
 
   const { addPoAttachment, isLoading: isLoadingAddPoAttachment } = useAddPOAttachment({
@@ -131,7 +131,7 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
     return `${fileName.slice(0, 12)}...${fileName.slice(-5)}`;
   };
 
-  const handleDeleteAttachment = (attachment: POFileAttachmentPayload) => {
+  const handleDeleteAttachment = (attachment: VendorRegistrationAttachment) => {
     dispatch(
       showDialog({
         type: DIALOG_TYPES.YESNO_DIALOG,
@@ -145,7 +145,7 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
           onOk: () => {
             deletePOAttachment(
               {
-                id: idPo,
+                id: undefined,
                 attachmentId: attachment.id,
               },
               {
@@ -295,7 +295,7 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
               attachments.map((row) => (
                 <StyledTableRow key={row.id}>
                   <StyledTableCell width={'20%'}>
-                    <DecodeFilePreview fileUrl={row.url} poId={idPo} attachmentId={row.id} />
+                    <DecodeFilePreview fileUrl={row.url} poId={undefined} attachmentId={row.id} />
                   </StyledTableCell>
                   <StyledTableCell width={'20%'}>{row.description}</StyledTableCell>
                   <StyledTableCell width={'20%'}>
@@ -327,7 +327,7 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
   );
 };
 type Props = {
-  formikProps: UpsertPOFormikProps;
+  formikProps: VendorRegistrationFormikProps;
   disabled?: boolean;
 };
 
@@ -343,6 +343,9 @@ export default React.memo(FileAttachments, (prevProps, nextProps) => {
   return isEqualPrevAndNextFormikValues({
     prevFormikProps,
     nextFormikProps,
-    formKeysNeedRender: [PO_FORM_KEY.FILE_ATTACHMENTS, PO_FORM_KEY.ID],
+    formKeysNeedRender: [
+      VENDOR_REGISTRATION_FORM_KEY.FILE_ATTACHMENTS,
+      VENDOR_REGISTRATION_FORM_KEY.ID,
+    ],
   });
 });

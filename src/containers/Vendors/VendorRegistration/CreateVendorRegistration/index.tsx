@@ -26,6 +26,7 @@ import urljoin from 'url-join';
 import { VENDOR_REGISTRATION_NAVIGATE_FROM, VENDOR_REGISTRATION_PARAMS } from '../enums';
 import AssigneeInfo from './AssigneeInfo';
 import { initialVendorRegistrationFromData, vendorRegistrationValidationSchema } from './constants';
+import FileAttachments from './FileAttachments';
 import { getVendorRegistrationPayload } from './helpers';
 import SelectVendor from './SelectVendor';
 import CreateVendorRegistrationTitle from './titleHeader';
@@ -134,55 +135,6 @@ const CreateVendorRegistration: React.FC<Props> = ({
     handleSubmit,
   } = useFormik<VendorRegistrationFormValue>({
     initialValues: initialVendorRegistrationFromData,
-    // {
-    //   taxPayerName: '',
-    //   firstName: '',
-    //   lastName: '',
-    //   middleName: '',
-    //   suffix: '',
-    //   company: 'eqwe',
-    //   departmentOrOffice: '',
-    //   addressStreet: '3123',
-    //   addressCity: 'Schenectady',
-    //   addressState: 'NY',
-    //   addressZip: '12345',
-    //   addressZip4: '',
-    //   vendorAddressPhoneNumber: '',
-    //   vendorAddressEmail: '',
-    //   hasIndividualOrBusinessName: false,
-    //   fedTaxClass: VENDOR_OPTION_VALUE.RCUH_STUDENT_EMPLOYEE,
-    //   fedTaxClassOtherDescription: '',
-    //   uhEmpNumber: '',
-    //   rcuhEmpNumber: '',
-    //   employedByRcuh: '',
-    //   employedByUh: '',
-    //   rcuhId: '312321',
-    //   uhId: '',
-    //   preparedBy: '324',
-    //   phoneNumber: '+12683232311',
-    //   email: '312@gmail.com',
-    //   faName: 'rerwer',
-    //   faEmail: '312@gmail.com',
-    //   ssn: '',
-    //   ein: '',
-    //   hasSsnOrEin: false,
-    //   fileAttachments: [],
-    //   formName: '',
-    //   shortFormName: '',
-    //   vendorCode: '',
-    //   fedTaxClassOther: '',
-    //   exemptPayee: '',
-    //   w9FormCompleted: '',
-    //   partOfUsGovernment: '',
-    //   possessionsOfUs: '',
-    //   certification: '',
-    //   travelFlag: null,
-    //   paymentsFlag: null,
-    //   submitted: null,
-    //   oldForm: null,
-    //   vendorBuNumber: '',
-    //   vendorPrNumber: '',
-    // },
     validationSchema: vendorRegistrationValidationSchema,
     innerRef: formRef,
     enableReinitialize: true,
@@ -244,13 +196,16 @@ const CreateVendorRegistration: React.FC<Props> = ({
         <CreateVendorRegistrationTitle />
 
         <SectionLayout>
-          <VendorInfo formikProps={formikProps} />
+          <VendorInfo formikProps={formikProps} disabled={isViewOnly} />
         </SectionLayout>
         <SectionLayout>
-          <SelectVendor formikProps={formikProps} />
+          <SelectVendor formikProps={formikProps} disabled={isViewOnly} />
         </SectionLayout>
         <SectionLayout>
-          <AssigneeInfo formikProps={formikProps} />
+          <FileAttachments formikProps={formikProps} />
+        </SectionLayout>
+        <SectionLayout>
+          <AssigneeInfo formikProps={formikProps} disabled={isViewOnly} />
         </SectionLayout>
 
         <Stack my={4} flexDirection={'row'} justifyContent="center">

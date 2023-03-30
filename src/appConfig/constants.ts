@@ -63,3 +63,15 @@ export const REGEX = {
   SSN: /^\d{3}-?\d{2}-?\d{4}$/,
   EIN: /^\d{2}-?\d{7}$/,
 };
+
+export const ACCEPT_FILE_TYPE: Accept = {
+  'image/png': ['.png'],
+  'image/jpg': ['.jpg'],
+  'image/jpeg': ['.jpeg'],
+  'image/webp': ['.webp'],
+  'application/pdf': ['.pdf'],
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+  'application/vnd.ms-excel': ['.xls'],
+  'application/msword': ['.doc'],
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+};

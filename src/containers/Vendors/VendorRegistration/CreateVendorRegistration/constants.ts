@@ -2,6 +2,7 @@ import { REGEX } from 'src/appConfig/constants';
 import { ErrorService, Yup } from 'src/services';
 import { CustomShape } from 'src/services/yup';
 import { getOptionsByEnum } from 'src/utils';
+import { isEmpty } from 'src/validations';
 import { VENDOR_OPTION_VALUE } from './enums';
 import {
   isVendorRequiredEinNumber,
@@ -125,7 +126,30 @@ export const vendorRegistrationValidationSchema = Yup.object().shape<
     //select vendor
     fedTaxClass: Yup.string()
       .required(ErrorService.MESSAGES.selectRequired)
-      .typeError(ErrorService.MESSAGES.selectRequired),
+      .typeError(ErrorService.MESSAGES.selectRequired)
+      .test(
+        'required-attachment',
+        'A W-9 must be attached for all ** categories (UH WH-1 is also acceptable for individuals).',
+        (value: VENDOR_OPTION_VALUE, context) => {
+          const { fileAttachments } = context.parent;
+          if (isVendorRequiredTIN(value) && isEmpty(fileAttachments)) {
+            return false;
+          }
+          return true;
+        }
+      )
+      .test(
+        'required-business-or-trade-name',
+        'Federal Tax Classification can only be Federal/State Entity for non-individuals.',
+        (value: VENDOR_OPTION_VALUE, context) => {
+          const { company } = context.parent;
+          if (isVendorRequiredEinNumber(value) && !company) {
+            return false;
+          }
+          return true;
+        }
+      ),
+
     fedTaxClassOtherDescription: Yup.string().when('fedTaxClass', {
       is: (fedTaxClass) => fedTaxClass === VENDOR_OPTION_VALUE.OTHER,
       then: (schema) => schema.required().typeError(ErrorService.MESSAGES.required),

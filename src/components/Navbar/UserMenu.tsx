@@ -1,6 +1,6 @@
 import { ArrowDropDown } from '@mui/icons-material';
 import { Box, Divider, MenuItem, MenuList, Paper, Popover, Stack, Typography } from '@mui/material';
-import * as React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import { PATHS } from 'src/appConfig/paths';
@@ -125,7 +125,9 @@ const UserMenu: React.FC<Props> = ({ setIsClickedLogout, currentRole, fullName }
           >
             <MenuList>
               {menuOptions.map((item) => (
-                <>{item.url ? <Link to={item.url}>{getMenuItem(item)}</Link> : getMenuItem(item)}</>
+                <Box key={item.title}>
+                  {item.url ? <Link to={item.url}>{getMenuItem(item)}</Link> : getMenuItem(item)}
+                </Box>
               ))}
             </MenuList>
           </Paper>

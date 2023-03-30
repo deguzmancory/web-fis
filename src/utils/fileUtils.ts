@@ -10,6 +10,7 @@ export const compressFile = (file: File): Promise<File> => {
         maxWidth: 900,
         maxHeight: 900,
         convertSize: 0,
+
         success(result: File) {
           resolve(result);
         },

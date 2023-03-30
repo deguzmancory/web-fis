@@ -1,4 +1,6 @@
 export enum VENDOR_REGISTRATION_FORM_KEY {
+  ID = 'id',
+
   //vendor info
   TAX_PAYER_NAME = 'taxPayerName',
   FIRST_NAME = 'firstName',
