@@ -214,6 +214,7 @@ const FfataDataCollectionForm: React.FC<Props> = ({
                   errorMessage={_getErrorMessage(PO_FFATA_DATA_COLLECTION_KEY.EXCEEDS_300000)}
                   {...getFieldProps(PO_FFATA_DATA_COLLECTION_KEY.EXCEEDS_300000)}
                   onChange={setFieldValue}
+                  disabled={disabled}
                 />
               </Grid>
               <Grid item container sx={{ px: 2, mb: 1 }}>
@@ -228,6 +229,7 @@ const FfataDataCollectionForm: React.FC<Props> = ({
                       PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_STREET
                     )}
                     {...getFieldProps(PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_STREET)}
+                    disabled={disabled}
                   />
                 </Grid>
               </Grid>

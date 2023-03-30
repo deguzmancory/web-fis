@@ -24,7 +24,7 @@ import SubjectDetermination from './SubjectDetermination';
 const DeterminationForm: React.FC<Props> = ({
   formRef,
   formData,
-  disabled,
+  disabled = false,
   documentId,
   onSetFormData,
   onSetIsImmutableFormData,
@@ -111,15 +111,15 @@ const DeterminationForm: React.FC<Props> = ({
         </SectionLayout>
 
         <SectionLayout>
-          <SubjectDetermination formikProps={formikProps} />
+          <SubjectDetermination formikProps={formikProps} disabled={disabled} />
         </SectionLayout>
 
         <SectionLayout>
-          <ConditionsAndCost formikProps={formikProps} />
+          <ConditionsAndCost formikProps={formikProps} disabled={disabled} />
         </SectionLayout>
 
         <SectionLayout>
-          <Certification formikProps={formikProps} haveRequestText={true} />
+          <Certification formikProps={formikProps} haveRequestText disabled={disabled} />
         </SectionLayout>
       </Container>
     </Box>

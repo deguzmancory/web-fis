@@ -15,7 +15,7 @@ import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_DETERMINATION_KEY } from '../enum';
 
-const SubjectDetermination: React.FC<Props> = ({ formikProps, formData }) => {
+const SubjectDetermination: React.FC<Props> = ({ formikProps, formData, disabled = false }) => {
   const {
     values,
     errors,
@@ -40,6 +40,7 @@ const SubjectDetermination: React.FC<Props> = ({ formikProps, formData }) => {
             placeholder={'Name of Designated University Official or Fiscal Administrator'}
             errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.TO)}
             {...getUncontrolledFieldProps(PO_DETERMINATION_KEY.TO)}
+            disabled={disabled}
           />
         </Grid>
         <Grid item xs={4}>
@@ -52,6 +53,7 @@ const SubjectDetermination: React.FC<Props> = ({ formikProps, formData }) => {
             onChange={setFieldValue}
             onBlur={setFieldTouched}
             errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.D_DATE)}
+            disabled={disabled}
           />
         </Grid>
         <Grid item xs={8}>
@@ -61,6 +63,7 @@ const SubjectDetermination: React.FC<Props> = ({ formikProps, formData }) => {
             placeholder={'Name of Principal Investigator, Department Head, or Administrator'}
             errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.FROM)}
             {...getUncontrolledFieldProps(PO_DETERMINATION_KEY.FROM)}
+            disabled={disabled}
           />
         </Grid>
         <Grid item xs={4}>
@@ -69,6 +72,7 @@ const SubjectDetermination: React.FC<Props> = ({ formikProps, formData }) => {
             errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.PHONE)}
             {...getFieldProps(PO_DETERMINATION_KEY.PHONE)}
             onChange={setFieldValue}
+            disabled={disabled}
           />
         </Grid>
         <Grid item xs={12}>
@@ -77,6 +81,7 @@ const SubjectDetermination: React.FC<Props> = ({ formikProps, formData }) => {
             maxLength={500}
             errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.DEPARTMENT)}
             {...getUncontrolledFieldProps(PO_DETERMINATION_KEY.DEPARTMENT)}
+            disabled={disabled}
           />
         </Grid>
         <Grid item>
@@ -113,6 +118,7 @@ const SubjectDetermination: React.FC<Props> = ({ formikProps, formData }) => {
 type Props = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps & {
     formikProps: CommonFormikProps<PODeterminationPayload>;
+    disabled: boolean;
   };
 
 const mapStateToProps = (state: IRootState<UpsertPOFormValue>) => ({
@@ -135,10 +141,13 @@ export default React.memo(
       PO_DETERMINATION_KEY.DEPARTMENT,
     ];
 
-    return isEqualPrevAndNextFormikValues<PODeterminationPayload>({
-      prevFormikProps,
-      nextFormikProps,
-      formKeysNeedRender,
-    });
+    return (
+      prevProps.disabled === nextProps.disabled &&
+      isEqualPrevAndNextFormikValues<PODeterminationPayload>({
+        prevFormikProps,
+        nextFormikProps,
+        formKeysNeedRender,
+      })
+    );
   }
 );

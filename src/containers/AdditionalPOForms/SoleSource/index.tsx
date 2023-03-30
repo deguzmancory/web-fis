@@ -24,7 +24,7 @@ import SoleSourceSubject from './SoleSubject';
 const SoleSourceForm: React.FC<Props> = ({
   formRef,
   formData,
-  disabled,
+  disabled = false,
   documentId,
   onSetFormData,
   onSetIsImmutableFormData,
@@ -111,15 +111,15 @@ const SoleSourceForm: React.FC<Props> = ({
         </SectionLayout>
 
         <SectionLayout>
-          <SoleSourceSubject formikProps={formikProps} />
+          <SoleSourceSubject formikProps={formikProps} disabled={disabled} />
         </SectionLayout>
 
         <SectionLayout>
-          <SoleSourceStatement formikProps={formikProps} />
+          <SoleSourceStatement formikProps={formikProps} disabled={disabled} />
         </SectionLayout>
 
         <SectionLayout>
-          <Certification formikProps={formikProps} haveRequestText={false} />
+          <Certification formikProps={formikProps} haveRequestText={false} disabled={disabled} />
         </SectionLayout>
       </Container>
     </Box>

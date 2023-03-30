@@ -7,7 +7,7 @@ import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_SUBCONTRACT_AGREEMENT_KEY } from '../enum';
 
-const StandardsLayout: React.FC<Props> = ({ formikProps }) => {
+const StandardsLayout: React.FC<Props> = ({ formikProps, disabled }) => {
   const {
     values,
     errors,
@@ -47,6 +47,7 @@ const StandardsLayout: React.FC<Props> = ({ formikProps }) => {
             <Input
               errorMessage={_getErrorMessage(PO_SUBCONTRACT_AGREEMENT_KEY.SOC_SUBCONTRACTOR_NAME)}
               {...getUncontrolledFieldProps(PO_SUBCONTRACT_AGREEMENT_KEY.SOC_SUBCONTRACTOR_NAME)}
+              disabled={disabled}
             />
           </div>
           <div style={{ display: 'contents' }}>
@@ -101,6 +102,7 @@ const StandardsLayout: React.FC<Props> = ({ formikProps }) => {
             setFieldValue={setFieldValue}
             setFieldTouched={setFieldTouched}
             selected={values.socSubcontractorDate as Date}
+            disabled={disabled}
           />
 
           <Grid container flexDirection={'column'} xs={6} spacing={2} mt={1}>
@@ -113,6 +115,7 @@ const StandardsLayout: React.FC<Props> = ({ formikProps }) => {
                 {...getUncontrolledFieldProps(
                   PO_SUBCONTRACT_AGREEMENT_KEY.SOC_SUBCONTRACTOR_SIGNATURE
                 )}
+                disabled={disabled}
               />
             </Grid>
             <Grid item>
@@ -121,6 +124,7 @@ const StandardsLayout: React.FC<Props> = ({ formikProps }) => {
                 errorMessage={_getErrorMessage(
                   PO_SUBCONTRACT_AGREEMENT_KEY.SOC_SUBCONTRACTOR_TITLE
                 )}
+                disabled={disabled}
                 {...getUncontrolledFieldProps(PO_SUBCONTRACT_AGREEMENT_KEY.SOC_SUBCONTRACTOR_TITLE)}
               />
             </Grid>
@@ -133,6 +137,7 @@ const StandardsLayout: React.FC<Props> = ({ formikProps }) => {
 
 type Props = {
   formikProps: CommonFormikProps<SubcontractorPayload>;
+  disabled: boolean;
 };
 
 export default React.memo(StandardsLayout, (prevProps, nextProps) => {
@@ -146,9 +151,12 @@ export default React.memo(StandardsLayout, (prevProps, nextProps) => {
     PO_SUBCONTRACT_AGREEMENT_KEY.SOC_SUBCONTRACTOR_TITLE,
   ];
 
-  return isEqualPrevAndNextFormikValues<SubcontractorPayload>({
-    prevFormikProps,
-    nextFormikProps,
-    formKeysNeedRender,
-  });
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    isEqualPrevAndNextFormikValues<SubcontractorPayload>({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender,
+    })
+  );
 });

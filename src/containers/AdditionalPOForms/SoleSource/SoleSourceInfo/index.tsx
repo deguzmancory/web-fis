@@ -46,4 +46,4 @@ const SoleSourceInfo: React.FC = () => {
   );
 };
 
-export default SoleSourceInfo;
+export default React.memo(SoleSourceInfo);

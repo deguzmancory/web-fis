@@ -7,7 +7,7 @@ import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_AUTH_TO_PURCHASE_KEY } from '../enum';
 import { PO_AUTH_TO_PURCHASE_LABEL } from './enum';
 
-const CheckAndFill: React.FC<Props> = ({ formikProps }) => {
+const CheckAndFill: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const { values, errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } =
     formikProps;
   const _getErrorMessage = (fieldName: PO_AUTH_TO_PURCHASE_KEY) => {
@@ -39,6 +39,7 @@ const CheckAndFill: React.FC<Props> = ({ formikProps }) => {
           {...getFieldProps(PO_AUTH_TO_PURCHASE_KEY.REQUIRES_PRIOR_APPROVAL)}
           errorMessage={_getErrorMessage(PO_AUTH_TO_PURCHASE_KEY.REQUIRES_PRIOR_APPROVAL)}
           onChange={handleChangeValue}
+          disabled={disabled}
         />
       </Box>
       <Box mb={2}>
@@ -47,12 +48,14 @@ const CheckAndFill: React.FC<Props> = ({ formikProps }) => {
           {...getFieldProps(PO_AUTH_TO_PURCHASE_KEY.NOT_REQUIRES_PRIOR_APPROVAL)}
           errorMessage={_getErrorMessage(PO_AUTH_TO_PURCHASE_KEY.NOT_REQUIRES_PRIOR_APPROVAL)}
           onChange={handleChangeValue}
+          disabled={disabled}
         />
         <TextareaAutosize
           errorMessage={_getErrorMessage(
             PO_AUTH_TO_PURCHASE_KEY.NOT_REQUIRES_PRIOR_APPROVAL_REASON
           )}
           {...getFieldProps(PO_AUTH_TO_PURCHASE_KEY.NOT_REQUIRES_PRIOR_APPROVAL_REASON)}
+          disabled={disabled}
         />
       </Box>
       <Grid item container>
@@ -63,6 +66,7 @@ const CheckAndFill: React.FC<Props> = ({ formikProps }) => {
               {...getFieldProps(PO_AUTH_TO_PURCHASE_KEY.EQUIPMENT_TITLE_VESTED)}
               errorMessage={_getErrorMessage(PO_AUTH_TO_PURCHASE_KEY.EQUIPMENT_TITLE_VESTED)}
               onChange={handleChangeValue}
+              disabled={disabled}
             />
           </Box>
         </Grid>
@@ -73,6 +77,7 @@ const CheckAndFill: React.FC<Props> = ({ formikProps }) => {
               {...getFieldProps(PO_AUTH_TO_PURCHASE_KEY.FED)}
               errorMessage={_getErrorMessage(PO_AUTH_TO_PURCHASE_KEY.FED)}
               onChange={handleChangeValue}
+              disabled={disabled}
             />
           </Box>
           <Box mb={2}>
@@ -81,6 +86,7 @@ const CheckAndFill: React.FC<Props> = ({ formikProps }) => {
               {...getFieldProps(PO_AUTH_TO_PURCHASE_KEY.UNI)}
               errorMessage={_getErrorMessage(PO_AUTH_TO_PURCHASE_KEY.UNI)}
               onChange={handleChangeValue}
+              disabled={disabled}
             />
           </Box>
           <Box mb={2}>
@@ -89,6 +95,7 @@ const CheckAndFill: React.FC<Props> = ({ formikProps }) => {
               {...getFieldProps(PO_AUTH_TO_PURCHASE_KEY.MULTIPLE_FEDERAL_SPONSORS)}
               errorMessage={_getErrorMessage(PO_AUTH_TO_PURCHASE_KEY.MULTIPLE_FEDERAL_SPONSORS)}
               onChange={handleChangeValue}
+              disabled={disabled}
             />
           </Box>
           <Grid item container>
@@ -99,6 +106,7 @@ const CheckAndFill: React.FC<Props> = ({ formikProps }) => {
                   {...getFieldProps(PO_AUTH_TO_PURCHASE_KEY.COST_SHARING)}
                   errorMessage={_getErrorMessage(PO_AUTH_TO_PURCHASE_KEY.COST_SHARING)}
                   onChange={handleChangeValue}
+                  disabled={disabled}
                 />
               </Box>
             </Grid>
@@ -110,6 +118,7 @@ const CheckAndFill: React.FC<Props> = ({ formikProps }) => {
                     maxLength={2}
                     errorMessage={_getErrorMessage(PO_AUTH_TO_PURCHASE_KEY.FEDERAL_PERCENTAGE)}
                     {...getUncontrolledFieldProps(PO_AUTH_TO_PURCHASE_KEY.FEDERAL_PERCENTAGE)}
+                    disabled={disabled}
                   />
                 </Grid>
                 <span> {' / '} </span>
@@ -118,6 +127,7 @@ const CheckAndFill: React.FC<Props> = ({ formikProps }) => {
                     maxLength={2}
                     errorMessage={_getErrorMessage(PO_AUTH_TO_PURCHASE_KEY.STATE_PERCENTAGE)}
                     {...getUncontrolledFieldProps(PO_AUTH_TO_PURCHASE_KEY.STATE_PERCENTAGE)}
+                    disabled={disabled}
                   />
                 </Grid>
               </Grid>
@@ -129,6 +139,7 @@ const CheckAndFill: React.FC<Props> = ({ formikProps }) => {
               {...getFieldProps(PO_AUTH_TO_PURCHASE_KEY.IPE)}
               errorMessage={_getErrorMessage(PO_AUTH_TO_PURCHASE_KEY.IPE)}
               onChange={handleChangeValue}
+              disabled={disabled}
             />
           </Box>
           <Box mb={2}>
@@ -137,6 +148,7 @@ const CheckAndFill: React.FC<Props> = ({ formikProps }) => {
               {...getFieldProps(PO_AUTH_TO_PURCHASE_KEY.DD)}
               errorMessage={_getErrorMessage(PO_AUTH_TO_PURCHASE_KEY.DD)}
               onChange={handleChangeValue}
+              disabled={disabled}
             />
           </Box>
         </Grid>
@@ -146,6 +158,7 @@ const CheckAndFill: React.FC<Props> = ({ formikProps }) => {
             maxLength={5000}
             errorMessage={_getErrorMessage(PO_AUTH_TO_PURCHASE_KEY.REMARKS)}
             {...getFieldProps(PO_AUTH_TO_PURCHASE_KEY.REMARKS)}
+            disabled={disabled}
           />
         </Grid>
       </Grid>
@@ -155,6 +168,7 @@ const CheckAndFill: React.FC<Props> = ({ formikProps }) => {
 
 type Props = {
   formikProps: CommonFormikProps<POAuthToPurchasePayload>;
+  disabled: boolean;
 };
 
 export default React.memo(CheckAndFill, (prevProps, nextProps) => {
@@ -177,9 +191,12 @@ export default React.memo(CheckAndFill, (prevProps, nextProps) => {
     PO_AUTH_TO_PURCHASE_KEY.REMARKS,
   ];
 
-  return isEqualPrevAndNextFormikValues<POAuthToPurchasePayload>({
-    prevFormikProps,
-    nextFormikProps,
-    formKeysNeedRender,
-  });
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    isEqualPrevAndNextFormikValues<POAuthToPurchasePayload>({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender,
+    })
+  );
 });

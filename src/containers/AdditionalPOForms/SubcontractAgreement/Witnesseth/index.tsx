@@ -8,7 +8,7 @@ import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_SUBCONTRACT_AGREEMENT_KEY } from '../enum';
 import './styles.scss';
 
-const WitnessethFormLayout: React.FC<Props> = ({ formikProps }) => {
+const WitnessethFormLayout: React.FC<Props> = ({ formikProps, disabled }) => {
   const {
     values,
     errors,
@@ -37,6 +37,7 @@ const WitnessethFormLayout: React.FC<Props> = ({ formikProps }) => {
               onBlur={setFieldTouched}
               selected={values.date as Date}
               errorMessage={_getErrorMessage(PO_SUBCONTRACT_AGREEMENT_KEY.DATE)}
+              disabled={disabled}
             />
           </div>
           <div style={{ display: 'contents' }}>
@@ -51,6 +52,7 @@ const WitnessethFormLayout: React.FC<Props> = ({ formikProps }) => {
               style={{ padding: '0 2px', marginTop: '2px' }}
               errorMessage={_getErrorMessage(PO_SUBCONTRACT_AGREEMENT_KEY.PROJECT)}
               {...getUncontrolledFieldProps(PO_SUBCONTRACT_AGREEMENT_KEY.PROJECT)}
+              disabled={disabled}
             />
           </div>
           <div style={{ display: 'contents' }}> , hereinafter called the "Project", and </div>
@@ -61,6 +63,7 @@ const WitnessethFormLayout: React.FC<Props> = ({ formikProps }) => {
               style={{ padding: '0 2px', marginTop: '2px' }}
               errorMessage={_getErrorMessage(PO_SUBCONTRACT_AGREEMENT_KEY.SUBCONTRACTOR_NAME)}
               {...getUncontrolledFieldProps(PO_SUBCONTRACT_AGREEMENT_KEY.SUBCONTRACTOR_NAME)}
+              disabled={disabled}
             />
           </div>
           {' , '}
@@ -76,6 +79,7 @@ const WitnessethFormLayout: React.FC<Props> = ({ formikProps }) => {
             PO_SUBCONTRACT_AGREEMENT_KEY.BUSINESS_ADDRESS_AND_TAX_ID_NUMBER
           )}
           {...getFieldProps(PO_SUBCONTRACT_AGREEMENT_KEY.BUSINESS_ADDRESS_AND_TAX_ID_NUMBER)}
+          disabled={disabled}
         />
       </Box>
 
@@ -96,6 +100,7 @@ const WitnessethFormLayout: React.FC<Props> = ({ formikProps }) => {
               style={{ padding: '0 2px', marginTop: '2px' }}
               errorMessage={_getErrorMessage(PO_SUBCONTRACT_AGREEMENT_KEY.CONTRACT_NUMBER)}
               {...getUncontrolledFieldProps(PO_SUBCONTRACT_AGREEMENT_KEY.CONTRACT_NUMBER)}
+              disabled={disabled}
             />
           </div>
           <div style={{ display: 'contents' }}> , entitled " </div>
@@ -106,6 +111,7 @@ const WitnessethFormLayout: React.FC<Props> = ({ formikProps }) => {
               style={{ padding: '0 2px', marginTop: '2px' }}
               errorMessage={_getErrorMessage(PO_SUBCONTRACT_AGREEMENT_KEY.GRANT_NUMBER)}
               {...getUncontrolledFieldProps(PO_SUBCONTRACT_AGREEMENT_KEY.GRANT_NUMBER)}
+              disabled={disabled}
             />
           </div>{' '}
           {'",'}
@@ -157,6 +163,7 @@ const WitnessethFormLayout: React.FC<Props> = ({ formikProps }) => {
                       onBlur={setFieldTouched}
                       maxDate={values.endDate as Date}
                       errorMessage={_getErrorMessage(PO_SUBCONTRACT_AGREEMENT_KEY.START_DATE)}
+                      disabled={disabled}
                     />
                   </div>
                   <div style={{ display: 'contents' }}> through </div>
@@ -169,6 +176,7 @@ const WitnessethFormLayout: React.FC<Props> = ({ formikProps }) => {
                       onBlur={setFieldTouched}
                       minDate={getAfterDate(values.startDate, new Date())}
                       errorMessage={_getErrorMessage(PO_SUBCONTRACT_AGREEMENT_KEY.END_DATE)}
+                      disabled={disabled}
                     />
                   </div>
                   <div style={{ display: 'contents' }}>
@@ -182,6 +190,7 @@ const WitnessethFormLayout: React.FC<Props> = ({ formikProps }) => {
                       type="number"
                       errorMessage={_getErrorMessage(PO_SUBCONTRACT_AGREEMENT_KEY.CONTRACT_NUMBER)}
                       {...getUncontrolledFieldProps(PO_SUBCONTRACT_AGREEMENT_KEY.CONTRACT_NUMBER)}
+                      disabled={disabled}
                     />
                   </div>
                 </div>
@@ -390,6 +399,7 @@ const WitnessethFormLayout: React.FC<Props> = ({ formikProps }) => {
               onChange={setFieldValue}
               onBlur={setFieldTouched}
               errorMessage={_getErrorMessage(PO_SUBCONTRACT_AGREEMENT_KEY.EXECUTED_DATE)}
+              disabled={disabled}
             />
           </div>{' '}
           <div style={{ display: 'contents' }}>
@@ -419,6 +429,7 @@ const WitnessethFormLayout: React.FC<Props> = ({ formikProps }) => {
               label={'Full Name of Principal Investigator or Project Authority'}
               errorMessage={_getErrorMessage(PO_SUBCONTRACT_AGREEMENT_KEY.PRINCIPAL_INVESTIGATOR)}
               {...getUncontrolledFieldProps(PO_SUBCONTRACT_AGREEMENT_KEY.PRINCIPAL_INVESTIGATOR)}
+              disabled={disabled}
             />
           </Grid>
         </Grid>
@@ -449,6 +460,7 @@ const WitnessethFormLayout: React.FC<Props> = ({ formikProps }) => {
                   {...getUncontrolledFieldProps(
                     PO_SUBCONTRACT_AGREEMENT_KEY.SUBCONTRACTOR_SIGNATURE
                   )}
+                  disabled={disabled}
                 />
               </Grid>
             </Box>
@@ -471,6 +483,7 @@ const WitnessethFormLayout: React.FC<Props> = ({ formikProps }) => {
                   label={'Full Name of The Research Corporation of the University of Hawaii'}
                   errorMessage={_getErrorMessage(PO_SUBCONTRACT_AGREEMENT_KEY.RCUH_SIGNATURE)}
                   {...getUncontrolledFieldProps(PO_SUBCONTRACT_AGREEMENT_KEY.RCUH_SIGNATURE)}
+                  disabled={disabled}
                 />
               </Grid>
             </Box>
@@ -483,6 +496,7 @@ const WitnessethFormLayout: React.FC<Props> = ({ formikProps }) => {
 
 type Props = {
   formikProps: CommonFormikProps<SubcontractorPayload>;
+  disabled: boolean;
 };
 
 export default React.memo(WitnessethFormLayout, (prevProps, nextProps) => {
@@ -505,9 +519,12 @@ export default React.memo(WitnessethFormLayout, (prevProps, nextProps) => {
     PO_SUBCONTRACT_AGREEMENT_KEY.RCUH_SIGNATURE,
   ];
 
-  return isEqualPrevAndNextFormikValues<SubcontractorPayload>({
-    prevFormikProps,
-    nextFormikProps,
-    formKeysNeedRender,
-  });
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    isEqualPrevAndNextFormikValues<SubcontractorPayload>({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender,
+    })
+  );
 });

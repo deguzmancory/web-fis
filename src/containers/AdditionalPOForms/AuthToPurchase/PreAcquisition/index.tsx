@@ -14,7 +14,7 @@ import {
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_AUTH_TO_PURCHASE_KEY, PO_AUTH_TO_PURCHASE_LINE_ITEM_KEY } from '../enum';
 
-const PreAcquisition: React.FC<Props> = ({ formikProps }) => {
+const PreAcquisition: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const {
     values,
     errors,
@@ -84,6 +84,7 @@ const PreAcquisition: React.FC<Props> = ({ formikProps }) => {
               }
               style={{ width: 370 }}
               lengthShowTooltip={8}
+              disabled={disabled}
             />
           ),
           width: 90,
@@ -105,6 +106,7 @@ const PreAcquisition: React.FC<Props> = ({ formikProps }) => {
               }}
               style={{ width: 480 }}
               lengthShowTooltip={8}
+              disabled={disabled}
             />
           ),
           width: 90,
@@ -129,6 +131,7 @@ const PreAcquisition: React.FC<Props> = ({ formikProps }) => {
                   value: value,
                 });
               }}
+              disabled={disabled}
             />
           ),
           width: 150,
@@ -156,6 +159,7 @@ const PreAcquisition: React.FC<Props> = ({ formikProps }) => {
             style={{ padding: '0 2px', marginTop: '2px' }}
             errorMessage={_getErrorMessage(PO_AUTH_TO_PURCHASE_KEY.EQUIPMENT_DESCRIPTION)}
             {...getUncontrolledFieldProps(PO_AUTH_TO_PURCHASE_KEY.EQUIPMENT_DESCRIPTION)}
+            disabled={disabled}
           />
         </div>
         <div style={{ display: 'contents' }}> for </div>
@@ -166,6 +170,7 @@ const PreAcquisition: React.FC<Props> = ({ formikProps }) => {
             style={{ padding: '0 2px', marginTop: '2px' }}
             errorMessage={_getErrorMessage(PO_AUTH_TO_PURCHASE_KEY.PROJECT)}
             {...getUncontrolledFieldProps(PO_AUTH_TO_PURCHASE_KEY.PROJECT)}
+            disabled={disabled}
           />
         </div>
         <div style={{ display: 'contents' }}> , at an estimated cost of $ </div>
@@ -175,6 +180,7 @@ const PreAcquisition: React.FC<Props> = ({ formikProps }) => {
             maxLength={20}
             errorMessage={_getErrorMessage(PO_AUTH_TO_PURCHASE_KEY.ESTIMATED_COST)}
             {...getUncontrolledFieldProps(PO_AUTH_TO_PURCHASE_KEY.ESTIMATED_COST)}
+            disabled={disabled}
           />
         </div>
       </div>
@@ -203,6 +209,7 @@ const PreAcquisition: React.FC<Props> = ({ formikProps }) => {
           maxLength={5000}
           errorMessage={_getErrorMessage(PO_AUTH_TO_PURCHASE_KEY.AVAILABILITY_NOT_EXISTS_REASON)}
           {...getFieldProps(PO_AUTH_TO_PURCHASE_KEY.AVAILABILITY_NOT_EXISTS_REASON)}
+          disabled={disabled}
         />
       </>
     </>
@@ -211,6 +218,7 @@ const PreAcquisition: React.FC<Props> = ({ formikProps }) => {
 
 type Props = {
   formikProps: CommonFormikProps<POAuthToPurchasePayload>;
+  disabled: boolean;
 };
 
 export default React.memo(PreAcquisition, (prevProps, nextProps) => {
@@ -225,9 +233,12 @@ export default React.memo(PreAcquisition, (prevProps, nextProps) => {
     PO_AUTH_TO_PURCHASE_KEY.AVAILABILITY_NOT_EXISTS_REASON,
   ];
 
-  return isEqualPrevAndNextFormikValues<POAuthToPurchasePayload>({
-    prevFormikProps,
-    nextFormikProps,
-    formKeysNeedRender,
-  });
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    isEqualPrevAndNextFormikValues<POAuthToPurchasePayload>({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender,
+    })
+  );
 });

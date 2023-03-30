@@ -340,9 +340,12 @@ export default React.memo(FileAttachments, (prevProps, nextProps) => {
 
   if (allowUploadFile || allowRemoveFile) return false;
 
-  return isEqualPrevAndNextFormikValues({
-    prevFormikProps,
-    nextFormikProps,
-    formKeysNeedRender: [PO_FORM_KEY.FILE_ATTACHMENTS, PO_FORM_KEY.ID],
-  });
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    isEqualPrevAndNextFormikValues({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender: [PO_FORM_KEY.FILE_ATTACHMENTS, PO_FORM_KEY.ID],
+    })
+  );
 });

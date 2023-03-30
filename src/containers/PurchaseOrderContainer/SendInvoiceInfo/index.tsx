@@ -217,9 +217,12 @@ export default React.memo(SendInvoiceInfo, (prevProps, nextProps) => {
     PO_FORM_KEY.INVOICE_COUNTRY,
   ]; // only re-render if keys using in this component change
 
-  return isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
-    prevFormikProps,
-    nextFormikProps,
-    formKeysNeedRender,
-  });
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender,
+    })
+  );
 });

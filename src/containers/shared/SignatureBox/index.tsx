@@ -6,9 +6,11 @@ import { DatePicker } from 'src/components/common';
 const SignatureBox: React.FC<Props> = ({
   nameDate,
   valueDate,
-  setFieldValue,
   selected,
+  disabled = false,
+  setFieldValue,
   setFieldTouched,
+
   ...props
 }) => {
   return (
@@ -24,6 +26,7 @@ const SignatureBox: React.FC<Props> = ({
               onChange={setFieldValue}
               onBlur={setFieldTouched}
               selected={selected}
+              disabled={disabled}
             />
           ) : (
             <Divider />
@@ -54,6 +57,7 @@ type Props = BoxProps & {
     shouldValidate?: boolean
   ) => Promise<void> | Promise<FormikErrors<any>>;
   selected?: Date;
+  disabled?: boolean;
 };
 
 export default React.memo(SignatureBox);

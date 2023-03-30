@@ -6,7 +6,7 @@ import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_SOLE_SOURCE_FORM_KEY } from '../enum';
 
-const SoleSourceStatement: React.FC<Props> = ({ formikProps }) => {
+const SoleSourceStatement: React.FC<Props> = ({ formikProps, disabled }) => {
   const { errors, touched, getFieldProps } = formikProps;
 
   const _getErrorMessage = (fieldName: PO_SOLE_SOURCE_FORM_KEY) => {
@@ -43,6 +43,7 @@ const SoleSourceStatement: React.FC<Props> = ({ formikProps }) => {
             resize="none"
             {...getFieldProps(PO_SOLE_SOURCE_FORM_KEY.STATEMENT_REASONS)}
             errorMessage={_getErrorMessage(PO_SOLE_SOURCE_FORM_KEY.STATEMENT_REASONS)}
+            disabled={disabled}
           />
         </Box>
       </Box>
@@ -60,6 +61,7 @@ const SoleSourceStatement: React.FC<Props> = ({ formikProps }) => {
             resize="none"
             {...getFieldProps(PO_SOLE_SOURCE_FORM_KEY.SERVICE_UNACCEPTABLE_REASONS)}
             errorMessage={_getErrorMessage(PO_SOLE_SOURCE_FORM_KEY.SERVICE_UNACCEPTABLE_REASONS)}
+            disabled={disabled}
           />
         </Box>
       </Box>
@@ -79,6 +81,7 @@ const SoleSourceStatement: React.FC<Props> = ({ formikProps }) => {
           resize="none"
           {...getFieldProps(PO_SOLE_SOURCE_FORM_KEY.EXPLANATION)}
           errorMessage={_getErrorMessage(PO_SOLE_SOURCE_FORM_KEY.EXPLANATION)}
+          disabled={disabled}
         />
       </Box>
 
@@ -96,6 +99,7 @@ const SoleSourceStatement: React.FC<Props> = ({ formikProps }) => {
           resize="none"
           {...getFieldProps(PO_SOLE_SOURCE_FORM_KEY.STATEMENT_FROM)}
           errorMessage={_getErrorMessage(PO_SOLE_SOURCE_FORM_KEY.STATEMENT_FROM)}
+          disabled={disabled}
         />
       </Box>
     </Box>
@@ -104,6 +108,7 @@ const SoleSourceStatement: React.FC<Props> = ({ formikProps }) => {
 
 type Props = {
   formikProps: CommonFormikProps<POSoleSourcePayload>;
+  disabled: boolean;
 };
 
 export default React.memo(SoleSourceStatement, (prevProps, nextProps) => {
@@ -117,9 +122,12 @@ export default React.memo(SoleSourceStatement, (prevProps, nextProps) => {
     PO_SOLE_SOURCE_FORM_KEY.STATEMENT_FROM,
   ];
 
-  return isEqualPrevAndNextFormikValues<POSoleSourcePayload>({
-    prevFormikProps,
-    nextFormikProps,
-    formKeysNeedRender,
-  });
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    isEqualPrevAndNextFormikValues<POSoleSourcePayload>({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender,
+    })
+  );
 });

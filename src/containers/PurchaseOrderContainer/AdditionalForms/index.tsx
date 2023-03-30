@@ -12,6 +12,7 @@ import { externalFormAttachments } from '../constants';
 import { PO_FORM_ELEMENT_ID, PO_FORM_KEY } from '../enums';
 import { AdditionalPOFormValue, UpsertPOFormikProps } from '../types';
 import FormAttachmentItem from './formAttachmentItem';
+import { stringify } from 'src/utils';
 
 const AdditionalForms: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const { id } = useParams<{ id: string }>();
@@ -19,6 +20,8 @@ const AdditionalForms: React.FC<Props> = ({ formikProps, disabled = false }) => 
   const dispatch = useDispatch();
 
   const { values, setFieldValue } = formikProps;
+  const allowAddAdditionalForm = !disabled;
+  const allowEditAdditionalForm = !disabled;
 
   const availableFormOptions: SelectOption[] = React.useMemo(
     () =>
@@ -81,13 +84,26 @@ const AdditionalForms: React.FC<Props> = ({ formikProps, disabled = false }) => 
 
   const handleEditFormClick = React.useCallback(
     (targetFormAttachment: AdditionalPOFormValue) => {
+      const documentIdParam = !!id ? `?${PO_ADDITIONAL_FORM_PARAMS.DOCUMENT_ID}=${id}` : '';
+
+      dispatch(setFormData(values));
+      Navigator.navigate(`${targetFormAttachment.href}${documentIdParam}`);
+    },
+    [dispatch, values, id]
+  );
+
+  const handleViewFormClick = React.useCallback(
+    (targetFormAttachment: AdditionalPOFormValue) => {
       if (targetFormAttachment.isExternalUrl) {
         window.open(targetFormAttachment.href, '_blank', 'noreferrer');
       } else {
-        const documentIdParam = !!id ? `?${PO_ADDITIONAL_FORM_PARAMS.DOCUMENT_ID}=${id}` : '';
+        const params = {
+          [PO_ADDITIONAL_FORM_PARAMS.DOCUMENT_ID]: id,
+          [PO_ADDITIONAL_FORM_PARAMS.VIEW_ONLY]: true,
+        };
 
         dispatch(setFormData(values));
-        Navigator.navigate(`${targetFormAttachment.href}${documentIdParam}`);
+        Navigator.navigate(`${targetFormAttachment.href}?${stringify(params)}`);
       }
     },
     [dispatch, values, id]
@@ -116,20 +132,25 @@ const AdditionalForms: React.FC<Props> = ({ formikProps, disabled = false }) => 
             <FormAttachmentItem
               formAttachments={currentFormAttachments}
               onEditClick={handleEditFormClick}
+              onViewClick={handleViewFormClick}
               onRemoveClick={handleRemoveForm}
+              allowEdit={allowEditAdditionalForm}
             />
             <FormAttachmentItem
               formAttachments={externalFormAttachments}
-              onEditClick={handleEditFormClick}
+              onViewClick={handleViewFormClick}
+              allowEdit={allowEditAdditionalForm}
             />
           </Grid>
         </Grid>
 
-        <Grid item xs={1}>
-          <Box alignSelf={'end'} ml={2}>
-            <Button onClick={handleAddForm}>Add</Button>
-          </Box>
-        </Grid>
+        {allowAddAdditionalForm && (
+          <Grid item xs={1}>
+            <Box alignSelf={'end'} ml={2}>
+              <Button onClick={handleAddForm}>Add</Button>
+            </Box>
+          </Grid>
+        )}
       </Grid>
     </Box>
   );

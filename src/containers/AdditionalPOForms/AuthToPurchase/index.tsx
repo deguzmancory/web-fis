@@ -25,7 +25,7 @@ const AuthToPurchaseForm: React.FC<Props> = ({
   formRef,
   formData,
   onSetFormData,
-  disabled,
+  disabled = false,
   documentId,
   onSetIsImmutableFormData,
 }) => {
@@ -106,19 +106,19 @@ const AuthToPurchaseForm: React.FC<Props> = ({
             />
           }
         >
-          <PurchaseInfo formikProps={formikProps} />
+          <PurchaseInfo formikProps={formikProps} disabled={disabled} />
         </SectionLayout>
 
         <SectionLayout>
-          <CheckAndFill formikProps={formikProps} />
+          <CheckAndFill formikProps={formikProps} disabled={disabled} />
         </SectionLayout>
 
         <SectionLayout>
-          <PreAcquisition formikProps={formikProps} />
+          <PreAcquisition formikProps={formikProps} disabled={disabled} />
         </SectionLayout>
 
         <SectionLayout>
-          <FormCompleted formikProps={formikProps} />
+          <FormCompleted formikProps={formikProps} disabled={disabled} />
         </SectionLayout>
       </Container>
     </Box>

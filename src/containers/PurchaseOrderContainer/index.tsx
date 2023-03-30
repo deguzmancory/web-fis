@@ -23,15 +23,19 @@ import {
   handleScrollToTopError,
   handleShowErrorMsg,
 } from 'src/utils';
-import { isEmpty } from 'src/validations';
-import { PO_FORM_ELEMENT_ID, PO_FORM_PARAMS } from './enums';
 import SectionLayout from '../shared/SectionLayout';
 import AdditionalForms from './AdditionalForms';
 import AuthorizedBy from './AuthorizedBy';
 import BreadcrumbsPODetail from './breadcrumbs';
 import { emptyUpsertPOFormValue } from './constants';
 import DeletePOWarning from './deletePOWarning';
-import { PO_ACTION, PO_FORM_KEY, SUBMITTED_PO_QUERY } from './enums';
+import {
+  PO_ACTION,
+  PO_FORM_ELEMENT_ID,
+  PO_FORM_KEY,
+  PO_FORM_PARAMS,
+  SUBMITTED_PO_QUERY,
+} from './enums';
 import ErrorWrapperPO from './ErrorWrapper/index.';
 import ExternalSpecialInstructions from './ExternalSpecialInstructions';
 import GeneralInfo from './GeneralInfo';
@@ -80,7 +84,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   const scrollToParam = query.get(PO_FORM_PARAMS.SCROLL_TO) || null;
 
   const isEditPOMode = !!id;
-  const hasPermission = true; //TODO: huy_dang check logic
+  const hasPermission = true; //TODO: huy_dang enhancement: check logic to be granted tp access the PO resource
   const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
   const poStatus = React.useMemo(() => formData?.status, [formData?.status]);
   const currentPOMode = React.useMemo(
@@ -184,7 +188,6 @@ const PurchaseOrderContainer: React.FC<Props> = ({
       onSetFormData<UpsertPOFormValue>(initialPOFormValue);
       return;
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditPOMode, profile, onSetFormData]);
 
@@ -198,7 +201,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   }, [id, isEditPOMode, onGetPOById]);
 
   // else formData && isImmutableFormData
-  // => just back from additional forms mode => not fetching anything
+  // => just back from additional forms or create vendor registration form => not fetching anything
   /* END INIT DATA */
 
   // Auto scroll to additional form section base on scrollToParam
@@ -245,6 +248,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
     values,
     errors,
     touched,
+    dirty: isFormDirty,
     setFieldValue,
     getFieldProps,
     setFieldTouched,
@@ -290,7 +294,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   };
 
   const handleCancelClick = () => {
-    if (isEmpty(touched)) {
+    if (!isFormDirty) {
       Navigator.navigate(PATHS.dashboard);
       onSetFormData(null);
     } else {
@@ -335,6 +339,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
 
   const blockCondition = (location: Location<string>) => {
     if (isEditPOMode && location.pathname.includes(PATHS.createPurchaseOrders)) {
+      onSetIsImmutableFormData(false);
       return true;
     }
 
@@ -353,7 +358,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
     const success = isEditPOMode ? isUpdatePOSuccess : isCreatePOSuccess;
 
     if (!success) {
-      return !isEmpty(touched);
+      return isFormDirty;
     }
   };
 
@@ -433,7 +438,10 @@ const PurchaseOrderContainer: React.FC<Props> = ({
                 </SectionLayout>
                 {isEditPOMode && (
                   <SectionLayout>
-                    <FileAttachments formikProps={formikProps} />
+                    <FileAttachments
+                      formikProps={formikProps}
+                      disabled={isViewOnlyPOMode(currentPOMode)}
+                    />
                   </SectionLayout>
                 )}
                 {isEditPOMode && (

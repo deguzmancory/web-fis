@@ -14,7 +14,7 @@ import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_DETERMINATION_KEY } from '../enum';
 import { PO_DETERMINATION_LABEL } from './enum';
 
-const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
+const ConditionsAndCost: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const { values, errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } =
     formikProps;
 
@@ -54,6 +54,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           {...getFieldProps(PO_DETERMINATION_KEY.SOLE_SOURCE)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.SOLE_SOURCE)}
           onChange={handleChangeValue}
+          disabled={disabled}
         />
       </Box>
 
@@ -71,6 +72,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           {...getFieldProps(PO_DETERMINATION_KEY.EMERGENCY_PROCUREMENT)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.EMERGENCY_PROCUREMENT)}
           onChange={handleChangeValue}
+          disabled={disabled}
         />
       </Box>
 
@@ -96,6 +98,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
             PO_DETERMINATION_KEY.REQUEST_FOR_QUOTATIONS_INVITATION_FOR_BID_ONLY_ONE
           )}
           onChange={handleChangeValue}
+          disabled={disabled}
         />
       </Box>
 
@@ -109,6 +112,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
             PO_DETERMINATION_KEY.REQUEST_FOR_QUOTATIONS_INVITATION_FOR_BID_LOWEST
           )}
           onChange={handleChangeValue}
+          disabled={disabled}
         />
       </Box>
 
@@ -125,6 +129,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           {...getFieldProps(PO_DETERMINATION_KEY.REQUEST_FOR_PROPOSALS)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.REQUEST_FOR_PROPOSALS)}
           onChange={handleChangeValue}
+          disabled={disabled}
         />
       </Box>
 
@@ -138,6 +143,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
                   maxLength={25}
                   errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.PRICE_ADJ_PO_NUMBER)}
                   {...getUncontrolledFieldProps(PO_DETERMINATION_KEY.PRICE_ADJ_PO_NUMBER)}
+                  disabled={disabled}
                 />
               </div>
               <div style={{ display: 'contents' }}> or Contract No. </div>
@@ -146,6 +152,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
                   maxLength={25}
                   errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.PRICE_ADJ_CONTRACT_NUMBER)}
                   {...getUncontrolledFieldProps(PO_DETERMINATION_KEY.PRICE_ADJ_CONTRACT_NUMBER)}
+                  disabled={disabled}
                 />
               </div>
             </div>
@@ -153,6 +160,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           {...getFieldProps(PO_DETERMINATION_KEY.PRICE_ADJUSTMENT)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.PRICE_ADJUSTMENT)}
           onChange={handleChangeValue}
+          disabled={disabled}
         />
       </Box>
 
@@ -178,6 +186,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
                     style={{ maxWidth: '30%' }}
                     errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.EXEMPTION_NUMBER)}
                     {...getUncontrolledFieldProps(PO_DETERMINATION_KEY.EXEMPTION_NUMBER)}
+                    disabled={disabled}
                   />
                 </div>
               </div>
@@ -186,6 +195,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           {...getFieldProps(PO_DETERMINATION_KEY.EXEMPT_PROCUREMENT)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.EXEMPT_PROCUREMENT)}
           onChange={handleChangeValue}
+          disabled={disabled}
         />
       </Box>
 
@@ -202,6 +212,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           {...getFieldProps(PO_DETERMINATION_KEY.PROFESSIONAL_SVC_PROCUREMENT)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.PROFESSIONAL_SVC_PROCUREMENT)}
           onChange={handleChangeValue}
+          disabled={disabled}
         />
       </Box>
 
@@ -228,6 +239,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
                     maxLength={1000}
                     errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.BENEFICIAL_REASON)}
                     {...getUncontrolledFieldProps(PO_DETERMINATION_KEY.BENEFICIAL_REASON)}
+                    disabled={disabled}
                   />
                 </div>
               </div>
@@ -236,6 +248,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           {...getFieldProps(PO_DETERMINATION_KEY.EXTENSION)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.EXTENSION)}
           onChange={handleChangeValue}
+          disabled={disabled}
         />
       </Box>
 
@@ -252,6 +265,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
                       PO_DETERMINATION_KEY.EXPENDITURE_CONDITION_OTHER
                     )}
                     {...getUncontrolledFieldProps(PO_DETERMINATION_KEY.EXPENDITURE_CONDITION_OTHER)}
+                    disabled={disabled}
                   />
                 </div>
               </div>
@@ -260,6 +274,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           {...getFieldProps(PO_DETERMINATION_KEY.OTHER)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.OTHER)}
           onChange={handleChangeValue}
+          disabled={disabled}
         />
       </Box>
 
@@ -277,6 +292,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           {...getFieldProps(PO_DETERMINATION_KEY.REASON_1)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.REASON_1)}
           onChange={handleChangeValue}
+          disabled={disabled}
         />
       </Box>
       <Box px={3}>
@@ -285,6 +301,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           resize="none"
           {...getFieldProps(PO_DETERMINATION_KEY.REASON_1_REF)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.REASON_1_REF)}
+          disabled={disabled}
         />
       </Box>
 
@@ -296,6 +313,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           {...getFieldProps(PO_DETERMINATION_KEY.REASON_2)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.REASON_2)}
           onChange={handleChangeValue}
+          disabled={disabled}
         />
       </Box>
       <Box px={3}>
@@ -304,6 +322,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           resize="none"
           {...getFieldProps(PO_DETERMINATION_KEY.REASON_2_REF)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.REASON_2_REF)}
+          disabled={disabled}
         />
       </Box>
 
@@ -315,6 +334,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           {...getFieldProps(PO_DETERMINATION_KEY.REASON_3)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.REASON_3)}
           onChange={handleChangeValue}
+          disabled={disabled}
         />
       </Box>
       <Box px={3}>
@@ -323,6 +343,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           resize="none"
           {...getFieldProps(PO_DETERMINATION_KEY.REASON_3_REF)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.REASON_3_REF)}
+          disabled={disabled}
         />
       </Box>
 
@@ -334,6 +355,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           {...getFieldProps(PO_DETERMINATION_KEY.REASON_4)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.REASON_4)}
           onChange={handleChangeValue}
+          disabled={disabled}
         />
       </Box>
       <Box px={3}>
@@ -342,6 +364,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           resize="none"
           {...getFieldProps(PO_DETERMINATION_KEY.REASON_4_REF)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.REASON_4_REF)}
+          disabled={disabled}
         />
       </Box>
 
@@ -358,6 +381,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
                     maxLength={25}
                     {...getUncontrolledFieldProps(PO_DETERMINATION_KEY.REASON_6_PO_NUMBER)}
                     errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.REASON_6_PO_NUMBER)}
+                    disabled={disabled}
                   />
                 </div>
                 <div style={{ display: 'contents' }}> and/or RCUH Contract No. </div>
@@ -366,6 +390,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
                     maxLength={25}
                     {...getUncontrolledFieldProps(PO_DETERMINATION_KEY.REASON_6_CONTRACT_NUMBER)}
                     errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.REASON_6_CONTRACT_NUMBER)}
+                    disabled={disabled}
                   />
                 </div>
                 <div style={{ display: 'contents' }}> which was competitively established.</div>
@@ -375,6 +400,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           {...getFieldProps(PO_DETERMINATION_KEY.REASON_6)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.REASON_6)}
           onChange={handleChangeValue}
+          disabled={disabled}
         />
       </Box>
       <Box px={3}>
@@ -382,6 +408,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           resize="none"
           {...getFieldProps(PO_DETERMINATION_KEY.REASON_6_REF)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.REASON_6_REF)}
+          disabled={disabled}
         />
       </Box>
 
@@ -393,6 +420,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           {...getFieldProps(PO_DETERMINATION_KEY.REASON_7)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.REASON_7)}
           onChange={handleChangeValue}
+          disabled={disabled}
         />
       </Box>
       <Box px={3}>
@@ -401,6 +429,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
           resize="none"
           {...getFieldProps(PO_DETERMINATION_KEY.COST_JUSTIFICATION)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.COST_JUSTIFICATION)}
+          disabled={disabled}
         />
       </Box>
     </>
@@ -409,6 +438,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps }) => {
 
 type Props = {
   formikProps: CommonFormikProps<PODeterminationPayload>;
+  disabled: boolean;
 };
 
 export default React.memo(ConditionsAndCost, (prevProps, nextProps) => {
@@ -446,9 +476,12 @@ export default React.memo(ConditionsAndCost, (prevProps, nextProps) => {
     PO_DETERMINATION_KEY.COST_JUSTIFICATION,
   ];
 
-  return isEqualPrevAndNextFormikValues<PODeterminationPayload>({
-    prevFormikProps,
-    nextFormikProps,
-    formKeysNeedRender,
-  });
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    isEqualPrevAndNextFormikValues<PODeterminationPayload>({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender,
+    })
+  );
 });

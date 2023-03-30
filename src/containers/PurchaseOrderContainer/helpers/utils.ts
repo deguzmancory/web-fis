@@ -71,7 +71,13 @@ export const checkIsPiOrSuEditMode = ({
 
   const isAccessableRole = isPI(currentRole) || isSU(currentRole);
 
-  return isAccessableRole && isPIPendingSubmittalPOStatus(poStatus);
+  if (!isAccessableRole) return false;
+
+  return (
+    isPIPendingSubmittalPOStatus(poStatus) ||
+    isPIDisapprovedPOStatus(poStatus) ||
+    isPIAdditionalInfoRequestedPOStatus(poStatus)
+  );
 };
 
 export const checkIsViewOnlyMode = ({

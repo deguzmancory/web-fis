@@ -9,7 +9,7 @@ import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_AUTH_TO_PURCHASE_KEY } from '../enum';
 
-const PurchaseInfo: React.FC<Props> = ({ formikProps, formData }) => {
+const PurchaseInfo: React.FC<Props> = ({ formikProps, formData, disabled = false }) => {
   const { errors, touched, getUncontrolledFieldProps } = formikProps;
   const _getErrorMessage = (fieldName: PO_AUTH_TO_PURCHASE_KEY) => {
     return getErrorMessage(fieldName, { touched, errors });
@@ -31,6 +31,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, formData }) => {
             label={'Grant No'}
             errorMessage={_getErrorMessage(PO_AUTH_TO_PURCHASE_KEY.GRANT_NUMBER)}
             {...getUncontrolledFieldProps(PO_AUTH_TO_PURCHASE_KEY.GRANT_NUMBER)}
+            disabled={disabled}
           />
         </Grid>
         <Grid item xs={3}>
@@ -39,6 +40,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, formData }) => {
             label={'Contract No'}
             errorMessage={_getErrorMessage(PO_AUTH_TO_PURCHASE_KEY.CONTRACT_NUMBER)}
             {...getUncontrolledFieldProps(PO_AUTH_TO_PURCHASE_KEY.CONTRACT_NUMBER)}
+            disabled={disabled}
           />
         </Grid>
         <Grid item xs={2}>
@@ -47,6 +49,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, formData }) => {
             label={'Account No'}
             errorMessage={_getErrorMessage(PO_AUTH_TO_PURCHASE_KEY.ACCOUNT_NUMBER)}
             {...getUncontrolledFieldProps(PO_AUTH_TO_PURCHASE_KEY.ACCOUNT_NUMBER)}
+            disabled={disabled}
           />
         </Grid>
       </Grid>
@@ -57,6 +60,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, formData }) => {
 type Props = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps & {
     formikProps: CommonFormikProps<POAuthToPurchasePayload>;
+    disabled: boolean;
   };
 
 const mapStateToProps = (state: IRootState<UpsertPOFormValue>) => ({
@@ -77,10 +81,13 @@ export default React.memo(
       PO_AUTH_TO_PURCHASE_KEY.ACCOUNT_NUMBER,
     ];
 
-    return isEqualPrevAndNextFormikValues<POAuthToPurchasePayload>({
-      prevFormikProps,
-      nextFormikProps,
-      formKeysNeedRender,
-    });
+    return (
+      prevProps.disabled === nextProps.disabled &&
+      isEqualPrevAndNextFormikValues<POAuthToPurchasePayload>({
+        prevFormikProps,
+        nextFormikProps,
+        formKeysNeedRender,
+      })
+    );
   }
 );

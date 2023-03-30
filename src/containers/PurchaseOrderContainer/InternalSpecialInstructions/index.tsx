@@ -115,9 +115,12 @@ export default React.memo(InternalSpecialInstructions, (prevProps, nextProps) =>
     PO_FORM_KEY.INTERNAL_C,
   ]; // only re-render if keys using in this component change
 
-  return isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
-    prevFormikProps,
-    nextFormikProps,
-    formKeysNeedRender,
-  });
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender,
+    })
+  );
 });

@@ -15,7 +15,7 @@ import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_SOLE_SOURCE_FORM_KEY } from '../enum';
 
-const SoleSourceSubject: React.FC<Props> = ({ formikProps, formData }) => {
+const SoleSourceSubject: React.FC<Props> = ({ formikProps, formData, disabled }) => {
   const {
     values,
     errors,
@@ -41,6 +41,7 @@ const SoleSourceSubject: React.FC<Props> = ({ formikProps, formData }) => {
             placeholder={'Name of Designated University Official or Fiscal Administrator'}
             errorMessage={_getErrorMessage(PO_SOLE_SOURCE_FORM_KEY.TO)}
             {...getUncontrolledFieldProps(PO_SOLE_SOURCE_FORM_KEY.TO)}
+            disabled={disabled}
           />
         </Grid>
         <Grid item xs={4}>
@@ -53,6 +54,7 @@ const SoleSourceSubject: React.FC<Props> = ({ formikProps, formData }) => {
             onChange={setFieldValue}
             onBlur={setFieldTouched}
             errorMessage={_getErrorMessage(PO_SOLE_SOURCE_FORM_KEY.SS_DATE)}
+            disabled={disabled}
           />
         </Grid>
         <Grid item xs={8}>
@@ -63,6 +65,7 @@ const SoleSourceSubject: React.FC<Props> = ({ formikProps, formData }) => {
             placeholder={'Name of Principal Investigator, Department Head, or Administrator'}
             errorMessage={_getErrorMessage(PO_SOLE_SOURCE_FORM_KEY.FROM)}
             {...getUncontrolledFieldProps(PO_SOLE_SOURCE_FORM_KEY.FROM)}
+            disabled={disabled}
           />
         </Grid>
         <Grid item xs={4}>
@@ -71,6 +74,7 @@ const SoleSourceSubject: React.FC<Props> = ({ formikProps, formData }) => {
             errorMessage={_getErrorMessage(PO_SOLE_SOURCE_FORM_KEY.PHONE)}
             {...getFieldProps(PO_SOLE_SOURCE_FORM_KEY.PHONE)}
             onChange={setFieldValue}
+            disabled={disabled}
           />
         </Grid>
         <Grid item xs={12}>
@@ -79,6 +83,7 @@ const SoleSourceSubject: React.FC<Props> = ({ formikProps, formData }) => {
             maxLength={500}
             errorMessage={_getErrorMessage(PO_SOLE_SOURCE_FORM_KEY.DEPARTMENT)}
             {...getUncontrolledFieldProps(PO_SOLE_SOURCE_FORM_KEY.DEPARTMENT)}
+            disabled={disabled}
           />
         </Grid>
         <Grid item>
@@ -107,6 +112,7 @@ const SoleSourceSubject: React.FC<Props> = ({ formikProps, formData }) => {
             label={'Prior Sole Source Reference Numbers, if any'}
             errorMessage={_getErrorMessage(PO_SOLE_SOURCE_FORM_KEY.PRIOR_REFERENCE_NUMBER)}
             {...getUncontrolledFieldProps(PO_SOLE_SOURCE_FORM_KEY.PRIOR_REFERENCE_NUMBER)}
+            disabled={disabled}
           />
         </Grid>
       </Grid>
@@ -117,6 +123,7 @@ const SoleSourceSubject: React.FC<Props> = ({ formikProps, formData }) => {
 type Props = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps & {
     formikProps: CommonFormikProps<POSoleSourcePayload>;
+    disabled: boolean;
   };
 
 const mapStateToProps = (state: IRootState<UpsertPOFormValue>) => ({
@@ -140,10 +147,13 @@ export default React.memo(
       PO_SOLE_SOURCE_FORM_KEY.PRIOR_REFERENCE_NUMBER,
     ];
 
-    return isEqualPrevAndNextFormikValues<POSoleSourcePayload>({
-      prevFormikProps,
-      nextFormikProps,
-      formKeysNeedRender,
-    });
+    return (
+      prevProps.disabled === nextProps.disabled &&
+      isEqualPrevAndNextFormikValues<POSoleSourcePayload>({
+        prevFormikProps,
+        nextFormikProps,
+        formKeysNeedRender,
+      })
+    );
   }
 );

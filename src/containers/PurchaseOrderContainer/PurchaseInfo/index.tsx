@@ -237,9 +237,12 @@ export default React.memo(PurchaseInfo, (prevProps, nextProps) => {
     PO_FORM_KEY.TOTAL,
   ]; // only re-render if keys using in this component change
 
-  return isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
-    prevFormikProps,
-    nextFormikProps,
-    formKeysNeedRender,
-  });
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender,
+    })
+  );
 });

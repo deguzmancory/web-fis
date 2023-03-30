@@ -40,9 +40,12 @@ export default React.memo(AuthorizedBy, (prevProps, nextProps) => {
   const prevFormikProps = prevProps.formikProps;
   const nextFormikProps = nextProps.formikProps;
 
-  return isEqualPrevAndNextFormikValues({
-    prevFormikProps,
-    nextFormikProps,
-    formKeysNeedRender: [PO_FORM_KEY.SIGNATURE],
-  });
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    isEqualPrevAndNextFormikValues({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender: [PO_FORM_KEY.SIGNATURE],
+    })
+  );
 });

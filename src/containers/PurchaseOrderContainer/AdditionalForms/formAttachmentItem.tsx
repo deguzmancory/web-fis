@@ -5,10 +5,19 @@ import { COLOR_CODE } from 'src/appConfig/constants';
 import TypographyLink from 'src/components/TypographyLink';
 import { AdditionalPOFormValue } from '../types';
 
-const FormAttachmentItem: React.FC<Props> = ({ formAttachments, onEditClick, onRemoveClick }) => {
+const FormAttachmentItem: React.FC<Props> = ({
+  formAttachments,
+  allowEdit,
+  onViewClick,
+  onEditClick,
+  onRemoveClick,
+}) => {
   return (
     <>
       {formAttachments.map((formAttachment) => {
+        const showRemoveButton = allowEdit && !formAttachment.isExternalUrl;
+        const isViewOnly = !allowEdit || formAttachment.isExternalUrl;
+
         return (
           <Fragment key={formAttachment.code}>
             <Grid item xs={10}>
@@ -18,11 +27,13 @@ const FormAttachmentItem: React.FC<Props> = ({ formAttachments, onEditClick, onR
               </Stack>
             </Grid>
             <Grid item xs={1}>
-              <TypographyLink onClick={() => onEditClick(formAttachment)}>
-                {formAttachment.isExternalUrl ? 'View' : 'Edit'}
-              </TypographyLink>
+              {isViewOnly ? (
+                <TypographyLink onClick={() => onViewClick(formAttachment)}>View</TypographyLink>
+              ) : (
+                <TypographyLink onClick={() => onEditClick(formAttachment)}>Edit</TypographyLink>
+              )}
             </Grid>
-            {!formAttachment.isExternalUrl && (
+            {showRemoveButton && (
               <Grid item xs={1}>
                 <TypographyLink onClick={() => onRemoveClick(formAttachment)}>
                   Remove
@@ -38,7 +49,9 @@ const FormAttachmentItem: React.FC<Props> = ({ formAttachments, onEditClick, onR
 
 type Props = {
   formAttachments: AdditionalPOFormValue[];
-  onEditClick: (value: AdditionalPOFormValue) => void;
+  allowEdit: boolean;
+  onViewClick?: (value: AdditionalPOFormValue) => void;
+  onEditClick?: (value: AdditionalPOFormValue) => void;
   onRemoveClick?: (value: AdditionalPOFormValue) => void;
 };
 

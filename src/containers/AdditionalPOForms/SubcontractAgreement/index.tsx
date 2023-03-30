@@ -127,11 +127,11 @@ const SubcontractAgreementForm: React.FC<Props> = ({
             />
           }
         >
-          <WitnessethFormLayout formikProps={formikProps} />
+          <WitnessethFormLayout formikProps={formikProps} disabled={disabled} />
         </SectionLayout>
 
         <SectionLayout>
-          <StandardsLayout formikProps={formikProps} />
+          <StandardsLayout formikProps={formikProps} disabled={disabled} />
         </SectionLayout>
       </Container>
     </Box>

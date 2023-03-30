@@ -16,14 +16,15 @@ import { setFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator } from 'src/services';
 import BreadcrumbsAdditionalPOForms from './breadcrumbs';
-import EquipmentInventory from './EquipmentInventory';
-import FfataDataCollectionForm from './FfataDataCollection';
-import SoleSource from './SoleSource';
-import AuthToPurchaseForm from './AuthToPurchase';
-import DeterminationForm from './Determination';
-import SubcontractAgreementForm from './SubcontractAgreement';
 import { PO_ADDITIONAL_FORM_PARAMS } from './enum';
 import urljoin from 'url-join';
+
+const SoleSource = React.lazy(() => import('./SoleSource'));
+const AuthToPurchase = React.lazy(() => import('./AuthToPurchase'));
+const Determination = React.lazy(() => import('./Determination'));
+const SubcontractAgreement = React.lazy(() => import('./SubcontractAgreement'));
+const EquipmentInventory = React.lazy(() => import('./EquipmentInventory'));
+const FfataDataCollection = React.lazy(() => import('./FfataDataCollection'));
 
 const PurchaseOrderContainer: React.FC<Props> = ({
   formData,
@@ -37,6 +38,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const documentId = query.get(PO_ADDITIONAL_FORM_PARAMS.DOCUMENT_ID) || null;
+  const isViewOnly = !!query.get(PO_ADDITIONAL_FORM_PARAMS.VIEW_ONLY);
 
   // const isEditPOMode = true;
   const hasPermission = true;
@@ -56,20 +58,22 @@ const PurchaseOrderContainer: React.FC<Props> = ({
 
     switch (code) {
       case PO_ADDITIONAL_FORM_CODE.SOLE_SOURCE:
-        return <SoleSource disabled={false} formRef={formRef} documentId={documentId} />;
+        return <SoleSource disabled={isViewOnly} formRef={formRef} documentId={documentId} />;
       case PO_ADDITIONAL_FORM_CODE.EQUIPMENT_INVENTORY:
-        return <EquipmentInventory disabled={false} formRef={formRef} documentId={documentId} />;
+        return (
+          <EquipmentInventory disabled={isViewOnly} formRef={formRef} documentId={documentId} />
+        );
       case PO_ADDITIONAL_FORM_CODE.FFATA:
         return (
-          <FfataDataCollectionForm disabled={false} formRef={formRef} documentId={documentId} />
+          <FfataDataCollection disabled={isViewOnly} formRef={formRef} documentId={documentId} />
         );
       case PO_ADDITIONAL_FORM_CODE.AUTH_TO_PURCHASE:
-        return <AuthToPurchaseForm disabled={false} formRef={formRef} documentId={documentId} />;
+        return <AuthToPurchase disabled={isViewOnly} formRef={formRef} documentId={documentId} />;
       case PO_ADDITIONAL_FORM_CODE.DETERMINATION:
-        return <DeterminationForm disabled={false} formRef={formRef} documentId={documentId} />;
+        return <Determination disabled={isViewOnly} formRef={formRef} documentId={documentId} />;
       case PO_ADDITIONAL_FORM_CODE.SUBCONTRACTOR:
         return (
-          <SubcontractAgreementForm disabled={false} formRef={formRef} documentId={documentId} />
+          <SubcontractAgreement disabled={isViewOnly} formRef={formRef} documentId={documentId} />
         );
 
       //return anther additional forms here

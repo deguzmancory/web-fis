@@ -28,7 +28,7 @@ const EquipmentInventoryForm: React.FC<Props> = ({
   formRef,
   formData,
   onSetFormData,
-  disabled,
+  disabled = false,
   documentId,
   onSetIsImmutableFormData,
 }) => {
@@ -139,6 +139,7 @@ const EquipmentInventoryForm: React.FC<Props> = ({
                   {..._getUncontrolledFieldProps(
                     PO_EQUIPMENT_INVENTORY_FORM_KEY.EQUIPMENT_DESCRIPTION
                   )}
+                  disabled={disabled}
                 />
               </Grid>
 
@@ -153,6 +154,7 @@ const EquipmentInventoryForm: React.FC<Props> = ({
                       style={{ padding: '0 2px', marginTop: '2px' }}
                       errorMessage={_getErrorMessage(PO_EQUIPMENT_INVENTORY_FORM_KEY.BUILDING_CODE)}
                       {..._getUncontrolledFieldProps(PO_EQUIPMENT_INVENTORY_FORM_KEY.BUILDING_CODE)}
+                      disabled={disabled}
                     />
                   </div>
                   <span> </span>
@@ -170,6 +172,7 @@ const EquipmentInventoryForm: React.FC<Props> = ({
                   {..._getUncontrolledFieldProps(
                     PO_EQUIPMENT_INVENTORY_FORM_KEY.EQUIPMENT_LOCATION
                   )}
+                  disabled={disabled}
                 />
               </Grid>
             </Grid>

@@ -37,9 +37,12 @@ export default React.memo(InternalComments, (prevProps, nextProps) => {
   const prevFormikProps = prevProps.formikProps;
   const nextFormikProps = nextProps.formikProps;
 
-  return isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
-    prevFormikProps,
-    nextFormikProps,
-    formKeysNeedRender: [PO_FORM_KEY.PO_COMMENTS],
-  });
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender: [PO_FORM_KEY.PO_COMMENTS],
+    })
+  );
 });

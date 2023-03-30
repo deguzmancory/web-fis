@@ -6,7 +6,7 @@ import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_CERTIFICATE_KEY } from './enum';
 
-const Certification: React.FC<Props> = ({ formikProps, haveRequestText }) => {
+const Certification: React.FC<Props> = ({ formikProps, haveRequestText, disabled = false }) => {
   const {
     values,
     errors,
@@ -41,6 +41,7 @@ const Certification: React.FC<Props> = ({ formikProps, haveRequestText }) => {
               maxLength={250}
               errorMessage={_getErrorMessage(PO_CERTIFICATE_KEY.DEPARTMENT_HEAD)}
               {...getUncontrolledFieldProps(PO_CERTIFICATE_KEY.DEPARTMENT_HEAD)}
+              disabled={disabled}
             />
           </Box>
           <SignatureBox
@@ -50,6 +51,7 @@ const Certification: React.FC<Props> = ({ formikProps, haveRequestText }) => {
             setFieldValue={setFieldValue}
             setFieldTouched={setFieldTouched}
             selected={values.departmentHeadDate}
+            disabled={disabled}
           />
         </Box>
       </Box>
@@ -65,6 +67,7 @@ const Certification: React.FC<Props> = ({ formikProps, haveRequestText }) => {
             maxLength={250}
             errorMessage={_getErrorMessage(PO_CERTIFICATE_KEY.APPROVED_DUO)}
             {...getUncontrolledFieldProps(PO_CERTIFICATE_KEY.APPROVED_DUO)}
+            disabled={disabled}
           />
         </Box>
         <SignatureBox
@@ -74,6 +77,7 @@ const Certification: React.FC<Props> = ({ formikProps, haveRequestText }) => {
           setFieldValue={setFieldValue}
           setFieldTouched={setFieldTouched}
           selected={values.approvedDuoDate}
+          disabled={disabled}
         />
       </Box>
 
@@ -94,7 +98,8 @@ const Certification: React.FC<Props> = ({ formikProps, haveRequestText }) => {
 type Props = {
   // TODO: Tuyen Tran add type for payload
   formikProps: CommonFormikProps<any>;
-  haveRequestText: Boolean;
+  haveRequestText: boolean;
+  disabled: boolean;
 };
 
 export default React.memo(Certification, (prevProps, nextProps) => {
@@ -108,9 +113,12 @@ export default React.memo(Certification, (prevProps, nextProps) => {
     PO_CERTIFICATE_KEY.APPROVED_DUO_DATE,
   ];
 
-  return isEqualPrevAndNextFormikValues<any>({
-    prevFormikProps,
-    nextFormikProps,
-    formKeysNeedRender,
-  });
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    isEqualPrevAndNextFormikValues<any>({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender,
+    })
+  );
 });
