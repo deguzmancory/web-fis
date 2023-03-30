@@ -10,8 +10,7 @@ import { getVendorAddress } from 'src/containers/PurchaseOrderContainer/GeneralI
 import { getPOFormValueFromResponse } from 'src/containers/PurchaseOrderContainer/helpers';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
-import { mockCreateVendorRegistrationRes } from 'src/mocks/vendor/createVendorRegistrationRes';
-import { useCreateVendorRegistration, useGetPODetail, useProfile } from 'src/queries';
+import { useGetPODetail, useProfile, useUpdateVendorRegistration } from 'src/queries';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/store';
 import { Navigator, Toastify } from 'src/services';
@@ -48,13 +47,15 @@ const CreateVendorRegistration: React.FC<Props> = ({
   const redirectSection = query.get(
     VENDOR_REGISTRATION_PARAMS.CALLING_FROM
   ) as VENDOR_REGISTRATION_NAVIGATE_FROM;
-  const documentId = query.get(VENDOR_REGISTRATION_PARAMS.DOCUMENT_ID) || '';
+  const documentId = query.get(VENDOR_REGISTRATION_PARAMS.DOCUMENT_ID) || null;
+  const vendorRegistrationId = query.get(VENDOR_REGISTRATION_PARAMS.VENDOR_REGISTRATION_ID) || null;
 
+  //TODO: huy_dang get vendor registration by Id when reload
   const {
-    createVendorRegistration,
+    updateVendorRegistration,
     isLoading: isVendorRegistrationLoading,
-    isSuccess: isCreateVendorRegistrationSuccess,
-  } = useCreateVendorRegistration();
+    isSuccess: isUPdateVendorRegistrationSuccess,
+  } = useUpdateVendorRegistration();
   const { profile } = useProfile();
   const { onGetPOById } = useGetPODetail({
     id: documentId,
@@ -64,30 +65,29 @@ const CreateVendorRegistration: React.FC<Props> = ({
   });
 
   const handleFormSubmit = (values) => {
-    const payload = getVendorRegistrationPayload(values);
+    const payload = getVendorRegistrationPayload({ values, vendorRegistrationId });
 
-    createVendorRegistration(payload, {
-      onSuccess: async (data) => {
-        const mockRes = mockCreateVendorRegistrationRes; //TODO: huy_dang remove mock data
-
+    updateVendorRegistration(payload, {
+      onSuccess: async ({ data }) => {
+        //TODO: huy_dang check response
         if (redirectSection === VENDOR_REGISTRATION_NAVIGATE_FROM.PO) {
           const vendor = {
-            name: mockRes.vendorName,
-            code: mockRes.vendorCode,
-            name2: mockRes.vendorName2,
-            w9: mockRes.W9,
-            address1: mockRes.address1,
-            address2: mockRes.address2,
-            address3: mockRes.address3,
+            name: data.name,
+            code: data.code,
+            name2: data.name2,
+            w9: data.w9,
+            address1: data.address1,
+            address2: data.address2,
+            address3: data.address3,
           };
 
           const newVendorData = {
             vendorName: vendor,
             vendorCode: vendor,
-            vendorAddress: getVendorAddress(mockRes),
-            address1: mockRes.address1,
-            address2: mockRes.address2,
-            address3: mockRes.address3,
+            vendorAddress: getVendorAddress(data),
+            address1: data.address1,
+            address2: data.address2,
+            address3: data.address3,
           };
 
           //if there's no formData => redirect page have no data => fetch data to prepari
@@ -177,7 +177,7 @@ const CreateVendorRegistration: React.FC<Props> = ({
   };
 
   const blockCondition = (location: Location<string>) => {
-    if (isCreateVendorRegistrationSuccess) {
+    if (isUPdateVendorRegistrationSuccess) {
       return false;
     }
 
@@ -202,7 +202,7 @@ const CreateVendorRegistration: React.FC<Props> = ({
           <SelectVendor formikProps={formikProps} disabled={isViewOnly} />
         </SectionLayout>
         <SectionLayout>
-          <FileAttachments formikProps={formikProps} />
+          <FileAttachments formikProps={formikProps} vendorRegistrationId={vendorRegistrationId} />
         </SectionLayout>
         <SectionLayout>
           <AssigneeInfo formikProps={formikProps} disabled={isViewOnly} />

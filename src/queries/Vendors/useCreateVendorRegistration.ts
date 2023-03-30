@@ -1,24 +1,23 @@
 import { MutateOptions, useMutation } from 'react-query';
 import apiClient from '../apiClient';
 import { responseWrapper } from '../helpers';
-import { VendorRegistrationPayload } from './types';
+import { ApiResponseType } from './../helpers';
 
 export const useCreateVendorRegistration = (
-  options?: MutateOptions<any, Error, VendorRegistrationPayload>
+  options?: MutateOptions<ApiResponseType<{ id: string }>, Error, any>
 ) => {
   const {
-    mutate: createVendorRegistration,
+    mutateAsync: createVendorRegistrationAsync,
     data,
     isLoading,
     isSuccess,
-  } = useMutation<any, Error, VendorRegistrationPayload>({
-    mutationFn: (payload: VendorRegistrationPayload) =>
-      responseWrapper(apiClient.createVendorRegistration, [payload]),
+  } = useMutation<ApiResponseType<{ id: string }>, Error, any>({
+    mutationFn: () => responseWrapper(apiClient.createVendorRegistration),
     ...options,
   });
 
   return {
-    createVendorRegistration,
+    createVendorRegistrationAsync,
     data,
     isLoading,
     isSuccess,

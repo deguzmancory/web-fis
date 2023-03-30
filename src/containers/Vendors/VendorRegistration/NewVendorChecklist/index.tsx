@@ -1,10 +1,11 @@
 import { Box, Link, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { COLOR_CODE, NO_OPENER } from 'src/appConfig/constants';
 import { PATHS } from 'src/appConfig/paths';
 import { Button } from 'src/components/common';
+import { useCreateVendorRegistration } from 'src/queries';
 import { setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { Callback } from 'src/redux/types';
 import { Navigator } from 'src/services';
@@ -17,12 +18,23 @@ const NewVendorCheckList: React.FC<Props> = ({ onNextPage }) => {
 
   // using params here to redirect to previous section instead of using state of location
   // => increase more certain redirect
+  const history = useHistory();
   const location = useLocation();
   const query = React.useMemo(() => new URLSearchParams(location.search), [location]);
   const redirectSection = query.get(
     VENDOR_REGISTRATION_PARAMS.CALLING_FROM
   ) as VENDOR_REGISTRATION_NAVIGATE_FROM;
   const documentId = query.get(VENDOR_REGISTRATION_PARAMS.DOCUMENT_ID) || '';
+
+  const { createVendorRegistrationAsync, isLoading } = useCreateVendorRegistration();
+
+  const handleCreateNewVendorClick = async () => {
+    const { data } = await createVendorRegistrationAsync({});
+
+    query.set(VENDOR_REGISTRATION_PARAMS.VENDOR_REGISTRATION_ID, data.id);
+    history.push({ search: query.toString() });
+    onNextPage();
+  };
 
   const handleCancelClick = () => {
     switch (redirectSection) {
@@ -128,11 +140,18 @@ const NewVendorCheckList: React.FC<Props> = ({ onNextPage }) => {
         <Typography variant="body2" mr={1}>
           If you answered <b>YES</b> to <b>ALL 3 QUESTIONS</b>, then:
         </Typography>
-        <Button onClick={onNextPage}>Proceed to Create New Vendor</Button>
+
+        <Button onClick={handleCreateNewVendorClick} isLoading={isLoading} disabled={isLoading}>
+          Proceed to Create New Vendor
+        </Button>
+
         <Typography variant="body2" mx={1}>
           Otherwise:
         </Typography>
-        <Button onClick={handleCancelClick}>Cancel</Button>
+
+        <Button onClick={handleCancelClick} disabled={isLoading}>
+          Cancel
+        </Button>
       </Stack>
       <Stack justifyContent={'center'} direction="row">
         <Typography variant="body2" mr={1}>

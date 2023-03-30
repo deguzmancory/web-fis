@@ -1,6 +1,7 @@
 export enum VENDOR_REGISTRATION_PARAMS {
   CALLING_FROM = 'callingFrom',
   DOCUMENT_ID = 'documentId',
+  VENDOR_REGISTRATION_ID = 'vendorRegistrationId',
 }
 
 export enum VENDOR_REGISTRATION_NAVIGATE_FROM {

@@ -36,14 +36,19 @@ export const isVendorRequiredEinNumber = (selectedVendorClass: VENDOR_OPTION_VAL
   return [VENDOR_OPTION_VALUE.US_GOVERNMENT_ENTITY].includes(selectedVendorClass);
 };
 
-export const getVendorRegistrationPayload = (
-  values: VendorRegistrationFormValue
-): VendorRegistrationPayload => {
+export const getVendorRegistrationPayload = ({
+  values,
+  vendorRegistrationId,
+}: {
+  values: VendorRegistrationFormValue;
+  vendorRegistrationId: string;
+}): VendorRegistrationPayload => {
   const splittedSSN = values.ssn ? values.ssn.split('-') : null;
   const splittedEIN = values.ein ? values.ein.split('-') : null;
 
   return {
     ...values,
+    id: vendorRegistrationId,
     ssn1: splittedSSN ? splittedSSN[0] || '' : '',
     ssn2: splittedSSN ? splittedSSN[1] || '' : '',
     ssn3: splittedSSN ? splittedSSN[2] || '' : '',

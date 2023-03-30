@@ -1,4 +1,5 @@
 import { VENDOR_OPTION_VALUE } from 'src/containers/Vendors/VendorRegistration/CreateVendorRegistration/enums';
+import { GetPresignedPayload } from '../File';
 
 /* Vendor, Vendor List */
 export interface Vendor {
@@ -24,9 +25,8 @@ export interface VendorRegistrationAttachment {
   id?: string;
   createdAt?: string;
   updatedAt?: string;
-
+  uploadDate?: string;
   name: string;
-  uploadDate: string;
   size: string;
   description: string;
   url: string;
@@ -42,6 +42,8 @@ export interface VendorRegistration extends VendorRegistrationPayload {
 }
 
 export interface VendorRegistrationPayload {
+  id?: string;
+
   //vendor info
   taxPayerName: string | null;
   lastName: string | null;
@@ -101,3 +103,105 @@ export interface VendorRegistrationPayload {
   vendorBuNumber: string | null;
   vendorPrNumber: string | null;
 }
+
+export interface VendorRegistrationResponse {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  code: string;
+  line1: string;
+  line2: string;
+  line3: string;
+  line4: string;
+  line5: string;
+  zip: string;
+  zip4: string;
+  type: string;
+  ssn: string;
+  updated: string;
+  entityType: string;
+  citizen: string;
+  taxStatus: string;
+  country: string;
+  connected: string;
+  orgType: string;
+  phoneNumber: string;
+  preparedBy: string;
+  taxPayerName: string;
+  purged: string;
+  codeRollup: string;
+  tinValidatedDate: string;
+  flag1099: string;
+  w9SendDate: string;
+  w9ReceivedDate: string;
+  bckpWhStartDate: string;
+  bckpWhEndDate: string;
+  firstCp2100RcvdDate: string;
+  firstBNoteSendDate: string;
+  secondCp2100RcvdDate: string;
+  secondBNoteSendDate: string;
+  fiscalAdminEmail: string;
+  fiscalAdminName: string;
+  createdDate: string;
+  exemptPayeeCode: string;
+  exemptFatcaReptCode: string;
+  departmentOffice: string;
+  city: string;
+  state: string;
+  streetAddress: string;
+  foreignAddressCode: string;
+  otherTaxClass: string;
+  w9Reason: string;
+  w9Cert: string;
+  exemptFlag: string;
+  taxClassification: string;
+  ssnNew: string;
+  einNew: string;
+  irsInd: string;
+  w92ndSentDate: string;
+  rcuhValidatedDate: string;
+  vendorNotes: string;
+  rcuhId: string;
+  uhId: string;
+  employeeId: string;
+  epayInd: string;
+  mkssInd: string;
+  wForm: string;
+  wFormCode: string;
+  w9: string;
+  w9ToolTip: string;
+  vendorRegistrationExists: boolean;
+  firstName: string;
+  lastName: string;
+  middleName: string;
+  suffix: string;
+  addressLine2: string;
+  foreignAddressLine1: string;
+  foreignAddressLine2: string;
+  foreignAddressLine3: string;
+  vendorPhoneNumber: string;
+  vendorEmail: string;
+  purgedDate: string;
+  buNumber: string;
+  prNumber: string;
+  userDefined1: string;
+  userDefined2: string;
+  userDefinedDate1: string;
+  userDefinedDate2: string;
+  userDefinedDate3: string;
+  businessName: string;
+  paymentType: string;
+  updateVersionNumber: number;
+}
+
+export interface GetPresignedVendorRegistrationPayload extends GetPresignedPayload {
+  id?: string;
+}
+
+export interface DeleteVendorRegistrationAttachmentPayload {
+  id: string;
+  attachmentId: string;
+}
+
+export interface GetPresignedVendorRegistrationAttachmentDownloadUrl
+  extends DeleteVendorRegistrationAttachmentPayload {}

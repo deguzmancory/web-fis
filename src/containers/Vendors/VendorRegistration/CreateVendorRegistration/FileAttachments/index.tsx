@@ -16,15 +16,12 @@ import CircularProgressWithLabel from 'src/components/CircularProgressWithLabel'
 import { Accordion, Button, FileUpload, TextareaAutosize } from 'src/components/common';
 import { StyledTableCell, StyledTableRow } from 'src/components/CustomTable';
 import FilePreview from 'src/components/FilePreview';
-import {
-  useAddPOAttachment,
-  useUploadPOFileAttachment,
-  VendorRegistrationAttachment,
-} from 'src/queries';
-import { useDeletePOAttachment } from 'src/queries/PurchaseOrders/useDeletePOAttachment';
+import { VendorRegistrationAttachment } from 'src/queries';
+import { useAddVendorRegistrationAttachment } from 'src/queries/Vendors/useAddVendorRegistrationAttachment';
+import { useDeleteVendorRegistrationAttachment } from 'src/queries/Vendors/useDeleteVendorRegistrationAttachment';
+import { useUploadVendorRegistrationFileAttachment } from 'src/queries/Vendors/useUploadVendorRegistrationFileAttachment';
 import { hideAllDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
-import { setFormData } from 'src/redux/form/formSlice';
 import { Toastify } from 'src/services';
 import {
   DateFormatDisplayMinute,
@@ -39,8 +36,13 @@ import { VENDOR_REGISTRATION_FORM_KEY } from '../enums';
 import { VendorRegistrationFormikProps } from '../types';
 import DecodeFilePreview from './filePreview';
 
-const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => {
+const FileAttachments: React.FC<Props> = ({
+  formikProps,
+  disabled = false,
+  vendorRegistrationId,
+}) => {
   const { fileAttachments } = formikProps.values;
+  const { setFieldValue } = formikProps;
   const dispatch = useDispatch();
   const attachments = React.useMemo(() => {
     if (isEmpty(fileAttachments)) return [];
@@ -54,7 +56,7 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
     file: File;
     descriptions: string;
     size: string;
-    isArtifact: boolean;
+    // isArtifact: boolean;
   }>(null);
 
   const allowUploadFile = !disabled;
@@ -76,42 +78,38 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
 
   const [uploadProgress, setUploadProgress] = React.useState(0);
 
-  const { getPresignedUploadUrl, loading: isLoadingGetPresignedUrl } = useUploadPOFileAttachment({
-    onUploadSuccess(data, variables, context) {
-      addPoAttachment({
-        id: undefined,
-        name: fileSelected.file.name,
-        size: fileSelected.size,
-        description: fileSelected.descriptions,
-        isArtifact: fileSelected.isArtifact,
-        url: trimUrl(variables?.url),
-      });
-    },
-    onError(error) {
-      handleShowErrorMsg(error);
-    },
-    setProgress: setUploadProgress,
-    id: undefined,
-  });
+  const { getPresignedUploadUrl, loading: isLoadingGetPresignedUrl } =
+    useUploadVendorRegistrationFileAttachment({
+      onUploadSuccess(data, variables, context) {
+        addVendorRegistrationAttachment({
+          id: vendorRegistrationId,
+          name: fileSelected.file.name,
+          size: fileSelected.size,
+          description: fileSelected.descriptions,
+          url: trimUrl(variables?.url),
+        });
+      },
+      onError(error) {
+        handleShowErrorMsg(error);
+      },
+      setProgress: setUploadProgress,
+      id: vendorRegistrationId,
+    });
 
-  const { addPoAttachment, isLoading: isLoadingAddPoAttachment } = useAddPOAttachment({
-    onSuccess({ data }) {
-      Toastify.success('Upload file attachment successfully');
+  const { addVendorRegistrationAttachment, isLoading: isLoadingAddVendorRegistrationAttachment } =
+    useAddVendorRegistrationAttachment({
+      onSuccess({ data }) {
+        Toastify.success('Upload file attachment successfully');
 
-      setUploadProgress(0);
-      setFileSelected(null);
+        setUploadProgress(0);
+        setFileSelected(null);
 
-      dispatch(
-        setFormData({
-          ...formikProps.values,
-          fileAttachments: [...fileAttachments, data],
-        })
-      );
-    },
-    onError(error) {
-      handleShowErrorMsg(error);
-    },
-  });
+        setFieldValue(VENDOR_REGISTRATION_FORM_KEY.FILE_ATTACHMENTS, [...fileAttachments, data]);
+      },
+      onError(error) {
+        handleShowErrorMsg(error);
+      },
+    });
 
   const handleUploadFile = () => {
     if (!fileSelected) {
@@ -121,7 +119,7 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
     getPresignedUploadUrl(fileSelected.file);
   };
 
-  const { deletePOAttachment, isLoading } = useDeletePOAttachment({
+  const { deleteVendorRegistrationAttachment, isLoading } = useDeleteVendorRegistrationAttachment({
     onError(error) {
       handleShowErrorMsg(error);
     },
@@ -143,21 +141,17 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
           okText: 'Yes, delete it',
           cancelText: 'Cancel',
           onOk: () => {
-            deletePOAttachment(
+            deleteVendorRegistrationAttachment(
               {
-                id: undefined,
+                id: vendorRegistrationId,
                 attachmentId: attachment.id,
               },
               {
                 onSuccess() {
                   Toastify.success('Delete file attachment successfully');
-                  dispatch(
-                    setFormData({
-                      ...formikProps.values,
-                      fileAttachments: fileAttachments.filter(
-                        (fileAttachment) => fileAttachment.id !== attachment.id
-                      ),
-                    })
+                  setFieldValue(
+                    VENDOR_REGISTRATION_FORM_KEY.FILE_ATTACHMENTS,
+                    fileAttachments.filter((fileAttachment) => fileAttachment.id !== attachment.id)
                   );
                 },
               }
@@ -173,8 +167,8 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
   };
 
   const loading = React.useMemo(() => {
-    return isLoadingGetPresignedUrl || isLoading || isLoadingAddPoAttachment;
-  }, [isLoadingGetPresignedUrl, isLoading, isLoadingAddPoAttachment]);
+    return isLoadingGetPresignedUrl || isLoading || isLoadingAddVendorRegistrationAttachment;
+  }, [isLoadingGetPresignedUrl, isLoading, isLoadingAddVendorRegistrationAttachment]);
 
   return (
     <Accordion title="File Attachments" id="file-attachments" isExpanded={defaultExpandedAccordion}>
@@ -295,7 +289,11 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
               attachments.map((row) => (
                 <StyledTableRow key={row.id}>
                   <StyledTableCell width={'20%'}>
-                    <DecodeFilePreview fileUrl={row.url} poId={undefined} attachmentId={row.id} />
+                    <DecodeFilePreview
+                      fileUrl={row.url}
+                      poId={vendorRegistrationId}
+                      attachmentId={row.id}
+                    />
                   </StyledTableCell>
                   <StyledTableCell width={'20%'}>{row.description}</StyledTableCell>
                   <StyledTableCell width={'20%'}>
@@ -328,6 +326,7 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
 };
 type Props = {
   formikProps: VendorRegistrationFormikProps;
+  vendorRegistrationId: string;
   disabled?: boolean;
 };
 

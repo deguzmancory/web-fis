@@ -290,12 +290,52 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.get(`/financial-svc/v1/vendors/search?${queryString}`, {}, newCancelToken());
   };
 
-  const createVendorRegistration = (payload: VendorRegistrationPayload) => {
-    return api.post(
-      `/financial-svc/v1/vendor-registration`,
+  const createVendorRegistration = () => {
+    return api.post(`/financial-svc/v1/vendor-registration`, {}, newCancelToken());
+  };
+
+  const updateVendorRegistration = (payload: VendorRegistrationPayload) => {
+    return api.put(
+      `/financial-svc/v1/vendor-registration/${payload.id}`,
       {
         ...payload,
       },
+      newCancelToken()
+    );
+  };
+
+  const getVendorRegistrationFileAttachmentPresignedUrl = (params: GetPresignedPOPayload) => {
+    return api.get(
+      `/financial-svc/v1/vendor-registration/${params.id}/attachments/presigned-url`,
+      params,
+      newCancelToken()
+    );
+  };
+
+  const getVendorRegistrationFileAttachmentPresignedDownloadUrl = (
+    params: GetPresignedPoAttachmentDownloadUrl
+  ) => {
+    return api.get(
+      `/financial-svc/v1/vendor-registration/${params.id}/attachments/${params.attachmentId}/read`,
+      params,
+      newCancelToken()
+    );
+  };
+
+  const addVendorRegistrationAttachment = (payload: AddPoAttachmentPayload) => {
+    return api.put(
+      `/financial-svc/v1/vendor-registration/${payload.id}/attachments`,
+      {
+        ...payload,
+      },
+      newCancelToken()
+    );
+  };
+
+  const deleteVendorRegistrationAttachment = (params: DeletePoAttachmentPayload) => {
+    return api.delete(
+      `/financial-svc/v1/vendor-registration/${params.id}/attachments/${params.attachmentId}`,
+      {},
       newCancelToken()
     );
   };
@@ -465,6 +505,11 @@ const create = (baseURL = appConfig.API_URL) => {
     searchVendors,
     getAllVendors,
     createVendorRegistration,
+    updateVendorRegistration,
+    getVendorRegistrationFileAttachmentPresignedUrl,
+    getVendorRegistrationFileAttachmentPresignedDownloadUrl,
+    addVendorRegistrationAttachment,
+    deleteVendorRegistrationAttachment,
 
     // ====================== Super Quotes ======================
     searchSuperQuotes,
