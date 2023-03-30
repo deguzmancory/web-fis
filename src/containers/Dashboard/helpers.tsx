@@ -22,8 +22,8 @@ export type DashboardItem = {
 export const dashboardItems: DashboardItem[] = [
   {
     title: 'Purchasing',
-    subTitle: 'POs & PO Payments',
-    icon: <IoServer size={75} />,
+    subTitle: 'POs and PO Payments',
+    icon: <IoServer size={21} />,
     items: [
       {
         title: 'Review/Approve PO Documents over $24,999',
@@ -91,7 +91,7 @@ export const dashboardItems: DashboardItem[] = [
   {
     title: 'Non- PO Payments',
     subTitle: '',
-    icon: <IoWallet size={75} />,
+    icon: <IoWallet size={21} />,
     items: [
       {
         title: 'Review/Approve Payments over $24,999',
@@ -138,7 +138,7 @@ export const dashboardItems: DashboardItem[] = [
     icon: (
       <AirplanemodeActive
         sx={{
-          fontSize: 75,
+          fontSize: 21,
         }}
       />
     ),
@@ -206,7 +206,7 @@ export const dashboardItems: DashboardItem[] = [
     icon: (
       <PieChart
         sx={{
-          fontSize: 75,
+          fontSize: 21,
         }}
       />
     ),
@@ -239,7 +239,7 @@ export const dashboardItems: DashboardItem[] = [
     icon: (
       <Extension
         sx={{
-          fontSize: 75,
+          fontSize: 21,
         }}
       />
     ),
@@ -317,7 +317,7 @@ export const dashboardItems: DashboardItem[] = [
     icon: (
       <Help
         sx={{
-          fontSize: 75,
+          fontSize: 21,
         }}
       />
     ),

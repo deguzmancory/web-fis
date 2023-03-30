@@ -18,21 +18,11 @@ const CardDashboard: React.FC<Props> = ({ card, userRole }) => {
       border={COLOR_CODE.DEFAULT_BORDER}
     >
       <Box>
-        <Stack flexDirection={'row'} justifyContent={'center'}>
-          <i
-            style={{
-              fontSize: '75',
-              color: COLOR_CODE.INFO,
-            }}
-          >
-            {card.icon}
-          </i>
-        </Stack>
-        <Typography variant="h2" textAlign={'center'} color={COLOR_CODE.INFO}>
-          {card.title}
+        <Typography variant="h3" textAlign={'center'} color={COLOR_CODE.INFO}>
+          {card.icon} {card.title}
         </Typography>
         <Typography variant="body2" textAlign={'center'} color={COLOR_CODE.PRIMARY_600}>
-          {card?.subTitle || <br />}
+          {card?.subTitle}
         </Typography>
       </Box>
       <Box mt={2}>

@@ -14,26 +14,26 @@ const Dashboard: React.FC<Props> = ({ userProfile, currentRole }) => {
 
   return (
     <Box py={4}>
-      <Container maxWidth={'lg'}>
-        {loading ? (
-          <SkeletonDashboard />
-        ) : (
-          <>
-            <Box>
-              <Typography variant="h3" paddingBottom={3}>
-                Welcome {fullName || 'Anonymous'} (Financial System - {getRoleName(currentRole)})
-              </Typography>
-            </Box>
-            <Grid container spacing={2} alignItems="stretch">
-              {dashboardItems.map((card) => (
-                <Grid item xs={4} key={card.title}>
-                  <CardDashboard card={card} userRole={currentRole} />
-                </Grid>
-              ))}
-            </Grid>
-          </>
-        )}
-      </Container>
+      {/* <Container> */}
+      {loading ? (
+        <SkeletonDashboard />
+      ) : (
+        <Container maxWidth="xl">
+          <Box>
+            <Typography variant="h3" paddingBottom={3}>
+              Welcome {fullName || 'Anonymous'} (Financial System - {getRoleName(currentRole)})
+            </Typography>
+          </Box>
+          <Grid container spacing={2} alignItems="stretch">
+            {dashboardItems.map((card) => (
+              <Grid item xs={4} key={card.title}>
+                <CardDashboard card={card} userRole={currentRole} />
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      )}
+      {/* </Container> */}
     </Box>
   );
 };
