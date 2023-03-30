@@ -15,7 +15,7 @@ import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { setFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator } from 'src/services';
-import BreadcrumbsAdditonalPOForms from './breadcrumbs';
+import BreadcrumbsAdditionalPOForms from './breadcrumbs';
 import EquipmentInventory from './EquipmentInventory';
 import FfataDataCollectionForm from './FfataDataCollection';
 import SoleSource from './SoleSource';
@@ -129,7 +129,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   return (
     <Box py={4}>
       <Container maxWidth="lg">
-        <BreadcrumbsAdditonalPOForms isViewMode={false} />
+        <BreadcrumbsAdditionalPOForms isViewMode={false} />
         <Typography mt={2} variant="body2" textAlign={'center'}>
           The Research Corporation of the University of Hawaii
         </Typography>

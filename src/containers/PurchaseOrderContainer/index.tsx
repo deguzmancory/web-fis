@@ -177,10 +177,9 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   // create mode
   // using useLayoutEffect to avoid flash at first time render
   React.useLayoutEffect(() => {
-    const isInitialEmptyForm = !formData && !isEditPOMode;
-    const isFormDataExistButNeedToClear = formData && !isImmutableFormData;
+    const isInitialEmptyForm = !isEditPOMode && !isImmutableFormData;
 
-    if (isInitialEmptyForm || isFormDataExistButNeedToClear) {
+    if (isInitialEmptyForm) {
       const initialPOFormValue = getInitialPOFormValue({ profile });
       onSetFormData<UpsertPOFormValue>(initialPOFormValue);
       return;
@@ -192,12 +191,11 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   // edit mode
   // using useEffect for fetch data from api
   React.useEffect(() => {
-    if (!formData && isEditPOMode) {
+    if (isEditPOMode && !isImmutableFormData) {
       onGetPOById();
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEditPOMode, formData, onGetPOById]);
+  }, [id, isEditPOMode, onGetPOById]);
 
   // else formData && isImmutableFormData
   // => just back from additional forms mode => not fetching anything
