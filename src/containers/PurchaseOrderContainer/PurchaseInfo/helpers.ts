@@ -1,6 +1,6 @@
 import { getOptionsByEnum } from 'src/utils';
 
-export const MAX_TAX_NUMBER = 1000000000;
+export const MAX_TAX_NUMBER = 10000000;
 
 export enum FED_ATTACHMENT_VALUE {
   ATTACHMENT_32A = 'Attachment 32a, Terms and Conditions Applicable to Contracts/Subcontracts/Purchase Orders (Under Federal Grants)',

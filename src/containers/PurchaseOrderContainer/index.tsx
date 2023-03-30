@@ -147,18 +147,20 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   // Navigate to submitted PO success page
   React.useEffect(() => {
     if (isCreatePOSuccess || isUpdatePOSuccess) {
-      const responseData = isCreatePOSuccess ? createPOResponse : updatePOResponse;
+      const responseData = isEditPOMode ? updatePOResponse : createPOResponse;
 
       switch (formAction) {
-        case PO_ACTION.SAVE:
+        case PO_ACTION.SAVE: {
           Toastify.success(`Saved form successfully.`);
           Navigator.navigate(`${PATHS.purchaseOrderDetail}/${responseData.data.id}`);
           return;
-        case PO_ACTION.SUBMIT:
+        }
+        case PO_ACTION.SUBMIT: {
           Navigator.navigate(
             `${PATHS.submittedPurchaseOrder}/${responseData.data.id}?${SUBMITTED_PO_QUERY.PO_NUMBER}=${responseData.data.number}`
           );
           return;
+        }
 
         default:
           return;

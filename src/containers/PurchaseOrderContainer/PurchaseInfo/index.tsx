@@ -27,11 +27,12 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentP
 
   const handleTaxTotalChange = (name, value) => {
     const taxTotalValue = value;
-    const subTotalValue = values.subtotal || 0;
-    const taxRateValue = (taxTotalValue / subTotalValue) * 100;
+    // const subTotalValue = values.subtotal || 0;
+    // const taxRateValue = (taxTotalValue / subTotalValue) * 100;
+    // setFieldValue(PO_FORM_KEY.TAX_RATE, taxRateValue.toFixed(3));
 
     setFieldValue(name, taxTotalValue);
-    setFieldValue(PO_FORM_KEY.TAX_RATE, taxRateValue.toFixed(3));
+    setFieldValue(PO_FORM_KEY.TAX_RATE, '');
   };
 
   const handleTaxRateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,7 +57,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentP
   // update totalValue when subTotal or taxTotal or shippingTotal change
   React.useEffect(() => {
     const subTotalValue = values.subtotal || 0;
-    // taxTotal can not over 1,000,000$
+    // taxTotal can not over 10,000,000$
     const taxTotalValue =
       values.taxTotal && Number(values.taxTotal) < MAX_TAX_NUMBER ? Number(values.taxTotal) : 0;
 
