@@ -31,7 +31,7 @@ const SoleSourceInfo: React.FC = () => {
           rel={NO_OPENER}
           href="https://www.rcuh.com/document-library/2-000/procurement-contracts/attachment-58-sample-sole-source-justifications/"
         >
-          Sample Price and Cost Analyses.
+          Sample Sole Source Justifications.
         </Link>
       </Typography>
       <Typography variant="body1">

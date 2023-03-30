@@ -15,6 +15,7 @@ import { Navigator } from 'src/services';
 import { getUncontrolledInputFieldProps } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import urljoin from 'url-join';
+import HeaderOfSection from '../headerSection';
 import CheckAndFill from './CheckAndFill';
 import FormCompleted from './FormCompleted';
 import PreAcquisition from './PreAcquisition';
@@ -97,7 +98,14 @@ const AuthToPurchaseForm: React.FC<Props> = ({
   return (
     <Box>
       <Container maxWidth="lg">
-        <SectionLayout>
+        <SectionLayout
+          header={
+            <HeaderOfSection
+              href={'https://www.rcuh.com/2-000/2-200/2-212/'}
+              label={'RCUH Policy 2.212'}
+            />
+          }
+        >
           <PurchaseInfo formikProps={formikProps} />
         </SectionLayout>
 

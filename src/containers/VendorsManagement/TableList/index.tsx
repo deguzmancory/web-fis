@@ -40,10 +40,11 @@ const TableList: React.FC<Props> = () => {
   };
   const handleViewVendorDetail = React.useCallback(
     (_value: string[], meta: { rowIndex: number }) => {
-      const index = meta.rowIndex;
-      const vendor = vendors[`${index}`];
+      // const index = meta.rowIndex;
+      // const vendor = vendors[`${index}`];
       // Navigator.navigate(`${PATHS.editVendorMaster}/${vendor.code}`);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [vendors]
   );
 

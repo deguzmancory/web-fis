@@ -17,6 +17,7 @@ import { IRootState } from 'src/redux/rootReducer';
 import { Navigator } from 'src/services';
 import { getErrorMessage, getUncontrolledInputFieldProps } from 'src/utils';
 import urljoin from 'url-join';
+import HeaderOfSection from '../headerSection';
 import {
   EQUIPMENT_INVENTORY_LABEL,
   optionCheckboxValue,
@@ -113,7 +114,14 @@ const EquipmentInventoryForm: React.FC<Props> = ({
   return (
     <Box>
       <Container maxWidth="lg">
-        <SectionLayout>
+        <SectionLayout
+          header={
+            <HeaderOfSection
+              href={'https://www.rcuh.com/2-000/2-200/2-212/'}
+              label={'RCUH Policy 2.212'}
+            />
+          }
+        >
           <Grid container spacing={2}>
             <Grid item container spacing={3}>
               <Grid item xs={12} sm={6} md={4}>

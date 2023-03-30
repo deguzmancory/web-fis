@@ -15,6 +15,7 @@ import { Navigator } from 'src/services';
 import { getUncontrolledInputFieldProps } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import urljoin from 'url-join';
+import HeaderOfSection from '../headerSection';
 import Certification from '../shared/Certification';
 import SoleSourceInfo from './SoleSourceInfo';
 import SoleSourceStatement from './SoleSourceStatement';
@@ -98,7 +99,14 @@ const SoleSourceForm: React.FC<Props> = ({
   return (
     <Box>
       <Container maxWidth="lg">
-        <SectionLayout>
+        <SectionLayout
+          header={
+            <HeaderOfSection
+              href={'https://www.rcuh.com/2-000/2-100/2-106/'}
+              label={'RCUH Policy 2.201'}
+            />
+          }
+        >
           <SoleSourceInfo />
         </SectionLayout>
 

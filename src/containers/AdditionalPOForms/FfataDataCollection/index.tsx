@@ -17,6 +17,7 @@ import { IRootState } from 'src/redux/rootReducer';
 import { Navigator } from 'src/services';
 import { getErrorMessage, getUncontrolledInputFieldProps } from 'src/utils';
 import urljoin from 'url-join';
+import HeaderOfSection from '../headerSection';
 import { PO_FFATA_DATA_COLLECTION_KEY } from './enum';
 
 const FfataDataCollectionForm: React.FC<Props> = ({
@@ -90,7 +91,14 @@ const FfataDataCollectionForm: React.FC<Props> = ({
   return (
     <Box>
       <Container maxWidth="lg">
-        <SectionLayout>
+        <SectionLayout
+          header={
+            <HeaderOfSection
+              href={'https://www.rcuh.com/2-000/2-300/2-304/'}
+              label={'RCUH Policy 2.304'}
+            />
+          }
+        >
           <Typography variant="body2">
             The Federal Funding Accountability and Transparency Act (FFATA), passed in 2006 and
             amended in 2008, requires information disclosure concerning entities receiving financial

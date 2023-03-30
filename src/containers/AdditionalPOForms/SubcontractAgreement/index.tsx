@@ -16,6 +16,7 @@ import { Navigator } from 'src/services';
 import { getErrorMessage, getUncontrolledInputFieldProps } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import urljoin from 'url-join';
+import HeaderOfSection from '../headerSection';
 import { PO_SUBCONTRACT_AGREEMENT_KEY } from './enum';
 import StandardsLayout from './StanDards';
 import WitnessethFormLayout from './Witnesseth';
@@ -118,7 +119,14 @@ const SubcontractAgreementForm: React.FC<Props> = ({
           />
         </Stack>
 
-        <SectionLayout>
+        <SectionLayout
+          header={
+            <HeaderOfSection
+              href={'https://www.rcuh.com/2-000/2-200/2-207/'}
+              label={'RCUH Policy 2.207'}
+            />
+          }
+        >
           <WitnessethFormLayout formikProps={formikProps} />
         </SectionLayout>
 
