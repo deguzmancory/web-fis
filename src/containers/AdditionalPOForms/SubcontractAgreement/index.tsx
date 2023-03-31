@@ -1,4 +1,4 @@
-import { Box, Container, Stack } from '@mui/material';
+import { Box, Container, Stack, Typography } from '@mui/material';
 import { FormikProps, useFormik } from 'formik';
 import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
@@ -112,6 +112,9 @@ const SubcontractAgreementForm: React.FC<Props> = ({
   return (
     <Box>
       <Container maxWidth="lg">
+        <Typography variant="h3" textAlign="center">
+          and
+        </Typography>
         <Stack alignItems={'center'}>
           <TextareaAutosize
             resize="none"

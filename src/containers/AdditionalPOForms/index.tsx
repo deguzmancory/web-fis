@@ -141,6 +141,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   const handleSubmitForm = () => {
     formRef.current.handleSubmit();
     onSetHrefNavigationForm(null);
+    setIsImmutableFormData(true);
   };
 
   return (

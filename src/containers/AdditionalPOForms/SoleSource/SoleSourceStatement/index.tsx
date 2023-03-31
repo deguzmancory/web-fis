@@ -99,7 +99,7 @@ const SoleSourceStatement: React.FC<Props> = ({ formikProps, disabled }) => {
           resize="none"
           {...getFieldProps(PO_SOLE_SOURCE_FORM_KEY.STATEMENT_FROM)}
           errorMessage={_getErrorMessage(PO_SOLE_SOURCE_FORM_KEY.STATEMENT_FROM)}
-          disabled={disabled}
+          disabled={true}
         />
       </Box>
     </Box>

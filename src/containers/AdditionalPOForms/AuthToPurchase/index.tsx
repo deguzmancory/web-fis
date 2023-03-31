@@ -106,6 +106,7 @@ const AuthToPurchaseForm: React.FC<Props> = ({
             <HeaderOfSection
               href={'https://www.rcuh.com/2-000/2-200/2-212/'}
               label={'RCUH Policy 2.212'}
+              label_left={'UH FORM 39 (PMO)'}
             />
           }
         >

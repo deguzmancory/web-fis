@@ -137,6 +137,7 @@ export const allColumnsPendingReviewApprove = ({
     options: {
       filter: false,
       sort: true,
+
       customBodyRender: (value: string) => {
         return (
           <Stack direction="row" alignItems={'center'}>

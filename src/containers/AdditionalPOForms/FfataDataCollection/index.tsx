@@ -112,11 +112,16 @@ const FfataDataCollectionForm: React.FC<Props> = ({
             reporting.
           </Typography>
         </SectionLayout>
-        <SectionLayout>
-          <Typography borderBottom={COLOR_CODE.DEFAULT_BORDER} variant="h5">
-            Section A - To be completed by UH FO
-          </Typography>
-          <Grid item container spacing={2} sx={{ mt: 1 }}>
+
+        <Typography
+          borderBottom={COLOR_CODE.DEFAULT_BORDER}
+          variant="h5"
+          sx={{ backgroundColor: '#787878', color: '#CCCCCC', py: 1.5, px: 3, mt: 2 }}
+        >
+          Section A - To be completed by UH FO
+        </Typography>
+        <SectionLayout sx={{ mt: 0 }}>
+          <Grid item container spacing={2}>
             <Grid item xs={3}>
               <Input label={'Purchase Order No'} value={formData?.number} disabled />
             </Grid>
@@ -150,10 +155,14 @@ const FfataDataCollectionForm: React.FC<Props> = ({
           </Grid>
         </SectionLayout>
 
-        <SectionLayout>
-          <Typography borderBottom={COLOR_CODE.DEFAULT_BORDER} variant="h5">
-            Section B - To be completed by Subcontractor / Vendor
-          </Typography>
+        <Typography
+          borderBottom={COLOR_CODE.DEFAULT_BORDER}
+          variant="h5"
+          sx={{ backgroundColor: '#787878', color: '#CCCCCC', py: 1.5, px: 3, mt: 2 }}
+        >
+          Section B - To be completed by Subcontractor / Vendor
+        </Typography>
+        <SectionLayout sx={{ mt: 0 }}>
           <Typography variant="h5" sx={{ my: 2 }}>
             Please list entity data as it appears in your Central Contractor Registration (CCR)
             profile, as applicable.

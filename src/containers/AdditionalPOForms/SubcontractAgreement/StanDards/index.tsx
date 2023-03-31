@@ -29,10 +29,10 @@ const StandardsLayout: React.FC<Props> = ({ formikProps, disabled }) => {
       </Typography>
 
       <Box>
-        <Typography variant="body2" mb={1}>
+        <Typography variant="body1" mb={1}>
           For the purposes of this declaration:
         </Typography>
-        <Typography variant="body2" mb={1}>
+        <Typography variant="body1" mb={1}>
           "Employee" means any nominated, appointed, or elected officer or employee of the State,
           including members of boards, commissions, and committees, and employee under contract to
           the State or of the Constitutional Convention, but excluding legislators, delegates to the
@@ -50,10 +50,7 @@ const StandardsLayout: React.FC<Props> = ({ formikProps, disabled }) => {
               disabled={disabled}
             />
           </div>
-          <div style={{ display: 'contents' }}>
-            {' '}
-            , SUBCONTRACTOR, the undersigned does declare, under penalty of perjury, as follows:
-          </div>
+          <div style={{ display: 'contents' }}> </div>
         </div>
 
         <ol style={{ padding: '0 16px' }}>

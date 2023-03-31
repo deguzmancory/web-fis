@@ -24,7 +24,7 @@ const PurposeAndInstruction: React.FC = () => {
         <Link
           target="_blank"
           rel={NO_OPENER}
-          href="https://www.rcuh.com/document-library/2-000/procurement-contracts/attachment-58-sample-sole-source-justifications/"
+          href="https://www.rcuh.com/document-library/2-000/procurement-contracts-2/attachment-57-sample-price-and-cost-analyses/"
         >
           Sample Price and Cost Analyses.
         </Link>

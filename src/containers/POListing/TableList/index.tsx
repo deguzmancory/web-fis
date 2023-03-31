@@ -10,6 +10,7 @@ import EmptyTable from 'src/components/EmptyTable';
 import { getFileName, handleParseAndDownloadFile } from 'src/components/FilePreview/helper';
 import { GetPropertiesParams } from 'src/queries/helpers';
 import {
+  PURCHASE_ORDER_KEY,
   PurchaseOrdersList,
   usePatchPurchaseOrderPrinted,
   useViewFinalPdf,
@@ -201,6 +202,7 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
         onAction={handleGetPurchasing}
         isLoading={isFetching}
         data={purchases}
+        defaultSortOrder={{ name: PURCHASE_ORDER_KEY.MODIFIED_DATE, direction: 'desc' }}
         tableOptions={tableOptions}
         columns={columns}
         emptyComponent={<EmptyTable />}
