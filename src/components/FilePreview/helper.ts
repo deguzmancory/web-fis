@@ -21,5 +21,9 @@ export const handleParseAndDownloadFile = (url: string) => {
 
 export const getFileName = (url: string) => {
   const fileName = FileCache.trimUuidFromUniqueId(FileCache.getUniqueIdFromUrl(url));
+  if (fileName.length < 15) {
+    return fileName;
+  }
+
   return `${fileName.slice(0, 12)}...${fileName.slice(-5)}`;
 };

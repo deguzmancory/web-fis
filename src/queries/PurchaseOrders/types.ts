@@ -261,7 +261,7 @@ export interface POFileAttachmentPayload {
   uploadDate: string;
   size: string;
   description: string;
-  isArtifact: boolean;
+  isArtifact?: boolean;
   afterFinalApprove: boolean;
   url: string;
 }

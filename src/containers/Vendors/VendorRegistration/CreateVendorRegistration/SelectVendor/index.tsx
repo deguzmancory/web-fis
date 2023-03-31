@@ -120,9 +120,12 @@ export default React.memo(SelectVendor, (prevProps, nextProps) => {
     VENDOR_REGISTRATION_FORM_KEY.FILE_ATTACHMENTS,
   ];
 
-  return isEqualPrevAndNextFormikValues<VendorRegistrationFormValue>({
-    prevFormikProps,
-    nextFormikProps,
-    formKeysNeedRender,
-  });
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    isEqualPrevAndNextFormikValues<VendorRegistrationFormValue>({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender,
+    })
+  );
 });

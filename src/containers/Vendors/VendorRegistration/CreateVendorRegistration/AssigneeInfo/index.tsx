@@ -192,9 +192,12 @@ export default React.memo(AssigneeInfo, (prevProps, nextProps) => {
     VENDOR_REGISTRATION_FORM_KEY.FED_TAX_CLASS,
   ];
 
-  return isEqualPrevAndNextFormikValues<VendorRegistrationFormValue>({
-    prevFormikProps,
-    nextFormikProps,
-    formKeysNeedRender,
-  });
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    isEqualPrevAndNextFormikValues<VendorRegistrationFormValue>({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender,
+    })
+  );
 });

@@ -383,7 +383,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
   // currently can't using lineItems error because it return string or object => can't pass into jsx
   // defined table error manually
   const tableError =
-    touched.lineItems && lineItemsValue.length === 1
+    touched.lineItems && errors.lineItems && lineItemsValue.length === 1
       ? hideProjectNumberColumn
         ? 'Budget Category is required. Description is required.'
         : 'At least one Project # is Required'
@@ -391,6 +391,8 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, curren
 
   return (
     <Box>
+      {/* Hidden input for scroll to error purpose */}
+      <input name={PO_FORM_KEY.LINE_ITEMS} hidden />
       <CustomTable.Basic bodyList={lineItemRows} errorMessage={tableError} />
     </Box>
   );

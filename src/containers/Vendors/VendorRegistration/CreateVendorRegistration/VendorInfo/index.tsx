@@ -292,9 +292,12 @@ export default React.memo(VendorInfo, (prevProps, nextProps) => {
     VENDOR_REGISTRATION_FORM_KEY.HAS_INDIVIDUAL_OR_BUSINESS_NAME,
   ];
 
-  return isEqualPrevAndNextFormikValues<VendorRegistrationFormValue>({
-    prevFormikProps,
-    nextFormikProps,
-    formKeysNeedRender,
-  });
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    isEqualPrevAndNextFormikValues<VendorRegistrationFormValue>({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender,
+    })
+  );
 });

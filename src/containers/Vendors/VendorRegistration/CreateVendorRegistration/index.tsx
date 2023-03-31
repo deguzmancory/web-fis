@@ -20,7 +20,6 @@ import {
   handleScrollToTopError,
   handleShowErrorMsg,
 } from 'src/utils';
-import { isEmpty } from 'src/validations';
 import urljoin from 'url-join';
 import { VENDOR_REGISTRATION_NAVIGATE_FROM, VENDOR_REGISTRATION_PARAMS } from '../enums';
 import AssigneeInfo from './AssigneeInfo';
@@ -128,6 +127,7 @@ const CreateVendorRegistration: React.FC<Props> = ({
     values,
     errors,
     touched,
+    dirty: isFormDirty,
     validateForm,
     setFieldValue,
     getFieldProps,
@@ -181,7 +181,7 @@ const CreateVendorRegistration: React.FC<Props> = ({
       return false;
     }
 
-    return !isEmpty(touched);
+    return isFormDirty;
   };
 
   return (
@@ -202,7 +202,11 @@ const CreateVendorRegistration: React.FC<Props> = ({
           <SelectVendor formikProps={formikProps} disabled={isViewOnly} />
         </SectionLayout>
         <SectionLayout>
-          <FileAttachments formikProps={formikProps} vendorRegistrationId={vendorRegistrationId} />
+          <FileAttachments
+            formikProps={formikProps}
+            vendorRegistrationId={vendorRegistrationId}
+            disabled={isViewOnly}
+          />
         </SectionLayout>
         <SectionLayout>
           <AssigneeInfo formikProps={formikProps} disabled={isViewOnly} />
@@ -217,18 +221,20 @@ const CreateVendorRegistration: React.FC<Props> = ({
           >
             Cancel
           </Button>
-          <Button
-            className="mr-8"
-            onClick={async () => {
-              handleSubmit();
-              const errors = await validateForm();
-              _handleScrollToTopError(errors);
-            }}
-            isLoading={isVendorRegistrationLoading}
-            disabled={isVendorRegistrationLoading}
-          >
-            Submit
-          </Button>
+          {!isViewOnly && (
+            <Button
+              className="mr-8"
+              onClick={async () => {
+                handleSubmit();
+                const errors = await validateForm();
+                _handleScrollToTopError(errors);
+              }}
+              isLoading={isVendorRegistrationLoading}
+              disabled={isVendorRegistrationLoading}
+            >
+              Submit
+            </Button>
+          )}
         </Stack>
       </Box>
     </Prompt>

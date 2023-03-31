@@ -1,46 +1,25 @@
-import {
-  Box,
-  Stack,
-  Table,
-  TableBody,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from '@mui/material';
-import dayjs from 'dayjs';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { ACCEPT_FILE_TYPE, COLOR_CODE } from 'src/appConfig/constants';
-import CircularProgressWithLabel from 'src/components/CircularProgressWithLabel';
-import { Accordion, Button, FileUpload, TextareaAutosize } from 'src/components/common';
-import { StyledTableCell, StyledTableRow } from 'src/components/CustomTable';
-import FilePreview from 'src/components/FilePreview';
+import { getFileName } from 'src/components/FilePreview/helper';
+import FileAttachmentsSection from 'src/containers/shared/FileAttachmentsSection';
 import {
   POFileAttachmentPayload,
   useAddPOAttachment,
   useUploadPOFileAttachment,
 } from 'src/queries';
 import { useDeletePOAttachment } from 'src/queries/PurchaseOrders/useDeletePOAttachment';
+import { useGetPOAttachmentPresignedUrl } from 'src/queries/PurchaseOrders/useGetPOAttachmentPresignedUrl';
 import { hideAllDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
-import { setFormData } from 'src/redux/form/formSlice';
-import { Toastify } from 'src/services';
-import {
-  DateFormatDisplayMinute,
-  handleShowErrorMsg,
-  isEqualPrevAndNextFormikValues,
-  niceBytes,
-  trimUrl,
-} from 'src/utils';
-import { localTimeToHawaii } from 'src/utils/momentUtils';
+import { FileCache, Toastify } from 'src/services';
+import { handleShowErrorMsg, isEqualPrevAndNextFormikValues, niceBytes, trimUrl } from 'src/utils';
 import { isEmpty } from 'src/validations';
 import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormikProps } from '../types';
-import DecodeFilePreview from './filePreview';
 
 const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => {
-  const { fileAttachments, id: idPo } = formikProps.values;
+  const { fileAttachments, id: poId } = formikProps.values;
+  const { setFieldValue } = formikProps;
   const dispatch = useDispatch();
   const attachments = React.useMemo(() => {
     if (isEmpty(fileAttachments)) return [];
@@ -57,11 +36,13 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
     isArtifact: boolean;
   }>(null);
 
+  const [uploadProgress, setUploadProgress] = React.useState(0);
+
   const allowUploadFile = !disabled;
   const allowRemoveFile = !disabled;
   const defaultExpandedAccordion = !isEmpty(attachments);
 
-  const handleFileSelect = (files: File[]) => {
+  const handleFileSelect = React.useCallback((files: File[]) => {
     if (isEmpty(files)) {
       Toastify.warning('Please select a file');
       return;
@@ -72,14 +53,12 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
       size: niceBytes(files[0].size),
       isArtifact: true, //TODO: should check this value
     }));
-  };
-
-  const [uploadProgress, setUploadProgress] = React.useState(0);
+  }, []);
 
   const { getPresignedUploadUrl, loading: isLoadingGetPresignedUrl } = useUploadPOFileAttachment({
     onUploadSuccess(data, variables, context) {
       addPoAttachment({
-        id: idPo,
+        id: poId,
         name: fileSelected.file.name,
         size: fileSelected.size,
         description: fileSelected.descriptions,
@@ -91,7 +70,7 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
       handleShowErrorMsg(error);
     },
     setProgress: setUploadProgress,
-    id: idPo,
+    id: poId,
   });
 
   const { addPoAttachment, isLoading: isLoadingAddPoAttachment } = useAddPOAttachment({
@@ -101,12 +80,7 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
       setUploadProgress(0);
       setFileSelected(null);
 
-      dispatch(
-        setFormData({
-          ...formikProps.values,
-          fileAttachments: [...fileAttachments, data],
-        })
-      );
+      setFieldValue(PO_FORM_KEY.FILE_ATTACHMENTS, [...fileAttachments, data]);
     },
     onError(error) {
       handleShowErrorMsg(error);
@@ -127,203 +101,120 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
     },
   });
 
-  const getFileName = (fileName: string) => {
-    return `${fileName.slice(0, 12)}...${fileName.slice(-5)}`;
-  };
+  const handleDeleteAttachment = React.useCallback(
+    (attachment: POFileAttachmentPayload) => {
+      dispatch(
+        showDialog({
+          type: DIALOG_TYPES.YESNO_DIALOG,
+          data: {
+            title: `Remove Attachment`,
+            content: `Are you sure you want to delete this File: ${getFileName(attachment.name)} ${
+              attachment.description ? `- ${attachment.description}` : ''
+            }?`,
+            okText: 'Yes, delete it',
+            cancelText: 'Cancel',
+            onOk: () => {
+              deletePOAttachment(
+                {
+                  id: poId,
+                  attachmentId: attachment.id,
+                },
+                {
+                  onSuccess() {
+                    Toastify.success('Delete file attachment successfully');
 
-  const handleDeleteAttachment = (attachment: POFileAttachmentPayload) => {
-    dispatch(
-      showDialog({
-        type: DIALOG_TYPES.YESNO_DIALOG,
-        data: {
-          title: `Remove Attachment`,
-          content: `Are you sure you want to delete this File: ${getFileName(attachment.name)} ${
-            attachment.description ? `- ${attachment.description}` : ''
-          }?`,
-          okText: 'Yes, delete it',
-          cancelText: 'Cancel',
-          onOk: () => {
-            deletePOAttachment(
+                    setFieldValue(
+                      PO_FORM_KEY.FILE_ATTACHMENTS,
+                      fileAttachments.filter(
+                        (fileAttachment) => fileAttachment.id !== attachment.id
+                      )
+                    );
+                  },
+                }
+              );
+              dispatch(hideAllDialog());
+            },
+            onCancel: () => {
+              dispatch(hideAllDialog());
+            },
+          },
+        })
+      );
+    },
+    [deletePOAttachment, dispatch, fileAttachments, poId, setFieldValue]
+  );
+
+  const { getPresignedDownloadUrl } = useGetPOAttachmentPresignedUrl({
+    onError(error) {
+      handleShowErrorMsg(error);
+    },
+  });
+
+  const handleGetDecodeUrl = React.useCallback(
+    ({ attachmentId, fileUrl }: { attachmentId: string; fileUrl: string }): Promise<string> => {
+      return new Promise((resolve, reject) => {
+        if (typeof fileUrl === 'string') {
+          const decodeUrl = FileCache.getCachedUrl(fileUrl);
+          if (!decodeUrl) {
+            getPresignedDownloadUrl(
               {
-                id: idPo,
-                attachmentId: attachment.id,
+                id: poId,
+                attachmentId: attachmentId,
               },
               {
-                onSuccess() {
-                  Toastify.success('Delete file attachment successfully');
-                  dispatch(
-                    setFormData({
-                      ...formikProps.values,
-                      fileAttachments: fileAttachments.filter(
-                        (fileAttachment) => fileAttachment.id !== attachment.id
-                      ),
-                    })
-                  );
+                onSuccess({ data }) {
+                  FileCache.saveCacheUrl(fileUrl, data.url);
+                  resolve(data.url);
                 },
               }
             );
-            dispatch(hideAllDialog());
-          },
-          onCancel: () => {
-            dispatch(hideAllDialog());
-          },
-        },
-      })
-    );
-  };
+          } else {
+            resolve(decodeUrl);
+          }
+        } else {
+          const decodeUrl = URL.createObjectURL(fileUrl);
+          resolve(decodeUrl);
+        }
+      });
+    },
+    [getPresignedDownloadUrl, poId]
+  );
+
+  const handleDescriptionInputChange = React.useCallback(
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      const value = event.target.value || '';
+      setFileSelected((prevFile) => ({
+        ...prevFile,
+        descriptions: value,
+      }));
+    },
+    []
+  );
 
   const loading = React.useMemo(() => {
     return isLoadingGetPresignedUrl || isLoading || isLoadingAddPoAttachment;
   }, [isLoadingGetPresignedUrl, isLoading, isLoadingAddPoAttachment]);
 
   return (
-    <Accordion title="File Attachments" id="file-attachments" isExpanded={defaultExpandedAccordion}>
-      {allowUploadFile && (
-        <>
-          <FileUpload
-            acceptFileType={ACCEPT_FILE_TYPE}
-            onChange={(value: any) => handleFileSelect(value)}
-          />
-
-          <Stack direction={'row'} justifyContent="flex-end" mt={2} mb={1}>
-            <Typography variant="body2" fontStyle={'italic'} color={COLOR_CODE.PRIMARY_500}>
-              Please click Upload to save your document.
-            </Typography>
-          </Stack>
-        </>
-      )}
-
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              {[
-                {
-                  label: 'File Attachments Name',
-                  width: '20%',
-                },
-                {
-                  label: 'Description',
-                  width: '20%',
-                },
-                {
-                  label: 'Upload Date',
-                  width: '20%',
-                },
-                {
-                  label: 'Size',
-                  width: '10%',
-                },
-                {
-                  label: ' ',
-                  width: '30%',
-                },
-              ].map((item) => (
-                <StyledTableCell key={item.label} width={item.width}>
-                  {item.label}
-                </StyledTableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody
-            sx={{
-              border: COLOR_CODE.DEFAULT_BORDER,
-              borderTopWidth: 0,
-              borderBottomWidth: 0,
-            }}
-          >
-            {/* Upload file */}
-            {allowUploadFile && fileSelected && (
-              <StyledTableRow>
-                <StyledTableCell width={'20%'}>
-                  <FilePreview.LocalFilePreview file={fileSelected.file} />
-                </StyledTableCell>
-                <StyledTableCell width={'20%'}>
-                  <TextareaAutosize
-                    onChange={(event) => {
-                      const value = event.target.value || '';
-                      setFileSelected((prevFile) => ({
-                        ...prevFile,
-                        descriptions: value,
-                      }));
-                    }}
-                  />
-                </StyledTableCell>
-                <StyledTableCell width={'20%'}>
-                  {dayjs().format(DateFormatDisplayMinute)}
-                </StyledTableCell>
-                <StyledTableCell width={'10%'}>{fileSelected.size}</StyledTableCell>
-                <StyledTableCell width={'30%'}>
-                  <Stack direction="row" justifyContent={'flex-end'}>
-                    {(!!uploadProgress || isLoadingGetPresignedUrl) && (
-                      <CircularProgressWithLabel
-                        variant="determinate"
-                        value={uploadProgress}
-                        size={32}
-                      />
-                    )}
-                    <Button
-                      className="mx-8"
-                      disabled={loading}
-                      onClick={() => {
-                        handleUploadFile();
-                      }}
-                    >
-                      Upload
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setFileSelected(null);
-                      }}
-                    >
-                      Remove
-                    </Button>
-                  </Stack>
-                </StyledTableCell>
-              </StyledTableRow>
-            )}
-
-            {/* View files */}
-            {isEmpty(attachments) ? (
-              <StyledTableRow>
-                <StyledTableCell width={'100%'} colSpan={5}>
-                  <Box minHeight={'40px'}>&nbsp;</Box>
-                </StyledTableCell>
-              </StyledTableRow>
-            ) : (
-              attachments.map((row) => (
-                <StyledTableRow key={row.id}>
-                  <StyledTableCell width={'20%'}>
-                    <DecodeFilePreview fileUrl={row.url} poId={idPo} attachmentId={row.id} />
-                  </StyledTableCell>
-                  <StyledTableCell width={'20%'}>{row.description}</StyledTableCell>
-                  <StyledTableCell width={'20%'}>
-                    {localTimeToHawaii(row.uploadDate)}
-                  </StyledTableCell>
-                  <StyledTableCell width={'10%'}>{row.size}</StyledTableCell>
-                  <StyledTableCell width={'30%'}>
-                    <Stack direction="row" justifyContent={'flex-end'}>
-                      {allowRemoveFile && (
-                        <Button
-                          variant="outline"
-                          onClick={() => {
-                            handleDeleteAttachment(row);
-                          }}
-                          disabled={disabled || loading}
-                        >
-                          Remove
-                        </Button>
-                      )}
-                    </Stack>
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Accordion>
+    <FileAttachmentsSection
+      fileAttachments={attachments}
+      disabled={disabled}
+      loading={loading}
+      showUploadProgress={!!uploadProgress || isLoadingGetPresignedUrl}
+      uploadProgress={uploadProgress}
+      allowUploadFile={allowUploadFile}
+      allowRemoveFile={allowRemoveFile}
+      fileSelected={fileSelected}
+      defaultExpandedAccordion={defaultExpandedAccordion}
+      onFileSelect={handleFileSelect}
+      onDescriptionInputChange={handleDescriptionInputChange}
+      onRemoveSelectedFile={() => {
+        setFileSelected(null);
+      }}
+      onUploadFile={handleUploadFile}
+      onGetDecodeUrl={handleGetDecodeUrl}
+      onDeleteAttachment={handleDeleteAttachment}
+    />
   );
 };
 type Props = {
