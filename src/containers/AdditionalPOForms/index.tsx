@@ -12,7 +12,11 @@ import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
 import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
-import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
+import {
+  setFormData,
+  setHrefNavigationForm,
+  setIsImmutableFormData,
+} from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator } from 'src/services';
 import urljoin from 'url-join';
@@ -34,6 +38,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   onHideDialog,
   onHideAllDialog,
   onSetIsImmutableFormData,
+  onSetHrefNavigationForm,
 }) => {
   const { formCode } = useParams<{ formCode: string }>();
   const formRef = React.useRef<FormikProps<any>>(null);
@@ -136,6 +141,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
 
   const handleSubmitForm = () => {
     formRef.current.handleSubmit();
+    onSetHrefNavigationForm(null);
   };
 
   return (
@@ -185,6 +191,7 @@ const mapDispatchToProps = {
   onHideDialog: hideDialog,
   onHideAllDialog: hideAllDialog,
   onSetIsImmutableFormData: setIsImmutableFormData,
+  onSetHrefNavigationForm: setHrefNavigationForm,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PurchaseOrderContainer);

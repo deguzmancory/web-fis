@@ -124,7 +124,10 @@ export const checkIsFAReviewMode = ({
   poStatus: PO_DETAIL_STATUS;
   currentRole: ROLE_NAME;
 }) => {
-  return isFA(currentRole) && isFAPendingApprovalPOStatus(poStatus);
+  return (
+    isFA(currentRole) &&
+    (isFAPendingApprovalPOStatus(poStatus) || isFAAdditionalInfoRequestedPOStatus(poStatus))
+  );
 };
 
 export const checkIsCUReviewMode = ({

@@ -31,7 +31,7 @@ const HeaderTable: React.FC<Props> = ({ searchKey = QUERY_KEY.WORKFLOW_STATUS, c
         <Box width={'40%'} mb={3}>
           <Box>
             <Select
-              isClearable
+              isClearable={false}
               label="Workflow View"
               hideSearchIcon
               options={filteredWorkFlowTypeOptions}
