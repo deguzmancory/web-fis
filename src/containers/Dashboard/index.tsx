@@ -18,7 +18,7 @@ const Dashboard: React.FC<Props> = ({ userProfile, currentRole }) => {
       {loading ? (
         <SkeletonDashboard />
       ) : (
-        <Container maxWidth="xl">
+        <Container maxWidth="lg">
           <Box>
             <Typography variant="h3" paddingBottom={3}>
               Welcome {fullName || 'Anonymous'} (Financial System - {getRoleName(currentRole)})

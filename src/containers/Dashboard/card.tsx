@@ -12,16 +12,26 @@ const CardDashboard: React.FC<Props> = ({ card, userRole }) => {
   return (
     <Box
       minHeight={'100%'}
-      py={5.5}
+      py={3}
       px={3}
       bgcolor={COLOR_CODE.WHITE}
       border={COLOR_CODE.DEFAULT_BORDER}
     >
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <Typography variant="h3" textAlign={'center'} color={COLOR_CODE.INFO}>
-          {card.icon} {card.title}
+        <Typography sx={{ textAlign: 'center' }}>
           <Box sx={{ display: 'inline-flex' }}>
-            <Typography variant="body1" color={COLOR_CODE.INFO} sx={{ fontSize: 19 }}>
+            <Typography variant="h3" sx={{ color: COLOR_CODE.INFO, transform: 'translateY(3px)' }}>
+              {card.icon}
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'inline-flex' }}>
+            <Typography variant="h3" sx={{ color: COLOR_CODE.INFO, fontSize: 18 }}>
+              {' '}
+              {card.title}{' '}
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'inline-flex' }}>
+            <Typography variant="body1" sx={{ color: COLOR_CODE.INFO, fontSize: 18 }}>
               {card.subTitle}
             </Typography>
           </Box>
