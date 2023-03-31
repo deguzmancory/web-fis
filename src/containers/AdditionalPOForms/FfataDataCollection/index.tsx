@@ -27,6 +27,7 @@ const FfataDataCollectionForm: React.FC<Props> = ({
   documentId,
   onSetFormData,
   onSetIsImmutableFormData,
+  hrefNavigationForm,
 }) => {
   const history = useHistory();
 
@@ -39,6 +40,8 @@ const FfataDataCollectionForm: React.FC<Props> = ({
           PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS
         }`
       );
+    } else if (hrefNavigationForm) {
+      Navigator.navigate(hrefNavigationForm);
     } else {
       Navigator.navigate(
         `${PATHS.createPurchaseOrders}?${PO_FORM_PARAMS.SCROLL_TO}=${PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS}`
@@ -203,7 +206,7 @@ const FfataDataCollectionForm: React.FC<Props> = ({
               </Grid>
             </>
             <Grid item container>
-              <Grid>
+              <Grid item>
                 <RadioButton
                   label={
                     '4. Did your gross income, from all sources, in the previous tax year exceed $300,000?'
@@ -214,77 +217,119 @@ const FfataDataCollectionForm: React.FC<Props> = ({
                   errorMessage={_getErrorMessage(PO_FFATA_DATA_COLLECTION_KEY.EXCEEDS_300000)}
                   {...getFieldProps(PO_FFATA_DATA_COLLECTION_KEY.EXCEEDS_300000)}
                   onChange={setFieldValue}
-                  disabled={disabled}
                 />
               </Grid>
-              <Grid item container sx={{ px: 2, mb: 1 }}>
-                <Grid item xs={4}>
-                  <Typography variant="body1">
-                    If "No", please list Performance Site address:
-                  </Typography>
-                </Grid>
-                <Grid item xs={8}>
-                  <TextareaAutosize
-                    errorMessage={_getErrorMessage(
-                      PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_STREET
-                    )}
-                    {...getFieldProps(PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_STREET)}
-                    disabled={disabled}
-                  />
-                </Grid>
+              <Grid item sx={{ px: 2, mb: 1 }}>
+                <Typography variant="body1">
+                  If "No", this subaward is not subject to FFATA reporting and no additional
+                  responses are required. If "Yes", proceed to No. 5 below.
+                </Typography>
               </Grid>
-              <Grid item container spacing={3} sx={{ px: 2 }}>
-                <Grid item xs={3}>
-                  <Input
-                    label={'City'}
-                    errorMessage={_getErrorMessage(
-                      PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_CITY
-                    )}
-                    {..._getUncontrolledFieldProps(
-                      PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_CITY
-                    )}
-                    maxLength={20}
-                    disabled={disabled}
-                  />
+            </Grid>
+
+            <Grid item container>
+              <Grid item xs={4}>
+                <Typography variant="body1">
+                  5. Subaward (subcontract) Title & Description:
+                </Typography>
+              </Grid>
+              <Grid item xs={8}>
+                <TextareaAutosize
+                  resize="none"
+                  style={{ padding: '0 2px', marginTop: '2px' }}
+                  errorMessage={_getErrorMessage(
+                    PO_FFATA_DATA_COLLECTION_KEY.SUB_AWARD_TITLE_AND_DESC
+                  )}
+                  {...getFieldProps(PO_FFATA_DATA_COLLECTION_KEY.SUB_AWARD_TITLE_AND_DESC)}
+                />
+              </Grid>
+
+              <Grid item container sx={{ pl: 2, mt: 2 }}>
+                <RadioButton
+                  label={
+                    'Is the Performance Site the same address as listed above in the address information you provided?'
+                  }
+                  options={optionYesNoValue}
+                  isTrueFalseOptions
+                  columns={2}
+                  errorMessage={_getErrorMessage(PO_FFATA_DATA_COLLECTION_KEY.SAME_ADDRESS)}
+                  {...getFieldProps(PO_FFATA_DATA_COLLECTION_KEY.SAME_ADDRESS)}
+                  onChange={setFieldValue}
+                />
+
+                <Grid item container>
+                  <Grid item xs={4}>
+                    <Typography variant="body1">
+                      If "No", please list Performance Site address:
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={8}>
+                    <TextareaAutosize
+                      style={{ padding: '0 2px', marginTop: '2px' }}
+                      resize="none"
+                      errorMessage={_getErrorMessage(
+                        PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_STREET
+                      )}
+                      {...getFieldProps(
+                        PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_STREET
+                      )}
+                    />
+                  </Grid>
                 </Grid>
-                <Grid item xs={3}>
-                  <Input
-                    label={'State'}
-                    errorMessage={_getErrorMessage(
-                      PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_STATE
-                    )}
-                    {..._getUncontrolledFieldProps(
-                      PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_STATE
-                    )}
-                    maxLength={2}
-                    disabled={disabled}
-                  />
-                </Grid>
-                <Grid item xs={3}>
-                  <Input
-                    label={'Country'}
-                    errorMessage={_getErrorMessage(
-                      PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_COUNTRY
-                    )}
-                    {..._getUncontrolledFieldProps(
-                      PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_COUNTRY
-                    )}
-                    maxLength={20}
-                    disabled={disabled}
-                  />
-                </Grid>
-                <Grid item xs={3}>
-                  <Input
-                    label={'Zip+4'}
-                    errorMessage={_getErrorMessage(
-                      PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_ZIP
-                    )}
-                    {..._getUncontrolledFieldProps(
-                      PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_ZIP
-                    )}
-                    maxLength={10}
-                    disabled={disabled}
-                  />
+
+                <Grid item container spacing={3} sx={{ pt: 2 }}>
+                  <Grid item xs={3}>
+                    <Input
+                      label={'City'}
+                      errorMessage={_getErrorMessage(
+                        PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_CITY
+                      )}
+                      {..._getUncontrolledFieldProps(
+                        PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_CITY
+                      )}
+                      maxLength={20}
+                      disabled={disabled}
+                    />
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Input
+                      label={'State'}
+                      errorMessage={_getErrorMessage(
+                        PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_STATE
+                      )}
+                      {..._getUncontrolledFieldProps(
+                        PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_STATE
+                      )}
+                      maxLength={2}
+                      disabled={disabled}
+                    />
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Input
+                      label={'Country'}
+                      errorMessage={_getErrorMessage(
+                        PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_COUNTRY
+                      )}
+                      {..._getUncontrolledFieldProps(
+                        PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_COUNTRY
+                      )}
+                      maxLength={20}
+                      disabled={disabled}
+                    />
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Input
+                      label={'Zip+4'}
+                      errorMessage={_getErrorMessage(
+                        PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_ZIP
+                      )}
+                      {..._getUncontrolledFieldProps(
+                        PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_ZIP
+                      )}
+                      maxLength={10}
+                      disabled={disabled}
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
@@ -305,6 +350,7 @@ type Props = ReturnType<typeof mapStateToProps> &
 const mapStateToProps = (state: IRootState<UpsertPOFormValue>) => ({
   formData: state.form.formData,
   isImmutableFormData: state.form.isImmutableFormData,
+  hrefNavigationForm: state.form.hrefNavigationForm,
 });
 
 const mapDispatchToProps = {

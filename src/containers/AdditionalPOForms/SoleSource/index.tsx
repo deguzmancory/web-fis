@@ -28,6 +28,7 @@ const SoleSourceForm: React.FC<Props> = ({
   documentId,
   onSetFormData,
   onSetIsImmutableFormData,
+  hrefNavigationForm,
 }) => {
   const history = useHistory();
 
@@ -40,6 +41,8 @@ const SoleSourceForm: React.FC<Props> = ({
           PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS
         }`
       );
+    } else if (hrefNavigationForm) {
+      Navigator.navigate(hrefNavigationForm);
     } else {
       Navigator.navigate(
         `${PATHS.createPurchaseOrders}?${PO_FORM_PARAMS.SCROLL_TO}=${PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS}`
@@ -135,6 +138,7 @@ type Props = ReturnType<typeof mapStateToProps> &
 
 const mapStateToProps = (state: IRootState<UpsertPOFormValue>) => ({
   formData: state.form.formData,
+  hrefNavigationForm: state.form.hrefNavigationForm,
 });
 
 const mapDispatchToProps = {

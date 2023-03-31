@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import React from 'react';
 import { COLOR_CODE } from 'src/appConfig/constants';
-import { DatePicker, EllipsisTooltipInput, Input, TextareaAutosize } from 'src/components/common';
+import { DatePicker, Input, TextareaAutosize } from 'src/components/common';
 import CustomTable from 'src/components/CustomTable';
 import { BodyBasicRows, CellType } from 'src/components/CustomTable/types';
 import { initialAuthToPurchaseLineItemsValue } from 'src/containers/PurchaseOrderContainer/constants';
@@ -71,20 +71,19 @@ const PreAcquisition: React.FC<Props> = ({ formikProps, disabled = false }) => {
           type: CellType.INPUT,
           label: 'Name',
           content: (
-            <EllipsisTooltipInput
+            <TextareaAutosize
               {...getFieldProps(
                 `${prefixLineItem}.${PO_AUTH_TO_PURCHASE_LINE_ITEM_KEY.ATTACHMENT_NAME}`
               )}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
                 handleInputChange({
                   index,
                   name: `${prefixLineItem}.${PO_AUTH_TO_PURCHASE_LINE_ITEM_KEY.ATTACHMENT_NAME}`,
                   value: event.target.value,
                 })
               }
-              style={{ width: 370 }}
-              lengthShowTooltip={8}
-              disabled={disabled}
+              style={{ width: 370, padding: '0 2px', marginTop: '2px' }}
+              resize="none"
             />
           ),
           width: 90,
@@ -93,20 +92,19 @@ const PreAcquisition: React.FC<Props> = ({ formikProps, disabled = false }) => {
           type: CellType.INPUT,
           label: 'Response',
           content: (
-            <EllipsisTooltipInput
+            <TextareaAutosize
               {...getFieldProps(
                 `${prefixLineItem}.${PO_AUTH_TO_PURCHASE_LINE_ITEM_KEY.ATTACHMENT_RESPONSE}`
               )}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
                 handleInputChange({
                   index,
                   name: `${prefixLineItem}.${PO_AUTH_TO_PURCHASE_LINE_ITEM_KEY.ATTACHMENT_RESPONSE}`,
                   value: event.target.value,
                 });
               }}
-              style={{ width: 480 }}
-              lengthShowTooltip={8}
-              disabled={disabled}
+              resize="none"
+              style={{ width: 480, padding: '0 2px', marginTop: '2px' }}
             />
           ),
           width: 90,

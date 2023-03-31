@@ -464,8 +464,8 @@ export interface FfataPayload {
   subawardeeDuns: string;
   subawardeeDuns4Extension: string;
   exceeds300000: boolean;
-  subawardTitleAndDesc: string; // TODO: tuyen_tran: will remove if not need
-  sameAddress: boolean; // TODO: tuyen_tran: will remove if not need
+  subawardTitleAndDesc: string;
+  sameAddress: boolean;
   performanceSiteAddressStreet: string;
   performanceSiteAddressCity: string;
   performanceSiteAddressState: string;

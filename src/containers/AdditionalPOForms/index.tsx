@@ -7,17 +7,18 @@ import { useLocation, useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import { Button, LoadingCommon } from 'src/components/common';
 import NoPermission from 'src/components/NoPermission';
-import SectionLayout from 'src/containers/shared/SectionLayout';
 import { PO_ADDITIONAL_FORM_CODE } from 'src/containers/PurchaseOrderContainer/enums';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
+import SectionLayout from 'src/containers/shared/SectionLayout';
 import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
-import { setFormData } from 'src/redux/form/formSlice';
+import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator } from 'src/services';
+import urljoin from 'url-join';
 import BreadcrumbsAdditionalPOForms from './breadcrumbs';
 import { PO_ADDITIONAL_FORM_PARAMS } from './enum';
-import urljoin from 'url-join';
+import FooterSection from './footerSection';
 
 const SoleSource = React.lazy(() => import('./SoleSource'));
 const AuthToPurchase = React.lazy(() => import('./AuthToPurchase'));
@@ -32,6 +33,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   onShowDialog,
   onHideDialog,
   onHideAllDialog,
+  onSetIsImmutableFormData,
 }) => {
   const { formCode } = useParams<{ formCode: string }>();
   const formRef = React.useRef<FormikProps<any>>(null);
@@ -86,15 +88,15 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   const getFormTitle = React.useCallback((code: PO_ADDITIONAL_FORM_CODE) => {
     switch (code) {
       case PO_ADDITIONAL_FORM_CODE.SOLE_SOURCE:
-        return 'SOLE SOURCE JUSTIFICATION *';
+        return 'SOLE SOURCE JUSTIFICATION';
       case PO_ADDITIONAL_FORM_CODE.EQUIPMENT_INVENTORY:
-        return 'EQUIPMENT INVENTORY FORM *';
+        return 'EQUIPMENT INVENTORY FORM';
       case PO_ADDITIONAL_FORM_CODE.FFATA:
-        return 'FFATA DATA COLLECTION FOR SUBCONTRACTOR/VENDOR *';
+        return 'FFATA DATA COLLECTION FOR SUBCONTRACTOR/VENDOR';
       case PO_ADDITIONAL_FORM_CODE.AUTH_TO_PURCHASE:
-        return 'AUTHORIZATION TO PURCHASE EQUIPMENT WITH FEDERAL CONTRACT OR GRANT FUNDS *';
+        return 'AUTHORIZATION TO PURCHASE EQUIPMENT WITH FEDERAL CONTRACT OR GRANT FUNDS';
       case PO_ADDITIONAL_FORM_CODE.DETERMINATION:
-        return 'DETERMINATION OF COST OR PRICE REASONABLENESS *';
+        return 'DETERMINATION OF COST OR PRICE REASONABLENESS';
       case PO_ADDITIONAL_FORM_CODE.SUBCONTRACTOR:
         return 'AGREEMENT BETWEEN THE RESEARCH CORPORATION OF THE UNIVERSITY OF HAWAII';
 
@@ -105,26 +107,32 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   }, []);
 
   const handleCancelButton = React.useCallback(() => {
-    onShowDialog({
-      type: DIALOG_TYPES.YESNO_DIALOG,
-      data: {
-        title: `Cancel`,
-        content: `There are unsaved changes on the Form. Are you sure you want to leave this page?`,
-        okText: 'Ok',
-        cancelText: 'Cancel',
-        onOk: () => {
-          onHideDialog();
-          setTimeout(() => {
-            formRef.current.handleReset();
-            Navigator.navigate(PATHS.createPurchaseOrders);
-          }, 50);
+    if (formRef.current.dirty) {
+      onShowDialog({
+        type: DIALOG_TYPES.YESNO_DIALOG,
+        data: {
+          title: `Cancel`,
+          content: `There are unsaved changes on the Form. Are you sure you want to leave this page?`,
+          okText: 'Ok',
+          cancelText: 'Cancel',
+          onOk: () => {
+            onHideDialog();
+            setTimeout(() => {
+              formRef.current.handleReset();
+              onSetIsImmutableFormData(true);
+              Navigator.navigate(PATHS.createPurchaseOrders);
+            }, 50);
+          },
+          onCancel: () => {
+            onHideAllDialog();
+          },
         },
-        onCancel: () => {
-          onHideAllDialog();
-        },
-      },
-    });
-  }, [onHideAllDialog, onHideDialog, onShowDialog]);
+      });
+    } else {
+      onSetIsImmutableFormData(true);
+      Navigator.navigate(PATHS.createPurchaseOrders);
+    }
+  }, [onHideAllDialog, onHideDialog, onSetIsImmutableFormData, onShowDialog]);
 
   const handleSubmitForm = () => {
     formRef.current.handleSubmit();
@@ -135,7 +143,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
       <Container maxWidth="lg">
         <BreadcrumbsAdditionalPOForms isViewMode={false} />
         <Typography mt={2} variant="body2" textAlign={'center'}>
-          The Research Corporation of the University of Hawaii
+          Research Corporation of the University of Hawaii
         </Typography>
         <Typography mt={1} variant="h3" textAlign={'center'}>
           {getFormTitle(formCode as PO_ADDITIONAL_FORM_CODE)}
@@ -149,6 +157,11 @@ const PurchaseOrderContainer: React.FC<Props> = ({
             <>{renderForm(formCode as PO_ADDITIONAL_FORM_CODE)}</>
           )}
         </Suspense>
+        <FooterSection
+          formCode={formCode as PO_ADDITIONAL_FORM_CODE}
+          formAttachments={formData?.formAttachments}
+          formRef={formRef}
+        />
         <Stack my={4} flexDirection={'row'} justifyContent="center">
           <Button variant="outline" className="mr-8" onClick={() => handleCancelButton()}>
             Cancel
@@ -171,6 +184,7 @@ const mapDispatchToProps = {
   onShowDialog: showDialog,
   onHideDialog: hideDialog,
   onHideAllDialog: hideAllDialog,
+  onSetIsImmutableFormData: setIsImmutableFormData,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PurchaseOrderContainer);

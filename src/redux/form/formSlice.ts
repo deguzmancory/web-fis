@@ -6,6 +6,7 @@ export interface IFormState<T = any> {
   maxValidStep: number;
   formSteps: Array<T>;
   isImmutableFormData: boolean;
+  hrefNavigationForm: string;
 }
 export const FIRST_STEP = 0;
 
@@ -15,6 +16,7 @@ const initialState: IFormState = {
   formData: null,
   formSteps: [],
   isImmutableFormData: false,
+  hrefNavigationForm: '',
 };
 
 export const formSlice = createSlice({
@@ -48,6 +50,11 @@ export const formSlice = createSlice({
     setIsImmutableFormData: (state, action: PayloadAction<boolean>) => {
       state.isImmutableFormData = action.payload;
     },
+
+    setHrefNavigationForm: (state, action: PayloadAction<string>) => {
+      state.hrefNavigationForm = action.payload;
+    },
+
     clearFormState: (state) => {
       state.activeStep = initialState.activeStep;
       state.formSteps = initialState.formSteps;
@@ -66,6 +73,7 @@ export const {
   setMaxValidStep,
   clearFormSteps,
   setIsImmutableFormData,
+  setHrefNavigationForm,
 } = formSlice.actions;
 
 export const formState = formSlice.getInitialState();
