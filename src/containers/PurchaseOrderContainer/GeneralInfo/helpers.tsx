@@ -51,13 +51,13 @@ export const isVariousProject = (projectNumber: string | FinancialProject) => {
 };
 
 export const getFinancialProjectOptions = ({
-  financialProjects,
+  projects,
 }: {
-  financialProjects: FinancialProject[];
+  projects: FinancialProject[];
 }): SelectOption[] => {
-  if (isEmpty(financialProjects)) return [emptyVariousProject];
+  if (isEmpty(projects)) return [emptyVariousProject];
 
-  return financialProjects
+  return projects
     .map((project) => ({
       label: (
         <Box>

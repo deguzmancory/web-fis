@@ -28,6 +28,7 @@ import { handleShowErrorMsg } from 'src/utils';
 import { isEmpty } from 'src/validations';
 
 import './styles.scss';
+import { useGetProfileProjects } from 'src/queries/Projects/useGetProfileProjects';
 
 const SwitchUser: React.FC<Props> = ({
   currentRole,
@@ -35,7 +36,8 @@ const SwitchUser: React.FC<Props> = ({
   onSetProfile,
   onSetCurrentRole,
 }) => {
-  const { profile } = useProfile();
+  const { mainProfile, handleInvalidateProfile, getMyProfile } = useProfile();
+  const { handleInvalidateAllProfileProjects } = useGetProfileProjects();
   const [rowSelected, setRowSelected] = React.useState<{
     id: string;
     type: 'role' | 'delegate' | '';
@@ -44,71 +46,83 @@ const SwitchUser: React.FC<Props> = ({
     type: '',
   });
 
-  const handleSwitchUser = () => {
+  const handleSwitchUser = async () => {
     if (rowSelected.type === 'role') {
-      const role = profile.roles.find((_role) => _role.roleId === rowSelected.id);
+      DelegationKeyService.clearDelegationKey();
+
+      await handleInvalidateProfile();
+      const {
+        data: { data: mainProfile },
+      } = await getMyProfile();
+      const role = mainProfile.roles.find((_role) => _role.roleId === rowSelected.id);
       const roleName = role.role.name;
 
-      Toastify.info(`You are now logged in as: ${profile.username} - ${getRoleName(roleName)}`);
+      Toastify.info(`You are now logged in as: ${mainProfile.username} - ${getRoleName(roleName)}`);
       setRowSelected({
         id: '',
         type: '',
       });
-      DelegationKeyService.clearDelegationKey();
       RoleService.setCurrentRole(roleName as ROLE_NAME);
       onSetCurrentRole(roleName as ROLE_NAME);
-      const formatNewProfile: MyProfile = {
-        ...userProfile,
-        fullName: `${profile.fullName}`,
-        username: `${profile.username}`,
-      };
-      onSetProfile(formatNewProfile);
+      onSetProfile(mainProfile);
     } else if (rowSelected.type === 'delegate') {
       const user = myAccessesRows.find((row) => row.id === rowSelected.id);
-      getTokenDelegation({
-        accessId: rowSelected.id,
-        fullName: user.user.fullName,
-        username: user.user.username,
-        roleName: user.userRole.role.name,
-      });
+      getTokenDelegation(
+        {
+          accessId: rowSelected.id,
+          fullName: user.user.fullName,
+          username: user.user.username,
+          roleName: user.userRole.role.name,
+        },
+        {
+          onSuccess: async (data, variables, _context) => {
+            const jwt = data?.data?.data?.jwt;
+            if (jwt) {
+              DelegationKeyService.setDelegationKey(jwt);
+              Toastify.info(
+                `You are now logged in as: ${variables.username} - ${getRoleName(
+                  variables.roleName
+                )}.`
+              );
+
+              await handleInvalidateProfile();
+              const {
+                data: { delegateUser: switchedProfile },
+              } = await getMyProfile();
+              const formatNewProfile: MyProfile = {
+                ...switchedProfile,
+                fullName: `${mainProfile.fullName.match(/\b(\w)/g)} as ${variables.fullName}`,
+              };
+              onSetProfile(formatNewProfile);
+              onSetCurrentRole(variables.roleName as ROLE_NAME);
+              RoleService.setCurrentRole(variables.roleName as ROLE_NAME);
+            } else {
+              Toastify.error('Fail to switch user, please try again');
+            }
+          },
+        }
+      );
     } else {
       Toastify.error('Error when switch user, Please refresh page and try again!');
     }
+
+    handleInvalidateAllProfileProjects();
   };
 
   // Switch Role
   const roleRows = React.useMemo(() => {
-    if (profile) {
-      return [...profile.roles];
+    if (mainProfile) {
+      return [...mainProfile.roles];
     } else {
       return [];
     }
-  }, [profile]);
+  }, [mainProfile]);
 
   // End Switch Role
 
   // Switch Delegation Access
   const { getDelegationAccesses, receivedAccesses } = useGetDelegationAccesses();
   const { getTokenDelegation, isLoading: isLoadingGetTokenDelegation } = useGetTokenDelegation({
-    onSuccess(data, variables, _context) {
-      const jwt = data?.data.data?.jwt;
-      if (jwt) {
-        DelegationKeyService.setDelegationKey(jwt);
-        Toastify.info(
-          `You are now logged in as: ${variables.username} - ${getRoleName(variables.roleName)}.`
-        );
-
-        const formatNewProfile: MyProfile = {
-          ...userProfile,
-          fullName: `${profile.fullName.match(/\b(\w)/g)} as ${variables.fullName}`,
-          username: variables.username,
-        };
-        onSetProfile(formatNewProfile);
-        onSetCurrentRole(variables.roleName as ROLE_NAME);
-      } else {
-        Toastify.error('Fail to switch user, please try again');
-      }
-    },
     onError(error, _variables, _context) {
       handleShowErrorMsg(error);
     },
@@ -178,7 +192,7 @@ const SwitchUser: React.FC<Props> = ({
                           },
                         })}
                       >
-                        <StyledTableCell>{profile.fullName}</StyledTableCell>
+                        <StyledTableCell>{mainProfile.fullName}</StyledTableCell>
                         <StyledTableCell>{row.role.displayName}</StyledTableCell>
                         <StyledTableCell>Financial</StyledTableCell>
                         <StyledTableCell>&nbsp;</StyledTableCell>

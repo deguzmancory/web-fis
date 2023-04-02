@@ -7,3 +7,9 @@ export enum PO_DETAIL_STATUS {
   RCUH_PENDING_RCUH_APPROVAL = 'RCUH_PENDING_RCUH_APPROVAL',
   FINAL = 'FINAL',
 }
+
+export enum PO_DOCUMENT_TYPE {
+  PURCHASE_ORDER = 'purchaseOrder',
+  PO_CHANGE = 'poChange',
+  PO_PAYMENT = 'poPayment',
+}

@@ -70,8 +70,8 @@ export interface VendorRegistrationPayload {
   ssn3: string | null;
   ein1: string | null;
   ein2: string | null;
-  uhEmpNumber: string | null;
-  rcuhEmpNumber: string | null;
+  // uhEmpNumber: string | null;
+  // rcuhEmpNumber: string | null;
   rcuhId: string | null;
   uhId: string | null;
   preparedBy: string | null;
@@ -92,8 +92,8 @@ export interface VendorRegistrationPayload {
   w9FormCompleted: string | null;
   partOfUsGovernment: string | null;
   possessionsOfUs: string | null;
-  employedByRcuh: string | null;
-  employedByUh: string | null;
+  // employedByRcuh: string | null;
+  // employedByUh: string | null;
   certification: string | null;
   travelFlag: boolean | null;
   paymentsFlag: boolean | null;

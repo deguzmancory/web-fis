@@ -145,6 +145,7 @@ export enum PO_ACTION {
 
 export enum SUBMITTED_PO_QUERY {
   PO_NUMBER = 'poNumber',
+  DOCUMENT_TYPE = 'documentType',
 }
 
 export enum PO_MODE {

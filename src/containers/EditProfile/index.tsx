@@ -41,7 +41,7 @@ const EditProfile: React.FC<Props> = ({
   onHideAllDialog,
   onSetCurrentRole,
 }) => {
-  const { profile, handleInvalidateProfile } = useProfile();
+  const { mainProfile, handleInvalidateProfile } = useProfile();
   const { myPermissions } = useMyPermissions();
   const formRef = useRef<FormikProps<CRUUserFormValue>>(null);
   const { isLoading: loading, updateProfile } = useUpdateProfile({
@@ -64,7 +64,7 @@ const EditProfile: React.FC<Props> = ({
     },
   });
   const initialFormValue = useMemo(() => {
-    const delegateAccess = profile.delegateAccesses?.map((item) => ({
+    const delegateAccess = mainProfile.delegateAccesses?.map((item) => ({
       isEdit: false,
       delegatedUserId: item.delegatedUserId,
       username: item.delegatedUser.username,
@@ -82,15 +82,15 @@ const EditProfile: React.FC<Props> = ({
       id: item.id || '',
     }));
 
-    const fisFaInfo = profile.fisFaInfo ?? initialCRUUserFormValue.fisFaInfo;
-    const fisSuInfo = profile.fisSuInfo ?? initialCRUUserFormValue.fisSuInfo;
+    const fisFaInfo = mainProfile.fisFaInfo ?? initialCRUUserFormValue.fisFaInfo;
+    const fisSuInfo = mainProfile.fisSuInfo ?? initialCRUUserFormValue.fisSuInfo;
 
     // PI section doesn't have userFisCodes => create an local property for reuseable purpose
-    const fisPiInfo = profile.fisPiInfo
+    const fisPiInfo = mainProfile.fisPiInfo
       ? {
-          ...profile.fisPiInfo,
-          userFisCodes: profile.fisPiInfo.piCode
-            ? [{ code: profile.fisPiInfo.piCode, codeType: ROLE_NAME.PI }]
+          ...mainProfile.fisPiInfo,
+          userFisCodes: mainProfile.fisPiInfo.piCode
+            ? [{ code: mainProfile.fisPiInfo.piCode, codeType: ROLE_NAME.PI }]
             : [],
         }
       : initialCRUUserFormValue.fisPiInfo;
@@ -98,19 +98,19 @@ const EditProfile: React.FC<Props> = ({
     return {
       ...initialCRUUserFormValue,
       mode: USER_MODE.EDIT_PROFILE,
-      firstName: profile.firstName,
-      lastName: profile.lastName,
-      middleName: profile.middleName || '',
-      defaultUserType: profile.defaultUserType,
-      username: profile.username,
-      email: profile.email,
-      lastLoginDate: localTimeToHawaii(profile.lastLoginDate) || '',
-      passwordSetDate: localTimeToHawaii(profile.passwordSetDate) || '',
-      status: getValueUserStatus(profile.status),
-      roles: getValueRoles(profile.roles),
-      comments: profile.comments,
+      firstName: mainProfile.firstName,
+      lastName: mainProfile.lastName,
+      middleName: mainProfile.middleName || '',
+      defaultUserType: mainProfile.defaultUserType,
+      username: mainProfile.username,
+      email: mainProfile.email,
+      lastLoginDate: localTimeToHawaii(mainProfile.lastLoginDate) || '',
+      passwordSetDate: localTimeToHawaii(mainProfile.passwordSetDate) || '',
+      status: getValueUserStatus(mainProfile.status),
+      roles: getValueRoles(mainProfile.roles),
+      comments: mainProfile.comments,
       delegateAccess: delegateAccess,
-      delegatedAccess: profile.delegatedAccesses,
+      delegatedAccess: mainProfile.delegatedAccesses,
       fisFaInfo: { ...fisFaInfo, currentFACode: null, currentSearchProject: null },
       fisPiInfo: { ...fisPiInfo, useExistingPICode: false, currentSearchProject: null },
       fisSuInfo: { ...fisSuInfo, currentPICode: null, currentSearchProject: null },
@@ -118,10 +118,10 @@ const EditProfile: React.FC<Props> = ({
         permissionId: permission.id,
       })),
     };
-  }, [profile, myPermissions]);
+  }, [mainProfile, myPermissions]);
 
   const handleFormSubmit = (values: CRUUserFormValue) => {
-    const payload = formatEditProfilePayload(values, profile);
+    const payload = formatEditProfilePayload(values, mainProfile);
 
     updateProfile(payload);
   };
@@ -198,7 +198,7 @@ const EditProfile: React.FC<Props> = ({
           </SectionLayout>
           <SectionLayout>
             <UserType
-              initialPIInfo={profile.fisPiInfo}
+              initialPIInfo={mainProfile.fisPiInfo}
               formikProps={formikProps}
               isLoading={loading}
             />
@@ -210,7 +210,7 @@ const EditProfile: React.FC<Props> = ({
             <Accordion title="Audit Information" className="mt-16">
               <AuditInformation
                 formikProps={formikProps}
-                userAuditTrails={profile?.userAuditTrails || []}
+                userAuditTrails={mainProfile?.userAuditTrails || []}
                 isLoading={loading}
               />
             </Accordion>

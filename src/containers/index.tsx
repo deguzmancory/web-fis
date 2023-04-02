@@ -10,7 +10,6 @@ import { Navigator, TenantService } from 'src/services';
 import Dev from './Dev';
 
 import AuthContainer from './StartupContainers/AuthContainer';
-// import ContentContainer from './StartupContainers/ContentContainer';
 import DialogContainer from './StartupContainers/DialogContainer';
 import NotFound from './StartupContainers/NotFound';
 import SplashScreen from './StartupContainers/SplashScreen';
@@ -40,7 +39,8 @@ const EditVendorsMaster = React.lazy(() => import('./Vendors/VendorMaster'));
 const VendorRegistration = React.lazy(() => import('./Vendors/VendorRegistration'));
 const SubmittedPurchaseOrder = React.lazy(() => import('./PurchaseOrderContainer/SubmittedPO'));
 const PurchasingOrders = React.lazy(() => import('./POListing'));
-const SelectChangeFormType = React.lazy(() => import('./POChangeForm/SelectChangeFormType'));
+const SelectChangeFormType = React.lazy(() => import('./POChange/SelectChangeFormType'));
+const POChangeForm = React.lazy(() => import('./POChange/POChangeForm'));
 
 const Routing: React.FC<{ location: Location }> = (props) => {
   Navigator.setTopHistory(useHistory());
@@ -73,7 +73,6 @@ const Routing: React.FC<{ location: Location }> = (props) => {
               path={PATHS.userManagements}
               component={UsersManagement}
             />
-            {/* Users */}
 
             {/* PO */}
             <CustomRoute
@@ -96,15 +95,18 @@ const Routing: React.FC<{ location: Location }> = (props) => {
               path={PATHS.createPurchaseOrders}
               component={PurchaseOrderContainer}
             />
-            {/* PO */}
 
-            {/* PO Change Form */}
+            {/* PO Change */}
             <CustomRoute
               pageRequiredAuth
               path={PATHS.poChangeOptions}
               component={SelectChangeFormType}
             />
-            {/* PO Change Form */}
+            <CustomRoute
+              pageRequiredAuth
+              path={`${PATHS.poChangeForm}/:id`}
+              component={POChangeForm}
+            />
 
             {/* Purchasing List*/}
             <CustomRoute
@@ -112,7 +114,6 @@ const Routing: React.FC<{ location: Location }> = (props) => {
               path={PATHS.purchasingOrders}
               component={PurchasingOrders}
             />
-            {/* Purchasing List*/}
 
             {/* Vendors */}
             <CustomRoute
@@ -131,8 +132,8 @@ const Routing: React.FC<{ location: Location }> = (props) => {
               component={EditVendorsMaster}
             />
             <CustomRoute pageRequiredAuth path={PATHS.vendors} component={VendorsManagement} />
-            {/* Vendors */}
 
+            {/* Profile */}
             <CustomRoute pageRequiredAuth path={PATHS.switchUser} component={SwitchUser} />
             <CustomRoute pageRequiredAuth path={PATHS.myProfile} component={EditProfile} />
 

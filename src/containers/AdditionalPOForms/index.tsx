@@ -47,8 +47,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   const documentId = query.get(PO_ADDITIONAL_FORM_PARAMS.DOCUMENT_ID) || null;
   const isViewOnly = !!query.get(PO_ADDITIONAL_FORM_PARAMS.VIEW_ONLY);
 
-  // const isEditPOMode = true;
-  const hasPermission = true;
+  const hasPermission = true; //TODO: update when enhancement needed
 
   React.useLayoutEffect(() => {
     if (!formData) {

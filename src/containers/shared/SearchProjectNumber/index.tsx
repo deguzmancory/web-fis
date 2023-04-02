@@ -4,10 +4,7 @@ import { debounce } from 'lodash';
 import React from 'react';
 import { Select } from 'src/components/common';
 import { SelectOption } from 'src/components/common/Select';
-import { getSearchProjectsParamsByRole } from 'src/containers/PurchaseOrderContainer/helpers';
-import { FinancialProject, useGetFinancialProjects, useProfile } from 'src/queries';
-import { ROLE_NAME } from 'src/queries/Profile/helpers';
-import { RoleService } from 'src/services';
+import { FinancialProject, useGetProfileProjects } from 'src/queries';
 import { isEmpty } from 'src/validations';
 import { getFinancialProjectNumberOptions } from './helpers';
 
@@ -23,15 +20,13 @@ const SearchProjectNumber: React.FC<Props> = ({
   const [isClearedDefaultValue, setIsClearedDefaultValue] = React.useState<boolean>(false);
 
   const { value, name } = fieldProps;
-  const currentUserRole = RoleService.getCurrentRole() as ROLE_NAME;
   const selectedProjectNumber = typeof value === 'string' ? value : value?.number;
 
-  const { profile } = useProfile();
   const {
-    financialProjects,
+    profileProjects,
     setParams: setParamsSearchProject,
     isLoading: isLoadingSearchProjects,
-  } = useGetFinancialProjects();
+  } = useGetProfileProjects();
 
   const filteredProjectNumberOptions = React.useMemo(() => {
     if (isLoadingSearchProjects || !searchProjects) {
@@ -39,17 +34,12 @@ const SearchProjectNumber: React.FC<Props> = ({
     }
 
     return getFinancialProjectNumberOptions({
-      financialProjects: financialProjects,
+      projects: profileProjects,
     });
-  }, [financialProjects, searchProjects, isLoadingSearchProjects]);
+  }, [profileProjects, searchProjects, isLoadingSearchProjects]);
 
   const hasValueButOptions =
     !!value && isEmpty(filteredProjectNumberOptions) && !isLoadingSearchProjects;
-
-  const searchProjectsParams = React.useMemo(
-    () => getSearchProjectsParamsByRole({ profile, role: currentUserRole }),
-    [currentUserRole, profile]
-  );
 
   // Debouncing search projects inputs
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -57,9 +47,6 @@ const SearchProjectNumber: React.FC<Props> = ({
     debounce((value: string) => {
       setParamsSearchProject({
         search: value,
-        userType: currentUserRole,
-        codes: searchProjectsParams?.codes,
-        projectNumbers: searchProjectsParams?.projectNumbers,
       });
     }, 300),
     []

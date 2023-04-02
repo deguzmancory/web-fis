@@ -21,9 +21,3 @@ export enum QUERY_KEY {
   WORKFLOW_STATUS = 'workflowStatus',
   DOCUMENT_TYPE = 'documentType',
 }
-
-export enum DOCUMENT_TYPE {
-  PURCHASE_ORDER = 'purchaseOrder',
-  PO_CHANGE = 'poChange',
-  PO_PAYMENT = 'poPayment',
-}

@@ -19,7 +19,6 @@ import { IRootState } from 'src/redux/rootReducer';
 import { Navigator } from 'src/services';
 import { handleShowErrorMsg } from 'src/utils';
 import { isEmpty } from 'src/validations';
-import { DOCUMENT_TYPE, QUERY_KEY } from '../enum';
 import {
   allApprovedColumns,
   allColumnsPendingReviewApprove,
@@ -27,6 +26,9 @@ import {
   allOutstandingColumns,
 } from './allColumns';
 import HeaderTable from './header';
+import { SELECT_CHANGE_FORM_TYPE_QUERY_KEY } from 'src/containers/POChange/SelectChangeFormType/enums';
+import { PO_DOCUMENT_TYPE } from 'src/queries';
+import { QUERY_KEY } from '../enum';
 
 const PDFView = React.lazy(() => import('src/components/common/PDFView'));
 
@@ -118,12 +120,16 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
   const handlePOChangeOrPaymentDetailClick = React.useCallback((rowData: any) => {
     const id = rowData?.id;
     switch (rowData.documentType) {
-      case DOCUMENT_TYPE.PO_CHANGE:
-        Navigator.navigate(`${PATHS.poChangeOptions}/${id}`);
+      case PO_DOCUMENT_TYPE.PO_CHANGE:
+        Navigator.navigate(
+          `${PATHS.poChangeOptions}?${SELECT_CHANGE_FORM_TYPE_QUERY_KEY.DOCUMENT_ID}=${id}`
+        );
         return;
       // TODO: Tuyen Tran Update Path
-      case DOCUMENT_TYPE.PO_PAYMENT:
-        Navigator.navigate(`${PATHS.poChangeOptions}/${id}`);
+      case PO_DOCUMENT_TYPE.PO_PAYMENT:
+        Navigator.navigate(
+          `${PATHS.poChangeOptions}?${SELECT_CHANGE_FORM_TYPE_QUERY_KEY.DOCUMENT_ID}=${id}`
+        );
         return;
     }
   }, []);

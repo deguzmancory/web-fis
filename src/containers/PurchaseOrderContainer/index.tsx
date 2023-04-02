@@ -9,7 +9,13 @@ import { PATHS } from 'src/appConfig/paths';
 import { Button, LoadingCommon } from 'src/components/common';
 import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundary';
 import NoPermission from 'src/components/NoPermission';
-import { useCreatePO, useGetPODetail, useProfile, useUpdatePO } from 'src/queries';
+import {
+  PO_DOCUMENT_TYPE,
+  useCreatePO,
+  useGetPODetail,
+  useProfile,
+  useUpdatePO,
+} from 'src/queries';
 import { isPI, isSU, ROLE_NAME } from 'src/queries/Profile/helpers';
 import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
@@ -18,7 +24,6 @@ import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, RoleService, Toastify } from 'src/services';
 import Prompt from 'src/services/Prompt';
 import {
-  getUncontrolledCurrencyInputFieldProps,
   getUncontrolledInputFieldProps,
   handleScrollToTopError,
   handleShowErrorMsg,
@@ -111,7 +116,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
       onSetFormData<UpsertPOFormValue>(formValue);
     },
     onError: (error) => {
-      Toastify.error(error.message);
+      handleShowErrorMsg(error);
     },
     suspense: true,
   });
@@ -161,7 +166,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
         }
         case PO_ACTION.SUBMIT: {
           Navigator.navigate(
-            `${PATHS.submittedPurchaseOrder}/${responseData.data.id}?${SUBMITTED_PO_QUERY.PO_NUMBER}=${responseData.data.number}`
+            `${PATHS.submittedPurchaseOrder}/${responseData.data.id}?${SUBMITTED_PO_QUERY.PO_NUMBER}=${responseData.data.number}&${SUBMITTED_PO_QUERY.DOCUMENT_TYPE}=${PO_DOCUMENT_TYPE.PURCHASE_ORDER}`
           );
           return;
         }
@@ -270,11 +275,6 @@ const PurchaseOrderContainer: React.FC<Props> = ({
     getFieldProps,
     setFieldTouched,
     getUncontrolledFieldProps: getUncontrolledInputFieldProps({
-      values,
-      setFieldTouched,
-      setFieldValue,
-    }),
-    getUncontrolledCurrencyInputFieldProps: getUncontrolledCurrencyInputFieldProps({
       values,
       setFieldTouched,
       setFieldValue,

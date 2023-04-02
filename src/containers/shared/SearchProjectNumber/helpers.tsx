@@ -5,13 +5,13 @@ import { getDateDisplay } from 'src/utils';
 import { isEmpty } from 'src/validations';
 
 export const getFinancialProjectNumberOptions = ({
-  financialProjects,
+  projects,
 }: {
-  financialProjects: FinancialProject[];
+  projects: FinancialProject[];
 }): SelectOption[] => {
-  if (isEmpty(financialProjects)) return [];
+  if (isEmpty(projects)) return [];
 
-  return financialProjects.map((project) => ({
+  return projects.map((project) => ({
     label: (
       <Box>
         <span className="mr-4">{project.number}</span>

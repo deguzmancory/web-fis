@@ -57,19 +57,29 @@ const AuthContainer: React.FC<Props> = ({
 
   const { getMyProfile } = useProfile({
     onSuccess(data) {
-      if (data) {
-        handleSetAuthenticated(data);
+      const mainProfile = data.data;
+      const delegateProfile = data.delegateUser;
+
+      const currentProfile: MyProfile = delegateProfile
+        ? {
+            ...delegateProfile,
+            fullName: `${mainProfile.fullName.match(/\b(\w)/g)} as ${delegateProfile.fullName}`,
+          }
+        : mainProfile;
+
+      if (currentProfile) {
+        handleSetAuthenticated(currentProfile);
 
         const currentRoleLocalStorage = RoleService.getCurrentRole();
         let _currentRole = '';
         if (
           currentRoleLocalStorage &&
-          data.roles.some((role) => role.role.name === currentRoleLocalStorage)
+          currentProfile.roles.some((role) => role.role.name === currentRoleLocalStorage)
         ) {
           _currentRole = currentRoleLocalStorage;
         } else {
-          RoleService.setCurrentRole(data.defaultUserType as ROLE_NAME);
-          _currentRole = data.defaultUserType;
+          RoleService.setCurrentRole(currentProfile.defaultUserType as ROLE_NAME);
+          _currentRole = currentProfile.defaultUserType;
         }
 
         onSetCurrentRole(_currentRole as ROLE_NAME);
@@ -156,9 +166,9 @@ const AuthContainer: React.FC<Props> = ({
     }
   };
 
-  window.addEventListener('beforeunload', (e) => {
-    DelegationKeyService.clearDelegationKey();
-  });
+  // window.addEventListener('beforeunload', (e) => {
+  //   DelegationKeyService.clearDelegationKey();
+  // });
 
   return null;
 };

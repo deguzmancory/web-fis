@@ -39,7 +39,7 @@ const ChangePasswordExpired: React.FC<Props> = () => {
     (setting) => setting.settingName === GLOBAL_SETTING_KEY.PASSWORD_RESET_MONTHS
   )?.settingValue;
 
-  const { profile, loading: isLoadingProfile } = useProfile();
+  const { mainProfile, loading: isLoadingProfile } = useProfile();
 
   const [isPasswordUpdated, setIsPasswordUpdated] = React.useState(false);
 
@@ -52,7 +52,7 @@ const ChangePasswordExpired: React.FC<Props> = () => {
     });
   const { changePassword, isLoading: isLoadingChangePassword } = useChangePassword({
     onSuccess() {
-      updateUserLastPasswordChanged({ username: profile.username });
+      updateUserLastPasswordChanged({ username: mainProfile.username });
       updateProfilePasswordResetRequired({});
     },
     onError(error) {
@@ -60,7 +60,7 @@ const ChangePasswordExpired: React.FC<Props> = () => {
         handleError(error);
       } else {
         // TODO: tin_pham fix, change password return 200, but it still run into onError, with error undefined
-        updateUserLastPasswordChanged({ username: profile.username });
+        updateUserLastPasswordChanged({ username: mainProfile.username });
         updateProfilePasswordResetRequired({});
       }
     },
@@ -162,7 +162,7 @@ const ChangePasswordExpired: React.FC<Props> = () => {
                 <Input
                   label="Username"
                   autoComplete="asdasdasdasd"
-                  value={profile?.username || 'Unknown'}
+                  value={mainProfile?.username || 'Unknown'}
                   disabled
                 />
               </Grid>

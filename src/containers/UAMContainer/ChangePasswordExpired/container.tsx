@@ -8,10 +8,10 @@ import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { Navigator } from 'src/services';
 
 const CheckPasswordExpiredContainer: React.FC<Props> = ({ onShowDialog }) => {
-  const { profile } = useProfile();
+  const { mainProfile } = useProfile();
 
   React.useEffect(() => {
-    if (profile && profile.passwordResetRequired) {
+    if (mainProfile && mainProfile.passwordResetRequired) {
       Navigator.navigate(PATHS.expiredPassword);
       onShowDialog({
         type: DIALOG_TYPES.CONTENT_DIALOG,
@@ -24,7 +24,7 @@ const CheckPasswordExpiredContainer: React.FC<Props> = ({ onShowDialog }) => {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile]);
+  }, [mainProfile]);
 
   return null;
 };

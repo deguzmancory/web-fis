@@ -16,7 +16,7 @@ export function useGetPODetail(
     isFetching: isLoading,
     refetch: onGetPOById,
   } = useQuery<ApiResponseType<PODetailResponse>, Error, PODetailResponse>(
-    [API_QUERIES.PO, { id: options.id }],
+    [API_QUERIES.PO_DETAIL, { id: options.id }],
     {
       queryFn: (query) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -30,7 +30,7 @@ export function useGetPODetail(
   );
 
   const queryClient = useQueryClient();
-  const handleInvalidatePODetail = () => queryClient.invalidateQueries(API_QUERIES.PO);
+  const handleInvalidatePODetail = () => queryClient.invalidateQueries(API_QUERIES.PO_DETAIL);
 
   return {
     poDetail,

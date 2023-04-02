@@ -130,3 +130,9 @@ export interface UpdateProfilePayload {
   fisPiInfo: PIDetail;
   fisSuInfo: SUDetail;
 }
+
+/*** Get profile ***/
+export interface GetMyProfileResponse {
+  data: MyProfile;
+  delegateUser: MyProfile;
+}

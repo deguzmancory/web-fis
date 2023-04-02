@@ -4,17 +4,19 @@ import axios from 'axios';
 import { delay } from 'lodash';
 import appConfig from 'src/appConfig';
 import {
+  GetFinancialProjectsParams,
   GetTokenDelegationPayload,
+  PostPOChangeTypePayload,
   UpdateGlobalSettingPayload,
   UpdateProfilePayload,
 } from 'src/queries';
 import { GetPresignedPayload, UploadFilePayload } from 'src/queries/File/types';
-import { GetPropertiesParams } from 'src/queries/helpers';
+import { GetProfileProjectsParams } from 'src/queries/Projects/useGetProfileProjects';
 import {
   AddPoAttachmentPayload,
   DeletePoAttachmentPayload,
-  GetPresignedPoAttachmentDownloadUrl,
   GetPresignedPOPayload,
+  GetPresignedPoAttachmentDownloadUrl,
   UpsertPOPayload,
 } from 'src/queries/PurchaseOrders';
 import { SearchQuoteParams } from 'src/queries/SuperQuotes/types';
@@ -34,6 +36,7 @@ import {
   User,
 } from 'src/queries/Users/types';
 import { SearchVendorsParams, VendorRegistrationPayload } from 'src/queries/Vendors';
+import { GetPropertiesParams } from 'src/queries/helpers';
 import { newCancelToken, stringify } from 'src/utils';
 import {
   DelegationKeyService,
@@ -274,9 +277,14 @@ const create = (baseURL = appConfig.API_URL) => {
   };
 
   // ====================== Projects ======================
-  const getFinancialProjects = (params: GetPropertiesParams) => {
+  const getFinancialProjects = (params: GetFinancialProjectsParams) => {
     const queryString = stringify(params, ['codes']);
     return api.get(`/financial-svc/v1/projects?${queryString}`, {}, newCancelToken());
+  };
+
+  const getProfileProjects = (params: GetProfileProjectsParams) => {
+    const queryString = stringify(params, ['codes']);
+    return api.get(`/financial-svc/v1/projects/me?${queryString}`, {}, newCancelToken());
   };
 
   // ====================== Vendors ======================
@@ -409,6 +417,17 @@ const create = (baseURL = appConfig.API_URL) => {
     );
   };
 
+  // ====================== PO Change ======================
+  const postPoChangeType = (payload: PostPOChangeTypePayload) => {
+    return api.post(
+      `/financial-svc/v1/purchase-orders/${payload.poId}/po-change`,
+      {
+        ...payload,
+      },
+      newCancelToken()
+    );
+  };
+
   // ====================== Global Settings ======================
   const getAllGlobalSettings = () => {
     return api.get('/financial-svc/v1/global-settings', {}, newCancelToken());
@@ -500,6 +519,7 @@ const create = (baseURL = appConfig.API_URL) => {
 
     // ====================== Projects ======================
     getFinancialProjects,
+    getProfileProjects,
 
     // ====================== Vendors ======================
     searchVendors,
@@ -523,6 +543,9 @@ const create = (baseURL = appConfig.API_URL) => {
     getPoFileAttachmentPresignedDownloadUrl,
     addPoAttachment,
     deletePOAttachment,
+
+    // ====================== PO Change ======================
+    postPoChangeType,
 
     // ================== Purchasing List ===============
     getAppPurchasingList,

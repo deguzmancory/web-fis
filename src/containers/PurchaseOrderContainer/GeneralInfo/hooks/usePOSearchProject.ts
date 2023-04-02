@@ -1,10 +1,8 @@
 import React from 'react';
 import { SelectOption } from 'src/components/common/Select';
-import { useProfile } from 'src/queries';
+import { useGetProfileProjects } from 'src/queries';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
-import { useGetFinancialProjects } from 'src/queries/Projects';
 import { RoleService } from 'src/services';
-import { getSearchProjectsParamsByRole } from '../../helpers';
 import { getFinancialProjectOptions } from '../helpers';
 
 export type SearchProjectsType = {
@@ -15,26 +13,24 @@ export type SearchProjectsType = {
 const usePOSearchProject = ({ currentProjectTitle, currentProjectNumber }) => {
   const currentUserRole = RoleService.getCurrentRole() as ROLE_NAME;
 
-  const { profile } = useProfile();
-
   const [searchProjects, setSearchProjects] = React.useState<SearchProjectsType>({
     title: '',
     number: '',
   });
 
   const {
-    financialProjects,
+    profileProjects,
     setParams: setParamsSearchProject,
     isLoading: isLoadingSearchProjects,
-  } = useGetFinancialProjects();
+  } = useGetProfileProjects();
 
   const searchedProjectTitleOptions: SelectOption[] = React.useMemo(() => {
     if (isLoadingSearchProjects || (!searchProjects.title && !currentProjectTitle)) {
       return [];
     }
 
-    return getFinancialProjectOptions({ financialProjects });
-  }, [financialProjects, searchProjects.title, currentProjectTitle, isLoadingSearchProjects]);
+    return getFinancialProjectOptions({ projects: profileProjects });
+  }, [profileProjects, searchProjects.title, currentProjectTitle, isLoadingSearchProjects]);
 
   const searchedProjectNumberOptions: SelectOption[] = React.useMemo(() => {
     if (isLoadingSearchProjects || (!searchProjects.number && !currentProjectNumber)) {
@@ -42,14 +38,9 @@ const usePOSearchProject = ({ currentProjectTitle, currentProjectNumber }) => {
     }
 
     return getFinancialProjectOptions({
-      financialProjects,
+      projects: profileProjects,
     });
-  }, [financialProjects, searchProjects.number, currentProjectNumber, isLoadingSearchProjects]);
-
-  const searchProjectsParams = React.useMemo(
-    () => getSearchProjectsParamsByRole({ profile, role: currentUserRole }),
-    [currentUserRole, profile]
-  );
+  }, [profileProjects, searchProjects.number, currentProjectNumber, isLoadingSearchProjects]);
 
   // fetch options on search title input change
   React.useEffect(() => {
@@ -57,9 +48,6 @@ const usePOSearchProject = ({ currentProjectTitle, currentProjectNumber }) => {
 
     setParamsSearchProject({
       searchName: searchProjects.title,
-      userType: currentUserRole,
-      codes: searchProjectsParams?.codes || '',
-      projectNumbers: searchProjectsParams?.projectNumbers || '',
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -71,9 +59,6 @@ const usePOSearchProject = ({ currentProjectTitle, currentProjectNumber }) => {
 
     setParamsSearchProject({
       searchNumber: searchProjects.number,
-      userType: currentUserRole,
-      codes: searchProjectsParams?.codes,
-      projectNumbers: searchProjectsParams?.projectNumbers,
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

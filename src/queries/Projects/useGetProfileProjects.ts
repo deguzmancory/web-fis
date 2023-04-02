@@ -9,49 +9,40 @@ import {
   responseWrapper,
 } from '../helpers';
 import { API_QUERIES } from '../keys';
-import { ROLE_NAME } from '../Profile/helpers';
-import { ProjectSearchType } from './enums';
 import { FinancialProject } from './types';
 
-export interface GetFinancialProjectsParams extends GetPropertiesParams {
+export interface GetProfileProjectsParams extends GetPropertiesParams {
   search?: string;
   searchName?: string;
   searchNumber?: string;
-  searchType?: ProjectSearchType;
-  userType?: ROLE_NAME;
-  codes?: string;
-  projectNumbers?: string;
-  excludeCodes?: string;
-  excludeProjects?: string;
   includeTerminated?: boolean;
   includeInactive?: boolean;
-  isUnlinked?: boolean;
 }
 
-export function useGetFinancialProjects(
+export function useGetProfileProjects(
   options?: UseQueryOptions<
     ApiResponseType<PaginationResponseType<FinancialProject>>,
     Error,
     PaginationResponseType<FinancialProject>
   >
 ) {
-  const [params, setParams] = useState<GetFinancialProjectsParams>(null);
+  const [params, setParams] = useState<GetProfileProjectsParams>(null);
   const {
-    data: allFinancialProjectsResponse,
+    data: allProfileProjectsResponse,
     error,
     isError,
     isFetching: isLoading,
-    refetch: onGetAllFinancialProjects,
+    refetch: onGetAllProfileProjects,
   } = useQuery<
     ApiResponseType<PaginationResponseType<FinancialProject>>,
     Error,
     PaginationResponseType<FinancialProject>
-  >([API_QUERIES.GET_FINANCIAL_PROJECTS, params], {
+  >([API_QUERIES.SEARCH_PROFILE_PROJECTS, params], {
     queryFn: (query) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [_, ...params] = query.queryKey;
       return responseWrapper<ApiResponseType<PaginationResponseType<FinancialProject>>>(
-        apiClient.getFinancialProjects,
+        apiClient.getProfileProjects,
         params
       );
     },
@@ -63,18 +54,18 @@ export function useGetFinancialProjects(
 
   const queryClient = useQueryClient();
 
-  const handleInvalidateAllFinancialProjects = () =>
-    queryClient.invalidateQueries(API_QUERIES.GET_FINANCIAL_PROJECTS);
+  const handleInvalidateAllProfileProjects = () =>
+    queryClient.invalidateQueries(API_QUERIES.SEARCH_PROFILE_PROJECTS);
 
   const {
-    data: financialProjects,
+    data: profileProjects,
     hasNext,
     payloadSize,
     totalRecords,
-  } = allFinancialProjectsResponse || {};
+  } = allProfileProjectsResponse || {};
 
   return {
-    financialProjects,
+    profileProjects,
     hasNext,
     payloadSize,
     totalRecords,
@@ -82,8 +73,8 @@ export function useGetFinancialProjects(
     isError,
     isLoading,
     currentParams: params,
-    onGetAllFinancialProjects,
+    onGetAllProfileProjects,
     setParams,
-    handleInvalidateAllFinancialProjects,
+    handleInvalidateAllProfileProjects,
   };
 }

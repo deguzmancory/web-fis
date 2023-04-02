@@ -76,7 +76,7 @@ const CRUUserContainer: React.FC<Props> = ({
   };
 
   const { handleInvalidateAllUser } = useGetAllUsers();
-  const { profile, handleInvalidateProfile, getMyProfile } = useProfile();
+  const { mainProfile, handleInvalidateProfile, getMyProfile } = useProfile();
   const {
     createUser,
     isLoading: isLoadingCreateUser,
@@ -107,7 +107,7 @@ const CRUUserContainer: React.FC<Props> = ({
       handleInvalidateUser();
       handleInvalidateAllUser();
       window.scrollTo(0, 0);
-      const isMyProfile = userId === profile.id;
+      const isMyProfile = userId === mainProfile.id;
       if (isMyProfile) {
         const updatedDefaultRole = variables.defaultUserType as ROLE_NAME;
 

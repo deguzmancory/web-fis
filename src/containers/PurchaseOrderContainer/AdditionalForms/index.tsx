@@ -73,10 +73,15 @@ const AdditionalForms: React.FC<Props> = ({ formikProps, disabled = false }) => 
           (availableAttachment) => availableAttachment.code === targetFormAttachment.code
         )
       ) {
-        setFieldValue(`${PO_FORM_KEY.AVAILABLE_FORMS}`, [
+        const sortedUpdatedAvailableAttachments = [
           ...currentAvailableAttachments,
           targetFormAttachment,
-        ]);
+        ].sort(
+          (prevAttachment, nextAttachment) =>
+            Number(prevAttachment.accessKey) - Number(nextAttachment.accessKey)
+        );
+
+        setFieldValue(`${PO_FORM_KEY.AVAILABLE_FORMS}`, sortedUpdatedAvailableAttachments);
       }
     },
     [currentFormAttachments, setFieldValue, values.availableForms]

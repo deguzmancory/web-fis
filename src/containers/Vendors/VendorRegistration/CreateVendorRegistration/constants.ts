@@ -41,10 +41,10 @@ export const initialVendorRegistrationFromData: VendorRegistrationFormValue = {
   // ssn3: '',
   // ein1: '',
   // ein2: '',
-  uhEmpNumber: '',
-  rcuhEmpNumber: '',
-  employedByRcuh: '', //TODO: huy_dang emp number or employed?
-  employedByUh: '',
+  // uhEmpNumber: '',
+  // rcuhEmpNumber: '',
+  // employedByRcuh: '', //TODO: huy_dang emp number or employed?
+  // employedByUh: '',
   rcuhId: '',
   uhId: '',
   preparedBy: '',

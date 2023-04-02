@@ -22,7 +22,8 @@ export enum API_QUERIES {
   SEARCH_PROJECTS = 'projects/search',
 
   // Purchase Orders
-  PO = '/purchase-orders/:id',
+  GET_PURCHASE_ORDERS = '/financial-svc/v1/purchase-orders',
+  PO_DETAIL = '/purchase-orders/:id',
 
   // Vendor
   SEARCH_VENDOR = '/vendor/search',
@@ -31,10 +32,9 @@ export enum API_QUERIES {
   // Super Quotes
   SEARCH_QUOTE = '/super-quotes/numbers',
 
-  // Financial
+  // Projects
   GET_FINANCIAL_PROJECTS = '/financial-svc/v1/projects',
-  SEARCH_FINANCIAL_PROJECTS = '/financial-svc/v1/projects/search',
-  GET_PURCHASE_ORDERS = '/financial-svc/v1/purchase-orders',
+  SEARCH_PROFILE_PROJECTS = '/financial-svc/v1/projects/me',
 
   // Global Settings
   GLOBAL_SETTINGS = 'global-settings',

@@ -30,6 +30,7 @@ export const PATHS = {
 
   // PO Change Form
   poChangeOptions: '/po-change-options',
+  poChangeForm: '/po-change',
 
   // PO Payment
 
