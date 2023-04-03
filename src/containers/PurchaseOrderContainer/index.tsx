@@ -287,6 +287,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
 
   // set form action states for updating form's validation schema purpose
   const handleSubmitClick = ({ action }: { action: PO_ACTION }) => {
+    onSetIsImmutableFormData(false);
     setFieldValue(PO_FORM_KEY.ACTION, action);
     setFormAction(action);
     setIsTriedSubmit(true);
