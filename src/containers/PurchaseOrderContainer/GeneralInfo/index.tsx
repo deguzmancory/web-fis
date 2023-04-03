@@ -340,14 +340,14 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
                 debounceSearchVendorsInput('name', value);
               }}
               getOptionLabel={(option: SelectOption<Vendor | string>) => {
-                return isString(option.value) ? option.value : option.value.line1;
+                return isString(option.value) ? option.value : option.value.name;
               }}
               filterOption={(_option, _inputValue) => {
                 return true; //ignore default filter option by label
               }}
               customSelectedOptionValue={
                 vendorNameOptions.find(
-                  (option: SelectOption<Vendor>) => option.value?.line1 === values.vendorName
+                  (option: SelectOption<Vendor>) => option.value?.name === values.vendorName
                 ) || null
               }
               hideSearchIcon

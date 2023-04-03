@@ -5,7 +5,7 @@ import { PATHS } from 'src/appConfig/paths';
 import TypographyLink from 'src/components/TypographyLink';
 import { EllipsisTypographyTooltip } from 'src/components/common';
 import { VENDOR_REGISTRATION_NAVIGATE_FROM } from 'src/containers/Vendors/VendorRegistration/enums';
-import { VENDOR_KEY, Vendor } from 'src/queries/Vendors';
+import { VENDOR_KEY, VenderItem } from 'src/queries/Vendors';
 import { Navigator } from 'src/services';
 import { localTimeToHawaii } from 'src/utils';
 import { isEmpty } from 'src/validations';
@@ -20,9 +20,9 @@ export const allColumnsCU = (): MUIDataTableColumn[] => [
       sort: true,
       customBodyRender: (
         _value: any,
-        meta: MUIDataTableMeta | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: Vendor[] })
+        meta: MUIDataTableMeta | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: VenderItem[] })
       ) => {
-        const rowData = meta.tableData[meta.rowIndex] as Vendor;
+        const rowData = meta.tableData[meta.rowIndex] as VenderItem;
         const isVendorRegistration = rowData.vendorRegistrationExists;
         return (
           <Stack direction="row" alignItems={'center'}>
@@ -58,7 +58,7 @@ export const allColumnsCU = (): MUIDataTableColumn[] => [
                 </Typography>
               )}
             </Box>
-            <ActionsButton vendor={rowData} />
+            <ActionsButton VenderItem={rowData} />
           </Stack>
         );
       },
@@ -145,9 +145,9 @@ export const allColumnsCU = (): MUIDataTableColumn[] => [
       sort: false,
       customBodyRender: (
         value: any,
-        meta: MUIDataTableMeta | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: Vendor[] })
+        meta: MUIDataTableMeta | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: VenderItem[] })
       ) => {
-        const rowData = meta.tableData[meta.rowIndex] as Vendor;
+        const rowData = meta.tableData[meta.rowIndex] as VenderItem;
         const getAddress = () => {
           const string = [];
           if (!isEmpty(rowData.address1)) {

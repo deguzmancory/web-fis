@@ -1,10 +1,10 @@
 import React from 'react';
 import { PATHS } from 'src/appConfig/paths';
 import { Button } from 'src/components/common';
-import { Vendor } from 'src/queries';
+import { VenderItem } from 'src/queries';
 import { Navigator, PermissionsService } from 'src/services';
 
-const ActionsButton: React.FC<Props> = ({ vendor }) => {
+const ActionsButton: React.FC<Props> = ({ VenderItem }) => {
   const havePermission = PermissionsService.vendorMaster().canUpdate;
   if (!havePermission) return null;
   return (
@@ -14,7 +14,7 @@ const ActionsButton: React.FC<Props> = ({ vendor }) => {
         onClick={(event) => {
           event.stopPropagation();
           event.preventDefault();
-          Navigator.navigate(`${PATHS.editVendorMaster}/${vendor.code}`);
+          Navigator.navigate(`${PATHS.editVendorMaster}/${VenderItem.code}`);
         }}
       >
         Edit
@@ -24,7 +24,7 @@ const ActionsButton: React.FC<Props> = ({ vendor }) => {
 };
 
 type Props = {
-  vendor: Vendor;
+  VenderItem: VenderItem;
 };
 
 export default ActionsButton;

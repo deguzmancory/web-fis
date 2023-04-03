@@ -2,6 +2,9 @@ export enum VENDOR_KEY {
   CODE = 'code',
   LINE1 = 'line1',
   LINE2 = 'line2',
+  // TODO: Tuyen Tran will replace name,name2 if don't need
+  NAME = 'name',
+  NAME2 = 'name2',
   TYPE = 'type',
   PAYMENT_TYPE = 'paymentType',
   PURGED = 'purged',

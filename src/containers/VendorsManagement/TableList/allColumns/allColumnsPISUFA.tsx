@@ -2,7 +2,7 @@ import { Typography } from '@mui/material';
 import { isEmpty } from 'lodash';
 import { MUIDataTableColumn, MUIDataTableMeta } from 'mui-datatables';
 import { EllipsisTypographyTooltip } from 'src/components/common';
-import { VENDOR_KEY, Vendor } from 'src/queries';
+import { VENDOR_KEY, VenderItem } from 'src/queries';
 
 export const allColumnsPISUFA = (): MUIDataTableColumn[] => [
   {
@@ -13,7 +13,7 @@ export const allColumnsPISUFA = (): MUIDataTableColumn[] => [
       sort: true,
       customBodyRender: (
         value: any,
-        meta: MUIDataTableMeta | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: Vendor[] })
+        meta: MUIDataTableMeta | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: VenderItem[] })
       ) => {
         return <Typography variant="body2">{value ?? '--'}</Typography>;
       },
@@ -65,9 +65,9 @@ export const allColumnsPISUFA = (): MUIDataTableColumn[] => [
       sort: false,
       customBodyRender: (
         value: any,
-        meta: MUIDataTableMeta | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: Vendor[] })
+        meta: MUIDataTableMeta | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: VenderItem[] })
       ) => {
-        const rowData = meta.tableData[meta.rowIndex] as Vendor;
+        const rowData = meta.tableData[meta.rowIndex] as VenderItem;
         const getAddress = () => {
           const string = [];
           if (!isEmpty(rowData.address1)) {
