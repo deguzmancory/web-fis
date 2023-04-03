@@ -12,7 +12,7 @@ const VendorsManagement = () => {
   const havePermission = PermissionsService.vendor().canView;
   return (
     <Box py={2} minHeight={'50vh'}>
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <BreadcrumbsVendorsListing />
 
         <Box

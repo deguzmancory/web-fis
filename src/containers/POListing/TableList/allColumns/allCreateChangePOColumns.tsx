@@ -1,19 +1,16 @@
 import { Box, Stack, Typography } from '@mui/material';
-import { MUIDataTableColumn, MUIDataTableMeta } from 'mui-datatables';
-import TypographyLink from 'src/components/TypographyLink';
-import { Callback } from 'src/redux/types';
 import cn from 'classnames';
-import { PurchaseOrdersList, PURCHASE_ORDER_KEY } from 'src/queries/PurchasingListing';
 import { isEmpty } from 'lodash';
+import { MUIDataTableColumn, MUIDataTableMeta } from 'mui-datatables';
+import { PO_DOCUMENT_TYPE } from 'src/queries';
+import { PURCHASE_ORDER_KEY, PurchaseOrderItem } from 'src/queries/PurchasingListing';
 import { localTimeToHawaii } from 'src/utils';
-import { transformDocumentType } from '../../helper';
+import { getCreatePOChangeOrPaymentLink, transformDocumentType } from '../helpers';
 
 export const allCreateChangePOColumns = ({
   typeStatus,
-  handlePOChangeOrPaymentDetailClick,
 }: {
   typeStatus: string;
-  handlePOChangeOrPaymentDetailClick: Callback;
 }): MUIDataTableColumn[] => [
   {
     name: '',
@@ -24,22 +21,13 @@ export const allCreateChangePOColumns = ({
         _value: any,
         meta:
           | MUIDataTableMeta
-          | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: PurchaseOrdersList[] })
+          | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: PurchaseOrderItem[] })
       ) => {
-        const rowData = meta.tableData[meta.rowIndex];
+        const rowData = meta.tableData[meta.rowIndex] as PurchaseOrderItem;
 
         return (
           <Stack direction="row" alignItems={'center'}>
-            <Box
-              sx={{
-                minWidth: 100,
-                maxWidth: 100,
-              }}
-            >
-              <TypographyLink onClick={() => handlePOChangeOrPaymentDetailClick(rowData)}>
-                {typeStatus === 'poChange' ? 'Create PO Chg' : 'Create PO Pm'}
-              </TypographyLink>
-            </Box>
+            <Box>{getCreatePOChangeOrPaymentLink(rowData, typeStatus as PO_DOCUMENT_TYPE)}</Box>
           </Stack>
         );
       },

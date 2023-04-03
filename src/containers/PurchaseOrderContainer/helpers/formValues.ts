@@ -260,7 +260,7 @@ export const getUpsertPOPayload = ({
     vendorName:
       typeof formValues.vendorName === 'string'
         ? formValues.vendorName
-        : formValues.vendorName.name,
+        : formValues.vendorName.line1,
     vendorCode:
       typeof formValues.vendorCode === 'string'
         ? formValues.vendorCode

@@ -9,16 +9,20 @@ import { useGetAllVendors } from 'src/queries';
 import { GetPropertiesParams } from 'src/queries/helpers';
 import { IRootState } from 'src/redux/rootReducer';
 import { handleShowErrorMsg } from 'src/utils';
-import { allColumns } from './allColumns';
 // import {
 //   FILTER_USERS_INDEX,
 //   getUsersUpdatedParams,
 //   PREFIX_FILTER_USERS,
 // } from './CustomFilter/helpers';
+import { ROLE_NAME } from 'src/queries/Profile/helpers';
+import { RoleService } from 'src/services';
+import { allColumnsCU, allColumnsPISUFA } from './allColumns';
 import HeaderTable from './header';
 
 const TableList: React.FC<Props> = () => {
   const isTabletScreen = useMediaQuery(muiResponsive.TABLET);
+  const currentUserRole = RoleService.getCurrentRole() as ROLE_NAME;
+
   // const location = useLocation();
   // const query = new URLSearchParams(location.search);
   // const filter = query.getAll(QUERY_KEY.filter) as string[];
@@ -35,8 +39,20 @@ const TableList: React.FC<Props> = () => {
     // const newParams = getUsersUpdatedParams(params, {
     //   userTypesKey: userTypes,
     // });
+    let newParams = {
+      ...params,
+    };
 
-    setParams(params);
+    const sort = params?.sort;
+    if (sort) {
+      newParams = {
+        ...newParams,
+        order: `${newParams.sort}:${newParams.order}`,
+      };
+      delete newParams.sort;
+    }
+
+    setParams(newParams);
   };
   const handleViewVendorDetail = React.useCallback(
     (_value: string[], meta: { rowIndex: number }) => {
@@ -62,7 +78,18 @@ const TableList: React.FC<Props> = () => {
     [handleViewVendorDetail, isTabletScreen, totalRecords]
   );
 
-  const columns = React.useMemo(() => allColumns(), []);
+  const columns = React.useMemo(() => {
+    switch (currentUserRole) {
+      case ROLE_NAME.PI:
+      case ROLE_NAME.SU:
+      case ROLE_NAME.FA:
+        return allColumnsPISUFA();
+      case ROLE_NAME.CU:
+        return allColumnsCU();
+      default:
+        return null;
+    }
+  }, [currentUserRole]);
 
   return (
     <Box>

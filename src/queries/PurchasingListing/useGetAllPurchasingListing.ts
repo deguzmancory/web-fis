@@ -9,13 +9,13 @@ import {
   PaginationResponseType,
   responseWrapper,
 } from './../helpers';
-import { PurchaseOrdersList } from './types';
+import { PurchaseOrderItem } from './types';
 
 export function useGetAllPurchasingList(
   options?: UseQueryOptions<
-    ApiResponseType<PaginationResponseType<PurchaseOrdersList>>,
+    ApiResponseType<PaginationResponseType<PurchaseOrderItem>>,
     Error,
-    PaginationResponseType<PurchaseOrdersList>
+    PaginationResponseType<PurchaseOrderItem>
   >
 ) {
   const [params, setParams] = useState<GetPropertiesParams>({});
@@ -26,14 +26,14 @@ export function useGetAllPurchasingList(
     isFetching,
     refetch: onGetPurchasing,
   } = useQuery<
-    ApiResponseType<PaginationResponseType<PurchaseOrdersList>>,
+    ApiResponseType<PaginationResponseType<PurchaseOrderItem>>,
     Error,
-    PaginationResponseType<PurchaseOrdersList>
+    PaginationResponseType<PurchaseOrderItem>
   >([API_QUERIES.GET_PURCHASE_ORDERS, params], {
     queryFn: (query) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [_, ...params] = query.queryKey;
-      return responseWrapper<ApiResponseType<PaginationResponseType<PurchaseOrdersList>>>(
+      return responseWrapper<ApiResponseType<PaginationResponseType<PurchaseOrderItem>>>(
         apiClient.getAppPurchasingList,
         params
       );

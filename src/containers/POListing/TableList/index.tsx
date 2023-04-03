@@ -4,22 +4,21 @@ import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { muiResponsive } from 'src/appConfig/constants';
-import { PATHS } from 'src/appConfig/paths';
-import { LoadingCommon, Table } from 'src/components/common';
 import EmptyTable from 'src/components/EmptyTable';
 import { getFileName, handleParseAndDownloadFile } from 'src/components/FilePreview/helper';
-import { GetPropertiesParams } from 'src/queries/helpers';
+import { LoadingCommon, Table } from 'src/components/common';
 import {
   PURCHASE_ORDER_KEY,
-  PurchaseOrdersList,
+  PurchaseOrderItem,
   usePatchPurchaseOrderPrinted,
   useViewFinalPdf,
 } from 'src/queries/PurchasingListing';
 import { useGetAllPurchasingList } from 'src/queries/PurchasingListing/useGetAllPurchasingListing';
+import { GetPropertiesParams } from 'src/queries/helpers';
 import { IRootState } from 'src/redux/rootReducer';
-import { Navigator } from 'src/services';
 import { handleShowErrorMsg } from 'src/utils';
 import { isEmpty } from 'src/validations';
+import { PURCHASING_LIST_WORK_FLOW_STATUS_KEY, QUERY_KEY } from '../enum';
 import {
   allApprovedColumns,
   allColumnsPendingReviewApprove,
@@ -27,9 +26,6 @@ import {
   allOutstandingColumns,
 } from './allColumns';
 import HeaderTable from './header';
-import { SELECT_CHANGE_FORM_TYPE_QUERY_KEY } from 'src/containers/POChange/SelectChangeFormType/enums';
-import { PO_DOCUMENT_TYPE } from 'src/queries';
-import { QUERY_KEY } from '../enum';
 
 const PDFView = React.lazy(() => import('src/components/common/PDFView'));
 
@@ -91,14 +87,13 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
         delete newParams.sort;
       }
 
-      onGetPurchasing();
       setParams(newParams);
     },
-    [onGetPurchasing, searchPurchasingDocument, workFlowTypeStatus, setParams]
+    [searchPurchasingDocument, workFlowTypeStatus, setParams]
   );
 
   const handleViewFinalPDF = React.useCallback(
-    (rowData: PurchaseOrdersList) => {
+    (rowData: PurchaseOrderItem) => {
       const id = rowData?.id;
       getFinalPdf({ id: id });
     },
@@ -106,75 +101,39 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
   );
 
   const handlePrintedId = React.useCallback(
-    (rowData: PurchaseOrdersList) => {
+    (rowData: PurchaseOrderItem) => {
       const id = rowData?.id;
       patchPrintedId({ id: id });
     },
     [patchPrintedId]
   );
 
-  const handlePODetailClick = React.useCallback((rowData: PurchaseOrdersList) => {
-    const id = rowData?.id;
-    Navigator.navigate(`${PATHS.purchaseOrderDetail}/${id}`);
-  }, []);
-
-  const handlePOChangeOrPaymentDetailClick = React.useCallback((rowData: any) => {
-    const id = rowData?.id;
-    switch (rowData.documentType) {
-      case PO_DOCUMENT_TYPE.PO_CHANGE:
-        Navigator.navigate(
-          `${PATHS.poChangeOptions}?${SELECT_CHANGE_FORM_TYPE_QUERY_KEY.DOCUMENT_ID}=${id}`
-        );
-        return;
-      // TODO: Tuyen Tran Update Path
-      case PO_DOCUMENT_TYPE.PO_PAYMENT:
-        Navigator.navigate(
-          `${PATHS.poChangeOptions}?${SELECT_CHANGE_FORM_TYPE_QUERY_KEY.DOCUMENT_ID}=${id}`
-        );
-        return;
-    }
-  }, []);
-
   const columns = React.useMemo(() => {
     switch (workFlowTypeStatus) {
-      case 'all':
-      case 'pending':
-      case 'review':
-        return allColumnsPendingReviewApprove({
-          handleGetPurchaseOrderDetail: (rowData) => handlePODetailClick(rowData),
-        });
-      case 'approved':
+      case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.ALL_PO_DOCUMENTS:
+      case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.PENDING_PO_DOCUMENTS:
+      case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.REVIEW_APPROVE_PO_DOCUMENTS:
+        return allColumnsPendingReviewApprove();
+      case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.APPROVED_PO_DOCUMENTS:
         return allApprovedColumns({
           handleViewFinalPDF: (rowData) => handleViewFinalPDF(rowData),
           handlePrintedId: (rowData) => handlePrintedId(rowData),
-          handleGetPurchaseOrderDetail: (rowData) => handlePODetailClick(rowData),
         });
-      case 'poChange':
-      case 'poPayment':
+      case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.PO_CHANGE:
+      case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.PO_PAYMENT:
         return allCreateChangePOColumns({
-          handlePOChangeOrPaymentDetailClick: (rowData) =>
-            handlePOChangeOrPaymentDetailClick(rowData),
           typeStatus: workFlowTypeStatus,
         });
-      case 'outstanding':
-        return allOutstandingColumns({
-          handleGetPurchaseOrderDetail: (rowData) => handlePODetailClick(rowData),
-        });
+      case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.OUTSTANDING_PO_DOCUMENTS:
+        return allOutstandingColumns();
       default:
         return null;
     }
-  }, [
-    handlePODetailClick,
-    handlePOChangeOrPaymentDetailClick,
-    handlePrintedId,
-    handleViewFinalPDF,
-    workFlowTypeStatus,
-  ]);
+  }, [handlePrintedId, handleViewFinalPDF, workFlowTypeStatus]);
 
   const tableOptions: MUIDataTableOptions = React.useMemo(
     () => ({
       count: totalRecords,
-      // onRowClick: handleViewVendorDetail,
       rowHover: true,
       filter: false,
       searchAlwaysOpen: false,
@@ -202,7 +161,11 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
         onAction={handleGetPurchasing}
         isLoading={isFetching}
         data={purchases}
-        defaultSortOrder={{ name: PURCHASE_ORDER_KEY.MODIFIED_DATE, direction: 'desc' }}
+        defaultSortOrder={
+          workFlowTypeStatus === PURCHASING_LIST_WORK_FLOW_STATUS_KEY.APPROVED_PO_DOCUMENTS
+            ? { name: PURCHASE_ORDER_KEY.FINAL_APPROVED_DATE, direction: 'desc' }
+            : { name: PURCHASE_ORDER_KEY.MODIFIED_DATE, direction: 'desc' }
+        }
         tableOptions={tableOptions}
         columns={columns}
         emptyComponent={<EmptyTable />}

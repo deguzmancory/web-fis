@@ -1,21 +1,19 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { capitalize, isEmpty, upperFirst } from 'lodash';
 import { MUIDataTableColumn, MUIDataTableMeta } from 'mui-datatables';
-import { Button } from 'src/components/common';
 import TypographyLink from 'src/components/TypographyLink';
-import { PurchaseOrdersList, PURCHASE_ORDER_KEY } from 'src/queries/PurchasingListing';
+import { Button } from 'src/components/common';
+import { PURCHASE_ORDER_KEY, PurchaseOrderItem } from 'src/queries/PurchasingListing';
 import { Callback } from 'src/redux/types';
 import { getDateDisplay, localTimeToHawaii } from 'src/utils';
-import { transformDocumentType } from '../../helper';
+import { getPOLinkByDocumentType, transformDocumentType } from '../helpers';
 
 export const allApprovedColumns = ({
   handleViewFinalPDF,
   handlePrintedId,
-  handleGetPurchaseOrderDetail,
 }: {
   handleViewFinalPDF: Callback;
   handlePrintedId: Callback;
-  handleGetPurchaseOrderDetail: Callback;
 }): MUIDataTableColumn[] => [
   {
     name: PURCHASE_ORDER_KEY.NUMBER,
@@ -29,22 +27,13 @@ export const allApprovedColumns = ({
         _value: any,
         meta:
           | MUIDataTableMeta
-          | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: PurchaseOrdersList[] })
+          | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: PurchaseOrderItem[] })
       ) => {
-        const rowData = meta.tableData[meta.rowIndex];
+        const rowData = meta.tableData[meta.rowIndex] as PurchaseOrderItem;
 
         return (
           <Stack direction="row" alignItems={'center'}>
-            <Box
-              sx={{
-                minWidth: 80,
-                maxWidth: 80,
-              }}
-            >
-              <TypographyLink onClick={() => handleGetPurchaseOrderDetail(rowData)} variant="body2">
-                {_value ?? '--'}
-              </TypographyLink>
-            </Box>
+            <Box>{getPOLinkByDocumentType(rowData)}</Box>
           </Stack>
         );
       },
@@ -234,7 +223,7 @@ export const allApprovedColumns = ({
   },
 
   {
-    name: PURCHASE_ORDER_KEY.RCUH_APPROVED_DATE,
+    name: PURCHASE_ORDER_KEY.FINAL_APPROVED_DATE,
     label: 'Approved Dt',
     options: {
       filter: false,
@@ -245,11 +234,13 @@ export const allApprovedColumns = ({
         return (
           <Box
             sx={{
-              minWidth: 100,
-              maxWidth: 100,
+              minWidth: 140,
+              maxWidth: 140,
             }}
           >
-            <Typography variant="body2">{value ?? '--'}</Typography>
+            <Typography variant="body2">
+              {!isEmpty(value) ? localTimeToHawaii(value) : '--'}
+            </Typography>
           </Box>
         );
       },
@@ -268,7 +259,7 @@ export const allApprovedColumns = ({
         value: string,
         meta:
           | MUIDataTableMeta
-          | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: PurchaseOrdersList[] })
+          | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: PurchaseOrderItem[] })
       ) => {
         const rowData = meta.tableData[meta.rowIndex];
 
@@ -347,7 +338,7 @@ export const allApprovedColumns = ({
         _value: any,
         meta:
           | MUIDataTableMeta
-          | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: PurchaseOrdersList[] })
+          | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: PurchaseOrderItem[] })
       ) => {
         const rowData = meta.tableData[meta.rowIndex];
 

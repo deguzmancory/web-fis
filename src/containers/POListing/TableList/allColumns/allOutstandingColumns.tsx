@@ -1,16 +1,11 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { isEmpty } from 'lodash';
 import { MUIDataTableColumn, MUIDataTableMeta } from 'mui-datatables';
-import TypographyLink from 'src/components/TypographyLink';
-import { PurchaseOrdersList, PURCHASE_ORDER_KEY } from 'src/queries/PurchasingListing';
-import { Callback } from 'src/redux/types';
+import { PURCHASE_ORDER_KEY, PurchaseOrderItem } from 'src/queries/PurchasingListing';
 import { localTimeToHawaii } from 'src/utils';
+import { getPOLinkByDocumentType } from '../helpers';
 
-export const allOutstandingColumns = ({
-  handleGetPurchaseOrderDetail,
-}: {
-  handleGetPurchaseOrderDetail: Callback;
-}): MUIDataTableColumn[] => [
+export const allOutstandingColumns = (): MUIDataTableColumn[] => [
   {
     name: PURCHASE_ORDER_KEY.NUMBER,
     label: 'PO Number',
@@ -21,22 +16,13 @@ export const allOutstandingColumns = ({
         _value: any,
         meta:
           | MUIDataTableMeta
-          | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: PurchaseOrdersList[] })
+          | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: PurchaseOrderItem[] })
       ) => {
-        const rowData = meta.tableData[meta.rowIndex];
+        const rowData = meta.tableData[meta.rowIndex] as PurchaseOrderItem;
 
         return (
           <Stack direction="row" alignItems={'center'}>
-            <Box
-              sx={{
-                minWidth: 100,
-                maxWidth: 100,
-              }}
-            >
-              <TypographyLink onClick={() => handleGetPurchaseOrderDetail(rowData)}>
-                {_value ?? '--'}
-              </TypographyLink>
-            </Box>
+            <Box>{getPOLinkByDocumentType(rowData)}</Box>
           </Stack>
         );
       },
@@ -140,7 +126,7 @@ export const allOutstandingColumns = ({
   },
 
   {
-    name: PURCHASE_ORDER_KEY.DATE,
+    name: PURCHASE_ORDER_KEY.MODIFIED_DATE,
     label: 'Modified date',
     options: {
       filter: false,

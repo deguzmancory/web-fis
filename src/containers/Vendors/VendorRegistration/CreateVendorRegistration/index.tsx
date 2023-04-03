@@ -71,9 +71,9 @@ const CreateVendorRegistration: React.FC<Props> = ({
         //TODO: huy_dang check response
         if (redirectSection === VENDOR_REGISTRATION_NAVIGATE_FROM.PO) {
           const vendor = {
-            name: data.name,
+            line1: data.line1,
             code: data.code,
-            name2: data.name2,
+            line2: data.line2,
             w9: data.w9,
             address1: data.address1,
             address2: data.address2,

@@ -33,6 +33,7 @@ export const PATHS = {
   poChangeForm: '/po-change',
 
   // PO Payment
+  poPaymentForm: '/po-payment',
 
   // miscellaneous / Global settings
   globalSettings: '/global-settings',

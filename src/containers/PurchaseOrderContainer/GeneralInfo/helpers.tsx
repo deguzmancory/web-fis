@@ -83,7 +83,7 @@ export const getVendorOptions = ({ vendors }: { vendors: Vendor[] }): SelectOpti
       >
         <p style={{ width: '12%' }}>{vendor.code}</p>
         <p style={{ width: '8%' }}>{vendor.w9}</p>
-        <p style={{ width: '84%' }}>{vendor.name}</p>
+        <p style={{ width: '84%' }}>{vendor.line1}</p>
       </div>
     ),
     value: vendor,
@@ -94,8 +94,8 @@ export const getVendorOptions = ({ vendors }: { vendors: Vendor[] }): SelectOpti
 export const getVendorAddress = (vendor: Partial<Vendor>) => {
   if (!vendor) return '';
 
-  const { name2, address1, address2, address3 } = vendor || {};
-  const formattedAddress = `${name2 && `${name2}\n`}${address1 && `${address1}\n`}${
+  const { line2, address1, address2, address3 } = vendor || {};
+  const formattedAddress = `${line2 && `${line2}\n`}${address1 && `${address1}\n`}${
     address2 && `${address2}\n`
   }${address3}`;
 

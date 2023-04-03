@@ -2,15 +2,16 @@ import { Box, Stack, Typography } from '@mui/material';
 import cn from 'classnames';
 import { MUIDataTableColumn, MUIDataTableMeta } from 'mui-datatables';
 import { PATHS } from 'src/appConfig/paths';
-import { EllipsisTypographyTooltip } from 'src/components/common';
 import TypographyLink from 'src/components/TypographyLink';
+import { EllipsisTypographyTooltip } from 'src/components/common';
 import { VENDOR_REGISTRATION_NAVIGATE_FROM } from 'src/containers/Vendors/VendorRegistration/enums';
-import { Vendor, VENDOR_KEY } from 'src/queries/Vendors';
+import { VENDOR_KEY, Vendor } from 'src/queries/Vendors';
 import { Navigator } from 'src/services';
+import { localTimeToHawaii } from 'src/utils';
 import { isEmpty } from 'src/validations';
-import ActionsButton from './actionsButton';
+import ActionsButton from '../actionsButton';
 
-export const allColumns = (): MUIDataTableColumn[] => [
+export const allColumnsCU = (): MUIDataTableColumn[] => [
   {
     name: VENDOR_KEY.CODE,
     label: 'Code',
@@ -22,7 +23,7 @@ export const allColumns = (): MUIDataTableColumn[] => [
         meta: MUIDataTableMeta | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: Vendor[] })
       ) => {
         const rowData = meta.tableData[meta.rowIndex] as Vendor;
-        const isVendorRegistration = true; //TODO: check response vendor is registration
+        const isVendorRegistration = rowData.vendorRegistrationExists;
         return (
           <Stack direction="row" alignItems={'center'}>
             <Box
@@ -64,7 +65,7 @@ export const allColumns = (): MUIDataTableColumn[] => [
     },
   },
   {
-    name: VENDOR_KEY.NAME,
+    name: VENDOR_KEY.LINE1,
     label: 'Vendor Name',
     options: {
       filter: false,
@@ -79,7 +80,7 @@ export const allColumns = (): MUIDataTableColumn[] => [
     },
   },
   {
-    name: VENDOR_KEY.NAME2,
+    name: VENDOR_KEY.LINE2,
     label: 'Additional Info',
     options: {
       filter: false,
@@ -125,17 +126,17 @@ export const allColumns = (): MUIDataTableColumn[] => [
       }),
     },
   },
-  // {
-  //   name: VENDOR_KEY.PAYMENT_TYPE,
-  //   label: 'Purge',
-  //   options: {
-  //     filter: false,
-  //     sort: false,
-  //     customBodyRender: (value: string) => {
-  //       return <Typography variant="body2">{value ?? '--'}</Typography>;
-  //     },
-  //   },
-  // },
+  {
+    name: VENDOR_KEY.PURGED,
+    label: 'Purge',
+    options: {
+      filter: false,
+      sort: false,
+      customBodyRender: (value: string) => {
+        return <Typography variant="body2">{value ?? '--'}</Typography>;
+      },
+    },
+  },
   {
     name: VENDOR_KEY.ADDRESS1,
     label: 'Address',
@@ -191,6 +192,57 @@ export const allColumns = (): MUIDataTableColumn[] => [
       },
     },
   },
+
+  {
+    name: VENDOR_KEY.CREATED,
+    label: 'Create Dt',
+    options: {
+      filter: false,
+      sort: true,
+      customBodyRender: (value: string) => {
+        return (
+          <Stack direction="row" alignItems={'center'}>
+            <Box
+              sx={{
+                minWidth: 140,
+                maxWidth: 140,
+              }}
+            >
+              <Typography variant="body2">
+                {!isEmpty(value) ? localTimeToHawaii(value) : '--'}
+              </Typography>
+            </Box>
+          </Stack>
+        );
+      },
+    },
+  },
+
+  {
+    name: VENDOR_KEY.UPDATED,
+    label: 'Modified date',
+    options: {
+      filter: false,
+      sort: true,
+      customBodyRender: (value: string) => {
+        return (
+          <Stack direction="row" alignItems={'center'}>
+            <Box
+              sx={{
+                minWidth: 140,
+                maxWidth: 140,
+              }}
+            >
+              <Typography variant="body2">
+                {!isEmpty(value) ? localTimeToHawaii(value) : '--'}
+              </Typography>
+            </Box>
+          </Stack>
+        );
+      },
+    },
+  },
+
   {
     name: VENDOR_KEY.UH_EMP_NUMBER,
     label: 'Emp ID',

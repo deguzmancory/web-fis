@@ -1,18 +1,11 @@
-import { MUIDataTableColumn, MUIDataTableMeta } from 'mui-datatables';
-import { PurchaseOrdersList, PURCHASE_ORDER_KEY } from 'src/queries/PurchasingListing';
-import { Callback } from 'src/redux/types';
 import { Box, Stack, Typography } from '@mui/material';
-import TypographyLink from 'src/components/TypographyLink';
-import cn from 'classnames';
 import { isEmpty, upperFirst } from 'lodash';
-import { formatValue, transformDocumentType } from '../../helper';
+import { MUIDataTableColumn, MUIDataTableMeta } from 'mui-datatables';
+import { PURCHASE_ORDER_KEY, PurchaseOrderItem } from 'src/queries/PurchasingListing';
 import { localTimeToHawaii } from 'src/utils';
+import { getPOLinkByDocumentType, getPOStatus, transformDocumentType } from '../helpers';
 
-export const allColumnsPendingReviewApprove = ({
-  handleGetPurchaseOrderDetail,
-}: {
-  handleGetPurchaseOrderDetail: Callback;
-}): MUIDataTableColumn[] => [
+export const allColumnsPendingReviewApprove = (): MUIDataTableColumn[] => [
   {
     name: PURCHASE_ORDER_KEY.NUMBER,
     label: 'PO Number',
@@ -23,22 +16,12 @@ export const allColumnsPendingReviewApprove = ({
         _value: any,
         meta:
           | MUIDataTableMeta
-          | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: PurchaseOrdersList[] })
+          | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: PurchaseOrderItem[] })
       ) => {
-        const rowData = meta.tableData[meta.rowIndex];
+        const rowData = meta.tableData[meta.rowIndex] as PurchaseOrderItem;
         return (
           <Stack direction="row" alignItems={'center'}>
-            <Box
-              sx={{
-                minWidth: 100,
-                maxWidth: 100,
-              }}
-              className={cn({ 'marquee-left': _value.length > 10 })}
-            >
-              <TypographyLink onClick={() => handleGetPurchaseOrderDetail(rowData)}>
-                {_value ?? '--'}
-              </TypographyLink>
-            </Box>
+            <Box>{getPOLinkByDocumentType(rowData)}</Box>
           </Stack>
         );
       },
@@ -122,7 +105,7 @@ export const allColumnsPendingReviewApprove = ({
               }}
             >
               <Typography fontWeight="bold" variant="body2">
-                {formatValue(value)}
+                {getPOStatus(value)}
               </Typography>
             </Box>
           </Stack>

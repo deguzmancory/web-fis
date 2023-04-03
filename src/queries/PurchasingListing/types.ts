@@ -1,4 +1,4 @@
-export interface PurchaseOrdersList {
+export interface PurchaseOrderItem {
   id: string;
   status: string;
   number: string;

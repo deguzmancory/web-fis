@@ -4,16 +4,21 @@ import { GetPresignedPayload } from '../File';
 /* Vendor, Vendor List */
 export interface Vendor {
   code: string;
-  w9: string;
-  name: string;
-  name2: string;
+  line1: string;
+  line2: string;
+  type?: string;
+  paymentType?: string;
+  purged?: string;
   address1: string;
   address2: string;
   address3: string;
-  paymentType?: string;
+  created?: string;
+  updated?: string;
+  w9: string;
   rcuhEmpNumber?: string;
   uhEmpNumber?: string;
-  type?: string;
+  ssn?: string;
+  vendorRegistrationExists?: boolean;
 }
 
 export interface SearchVendorsParams {
