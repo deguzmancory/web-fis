@@ -116,7 +116,13 @@ const FfataDataCollectionForm: React.FC<Props> = ({
         <Typography
           borderBottom={COLOR_CODE.DEFAULT_BORDER}
           variant="h5"
-          sx={{ backgroundColor: '#787878', color: '#CCCCCC', py: 1.5, px: 3, mt: 2 }}
+          sx={{
+            backgroundColor: COLOR_CODE.PRIMARY_500,
+            color: COLOR_CODE.GRAY_LIGHT,
+            py: 1.5,
+            px: 3,
+            mt: 2,
+          }}
         >
           Section A - To be completed by UH FO
         </Typography>
@@ -158,7 +164,13 @@ const FfataDataCollectionForm: React.FC<Props> = ({
         <Typography
           borderBottom={COLOR_CODE.DEFAULT_BORDER}
           variant="h5"
-          sx={{ backgroundColor: '#787878', color: '#CCCCCC', py: 1.5, px: 3, mt: 2 }}
+          sx={{
+            backgroundColor: COLOR_CODE.PRIMARY_500,
+            color: COLOR_CODE.GRAY_LIGHT,
+            py: 1.5,
+            px: 3,
+            mt: 2,
+          }}
         >
           Section B - To be completed by Subcontractor / Vendor
         </Typography>
