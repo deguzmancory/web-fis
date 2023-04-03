@@ -17,7 +17,11 @@ import { isEmpty } from 'src/validations';
 import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormikProps } from '../types';
 
-const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => {
+const FileAttachments: React.FC<Props> = ({
+  formikProps,
+  disabled = false,
+  allowActionAfterFinalApproveOnly = false,
+}) => {
   const { fileAttachments, id: poId } = formikProps.values;
   const { setFieldValue } = formikProps;
   const dispatch = useDispatch();
@@ -199,6 +203,7 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
     <FileAttachmentsSection
       fileAttachments={attachments}
       disabled={disabled}
+      allowActionAfterFinalApproveOnly={allowActionAfterFinalApproveOnly}
       loading={loading}
       showUploadProgress={!!uploadProgress || isLoadingGetPresignedUrl}
       uploadProgress={uploadProgress}
@@ -220,6 +225,7 @@ const FileAttachments: React.FC<Props> = ({ formikProps, disabled = false }) => 
 type Props = {
   formikProps: UpsertPOFormikProps;
   disabled?: boolean;
+  allowActionAfterFinalApproveOnly?: boolean;
 };
 
 export default React.memo(FileAttachments, (prevProps, nextProps) => {
@@ -233,6 +239,7 @@ export default React.memo(FileAttachments, (prevProps, nextProps) => {
 
   return (
     prevProps.disabled === nextProps.disabled &&
+    prevProps.allowActionAfterFinalApproveOnly === nextProps.allowActionAfterFinalApproveOnly &&
     isEqualPrevAndNextFormikValues({
       prevFormikProps,
       nextFormikProps,

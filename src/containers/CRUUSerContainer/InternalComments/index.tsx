@@ -1,6 +1,6 @@
 import { Box, Grid } from '@mui/material';
 import React from 'react';
-import { TextArea } from 'src/components/common';
+import { TextareaAutosize } from 'src/components/common';
 import { getErrorMessage } from 'src/utils';
 import { CRUUSER_KEY } from '../enums';
 import { CRUUserFormikProps } from '../helper';
@@ -16,7 +16,7 @@ const InternalComments: React.FC<Props> = ({ formikProps, isLoading }) => {
     <Box>
       <Grid container>
         <Grid item xs={12}>
-          <TextArea
+          <TextareaAutosize
             label={'Internal Comments'}
             errorMessage={_getErrorMessage(CRUUSER_KEY.COMMENTS)}
             {...getUncontrolledFieldProps(CRUUSER_KEY.COMMENTS)}

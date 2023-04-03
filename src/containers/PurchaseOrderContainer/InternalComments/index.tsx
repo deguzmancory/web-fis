@@ -1,6 +1,6 @@
 import { Box, Grid } from '@mui/material';
 import React from 'react';
-import { TextArea } from 'src/components/common';
+import { TextareaAutosize } from 'src/components/common';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
@@ -16,7 +16,7 @@ const InternalComments: React.FC<Props> = ({ formikProps, disabled = false }) =>
     <Box>
       <Grid container>
         <Grid item xs={12}>
-          <TextArea
+          <TextareaAutosize
             label={'Internal Comments'}
             errorMessage={_getErrorMessage(PO_FORM_KEY.PO_COMMENTS)}
             {...getUncontrolledFieldProps(PO_FORM_KEY.PO_COMMENTS)}

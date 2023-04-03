@@ -1,6 +1,7 @@
 export interface CommonFileAttachment {
   id?: string;
   file?: File;
+  afterFinalApprove?: boolean;
 
   createdAt: string;
   updatedAt: string;

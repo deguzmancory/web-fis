@@ -104,6 +104,7 @@ const POChangeForm: React.FC<Props> = ({
   const showViewVendorPrintModeButton = isFinalPOMode(currentPOMode);
   const showCloneDocumentButton =
     isFinalPOMode(currentPOMode) && (isPI(currentRole) || isSU(currentRole));
+  // const disabledSection = isViewOnlyPOMode(currentPOMode) || isFinalPOMode(currentPOMode);
 
   const { profile } = useProfile();
   const { onGetPOById, handleInvalidatePODetail } = useGetPODetail({

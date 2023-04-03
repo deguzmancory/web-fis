@@ -23,6 +23,7 @@ import { CommonFileAttachment } from './types';
 const FileAttachmentsSection: React.FC<Props> = ({
   fileAttachments,
   disabled = false,
+  allowActionAfterFinalApproveOnly = false,
   loading,
   showUploadProgress = false,
   uploadProgress,
@@ -135,38 +136,44 @@ const FileAttachmentsSection: React.FC<Props> = ({
                 </StyledTableCell>
               </StyledTableRow>
             ) : (
-              fileAttachments.map((attachment) => (
-                <StyledTableRow key={attachment.id}>
-                  <StyledTableCell width={'20%'}>
-                    <FilePreview.DecodePreview
-                      fileUrl={attachment.url}
-                      getDecodeUrl={() =>
-                        onGetDecodeUrl({ attachmentId: attachment.id, fileUrl: attachment.url })
-                      }
-                    />
-                  </StyledTableCell>
-                  <StyledTableCell width={'20%'}>{attachment.description}</StyledTableCell>
-                  <StyledTableCell width={'20%'}>
-                    {localTimeToHawaii(attachment.uploadDate)}
-                  </StyledTableCell>
-                  <StyledTableCell width={'10%'}>{attachment.size}</StyledTableCell>
-                  <StyledTableCell width={'30%'}>
-                    <Stack direction="row" justifyContent={'flex-end'}>
-                      {allowRemoveFile && (
-                        <Button
-                          variant="outline"
-                          onClick={() => {
-                            onDeleteAttachment(attachment);
-                          }}
-                          disabled={disabled || loading}
-                        >
-                          Remove
-                        </Button>
-                      )}
-                    </Stack>
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))
+              fileAttachments.map((attachment) => {
+                const allowRemoveUploadedFile = allowActionAfterFinalApproveOnly
+                  ? allowRemoveFile && attachment?.afterFinalApprove
+                  : allowRemoveFile;
+
+                return (
+                  <StyledTableRow key={attachment.id}>
+                    <StyledTableCell width={'20%'}>
+                      <FilePreview.DecodePreview
+                        fileUrl={attachment.url}
+                        getDecodeUrl={() =>
+                          onGetDecodeUrl({ attachmentId: attachment.id, fileUrl: attachment.url })
+                        }
+                      />
+                    </StyledTableCell>
+                    <StyledTableCell width={'20%'}>{attachment.description}</StyledTableCell>
+                    <StyledTableCell width={'20%'}>
+                      {localTimeToHawaii(attachment.uploadDate)}
+                    </StyledTableCell>
+                    <StyledTableCell width={'10%'}>{attachment.size}</StyledTableCell>
+                    <StyledTableCell width={'30%'}>
+                      <Stack direction="row" justifyContent={'flex-end'}>
+                        {allowRemoveUploadedFile && (
+                          <Button
+                            variant="outline"
+                            onClick={() => {
+                              onDeleteAttachment(attachment);
+                            }}
+                            disabled={disabled || loading}
+                          >
+                            Remove
+                          </Button>
+                        )}
+                      </Stack>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                );
+              })
             )}
           </TableBody>
         </Table>
@@ -177,6 +184,7 @@ const FileAttachmentsSection: React.FC<Props> = ({
 type Props = {
   fileAttachments: Partial<CommonFileAttachment>[];
   disabled: boolean;
+  allowActionAfterFinalApproveOnly?: boolean;
   loading: boolean;
   uploadProgress: number;
   showUploadProgress: boolean;

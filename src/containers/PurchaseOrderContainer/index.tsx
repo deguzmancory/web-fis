@@ -106,6 +106,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   const showViewVendorPrintModeButton = isFinalPOMode(currentPOMode);
   const showCloneDocumentButton =
     isFinalPOMode(currentPOMode) && (isPI(currentRole) || isSU(currentRole));
+  const disabledSection = isViewOnlyPOMode(currentPOMode) || isFinalPOMode(currentPOMode);
 
   const { profile } = useProfile();
   const { onGetPOById, handleInvalidatePODetail } = useGetPODetail({
@@ -391,60 +392,55 @@ const PurchaseOrderContainer: React.FC<Props> = ({
                 <SectionLayout header={<HeaderOfSection />}>
                   <GeneralInfo
                     formikProps={formikProps}
-                    disabled={isViewOnlyPOMode(currentPOMode)}
+                    disabled={disabledSection}
                     currentPOMode={currentPOMode}
                   />
                 </SectionLayout>
                 <SectionLayout>
                   <TableLineItems
                     formikProps={formikProps}
-                    disabled={isViewOnlyPOMode(currentPOMode)}
+                    disabled={disabledSection}
                     currentPOMode={currentPOMode}
                   />
                 </SectionLayout>
                 <SectionLayout>
                   <PurchaseInfo
                     formikProps={formikProps}
-                    disabled={isViewOnlyPOMode(currentPOMode)}
+                    disabled={disabledSection}
                     currentPOMode={currentPOMode}
                   />
                 </SectionLayout>
                 <SectionLayout>
-                  <AdditionalForms
-                    formikProps={formikProps}
-                    disabled={isViewOnlyPOMode(currentPOMode)}
-                  />
+                  <AdditionalForms formikProps={formikProps} disabled={disabledSection} />
                 </SectionLayout>
                 <SectionLayout>
                   <InternalSpecialInstructions
                     formikProps={formikProps}
-                    disabled={isViewOnlyPOMode(currentPOMode)}
+                    disabled={disabledSection}
                   />
                 </SectionLayout>
                 <SectionLayout>
                   <ExternalSpecialInstructions
                     formikProps={formikProps}
-                    disabled={isViewOnlyPOMode(currentPOMode)}
+                    disabled={disabledSection}
                   />
                 </SectionLayout>
                 <SectionLayout>
                   <SendInvoiceInfo
                     formikProps={formikProps}
-                    disabled={isViewOnlyPOMode(currentPOMode)}
+                    disabled={disabledSection}
                     currentPOMode={currentPOMode}
                   />
                 </SectionLayout>
                 <SectionLayout>
-                  <AuthorizedBy
-                    formikProps={formikProps}
-                    disabled={isViewOnlyPOMode(currentPOMode)}
-                  />
+                  <AuthorizedBy formikProps={formikProps} disabled={disabledSection} />
                 </SectionLayout>
                 {isEditPOMode && (
                   <SectionLayout>
                     <FileAttachments
                       formikProps={formikProps}
                       disabled={isViewOnlyPOMode(currentPOMode)}
+                      allowActionAfterFinalApproveOnly={isFinalPOMode(currentPOMode)}
                     />
                   </SectionLayout>
                 )}
@@ -454,10 +450,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
                   </SectionLayout>
                 )}
                 <SectionLayout>
-                  <InternalComments
-                    formikProps={formikProps}
-                    disabled={isViewOnlyPOMode(currentPOMode)}
-                  />
+                  <InternalComments formikProps={formikProps} disabled={disabledSection} />
                 </SectionLayout>
               </>
             )}

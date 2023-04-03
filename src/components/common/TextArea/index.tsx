@@ -46,6 +46,7 @@ const TextArea: React.FC<InputProps> = ({
             'cmp-text-area--disabled': disabled,
           })}
           ref={inputRef ?? (isUncontrolledInput ? uncontrolledInputRef : undefined)}
+          disabled={disabled}
           {...props}
         />
         {iconName && <Icon name={iconName} className="cmp-text-area__icon" onClick={onIconClick} />}
