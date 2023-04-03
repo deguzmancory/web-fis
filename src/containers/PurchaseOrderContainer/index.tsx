@@ -157,9 +157,11 @@ const PurchaseOrderContainer: React.FC<Props> = ({
     },
   });
 
+  const isLoading = createPOLoading || updatePOLoading;
+
   // Navigate to submitted PO success page
   React.useEffect(() => {
-    if (isCreatePOSuccess || isUpdatePOSuccess) {
+    if ((isCreatePOSuccess || isUpdatePOSuccess) && !isLoading) {
       const responseData = isEditPOMode ? updatePOResponse : createPOResponse;
 
       switch (formAction) {
@@ -183,8 +185,6 @@ const PurchaseOrderContainer: React.FC<Props> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCreatePOSuccess, isUpdatePOSuccess]);
-
-  const isLoading = createPOLoading || updatePOLoading;
 
   /* INIT DATA */
   // get initial data when first time mounted
