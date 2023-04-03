@@ -12,13 +12,14 @@ import {
   isoFormat,
   localTimeToHawaii,
 } from 'src/utils';
+import { isEmpty } from 'src/validations';
+import { isVariousProject } from '../GeneralInfo/helpers';
 import {
   emptyUpsertPOFormValue,
   externalFormAttachments,
   initialLineItemValue,
 } from '../constants';
 import { PO_ACTION, PO_ADDITIONAL_FORM_CODE, PO_ADDITIONAL_FORM_EXTERNAL_LINK } from '../enums';
-import { isVariousProject } from '../GeneralInfo/helpers';
 import { AdditionalPOFormValue, UpsertPOFormValue } from '../types';
 import { checkIsFAReviewMode } from './utils';
 
@@ -288,40 +289,52 @@ export const getUpsertPOPayload = ({
       formAttachments: formValues.formAttachments,
       formCode: PO_ADDITIONAL_FORM_CODE.DETERMINATION,
     })
-      ? formValues.determination
+      ? !isEmpty(formValues.determination)
+        ? formValues.determination
+        : null
       : null,
     authToPurchase: hasIncludeAdditionalForm({
       formAttachments: formValues.formAttachments,
       formCode: PO_ADDITIONAL_FORM_CODE.AUTH_TO_PURCHASE,
     })
-      ? formValues.authToPurchase
+      ? !isEmpty(formValues.authToPurchase)
+        ? formValues.authToPurchase
+        : null
       : null,
     equipmentInventory: hasIncludeAdditionalForm({
       formAttachments: formValues.formAttachments,
       formCode: PO_ADDITIONAL_FORM_CODE.EQUIPMENT_INVENTORY,
     })
-      ? {
-          ...formValues.equipmentInventory,
-          equipmentType: formValues.equipmentInventory.equipmentType.join(','),
-        }
+      ? !isEmpty(formValues.equipmentInventory)
+        ? {
+            ...formValues.equipmentInventory,
+            equipmentType: formValues?.equipmentInventory?.equipmentType?.join(','),
+          }
+        : null
       : null,
     ffata: hasIncludeAdditionalForm({
       formAttachments: formValues.formAttachments,
       formCode: PO_ADDITIONAL_FORM_CODE.FFATA,
     })
-      ? formValues.ffata
+      ? !isEmpty(formValues.ffata)
+        ? formValues.ffata
+        : null
       : null,
     soleSource: hasIncludeAdditionalForm({
       formAttachments: formValues.formAttachments,
       formCode: PO_ADDITIONAL_FORM_CODE.SOLE_SOURCE,
     })
-      ? formValues.soleSource
+      ? !isEmpty(formValues.soleSource)
+        ? formValues.soleSource
+        : null
       : null,
     subcontractor: hasIncludeAdditionalForm({
       formAttachments: formValues.formAttachments,
       formCode: PO_ADDITIONAL_FORM_CODE.SUBCONTRACTOR,
     })
-      ? formValues.subcontractor
+      ? !isEmpty(formValues.subcontractor)
+        ? formValues.subcontractor
+        : null
       : null,
   };
 };

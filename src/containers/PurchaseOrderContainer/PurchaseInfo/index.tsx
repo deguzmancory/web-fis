@@ -57,15 +57,21 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentP
   // update totalValue when subTotal or taxTotal or shippingTotal change
   React.useEffect(() => {
     const subTotalValue = values.subtotal || 0;
-    // taxTotal can not over 10,000,000$
-    const taxTotalValue =
-      values.taxTotal && Number(values.taxTotal) < MAX_TAX_NUMBER ? Number(values.taxTotal) : 0;
+    let taxTotalValue = 0;
+
+    // if taxRate inputted => taxTotal can not over 10,000,000$
+    if (!!values.taxRate) {
+      taxTotalValue =
+        !!values.taxTotal && Number(values.taxTotal) < MAX_TAX_NUMBER ? Number(values.taxTotal) : 0;
+    } else {
+      taxTotalValue = Number(values.taxTotal) || 0;
+    }
 
     const shippingTotalValue = values.shippingTotal || 0;
 
     const totalValue = subTotalValue + taxTotalValue + shippingTotalValue;
     setFieldValue(PO_FORM_KEY.TOTAL, totalValue);
-  }, [setFieldValue, values.shippingTotal, values.subtotal, values.taxTotal]);
+  }, [setFieldValue, values.shippingTotal, values.subtotal, values.taxRate, values.taxTotal]);
 
   return (
     <Grid container spacing={2}>
