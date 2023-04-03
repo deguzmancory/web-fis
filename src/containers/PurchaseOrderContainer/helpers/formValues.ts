@@ -208,6 +208,7 @@ export const getPOFormValueFromResponse = ({
         }
       : null,
     action: null,
+    placeholderFileAttachment: null,
   };
 };
 
@@ -247,6 +248,7 @@ export const getUpsertPOPayload = ({
 
   return {
     ...formValues,
+
     action: action,
     date: isEdit ? formValues.date : localTimeToHawaii(new Date(), isoFormat),
     lineItems: ineItemsPayload,

@@ -22,6 +22,13 @@ export interface POEquipmentInventoryFormValue
   equipmentType: string[];
 }
 
+export interface POPlaceholderFileAttachment {
+  file: File;
+  descriptions: string;
+  size: string;
+  isArtifact: boolean;
+}
+
 export interface UpsertPOFormValue
   extends Omit<
     UpsertPOPayload,
@@ -35,6 +42,8 @@ export interface UpsertPOFormValue
     | 'lineItems'
     | 'equipmentInventory'
   > {
+  placeholderFileAttachment: POPlaceholderFileAttachment;
+
   projectTitle: string | FinancialProject;
   projectNumber: string | FinancialProject;
   vendorName: string | Vendor;

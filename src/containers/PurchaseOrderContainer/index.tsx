@@ -68,6 +68,7 @@ import PurchaseInfo from './PurchaseInfo';
 import SendInvoiceInfo from './SendInvoiceInfo';
 import TableLineItems from './TableLineItems';
 import { UpsertPOFormikProps, UpsertPOFormValue } from './types';
+import { isEmpty } from 'src/validations';
 
 const AuditInformation = React.lazy(() => import('./AuditInformation'));
 const FileAttachments = React.lazy(() => import('./FileAttachments'));
@@ -78,6 +79,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   onSetFormData,
   onSetIsImmutableFormData,
   onShowDialog,
+  onHideDialog,
 }) => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
@@ -289,13 +291,35 @@ const PurchaseOrderContainer: React.FC<Props> = ({
     handleScrollToTopError(errors);
   }, [errors]);
 
-  // set form action states for updating form's validation schema purpose
-  const handleSubmitClick = ({ action }: { action: PO_ACTION }) => {
+  const handleConfirmSubmitForm = (action) => {
     onSetIsImmutableFormData(false);
     setFieldValue(PO_FORM_KEY.ACTION, action);
     setFormAction(action);
     setIsTriedSubmit(true);
     validateForm();
+  };
+
+  // set form action states for updating form's validation schema purpose
+  const handleSubmitClick = ({ action }: { action: PO_ACTION }) => {
+    if (!isEmpty(values.placeholderFileAttachment)) {
+      onShowDialog({
+        type: DIALOG_TYPES.YESNO_DIALOG,
+        data: {
+          title: 'Attention',
+          content: 'Your file wasn’t uploaded. Do you want to continue without uploading the file?',
+          onOk: () => {
+            handleConfirmSubmitForm(action);
+            setFieldValue(PO_FORM_KEY.PLACEHOLDER_FILE_ATTACHMENT, null);
+            onHideDialog();
+          },
+          onCancel: () => {
+            onHideDialog();
+          },
+        },
+      });
+    } else {
+      handleConfirmSubmitForm(action);
+    }
   };
 
   const handleCancelClick = () => {

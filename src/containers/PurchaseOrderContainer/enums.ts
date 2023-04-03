@@ -100,6 +100,7 @@ export enum PO_FORM_KEY {
   ADDRESS_2 = 'address2',
   ADDRESS_3 = 'address3',
   ACTION = 'action',
+  PLACEHOLDER_FILE_ATTACHMENT = 'placeholderFileAttachment',
 }
 
 export enum PO_ADDITIONAL_FORM_CODE {

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { getFileName } from 'src/components/FilePreview/helper';
 import FileAttachmentsSection from 'src/containers/shared/FileAttachmentsSection';
 import {
   POFileAttachmentPayload,
@@ -22,7 +21,7 @@ const FileAttachments: React.FC<Props> = ({
   disabled = false,
   allowActionAfterFinalApproveOnly = false,
 }) => {
-  const { fileAttachments, id: poId } = formikProps.values;
+  const { fileAttachments, id: poId, placeholderFileAttachment } = formikProps.values;
   const { setFieldValue } = formikProps;
   const dispatch = useDispatch();
   const attachments = React.useMemo(() => {
@@ -33,12 +32,7 @@ const FileAttachments: React.FC<Props> = ({
     });
   }, [fileAttachments]);
 
-  const [fileSelected, setFileSelected] = React.useState<{
-    file: File;
-    descriptions: string;
-    size: string;
-    isArtifact: boolean;
-  }>(null);
+  // const [fileSelected, setFieldValue]PO_FORM_KEY.PLACE_HOLDER_FILE_ATTACHMENT , = React.useState<POPlaceholderFileAttachment>(null);
 
   const [uploadProgress, setUploadProgress] = React.useState(0);
 
@@ -46,27 +40,30 @@ const FileAttachments: React.FC<Props> = ({
   const allowRemoveFile = !disabled;
   const defaultExpandedAccordion = !isEmpty(attachments);
 
-  const handleFileSelect = React.useCallback((files: File[]) => {
-    if (isEmpty(files)) {
-      Toastify.warning('Please select a file');
-      return;
-    }
-    setFileSelected((prevFile) => ({
-      ...prevFile,
-      file: files[0],
-      size: niceBytes(files[0].size),
-      isArtifact: true, //TODO: should check this value
-    }));
-  }, []);
+  const handleFileSelect = React.useCallback(
+    (files: File[]) => {
+      if (isEmpty(files)) {
+        Toastify.warning('Please select a file');
+        return;
+      }
+      setFieldValue(PO_FORM_KEY.PLACEHOLDER_FILE_ATTACHMENT, {
+        ...placeholderFileAttachment,
+        file: files[0],
+        size: niceBytes(files[0].size),
+        isArtifact: true, //TODO: should check this value
+      });
+    },
+    [placeholderFileAttachment, setFieldValue]
+  );
 
   const { getPresignedUploadUrl, loading: isLoadingGetPresignedUrl } = useUploadPOFileAttachment({
     onUploadSuccess(data, variables, context) {
       addPoAttachment({
         id: poId,
-        name: fileSelected.file.name,
-        size: fileSelected.size,
-        description: fileSelected.descriptions,
-        isArtifact: fileSelected.isArtifact,
+        name: placeholderFileAttachment.file.name,
+        size: placeholderFileAttachment.size,
+        description: placeholderFileAttachment.descriptions,
+        isArtifact: placeholderFileAttachment.isArtifact,
         url: trimUrl(variables?.url),
       });
     },
@@ -82,7 +79,7 @@ const FileAttachments: React.FC<Props> = ({
       Toastify.success('Upload file attachment successfully');
 
       setUploadProgress(0);
-      setFileSelected(null);
+      setFieldValue(PO_FORM_KEY.PLACEHOLDER_FILE_ATTACHMENT, null);
 
       setFieldValue(PO_FORM_KEY.FILE_ATTACHMENTS, [...fileAttachments, data]);
     },
@@ -92,11 +89,11 @@ const FileAttachments: React.FC<Props> = ({
   });
 
   const handleUploadFile = () => {
-    if (!fileSelected) {
+    if (!placeholderFileAttachment) {
       Toastify.warning('Please select a file');
       return;
     }
-    getPresignedUploadUrl(fileSelected.file);
+    getPresignedUploadUrl(placeholderFileAttachment.file);
   };
 
   const { deletePOAttachment, isLoading } = useDeletePOAttachment({
@@ -111,10 +108,8 @@ const FileAttachments: React.FC<Props> = ({
         showDialog({
           type: DIALOG_TYPES.YESNO_DIALOG,
           data: {
-            title: `Remove Attachment`,
-            content: `Are you sure you want to delete this File: ${getFileName(attachment.name)} ${
-              attachment.description ? `- ${attachment.description}` : ''
-            }?`,
+            title: `Remove`,
+            content: `Are you sure you want to delete this File Attachments?`,
             okText: 'Yes, delete it',
             cancelText: 'Cancel',
             onOk: () => {
@@ -187,12 +182,12 @@ const FileAttachments: React.FC<Props> = ({
   const handleDescriptionInputChange = React.useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       const value = event.target.value || '';
-      setFileSelected((prevFile) => ({
-        ...prevFile,
+      setFieldValue(PO_FORM_KEY.PLACEHOLDER_FILE_ATTACHMENT, {
+        ...placeholderFileAttachment,
         descriptions: value,
-      }));
+      });
     },
-    []
+    [placeholderFileAttachment, setFieldValue]
   );
 
   const loading = React.useMemo(() => {
@@ -209,12 +204,12 @@ const FileAttachments: React.FC<Props> = ({
       uploadProgress={uploadProgress}
       allowUploadFile={allowUploadFile}
       allowRemoveFile={allowRemoveFile}
-      fileSelected={fileSelected}
+      fileSelected={placeholderFileAttachment}
       defaultExpandedAccordion={defaultExpandedAccordion}
       onFileSelect={handleFileSelect}
       onDescriptionInputChange={handleDescriptionInputChange}
       onRemoveSelectedFile={() => {
-        setFileSelected(null);
+        setFieldValue(PO_FORM_KEY.PLACEHOLDER_FILE_ATTACHMENT, null);
       }}
       onUploadFile={handleUploadFile}
       onGetDecodeUrl={handleGetDecodeUrl}
@@ -222,6 +217,7 @@ const FileAttachments: React.FC<Props> = ({
     />
   );
 };
+
 type Props = {
   formikProps: UpsertPOFormikProps;
   disabled?: boolean;
@@ -243,7 +239,11 @@ export default React.memo(FileAttachments, (prevProps, nextProps) => {
     isEqualPrevAndNextFormikValues({
       prevFormikProps,
       nextFormikProps,
-      formKeysNeedRender: [PO_FORM_KEY.FILE_ATTACHMENTS, PO_FORM_KEY.ID],
+      formKeysNeedRender: [
+        PO_FORM_KEY.FILE_ATTACHMENTS,
+        PO_FORM_KEY.ID,
+        PO_FORM_KEY.PLACEHOLDER_FILE_ATTACHMENT,
+      ],
     })
   );
 });

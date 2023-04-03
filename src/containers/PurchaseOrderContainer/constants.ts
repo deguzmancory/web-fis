@@ -385,4 +385,5 @@ export const emptyUpsertPOFormValue = {
   address1: null,
   address2: null,
   address3: null,
+  placeholderFileAttachment: null,
 };
