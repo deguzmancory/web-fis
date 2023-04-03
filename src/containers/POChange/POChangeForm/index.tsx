@@ -106,7 +106,7 @@ const POChangeForm: React.FC<Props> = ({
     isFinalPOMode(currentPOMode) && (isPI(currentRole) || isSU(currentRole));
 
   const { profile } = useProfile();
-  const { onGetPOById } = useGetPODetail({
+  const { onGetPOById, handleInvalidatePODetail } = useGetPODetail({
     id: id,
     onSuccess: (data) => {
       const formValue: UpsertPOFormValue = getPOFormValueFromResponse({ response: data, profile });
@@ -154,8 +154,10 @@ const POChangeForm: React.FC<Props> = ({
           return;
         }
 
-        default:
-          return;
+        default: {
+          handleInvalidatePODetail();
+          onGetPOById();
+        }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -241,6 +243,7 @@ const POChangeForm: React.FC<Props> = ({
 
   // set form action states for updating form's validation schema purpose
   const handleSubmitClick = ({ action }: { action: PO_ACTION }) => {
+    onSetIsImmutableFormData(false);
     setFieldValue(PO_FORM_KEY.ACTION, action);
     setFormAction(action);
     setIsTriedSubmit(true);

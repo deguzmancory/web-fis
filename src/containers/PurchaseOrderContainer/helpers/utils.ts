@@ -1,6 +1,6 @@
 import { PARAMS_SPLITTER } from 'src/appConfig/constants';
 import { MyProfile, PO_DETAIL_STATUS } from 'src/queries';
-import { isCU, isFA, isPI, isSU, ROLE_NAME } from 'src/queries/Profile/helpers';
+import { ROLE_NAME, isCU, isFA, isPI, isSU } from 'src/queries/Profile/helpers';
 import { PO_ACTION, PO_MODE } from '../enums';
 
 export const isPOSaveAction = (currentAction: PO_ACTION) => {
@@ -98,6 +98,7 @@ export const checkIsViewOnlyMode = ({
         isPIPendingSubmittalPOStatus(poStatus) ||
         isRCUHPendingRCUHApprovalPOStatus(poStatus) ||
         isFAAdditionalInfoRequestedPOStatus(poStatus) ||
+        isPIAdditionalInfoRequestedPOStatus(poStatus) ||
         isPIDisapprovedPOStatus(poStatus)
       );
     case ROLE_NAME.CU:

@@ -108,7 +108,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
     isFinalPOMode(currentPOMode) && (isPI(currentRole) || isSU(currentRole));
 
   const { profile } = useProfile();
-  const { onGetPOById } = useGetPODetail({
+  const { onGetPOById, handleInvalidatePODetail } = useGetPODetail({
     id: id,
     onSuccess: (data) => {
       const formValue: UpsertPOFormValue = getPOFormValueFromResponse({ response: data, profile });
@@ -128,6 +128,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   } = useCreatePO({
     onSuccess: () => {
       onSetFormData(null);
+
       //continue navigate to success page with use effect above => for ignore prompt check url when crate succeed purpose
     },
     onError: (error) => {
@@ -171,8 +172,10 @@ const PurchaseOrderContainer: React.FC<Props> = ({
           return;
         }
 
-        default:
-          return;
+        default: {
+          handleInvalidatePODetail();
+          onGetPOById();
+        }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
