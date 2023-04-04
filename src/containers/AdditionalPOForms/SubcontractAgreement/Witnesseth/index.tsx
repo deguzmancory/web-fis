@@ -188,6 +188,7 @@ const WitnessethFormLayout: React.FC<Props> = ({ formikProps, disabled }) => {
                   <div style={{ display: 'inline-block', width: '15%' }}>
                     <Input
                       type="number"
+                      onKeyDown={(e) => ['e', 'E'].includes(e.key) && e.preventDefault()}
                       errorMessage={_getErrorMessage(PO_SUBCONTRACT_AGREEMENT_KEY.CONTRACT_NUMBER)}
                       {...getUncontrolledFieldProps(PO_SUBCONTRACT_AGREEMENT_KEY.CONTRACT_NUMBER)}
                       disabled={disabled}

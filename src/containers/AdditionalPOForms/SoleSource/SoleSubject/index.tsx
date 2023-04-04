@@ -14,6 +14,7 @@ import { IRootState } from 'src/redux/rootReducer';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_SOLE_SOURCE_FORM_KEY } from '../enum';
+import { PO_CERTIFICATE_KEY } from '../../shared/Certification/enum';
 
 const SoleSourceSubject: React.FC<Props> = ({ formikProps, formData, disabled }) => {
   const {
@@ -42,6 +43,12 @@ const SoleSourceSubject: React.FC<Props> = ({ formikProps, formData, disabled })
             errorMessage={_getErrorMessage(PO_SOLE_SOURCE_FORM_KEY.TO)}
             {...getUncontrolledFieldProps(PO_SOLE_SOURCE_FORM_KEY.TO)}
             disabled={disabled}
+            onChange={(event) => {
+              setFieldValue(
+                PO_CERTIFICATE_KEY.DEPARTMENT_HEAD,
+                (event.target as HTMLInputElement)?.value
+              );
+            }}
           />
         </Grid>
         <Grid item xs={4}>
@@ -66,6 +73,12 @@ const SoleSourceSubject: React.FC<Props> = ({ formikProps, formData, disabled })
             errorMessage={_getErrorMessage(PO_SOLE_SOURCE_FORM_KEY.FROM)}
             {...getUncontrolledFieldProps(PO_SOLE_SOURCE_FORM_KEY.FROM)}
             disabled={disabled}
+            onChange={(event) => {
+              setFieldValue(
+                PO_CERTIFICATE_KEY.APPROVED_DUO,
+                (event.target as HTMLInputElement)?.value
+              );
+            }}
           />
         </Grid>
         <Grid item xs={4}>

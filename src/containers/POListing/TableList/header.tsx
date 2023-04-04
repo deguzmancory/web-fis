@@ -26,9 +26,9 @@ const HeaderTable: React.FC<Props> = ({ searchKey = QUERY_KEY.WORKFLOW_STATUS, c
   );
 
   return (
-    <Box>
+    <Box sx={{ mb: 3 }}>
       <Stack>
-        <Box width={'40%'} mb={3}>
+        <Box width={'40%'}>
           <Box>
             <Select
               isClearable={false}

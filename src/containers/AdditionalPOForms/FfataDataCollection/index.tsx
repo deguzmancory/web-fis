@@ -305,9 +305,7 @@ const FfataDataCollectionForm: React.FC<Props> = ({
                       errorMessage={_getErrorMessage(
                         PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_CITY
                       )}
-                      {..._getUncontrolledFieldProps(
-                        PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_CITY
-                      )}
+                      {...getFieldProps(PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_CITY)}
                       maxLength={20}
                       disabled={disabled}
                     />
@@ -318,7 +316,7 @@ const FfataDataCollectionForm: React.FC<Props> = ({
                       errorMessage={_getErrorMessage(
                         PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_STATE
                       )}
-                      {..._getUncontrolledFieldProps(
+                      {...getFieldProps(
                         PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_STATE
                       )}
                       maxLength={2}
@@ -331,7 +329,7 @@ const FfataDataCollectionForm: React.FC<Props> = ({
                       errorMessage={_getErrorMessage(
                         PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_COUNTRY
                       )}
-                      {..._getUncontrolledFieldProps(
+                      {...getFieldProps(
                         PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_COUNTRY
                       )}
                       maxLength={20}
@@ -344,9 +342,7 @@ const FfataDataCollectionForm: React.FC<Props> = ({
                       errorMessage={_getErrorMessage(
                         PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_ZIP
                       )}
-                      {..._getUncontrolledFieldProps(
-                        PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_ZIP
-                      )}
+                      {...getFieldProps(PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_ZIP)}
                       maxLength={10}
                       disabled={disabled}
                     />

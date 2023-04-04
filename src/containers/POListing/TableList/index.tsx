@@ -26,10 +26,14 @@ import {
   allOutstandingColumns,
 } from './allColumns';
 import HeaderTable from './header';
+import { RoleService } from 'src/services';
+import { ROLE_NAME } from 'src/queries/Profile/helpers';
 
 const PDFView = React.lazy(() => import('src/components/common/PDFView'));
 
 const TablePurchasingOrderList: React.FC<Props> = () => {
+  const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
+
   const isTabletScreen = useMediaQuery(muiResponsive.TABLET);
   const location = useLocation();
   const query = React.useMemo(() => new URLSearchParams(location.search), [location]);
@@ -65,10 +69,16 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
     [query]
   );
 
-  const { purchases, totalRecords, setParams, isFetching, onGetPurchasing } =
-    useGetAllPurchasingList({
-      onError: (error) => handleShowErrorMsg(error),
-    });
+  const {
+    purchases,
+    totalRecords,
+    setParams,
+    isFetching,
+    onGetPurchasing,
+    handleInvalidateAllPurchases,
+  } = useGetAllPurchasingList({
+    onError: (error) => handleShowErrorMsg(error),
+  });
 
   const handleGetPurchasing = React.useCallback(
     (params: GetPropertiesParams) => {
@@ -86,11 +96,15 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
         };
         delete newParams.sort;
       }
-
       setParams(newParams);
     },
-    [searchPurchasingDocument, workFlowTypeStatus, setParams]
+    [workFlowTypeStatus, searchPurchasingDocument, setParams]
   );
+
+  React.useEffect(() => {
+    handleInvalidateAllPurchases();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentRole]);
 
   const handleViewFinalPDF = React.useCallback(
     (rowData: PurchaseOrderItem) => {

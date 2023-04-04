@@ -46,7 +46,8 @@ export function useGetAllPurchasingList(
 
   const queryClient = useQueryClient();
 
-  const handleInvalidateAllVendors = () => queryClient.invalidateQueries(API_QUERIES.VENDORS);
+  const handleInvalidateAllPurchases = () =>
+    queryClient.invalidateQueries(API_QUERIES.GET_PURCHASE_ORDERS);
 
   const { data: purchases, hasNext, payloadSize, totalRecords } = allPurchasingResponse || {};
 
@@ -59,6 +60,6 @@ export function useGetAllPurchasingList(
     isFetching,
     setParams,
     onGetPurchasing,
-    handleInvalidateAllVendors,
+    handleInvalidateAllPurchases,
   };
 }
