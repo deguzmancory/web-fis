@@ -70,23 +70,23 @@ const CreateVendorRegistration: React.FC<Props> = ({
       onSuccess: async ({ data }) => {
         //TODO: huy_dang check response
         if (redirectSection === VENDOR_REGISTRATION_NAVIGATE_FROM.PO) {
-          const vendor = {
-            name: data.name,
+          const vendorResponse = {
+            name: data.line1,
             code: data.code,
-            name2: data.name2,
+            name2: data.line2,
             w9: data.w9,
-            address1: data.address1,
-            address2: data.address2,
-            address3: data.address3,
+            address1: data.line3,
+            address2: data.line4,
+            address3: data.line5,
           };
 
           const newVendorData = {
-            vendorName: vendor,
-            vendorCode: vendor,
-            vendorAddress: getVendorAddress(data),
-            address1: data.address1,
-            address2: data.address2,
-            address3: data.address3,
+            vendorName: vendorResponse,
+            vendorCode: vendorResponse,
+            vendorAddress: getVendorAddress(vendorResponse),
+            address1: vendorResponse.address1,
+            address2: vendorResponse.address2,
+            address3: vendorResponse.address3,
           };
 
           //if there's no formData => redirect page have no data => fetch data to prepari

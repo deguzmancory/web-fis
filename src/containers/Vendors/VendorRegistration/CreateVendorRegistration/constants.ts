@@ -1,9 +1,8 @@
 import { REGEX } from 'src/appConfig/constants';
 import { ErrorService, Yup } from 'src/services';
 import { CustomShape } from 'src/services/yup';
-import { getOptionsByEnum } from 'src/utils';
 import { isEmpty } from 'src/validations';
-import { VENDOR_OPTION_VALUE } from './enums';
+import { VENDOR_OPTION_LABEL, VENDOR_OPTION_VALUE } from './enums';
 import {
   isVendorRequiredEinNumber,
   isVendorRequiredRcuhNumber,
@@ -202,4 +201,73 @@ export const vendorRegistrationValidationSchema = Yup.object().shape<
   [['firstName', 'lastName']]
 );
 
-export const vendorOptions = getOptionsByEnum(VENDOR_OPTION_VALUE).slice(0, -1); //remove last item (OTHER) for custom input field inline purpose
+export const vendorOptions = [
+  {
+    label: VENDOR_OPTION_LABEL.INDIVIDUAL_SOLE_PROPRIETOR_OR_SINGLE_MEMBER_LLC,
+    value: VENDOR_OPTION_VALUE.INDIVIDUAL_SOLE_PROPRIETOR_OR_SINGLE_MEMBER_LLC,
+  },
+  {
+    label: VENDOR_OPTION_LABEL.C_CORPORATION,
+    value: VENDOR_OPTION_VALUE.C_CORPORATION,
+  },
+  {
+    label: VENDOR_OPTION_LABEL.S_CORPORATION,
+    value: VENDOR_OPTION_VALUE.S_CORPORATION,
+  },
+  {
+    label: VENDOR_OPTION_LABEL.LLC_C_CORPORATION,
+    value: VENDOR_OPTION_VALUE.LLC_C_CORPORATION,
+  },
+  {
+    label: VENDOR_OPTION_LABEL.LLC_S_CORPORATION,
+    value: VENDOR_OPTION_VALUE.LLC_S_CORPORATION,
+  },
+  {
+    label: VENDOR_OPTION_LABEL.LLC_PARTNERSHIP,
+    value: VENDOR_OPTION_VALUE.LLC_PARTNERSHIP,
+  },
+  {
+    label: VENDOR_OPTION_LABEL.PARTNERSHIP,
+    value: VENDOR_OPTION_VALUE.PARTNERSHIP,
+  },
+  {
+    label: VENDOR_OPTION_LABEL.TRUST_OR_ESTATE,
+    value: VENDOR_OPTION_VALUE.TRUST_OR_ESTATE,
+  },
+  {
+    label: VENDOR_OPTION_LABEL.RCUH_STUDENT_EMPLOYEE,
+    value: VENDOR_OPTION_VALUE.RCUH_STUDENT_EMPLOYEE,
+  },
+  {
+    label: VENDOR_OPTION_LABEL.RCUH_EMPLOYEE,
+    value: VENDOR_OPTION_VALUE.RCUH_EMPLOYEE,
+  },
+  {
+    label: VENDOR_OPTION_LABEL.UH_GRADUATE_ASSISTANT_EMPLOYEE,
+    value: VENDOR_OPTION_VALUE.UH_GRADUATE_ASSISTANT_EMPLOYEE,
+  },
+  {
+    label: VENDOR_OPTION_LABEL.UH_STUDENT_EMPLOYEE,
+    value: VENDOR_OPTION_VALUE.UH_STUDENT_EMPLOYEE,
+  },
+  {
+    label: VENDOR_OPTION_LABEL.UH_EMERITUS_FACULTY,
+    value: VENDOR_OPTION_VALUE.UH_EMERITUS_FACULTY,
+  },
+  {
+    label: VENDOR_OPTION_LABEL.UH_NON_COMPENSATED_APPOINTEE,
+    value: VENDOR_OPTION_VALUE.UH_NON_COMPENSATED_APPOINTEE,
+  },
+  {
+    label: VENDOR_OPTION_LABEL.UH_EMPLOYEE,
+    value: VENDOR_OPTION_VALUE.UH_EMPLOYEE,
+  },
+  {
+    label: VENDOR_OPTION_LABEL.US_GOVERNMENT_ENTITY,
+    value: VENDOR_OPTION_VALUE.US_GOVERNMENT_ENTITY,
+  },
+  {
+    label: VENDOR_OPTION_LABEL.OTHER,
+    value: VENDOR_OPTION_VALUE.OTHER,
+  },
+];

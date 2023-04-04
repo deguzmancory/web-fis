@@ -1,17 +1,31 @@
 import { Breadcrumbs, Typography } from '@mui/material';
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import TypographyLink from 'src/components/TypographyLink';
-import { VENDOR_REGISTRATION_NAVIGATE_FROM } from './enums';
+import { VENDOR_REGISTRATION_NAVIGATE_FROM, VENDOR_REGISTRATION_PARAMS } from './enums';
+import { useDispatch } from 'react-redux';
+import { setIsImmutableFormData } from 'src/redux/form/formSlice';
 
 const BreadcrumbsVendorRegistration: React.FC<Props> = ({ isFrom }) => {
+  const location = useLocation();
+  const query = React.useMemo(() => new URLSearchParams(location.search), [location]);
+  const documentId = query.get(VENDOR_REGISTRATION_PARAMS.DOCUMENT_ID) || null;
+  const dispatch = useDispatch();
+
   const getSubLink = React.useCallback((): Array<React.ReactElement> => {
     switch (isFrom) {
       case VENDOR_REGISTRATION_NAVIGATE_FROM.PO:
         return [
           <Typography variant="body2">Purchasing (POs & PO Payments)</Typography>,
-          <RouterLink to={PATHS.dashboard}>
+          <RouterLink
+            to={
+              documentId ? `${PATHS.purchaseOrderDetail}/${documentId}` : PATHS.createPurchaseOrders
+            }
+            onClick={() => {
+              dispatch(setIsImmutableFormData(true));
+            }}
+          >
             <TypographyLink>Create PO</TypographyLink>
           </RouterLink>,
           <Typography variant="body2">Create Vendor</Typography>,
@@ -35,7 +49,7 @@ const BreadcrumbsVendorRegistration: React.FC<Props> = ({ isFrom }) => {
           <Typography variant="body2">Create Vendor</Typography>,
         ];
     }
-  }, [isFrom]);
+  }, [documentId, isFrom]);
 
   return (
     <Breadcrumbs aria-label="breadcrumb">

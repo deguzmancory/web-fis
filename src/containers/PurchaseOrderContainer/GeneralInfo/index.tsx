@@ -68,7 +68,6 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
 
   const inPOReviewMode =
     isPODocument && (isFAReviewPOMode(currentPOMode) || isCUReviewPOMode(currentPOMode));
-  //TODO: confirm diff between review mode in po and po change
 
   const currentProjectTitle = React.useMemo(() => values.projectTitle, [values.projectTitle]);
   const currentProjectNumber = React.useMemo(() => values.projectNumber, [values.projectNumber]);

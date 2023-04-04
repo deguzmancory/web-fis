@@ -67,6 +67,26 @@ export enum VENDOR_REGISTRATION_FORM_KEY {
 }
 
 export enum VENDOR_OPTION_VALUE {
+  INDIVIDUAL_SOLE_PROPRIETOR_OR_SINGLE_MEMBER_LLC = 'S',
+  C_CORPORATION = 'C',
+  S_CORPORATION = 'R',
+  LLC_C_CORPORATION = 'C2',
+  LLC_S_CORPORATION = 'R2',
+  LLC_PARTNERSHIP = 'P2',
+  PARTNERSHIP = 'P',
+  TRUST_OR_ESTATE = 'T',
+  RCUH_STUDENT_EMPLOYEE = 'U',
+  RCUH_EMPLOYEE = 'RCUH Employee, excluding student employees; GO TO #6',
+  UH_GRADUATE_ASSISTANT_EMPLOYEE = 'U2',
+  UH_STUDENT_EMPLOYEE = 'U3',
+  UH_EMERITUS_FACULTY = 'E',
+  UH_NON_COMPENSATED_APPOINTEE = 'W',
+  UH_EMPLOYEE = 'UH Employee (regular, casual), excluding graduate assistant and student employees; GO TO #6',
+  US_GOVERNMENT_ENTITY = 'U.S GOVERNMENT ENTITY (Federal, State, Local government office, agency, or instrumentality;50 States and the District of Columbia only); GO TO #7',
+  OTHER = 'O',
+}
+
+export enum VENDOR_OPTION_LABEL {
   INDIVIDUAL_SOLE_PROPRIETOR_OR_SINGLE_MEMBER_LLC = '** Individual/Sole Proprietor or Single-Member LLC',
   C_CORPORATION = '** C Corporation',
   S_CORPORATION = '** S Corporation',
