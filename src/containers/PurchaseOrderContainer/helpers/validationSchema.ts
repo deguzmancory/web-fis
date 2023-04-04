@@ -1,8 +1,8 @@
+import { PO_ACTION } from 'src/queries';
+import { isPOSubmitAction } from 'src/queries/PurchaseOrders/helpers';
 import { ErrorService, Yup } from 'src/services';
-import { PO_ACTION } from '../enums';
-import { isVariousProject, SHIP_VIA_VALUE } from '../GeneralInfo/helpers';
+import { SHIP_VIA_VALUE, isVariousProject } from '../GeneralInfo/helpers';
 import { FED_ATTACHMENT_VALUE } from '../PurchaseInfo/helpers';
-import { isPOSubmitAction } from './utils';
 
 export const getPOFormValidationSchema = ({ action }: { action: PO_ACTION }) => {
   const isSubmitAction = isPOSubmitAction(action);

@@ -8,10 +8,11 @@ import {
   RadioButton,
 } from 'src/components/common';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
-import { PO_FORM_KEY, PO_MODE } from '../enums';
-import { isCUReviewPOMode, isFAReviewPOMode } from '../helpers';
+import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
 import { fedAttachmentOptions, FED_ATTACHMENT_VALUE, MAX_TAX_NUMBER } from './helpers';
+import { isCUReviewPOMode, isFAReviewPOMode } from 'src/queries/PurchaseOrders/helpers';
+import { PO_MODE } from 'src/queries';
 
 const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPOMode }) => {
   const isFAReviewMode = isFAReviewPOMode(currentPOMode);

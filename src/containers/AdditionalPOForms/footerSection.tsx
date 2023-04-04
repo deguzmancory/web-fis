@@ -7,7 +7,7 @@ import { PATHS } from 'src/appConfig/paths';
 import TypographyLink from 'src/components/TypographyLink';
 import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
-import { setHrefNavigationForm, setIsImmutableFormData } from 'src/redux/form/formSlice';
+import { setHrefNavigateAdditionalForm, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { Navigator } from 'src/services';
 import { AdditionalPOFormValue } from '../PurchaseOrderContainer/types';
 import SectionLayout from '../shared/SectionLayout';
@@ -95,7 +95,7 @@ const mapDispatchToProps = {
   onShowDialog: showDialog,
   onHideDialog: hideDialog,
   onHideAllDialog: hideAllDialog,
-  onSetHrefNavigationForm: setHrefNavigationForm,
+  onSetHrefNavigationForm: setHrefNavigateAdditionalForm,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FooterSection);

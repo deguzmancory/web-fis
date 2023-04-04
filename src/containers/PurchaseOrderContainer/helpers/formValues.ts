@@ -1,7 +1,12 @@
 import { PATHS } from 'src/appConfig/paths';
 import { MyProfile } from 'src/queries';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
-import { AdditionalPOForm, PODetailResponse, UpsertPOPayload } from 'src/queries/PurchaseOrders';
+import {
+  AdditionalPOForm,
+  PODetailResponse,
+  PO_ACTION,
+  UpsertPOPayload,
+} from 'src/queries/PurchaseOrders';
 import { PIDetail, SUDetail } from 'src/queries/Users';
 import { RoleService } from 'src/services';
 import {
@@ -19,7 +24,7 @@ import {
   externalFormAttachments,
   initialLineItemValue,
 } from '../constants';
-import { PO_ACTION, PO_ADDITIONAL_FORM_CODE, PO_ADDITIONAL_FORM_EXTERNAL_LINK } from '../enums';
+import { PO_ADDITIONAL_FORM_CODE, PO_ADDITIONAL_FORM_EXTERNAL_LINK } from '../enums';
 import { AdditionalPOFormValue, UpsertPOFormValue } from '../types';
 import { checkIsFAReviewMode } from './utils';
 

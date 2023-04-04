@@ -42,7 +42,7 @@ export const getSubmittedPOContent = ({
         poNumberName: ' Payment Request Number',
         viewLink: {
           title: 'View the Purchase Order Payment',
-          href: `${PATHS.poChangeForm}/${id}`, //TODO: update path for po payment detail
+          href: `${PATHS.poPaymentForm}/${id}`,
         },
         createLink: {
           title: 'Create another Purchase Order Payment',

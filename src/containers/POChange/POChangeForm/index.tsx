@@ -1,69 +1,57 @@
-import { Error } from '@mui/icons-material';
-import { Box, Container, Stack, Typography } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { Location } from 'history';
 import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
+import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundary';
 import NoPermission from 'src/components/NoPermission';
-import { Button, LoadingCommon } from 'src/components/common';
+import { LoadingCommon } from 'src/components/common';
+import ActionButtons from 'src/containers/PurchaseOrderContainer/ActionButtons';
+import ErrorWrapperPO from 'src/containers/PurchaseOrderContainer/ErrorWrapper/index.';
+import GeneralInfo from 'src/containers/PurchaseOrderContainer/GeneralInfo';
 import { emptyUpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/constants';
-import DeletePOWarning from 'src/containers/PurchaseOrderContainer/deletePOWarning';
 import {
-  PO_ACTION,
   PO_FORM_ELEMENT_ID,
-  PO_FORM_KEY,
   SUBMITTED_PO_QUERY,
 } from 'src/containers/PurchaseOrderContainer/enums';
+import HeaderOfSection from 'src/containers/PurchaseOrderContainer/headerOfSection';
 import {
   getCurrentPOEditMode,
   getPOFormValueFromResponse,
   getUpsertPOPayload,
-  isCUReviewPOMode,
-  isFAReviewPOMode,
-  isFinalPOMode,
-  isPOAdditionalInfoAction,
-  isPOApprovedAction,
-  isPODisapproveAction,
-  isPOSaveAction,
-  isPOSubmitAction,
-  isPiSuEditPOMode,
-  isViewOnlyPOMode,
 } from 'src/containers/PurchaseOrderContainer/helpers';
 import {
   UpsertPOFormValue,
   UpsertPOFormikProps,
 } from 'src/containers/PurchaseOrderContainer/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
-import { PO_DOCUMENT_TYPE, useGetPODetail, useProfile, useUpdatePO } from 'src/queries';
-import { ROLE_NAME, isPI, isSU } from 'src/queries/Profile/helpers';
-import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
-import { DIALOG_TYPES } from 'src/redux/dialog/type';
+import { PO_ACTION, PO_DOCUMENT_TYPE, useGetPODetail, useProfile, useUpdatePO } from 'src/queries';
+import { ROLE_NAME } from 'src/queries/Profile/helpers';
+import {
+  isFinalPOMode,
+  isPOSaveAction,
+  isViewOnlyPOMode,
+} from 'src/queries/PurchaseOrders/helpers';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, RoleService, Toastify } from 'src/services';
 import Prompt from 'src/services/Prompt';
-import {
-  getUncontrolledInputFieldProps,
-  handleScrollToTopError,
-  handleShowErrorMsg,
-} from 'src/utils';
+import { getUncontrolledInputFieldProps, handleShowErrorMsg } from 'src/utils';
 import { PO_CHANGE_FORM_QUERY_KEY } from '../POChangeForm/enums';
 import { PO_CHANGE_FORM_NUMBER } from '../SelectChangeFormType/enums';
 import BreadcrumbsPOChangeForm from '../breadcrumbs';
+import { getPoChangeFormTitle } from './helpers';
 
 const POChangeForm: React.FC<Props> = ({
   formData,
   isImmutableFormData,
   onSetFormData,
   onSetIsImmutableFormData,
-  onShowDialog,
+  formAction,
 }) => {
   const { id } = useParams<{ id: string }>();
-  const [formAction, setFormAction] = React.useState<PO_ACTION>(null);
-  const [isTriedSubmit, setIsTriedSubmit] = React.useState<boolean>(false);
-
   const location = useLocation();
   const query = React.useMemo(() => new URLSearchParams(location.search), [location]);
   const formNumber = React.useMemo(
@@ -87,24 +75,14 @@ const POChangeForm: React.FC<Props> = ({
     }
   }, [scrollToParam]);
 
-  const hasPermission = true; //TODO: update when enhancement needed
   const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
   const poStatus = React.useMemo(() => formData?.status, [formData?.status]);
   const currentPOMode = React.useMemo(
     () => getCurrentPOEditMode({ id, poStatus, currentRole }),
     [id, poStatus, currentRole]
   );
-  const showDeleteButton = isPiSuEditPOMode(currentPOMode);
-  const showApproveButton = isFAReviewPOMode(currentPOMode) || isCUReviewPOMode(currentPOMode);
-  const showDisapproveButton = isFAReviewPOMode(currentPOMode);
-  const showRequestMoreInfoButton =
-    isFAReviewPOMode(currentPOMode) || isCUReviewPOMode(currentPOMode);
-  const showSaveButton = !isViewOnlyPOMode(currentPOMode);
-  const showSubmitToFAButton = isPiSuEditPOMode(currentPOMode);
-  const showViewVendorPrintModeButton = isFinalPOMode(currentPOMode);
-  const showCloneDocumentButton =
-    isFinalPOMode(currentPOMode) && (isPI(currentRole) || isSU(currentRole));
-  // const disabledSection = isViewOnlyPOMode(currentPOMode) || isFinalPOMode(currentPOMode);
+
+  const disabledSection = isViewOnlyPOMode(currentPOMode) || isFinalPOMode(currentPOMode);
 
   const { profile } = useProfile();
   const { onGetPOById, handleInvalidatePODetail } = useGetPODetail({
@@ -137,9 +115,11 @@ const POChangeForm: React.FC<Props> = ({
     },
   });
 
+  const isLoading = updatePOLoading;
+
   // Navigate to submitted PO success page
   React.useEffect(() => {
-    if (isUpdatePOSuccess) {
+    if (isUpdatePOSuccess && !isLoading) {
       const responseData = updatePOResponse;
 
       switch (formAction) {
@@ -210,6 +190,7 @@ const POChangeForm: React.FC<Props> = ({
     values,
     errors,
     touched,
+    dirty: isFormDirty,
     setFieldValue,
     getFieldProps,
     setFieldTouched,
@@ -218,78 +199,25 @@ const POChangeForm: React.FC<Props> = ({
       setFieldTouched,
       setFieldValue,
     }),
+    handleSubmit,
+    validateForm,
   };
 
-  const _handleScrollToTopError = React.useCallback(() => {
-    handleScrollToTopError(errors);
-  }, [errors]);
-
-  const getFormTitle = React.useCallback((formNumber: PO_CHANGE_FORM_NUMBER) => {
-    switch (formNumber) {
-      case PO_CHANGE_FORM_NUMBER.TOTAL_CANCELLATION_NUMBER:
-        return '(Total Cancellation)';
-      case PO_CHANGE_FORM_NUMBER.CHANGE_DESCRIPTION_NUMBER:
-        return '(Description Change Only)';
-      case PO_CHANGE_FORM_NUMBER.INCREASE_DECREASE_AMOUNT_NUMBER:
-        return '(Increase/Decrease Balance)';
-      case PO_CHANGE_FORM_NUMBER.INCREASE_DECREASE_AMOUNT_TERMINATED_NUMBER:
-        return '(Terminated Project)';
-
-      default:
-        return '(UNKNOWN FORM)';
-    }
-  }, []);
-
-  const renderForm = React.useCallback((formNumber: PO_CHANGE_FORM_NUMBER) => {}, []);
-
-  // set form action states for updating form's validation schema purpose
-  const handleSubmitClick = ({ action }: { action: PO_ACTION }) => {
-    onSetIsImmutableFormData(false);
-    setFieldValue(PO_FORM_KEY.ACTION, action);
-    setFormAction(action);
-    setIsTriedSubmit(true);
-    validateForm();
-  };
-
-  // handle submit form after updated the form's validation schema
-  React.useEffect(() => {
-    if (formAction && isTriedSubmit) {
-      _handleScrollToTopError();
-      handleSubmit();
-    }
-
-    return () => setIsTriedSubmit(false);
+  const renderForm = React.useCallback(
+    (formNumber: PO_CHANGE_FORM_NUMBER) => {
+      return (
+        <SectionLayout header={<HeaderOfSection />}>
+          <GeneralInfo
+            formikProps={formikProps}
+            disabled={disabledSection}
+            currentPOMode={currentPOMode}
+          />
+        </SectionLayout>
+      );
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isTriedSubmit]);
-
-  const handleDeleteClick = () => {
-    onShowDialog({
-      type: DIALOG_TYPES.CONTENT_DIALOG,
-      data: {
-        title: 'Delete',
-        iconTitle: <Error color="error" sx={{ mt: '2px' }} />,
-        hideFooter: true,
-        content: <DeletePOWarning id={id} />,
-      },
-    });
-  };
-
-  const handleViewVendorPrintMode = () => {
-    //TODO: implement
-  };
-
-  const handleCloneDocument = () => {
-    //TODO: implement
-  };
-
-  const handleCancelClick = () => {
-    if (!isFormDirty) {
-      Navigator.navigate(PATHS.dashboard);
-      onSetFormData(null);
-    } else {
-      Navigator.navigate(PATHS.dashboard);
-    }
-  };
+    [currentPOMode, disabledSection]
+  );
 
   const handleConfirmCancel = () => {
     onSetFormData(null);
@@ -308,6 +236,8 @@ const POChangeForm: React.FC<Props> = ({
     }
   };
 
+  const hasPermission = true; //isPOChangeDocumentType(values.documentType); //TODO: update when enhancement needed
+
   return (
     <Prompt
       title={'Leave site?'}
@@ -321,7 +251,8 @@ const POChangeForm: React.FC<Props> = ({
         <Container maxWidth="lg">
           <BreadcrumbsPOChangeForm />
           <Typography mt={2} variant="h2">
-            RCUH Purchase Order Change Form RCUH {getFormTitle(formNumber as PO_CHANGE_FORM_NUMBER)}
+            RCUH Purchase Order Change Form RCUH{' '}
+            {getPoChangeFormTitle(formNumber as PO_CHANGE_FORM_NUMBER)}
           </Typography>
           <Suspense fallback={<LoadingCommon />}>
             {!hasPermission ? (
@@ -329,91 +260,36 @@ const POChangeForm: React.FC<Props> = ({
                 <NoPermission />
               </SectionLayout>
             ) : (
-              <>{renderForm(formNumber as PO_CHANGE_FORM_NUMBER)}</>
+              <>
+                {renderForm(formNumber as PO_CHANGE_FORM_NUMBER)}
+                <ActionButtons
+                  currentPOMode={currentPOMode}
+                  formikProps={formikProps}
+                  loading={isLoading}
+                  disabled={isLoading}
+                />
+              </>
             )}
           </Suspense>
-
-          <Stack my={4} flexDirection={'row'} justifyContent="center">
-            <Button variant="outline" className="mr-8" onClick={handleCancelClick}>
-              Cancel
-            </Button>
-            {showDeleteButton && (
-              <Button
-                variant="outline"
-                className="mr-8"
-                onClick={handleDeleteClick}
-                disabled={updatePOLoading}
-              >
-                Delete
-              </Button>
-            )}
-            {showViewVendorPrintModeButton && (
-              <Button
-                onClick={handleViewVendorPrintMode}
-                disabled={updatePOLoading}
-                className="mr-8"
-              >
-                Vendor Print Mode
-              </Button>
-            )}
-            {showCloneDocumentButton && (
-              <Button onClick={handleCloneDocument} disabled={updatePOLoading} className="mr-8">
-                Clone Document
-              </Button>
-            )}
-            {showApproveButton && (
-              <Button
-                onClick={() => handleSubmitClick({ action: PO_ACTION.APPROVE })}
-                isLoading={updatePOLoading && isPOApprovedAction(formAction)}
-                disabled={updatePOLoading}
-                className="mr-8"
-              >
-                Approve
-              </Button>
-            )}
-            {showDisapproveButton && (
-              <Button
-                onClick={() => handleSubmitClick({ action: PO_ACTION.DISAPPROVE })}
-                isLoading={updatePOLoading && isPODisapproveAction(formAction)}
-                disabled={updatePOLoading}
-                className="mr-8"
-              >
-                Disapprove
-              </Button>
-            )}
-            {showRequestMoreInfoButton && (
-              <Button
-                onClick={() => handleSubmitClick({ action: PO_ACTION.ADDITIONAL_INFO })}
-                isLoading={updatePOLoading && isPOAdditionalInfoAction(formAction)}
-                disabled={updatePOLoading}
-                className="mr-8"
-              >
-                Request More Info
-              </Button>
-            )}
-            {showSaveButton && (
-              <Button
-                onClick={() => handleSubmitClick({ action: PO_ACTION.SAVE })}
-                isLoading={updatePOLoading && isPOSaveAction(formAction)}
-                disabled={updatePOLoading}
-                className="mr-8"
-              >
-                Save
-              </Button>
-            )}
-            {showSubmitToFAButton && (
-              <Button
-                onClick={() => handleSubmitClick({ action: PO_ACTION.SUBMIT })}
-                isLoading={updatePOLoading && isPOSubmitAction(formAction)}
-                disabled={updatePOLoading}
-              >
-                Submit to FA
-              </Button>
-            )}
-          </Stack>
         </Container>
       </Box>
     </Prompt>
+  );
+};
+
+const POChangeFormWrapper: React.FC<Props> = ({ ...props }) => {
+  return (
+    <CustomErrorBoundary FallbackComponent={(props) => <ErrorWrapperPO {...props} />}>
+      <Suspense
+        fallback={
+          <Box minHeight="80vh" p={4}>
+            <LoadingCommon />
+          </Box>
+        }
+      >
+        <POChangeForm {...props} />
+      </Suspense>
+    </CustomErrorBoundary>
   );
 };
 
@@ -422,13 +298,12 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 const mapStateToProps = (state: IRootState<UpsertPOFormValue>) => ({
   formData: state.form.formData,
   isImmutableFormData: state.form.isImmutableFormData,
+  formAction: state.form.poFormAction,
 });
 
 const mapDispatchToProps = {
   onSetFormData: setFormData,
   onSetIsImmutableFormData: setIsImmutableFormData,
-  onShowDialog: showDialog,
-  onHideDialog: hideDialog,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(POChangeForm);
+export default connect(mapStateToProps, mapDispatchToProps)(POChangeFormWrapper);

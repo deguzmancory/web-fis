@@ -51,7 +51,7 @@ export enum PO_FORM_KEY {
   AVAILABLE_FORMS = 'availableForms',
   FORM_ATTACHMENTS = 'formAttachments',
 
-  // form keys
+  // additional form keys
   SOLE_SOURCE = 'soleSource',
   AUTH_TO_PURCHASE = 'authToPurchase',
   EQUIPMENT_INVENTORY = 'equipmentInventory',
@@ -101,6 +101,10 @@ export enum PO_FORM_KEY {
   ADDRESS_3 = 'address3',
   ACTION = 'action',
   PLACEHOLDER_FILE_ATTACHMENT = 'placeholderFileAttachment',
+  DOCUMENT_TYPE = 'documentType',
+
+  //PO CHANGE
+  FORM_NUMBER = 'formNumber',
 }
 
 export enum PO_ADDITIONAL_FORM_CODE {
@@ -132,28 +136,7 @@ export enum PO_LINE_ITEM_KEY {
   IS_ORIGINAL = 'isOriginal',
 }
 
-export enum PO_ACTION {
-  //for payload and state purpose
-  SAVE = 'save',
-  SUBMIT = 'submit',
-  APPROVE = 'approve',
-  DISAPPROVE = 'disapprove',
-  ADDITIONAL_INFO = 'additionalInfo',
-
-  //for state purpose
-  DELETE = 'delete',
-}
-
 export enum SUBMITTED_PO_QUERY {
   PO_NUMBER = 'poNumber',
   DOCUMENT_TYPE = 'documentType',
-}
-
-export enum PO_MODE {
-  CREATE = 'CREATE',
-  PI_SU_EDIT_PENDING_SUBMITTAL = 'PI_SU_EDIT_PENDING_SUBMITTAL',
-  VIEW_ONLY = 'VIEW_ONLY',
-  FINAL = 'FINAL',
-  FA_REVIEW = 'FA_REVIEW',
-  CU_REVIEW = 'CU_REVIEW',
 }

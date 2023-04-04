@@ -138,7 +138,7 @@ type Props = ReturnType<typeof mapStateToProps> &
 
 const mapStateToProps = (state: IRootState<UpsertPOFormValue>) => ({
   formData: state.form.formData,
-  hrefNavigationForm: state.form.hrefNavigationForm,
+  hrefNavigationForm: state.form.hrefNavigateAdditionalForm,
 });
 
 const mapDispatchToProps = {

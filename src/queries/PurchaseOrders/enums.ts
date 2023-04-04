@@ -13,3 +13,24 @@ export enum PO_DOCUMENT_TYPE {
   PO_CHANGE = 'poChange',
   PO_PAYMENT = 'poPayment',
 }
+
+export enum PO_ACTION {
+  //for payload and state purpose
+  SAVE = 'save',
+  SUBMIT = 'submit',
+  APPROVE = 'approve',
+  DISAPPROVE = 'disapprove',
+  ADDITIONAL_INFO = 'additionalInfo',
+
+  //for state purpose
+  DELETE = 'delete',
+}
+
+export enum PO_MODE {
+  CREATE = 'CREATE',
+  PI_SU_EDIT_PENDING_SUBMITTAL = 'PI_SU_EDIT_PENDING_SUBMITTAL',
+  VIEW_ONLY = 'VIEW_ONLY',
+  FINAL = 'FINAL',
+  FA_REVIEW = 'FA_REVIEW',
+  CU_REVIEW = 'CU_REVIEW',
+}

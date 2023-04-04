@@ -1,4 +1,4 @@
-import { Box, Container } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { FallbackProps } from 'src/components/ErrorBoundary/CustomErrorBoundary';
 import DefaultErrorFallback from 'src/components/ErrorBoundary/DefaultErrorBoundaryFallback';
@@ -20,7 +20,10 @@ const ErrorWrapperPO: React.FC<FallbackProps> = ({
         <BreadcrumbsPODetail isViewMode={isEditMode} />
         <SectionLayout>
           {isEditMode ? (
-            <RefetchPO resetErrorBoundary={resetErrorBoundary} />
+            <Box>
+              <Typography>Something went wrong.</Typography>
+              <RefetchPO resetErrorBoundary={resetErrorBoundary} />
+            </Box>
           ) : (
             <DefaultErrorFallback
               error={error}

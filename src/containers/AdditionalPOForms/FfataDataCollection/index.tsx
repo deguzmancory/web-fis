@@ -67,6 +67,7 @@ const FfataDataCollectionForm: React.FC<Props> = ({
   }));
 
   const { values, errors, touched, setFieldValue, setFieldTouched, getFieldProps } = formik;
+  console.log('formik: ', formik);
 
   const _getUncontrolledFieldProps = getUncontrolledInputFieldProps({
     values,
@@ -367,7 +368,7 @@ type Props = ReturnType<typeof mapStateToProps> &
 const mapStateToProps = (state: IRootState<UpsertPOFormValue>) => ({
   formData: state.form.formData,
   isImmutableFormData: state.form.isImmutableFormData,
-  hrefNavigationForm: state.form.hrefNavigationForm,
+  hrefNavigationForm: state.form.hrefNavigateAdditionalForm,
 });
 
 const mapDispatchToProps = {

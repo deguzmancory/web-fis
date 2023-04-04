@@ -22,8 +22,14 @@ import {
   isString,
 } from 'src/utils';
 import { isEmpty } from 'src/validations';
-import { PO_FORM_KEY, PO_MODE } from '../enums';
-import { isCreatePOMode, isCUReviewPOMode, isFAReviewPOMode, isPiSuEditPOMode } from '../helpers';
+import { PO_FORM_KEY } from '../enums';
+import {
+  isCreatePOMode,
+  isCUReviewPOMode,
+  isFAReviewPOMode,
+  isPiSuEditPOMode,
+  isPODocumentType,
+} from 'src/queries/PurchaseOrders/helpers';
 import usePOSearchProject, { SearchProjectsType } from './hooks/usePOSearchProject';
 import usePOSearchVender, { SearchVendorsType } from './hooks/usePOSearchVender';
 import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
@@ -37,12 +43,11 @@ import {
 import SuperQuote from './superQuote';
 import { useParams } from 'react-router-dom';
 import { setFormData } from 'src/redux/form/formSlice';
+import { PO_MODE } from 'src/queries';
 
 const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPOMode }) => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
-  const inReviewMode = isFAReviewPOMode(currentPOMode) || isCUReviewPOMode(currentPOMode);
-  const showActionLink = isCreatePOMode(currentPOMode) || isPiSuEditPOMode(currentPOMode);
 
   const {
     values,
@@ -53,6 +58,17 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
     setFieldValue,
     setFieldTouched,
   } = formikProps;
+
+  const isBlankDocument = isCreatePOMode(currentPOMode);
+  const isPODocument = isPODocumentType(values.documentType);
+  const isPOChangeDocument = isPODocumentType(values.documentType);
+
+  // show action link only on create PO and PI SU edit mode of PO document
+  const showActionLink = isBlankDocument || (isPODocument && isPiSuEditPOMode(currentPOMode));
+
+  const inPOReviewMode =
+    isPODocument && (isFAReviewPOMode(currentPOMode) || isCUReviewPOMode(currentPOMode));
+  //TODO: confirm diff between review mode in po and po change
 
   const currentProjectTitle = React.useMemo(() => values.projectTitle, [values.projectTitle]);
   const currentProjectNumber = React.useMemo(() => values.projectNumber, [values.projectNumber]);
@@ -144,7 +160,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
   };
 
   const handleImportSuperQuoteClick = () => {
-    if (disabled || inReviewMode) return;
+    if (disabled || inPOReviewMode) return;
 
     dispatch(
       showDialog({
@@ -245,7 +261,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               isClearable={true}
               onChange={(_name, value) => updateProjectFields(value)}
               optionWithSubLabel
-              isDisabled={disabled || inReviewMode}
+              isDisabled={disabled || inPOReviewMode}
               footer={
                 <Typography variant="body2">
                   Use “Various" if you want to use multiple projects.
@@ -285,7 +301,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               isClearable={true}
               onChange={(_name, value) => updateProjectFields(value)}
               optionWithSubLabel
-              isDisabled={disabled || inReviewMode}
+              isDisabled={disabled || inPOReviewMode}
               menuOptionPosition="right"
             />
           </Grid>
@@ -354,7 +370,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               isClearable={true}
               onChange={(_name, value) => updateVendorFields(value)}
               optionWithSubLabel
-              isDisabled={disabled || inReviewMode}
+              isDisabled={disabled || inPOReviewMode}
               menuStyle={{
                 width: '800px',
               }}
@@ -416,7 +432,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               isClearable={true}
               onChange={(_name, value) => updateVendorFields(value)}
               optionWithSubLabel
-              isDisabled={disabled || inReviewMode}
+              isDisabled={disabled || inPOReviewMode}
             />
           </Grid>
 
@@ -426,7 +442,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               required
               errorMessage={_getErrorMessage(PO_FORM_KEY.VENDOR_ADDRESS)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.VENDOR_ADDRESS)}
-              disabled={disabled || inReviewMode}
+              disabled={disabled || inPOReviewMode}
               style={{ minHeight: '100px' }}
             />
           </Grid>
@@ -436,7 +452,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               required
               errorMessage={_getErrorMessage(PO_FORM_KEY.SHIP_TO)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.SHIP_TO)}
-              disabled={disabled || inReviewMode}
+              disabled={disabled || inPOReviewMode}
               style={{ minHeight: '100px' }}
             />
           </Grid>
@@ -447,7 +463,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               label={'Ship Via'}
               placeholder={'Select'}
               options={shipViaOptions}
-              isDisabled={disabled || inReviewMode}
+              isDisabled={disabled || inPOReviewMode}
               onChange={setFieldValue}
               isSearchable={false}
               hideSearchIcon
@@ -458,7 +474,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               label={'Ship Via Instructions'}
               errorMessage={_getErrorMessage(PO_FORM_KEY.SHIP_OTHER)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.SHIP_OTHER)}
-              disabled={disabled || inReviewMode}
+              disabled={disabled || inPOReviewMode}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -466,7 +482,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               label={'Delivery Required By'}
               errorMessage={_getErrorMessage(PO_FORM_KEY.DELIVERY_BY)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.DELIVERY_BY)}
-              disabled={disabled || inReviewMode}
+              disabled={disabled || inPOReviewMode}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -474,7 +490,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               label={'Discount Terms'}
               errorMessage={_getErrorMessage(PO_FORM_KEY.DISCOUNT_TERMS)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.DISCOUNT_TERMS)}
-              disabled={disabled || inReviewMode}
+              disabled={disabled || inPOReviewMode}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -482,7 +498,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               label={'Quotation No.'}
               errorMessage={_getErrorMessage(PO_FORM_KEY.QUOTATION_NUMBER)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.QUOTATION_NUMBER)}
-              disabled={disabled || inReviewMode}
+              disabled={disabled || inPOReviewMode}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -555,10 +571,12 @@ export default React.memo(GeneralInfo, (prevProps, nextProps) => {
     PO_FORM_KEY.DIRECT_INQUIRIES_TO,
     PO_FORM_KEY.PHONE_NUMBER,
     PO_FORM_KEY.FA_STAFF_REVIEWER,
+    PO_FORM_KEY.DOCUMENT_TYPE,
   ]; // only re-render if keys using in this component change
 
   return (
     prevProps.disabled === nextProps.disabled &&
+    prevProps.currentPOMode === nextProps.currentPOMode &&
     isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
       prevFormikProps,
       nextFormikProps,

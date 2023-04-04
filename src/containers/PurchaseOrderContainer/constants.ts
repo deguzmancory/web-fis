@@ -330,29 +330,46 @@ export const emptyUpsertPOFormValue = {
   phoneNumber: '',
   faStaffReviewer: '',
 
+  // line items
+  lineItems: [initialLineItemValue],
+
   // purchase info
   confirming: false,
   getExempt: false,
   attachment31: false,
-
-  documentType: '',
-  majorVersion: '',
-  minorVersion: null,
-  formName: '',
-  shortFormName: '',
-  formNumber: '',
+  fedAttachment: null,
+  uhSubawardNumber: '',
   taxRate: null,
   taxTotal: null,
   subtotal: 0,
-  total: 0,
   shippingTotal: null,
-  fedAttachment: '',
+  total: 0,
+
+  // additional forms
+  availableForms: initialAvailableForms,
+  formAttachments: [],
+
+  // additional form keys
+  determination: initialDeterminationValue,
+  soleSource: initialSoleSourceValue,
+  authToPurchase: initialAuthToPurchaseValue,
+  equipmentInventory: initialEquipmentInventoryValue,
+  subcontractor: initialSubcontractorValue,
+  agreement: initialAgreementValue,
+  agreementUh: initialAgreementUhValue,
+  ffata: initialFfataValue,
+
+  //Internal Special Instructions
   internalA: '',
   internalA1: '',
   internalB: '',
   internalC: '',
+
+  // External Special Instructions
   presetInstructions: '',
   externalSpecialInstructions: '',
+
+  // send invoice info
   sendInvoiceTo: '',
   sendInvoiceToClearFlag: false,
   sendInvoiceToFaEmail: '',
@@ -363,27 +380,30 @@ export const emptyUpsertPOFormValue = {
   invoiceZip: '',
   invoiceZip4: '',
   invoiceCountry: '',
+
+  //Authorized by
   signature: '',
+
+  //Internal Comments
   poComments: '',
   // amountChange: null, //todo: update type
-  uhSubawardNumber: '',
 
-  availableForms: initialAvailableForms,
-  lineItems: [initialLineItemValue],
+  //attachments
   fileAttachments: [],
-  formAttachments: [],
-  determination: initialDeterminationValue,
-  soleSource: initialSoleSourceValue,
-  authToPurchase: initialAuthToPurchaseValue,
-  equipmentInventory: initialEquipmentInventoryValue,
-  subcontractor: initialSubcontractorValue,
-  agreement: initialAgreementValue,
-  agreementUh: initialAgreementUhValue,
-  ffata: initialFfataValue,
 
   //payload only
   address1: null,
   address2: null,
   address3: null,
   placeholderFileAttachment: null,
+  documentType: null,
+
+  //poChange
+  formNumber: '',
+
+  //junk
+  majorVersion: '',
+  minorVersion: null,
+  formName: '',
+  shortFormName: '',
 };

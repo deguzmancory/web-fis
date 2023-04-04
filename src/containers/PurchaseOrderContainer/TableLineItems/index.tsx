@@ -15,10 +15,11 @@ import {
   isEqualPrevAndNextFormikValues,
 } from 'src/utils';
 import { initialLineItemValue } from '../constants';
-import { PO_FORM_KEY, PO_LINE_ITEM_KEY, PO_MODE } from '../enums';
+import { PO_FORM_KEY, PO_LINE_ITEM_KEY } from '../enums';
 import { isVariousProject } from '../GeneralInfo/helpers';
-import { isCUReviewPOMode, isFAReviewPOMode } from '../helpers';
 import { POLineItemFormValue, UpsertPOFormikProps, UpsertPOFormValue } from '../types';
+import { isCUReviewPOMode, isFAReviewPOMode } from 'src/queries/PurchaseOrders/helpers';
+import { PO_MODE } from 'src/queries';
 
 const TableLineItems: React.FC<Props> = ({ formikProps, disabled = false, currentPOMode }) => {
   const isFAReviewMode = isFAReviewPOMode(currentPOMode);

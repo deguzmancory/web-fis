@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { PO_ACTION } from 'src/queries';
 
 export interface IFormState<T = any> {
   formData: T | null;
@@ -6,7 +7,8 @@ export interface IFormState<T = any> {
   maxValidStep: number;
   formSteps: Array<T>;
   isImmutableFormData: boolean;
-  hrefNavigationForm: string;
+  hrefNavigateAdditionalForm: string;
+  poFormAction: PO_ACTION;
 }
 export const FIRST_STEP = 0;
 
@@ -16,7 +18,8 @@ const initialState: IFormState = {
   formData: null,
   formSteps: [],
   isImmutableFormData: false,
-  hrefNavigationForm: '',
+  hrefNavigateAdditionalForm: '',
+  poFormAction: null,
 };
 
 export const formSlice = createSlice({
@@ -50,11 +53,12 @@ export const formSlice = createSlice({
     setIsImmutableFormData: (state, action: PayloadAction<boolean>) => {
       state.isImmutableFormData = action.payload;
     },
-
-    setHrefNavigationForm: (state, action: PayloadAction<string>) => {
-      state.hrefNavigationForm = action.payload;
+    setHrefNavigateAdditionalForm: (state, action: PayloadAction<string>) => {
+      state.hrefNavigateAdditionalForm = action.payload;
     },
-
+    setPoFormAction: (state, action: PayloadAction<PO_ACTION>) => {
+      state.poFormAction = action.payload;
+    },
     clearFormState: (state) => {
       state.activeStep = initialState.activeStep;
       state.formSteps = initialState.formSteps;
@@ -73,7 +77,8 @@ export const {
   setMaxValidStep,
   clearFormSteps,
   setIsImmutableFormData,
-  setHrefNavigationForm,
+  setHrefNavigateAdditionalForm,
+  setPoFormAction,
 } = formSlice.actions;
 
 export const formState = formSlice.getInitialState();

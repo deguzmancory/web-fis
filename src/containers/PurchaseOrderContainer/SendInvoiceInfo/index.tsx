@@ -2,14 +2,14 @@ import { Box, Divider, Grid, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { US_ZIP_CODE_LENGTH } from 'src/appConfig/constants';
 import { Checkbox, Input, InputMask, LoadingCommon, Select } from 'src/components/common';
-import { useZipCode } from 'src/queries';
+import { PO_MODE, useZipCode } from 'src/queries';
 import { StateService } from 'src/services';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import InfoTooltip from '../../shared/InfoTooltip';
-import { PO_FORM_KEY, PO_MODE } from '../enums';
-import { isFAReviewPOMode } from '../helpers';
+import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
 import { resetAllField } from './helpers';
+import { isFAReviewPOMode } from 'src/queries/PurchaseOrders/helpers';
 
 const SendInvoiceInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPOMode }) => {
   const isFAReviewMode = isFAReviewPOMode(currentPOMode);

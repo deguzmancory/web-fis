@@ -14,7 +14,7 @@ import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSl
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import {
   setFormData,
-  setHrefNavigationForm,
+  setHrefNavigateAdditionalForm,
   setIsImmutableFormData,
 } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
@@ -191,7 +191,7 @@ const mapDispatchToProps = {
   onHideDialog: hideDialog,
   onHideAllDialog: hideAllDialog,
   onSetIsImmutableFormData: setIsImmutableFormData,
-  onSetHrefNavigationForm: setHrefNavigationForm,
+  onSetHrefNavigationForm: setHrefNavigateAdditionalForm,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PurchaseOrderContainer);

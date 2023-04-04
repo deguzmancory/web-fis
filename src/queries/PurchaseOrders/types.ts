@@ -1,6 +1,5 @@
-import { PO_ACTION } from 'src/containers/PurchaseOrderContainer/enums';
 import { GetPresignedPayload } from '../File';
-import { PO_DETAIL_STATUS } from './enums';
+import { PO_ACTION, PO_DETAIL_STATUS, PO_DOCUMENT_TYPE } from './enums';
 
 export interface SharedPODetail {
   //general info
@@ -74,14 +73,16 @@ export interface SharedPODetail {
   //get from response for logic and view purpose
   status?: PO_DETAIL_STATUS;
   auditTrails?: POAuditTrails[];
+  documentType?: PO_DOCUMENT_TYPE;
+
+  //poChange
+  formNumber?: string;
 
   //unknown //TODO: huy_dang check unused key
-  documentType?: string;
   majorVersion?: string;
   minorVersion: number;
   formName?: string;
   shortFormName?: string;
-  formNumber?: string;
   amountChange?: number;
   zipcode?: string;
   reasonForChange?: string;
