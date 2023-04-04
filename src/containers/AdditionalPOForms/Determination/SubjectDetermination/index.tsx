@@ -14,6 +14,7 @@ import { IRootState } from 'src/redux/rootReducer';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_DETERMINATION_KEY } from '../enum';
+import { PO_CERTIFICATE_KEY } from '../../shared/Certification/enum';
 
 const SubjectDetermination: React.FC<Props> = ({ formikProps, formData, disabled = false }) => {
   const {
@@ -41,6 +42,12 @@ const SubjectDetermination: React.FC<Props> = ({ formikProps, formData, disabled
             errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.TO)}
             {...getUncontrolledFieldProps(PO_DETERMINATION_KEY.TO)}
             disabled={disabled}
+            onChange={(event) => {
+              setFieldValue(
+                PO_CERTIFICATE_KEY.APPROVED_DUO,
+                (event.target as HTMLInputElement)?.value
+              );
+            }}
           />
         </Grid>
         <Grid item xs={4}>
@@ -64,6 +71,12 @@ const SubjectDetermination: React.FC<Props> = ({ formikProps, formData, disabled
             errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.FROM)}
             {...getUncontrolledFieldProps(PO_DETERMINATION_KEY.FROM)}
             disabled={disabled}
+            onChange={(event) => {
+              setFieldValue(
+                PO_CERTIFICATE_KEY.DEPARTMENT_HEAD,
+                (event.target as HTMLInputElement)?.value
+              );
+            }}
           />
         </Grid>
         <Grid item xs={4}>

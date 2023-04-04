@@ -45,7 +45,7 @@ const SoleSourceSubject: React.FC<Props> = ({ formikProps, formData, disabled })
             disabled={disabled}
             onChange={(event) => {
               setFieldValue(
-                PO_CERTIFICATE_KEY.DEPARTMENT_HEAD,
+                PO_CERTIFICATE_KEY.APPROVED_DUO,
                 (event.target as HTMLInputElement)?.value
               );
             }}
@@ -75,7 +75,7 @@ const SoleSourceSubject: React.FC<Props> = ({ formikProps, formData, disabled })
             disabled={disabled}
             onChange={(event) => {
               setFieldValue(
-                PO_CERTIFICATE_KEY.APPROVED_DUO,
+                PO_CERTIFICATE_KEY.DEPARTMENT_HEAD,
                 (event.target as HTMLInputElement)?.value
               );
             }}
