@@ -417,6 +417,10 @@ const create = (baseURL = appConfig.API_URL) => {
     );
   };
 
+  const postPOCloneDocument = (params: any) => {
+    return api.post(`/financial-svc/v1/purchase-orders/${params.id}/clone`, {}, newCancelToken());
+  };
+
   // ====================== PO Change ======================
   const postPoChangeType = (payload: PostPOChangeTypePayload) => {
     return api.post(
@@ -543,6 +547,7 @@ const create = (baseURL = appConfig.API_URL) => {
     getPoFileAttachmentPresignedDownloadUrl,
     addPoAttachment,
     deletePOAttachment,
+    postPOCloneDocument,
 
     // ====================== PO Change ======================
     postPoChangeType,

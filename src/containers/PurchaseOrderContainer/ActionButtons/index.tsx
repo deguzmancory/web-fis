@@ -5,7 +5,7 @@ import { PATHS } from 'src/appConfig/paths';
 import { Button } from 'src/components/common';
 import { ROLE_NAME, isPI, isSU } from 'src/queries/Profile/helpers';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
-import { Navigator, RoleService } from 'src/services';
+import { Navigator, RoleService, Toastify } from 'src/services';
 import { handleScrollToTopError } from 'src/utils';
 import { isEmpty } from 'src/validations';
 import { PO_FORM_KEY } from '../enums';
@@ -28,7 +28,8 @@ import { setFormData, setIsImmutableFormData, setPoFormAction } from 'src/redux/
 import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { PO_ACTION, PO_MODE } from 'src/queries';
+import { PO_ACTION, PO_MODE, usePostPOCloneDocument } from 'src/queries';
+import urljoin from 'url-join';
 
 const ActionButtons: React.FC<Props> = ({
   formikProps,
@@ -79,6 +80,8 @@ const ActionButtons: React.FC<Props> = ({
     return () => setIsTriedSubmit(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTriedSubmit]);
+
+  const { postPOCloneDocument } = usePostPOCloneDocument({});
 
   // set form action states for updating form's validation schema purpose
   const handleConfirmSubmitForm = (action) => {
@@ -137,7 +140,18 @@ const ActionButtons: React.FC<Props> = ({
   };
 
   const handleCloneDocument = () => {
-    //TODO: implement
+    postPOCloneDocument(
+      { id: values.id },
+      {
+        onSuccess() {
+          Toastify.success('Clone Document successfully.');
+          Navigator.navigate(urljoin(PATHS.purchaseOrderDetail, values.id));
+        },
+        onError(error: Error) {
+          Toastify.error(error.message);
+        },
+      }
+    );
   };
 
   return (

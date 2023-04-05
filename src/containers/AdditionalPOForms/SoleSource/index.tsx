@@ -106,7 +106,7 @@ const SoleSourceForm: React.FC<Props> = ({
           header={
             <HeaderOfSection
               href={'https://www.rcuh.com/2-000/2-100/2-106/'}
-              label={'RCUH Policy 2.206'}
+              label={'RCUH Policy 2.106'}
             />
           }
         >

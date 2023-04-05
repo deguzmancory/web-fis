@@ -13,6 +13,7 @@ import { PO_FORM_ELEMENT_ID, PO_FORM_KEY } from '../enums';
 import { AdditionalPOFormValue, UpsertPOFormikProps } from '../types';
 import FormAttachmentItem from './formAttachmentItem';
 import { stringify } from 'src/utils';
+import { isEmpty } from 'lodash';
 
 const AdditionalForms: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const { id } = useParams<{ id: string }>();
@@ -31,6 +32,12 @@ const AdditionalForms: React.FC<Props> = ({ formikProps, disabled = false }) => 
       })),
     [values.availableForms]
   );
+
+  React.useEffect(() => {
+    if (!isEmpty(availableFormOptions)) {
+      setSelectedForm(availableFormOptions[0].value);
+    }
+  }, [availableFormOptions]);
 
   const currentFormAttachments = React.useMemo(
     () => values.formAttachments,
