@@ -14,7 +14,7 @@ import {
 import SectionLayout from 'src/containers/shared/SectionLayout';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
-import { Navigator } from 'src/services';
+import { Navigator, Toastify } from 'src/services';
 import { getErrorMessage, getUncontrolledInputFieldProps } from 'src/utils';
 import urljoin from 'url-join';
 import HeaderOfSection from '../headerSection';
@@ -86,6 +86,7 @@ const EquipmentInventoryForm: React.FC<Props> = ({
       equipmentInventory: values,
     });
     onSetIsImmutableFormData(true);
+    Toastify.success('Save changes successfully.');
   }, [formData, onSetFormData, onSetIsImmutableFormData, values]);
 
   React.useEffect(() => {

@@ -11,7 +11,7 @@ import SectionLayout from 'src/containers/shared/SectionLayout';
 import { PODeterminationPayload } from 'src/queries/PurchaseOrders';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
-import { Navigator } from 'src/services';
+import { Navigator, Toastify } from 'src/services';
 import { getUncontrolledInputFieldProps } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import urljoin from 'url-join';
@@ -89,6 +89,7 @@ const DeterminationForm: React.FC<Props> = ({
   const handleSaveForm = React.useCallback(() => {
     onSetFormData<UpsertPOFormValue>({ ...formData, determination: { ...values } });
     onSetIsImmutableFormData(true);
+    Toastify.success('Save changes successfully.');
   }, [formData, onSetFormData, onSetIsImmutableFormData, values]);
 
   React.useEffect(() => {

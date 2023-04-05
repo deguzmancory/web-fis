@@ -35,10 +35,17 @@
     display: inline-flex;
     position: relative;
     cursor: pointer;
-    align-items: center;
+    align-items: flex-start;
     -webkit-tap-highlight-color: transparent;
     transform: translate3d(0, 0, 0);
     margin: 16;
+
+    &--align-center {
+      align-items: center;
+    }
+    &--align-end {
+      align-items: flex-end;
+    }
   }
 
   &__label svg {

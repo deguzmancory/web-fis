@@ -157,6 +157,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps, disabled = false }) =
               </div>
             </div>
           }
+          transitionCaseInput
           {...getFieldProps(PO_DETERMINATION_KEY.PRICE_ADJUSTMENT)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.PRICE_ADJUSTMENT)}
           onChange={handleChangeValue}
@@ -192,6 +193,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps, disabled = false }) =
               </div>
             </>
           }
+          transitionCaseInput
           {...getFieldProps(PO_DETERMINATION_KEY.EXEMPT_PROCUREMENT)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.EXEMPT_PROCUREMENT)}
           onChange={handleChangeValue}
@@ -271,6 +273,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps, disabled = false }) =
               </div>
             </>
           }
+          transitionCaseInput
           {...getFieldProps(PO_DETERMINATION_KEY.OTHER)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.OTHER)}
           onChange={handleChangeValue}
@@ -397,6 +400,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps, disabled = false }) =
               </div>
             </>
           }
+          transitionCaseInput
           {...getFieldProps(PO_DETERMINATION_KEY.REASON_6)}
           errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.REASON_6)}
           onChange={handleChangeValue}

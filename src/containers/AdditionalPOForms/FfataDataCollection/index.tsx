@@ -19,6 +19,7 @@ import { getErrorMessage, getUncontrolledInputFieldProps } from 'src/utils';
 import urljoin from 'url-join';
 import HeaderOfSection from '../headerSection';
 import { PO_FFATA_DATA_COLLECTION_KEY } from './enum';
+import { Toastify } from 'src/services';
 
 const FfataDataCollectionForm: React.FC<Props> = ({
   formRef,
@@ -67,7 +68,6 @@ const FfataDataCollectionForm: React.FC<Props> = ({
   }));
 
   const { values, errors, touched, setFieldValue, setFieldTouched, getFieldProps } = formik;
-  console.log('formik: ', formik);
 
   const _getUncontrolledFieldProps = getUncontrolledInputFieldProps({
     values,
@@ -78,6 +78,7 @@ const FfataDataCollectionForm: React.FC<Props> = ({
   const handleSaveForm = React.useCallback(() => {
     onSetFormData<UpsertPOFormValue>({ ...formData, ffata: values });
     onSetIsImmutableFormData(true);
+    Toastify.success('Save changes successfully.');
   }, [formData, onSetFormData, onSetIsImmutableFormData, values]);
 
   React.useEffect(() => {
@@ -231,7 +232,10 @@ const FfataDataCollectionForm: React.FC<Props> = ({
               <Grid item>
                 <RadioButton
                   label={
-                    '4. Did your gross income, from all sources, in the previous tax year exceed $300,000?'
+                    <Typography variant="body1">
+                      4. Did your gross income, from all sources, in the previous tax year exceed
+                      $300,000?
+                    </Typography>
                   }
                   options={optionYesNoValue}
                   isTrueFalseOptions
@@ -267,17 +271,22 @@ const FfataDataCollectionForm: React.FC<Props> = ({
               </Grid>
 
               <Grid item container sx={{ pl: 2, mt: 2 }}>
-                <RadioButton
-                  label={
-                    'Is the Performance Site the same address as listed above in the address information you provided?'
-                  }
-                  options={optionYesNoValue}
-                  isTrueFalseOptions
-                  columns={2}
-                  errorMessage={_getErrorMessage(PO_FFATA_DATA_COLLECTION_KEY.SAME_ADDRESS)}
-                  {...getFieldProps(PO_FFATA_DATA_COLLECTION_KEY.SAME_ADDRESS)}
-                  onChange={setFieldValue}
-                />
+                <Grid item>
+                  <RadioButton
+                    label={
+                      <Typography variant="body1">
+                        Is the Performance Site the same address as listed above in the address
+                        information you provided?
+                      </Typography>
+                    }
+                    options={optionYesNoValue}
+                    isTrueFalseOptions
+                    columns={2}
+                    errorMessage={_getErrorMessage(PO_FFATA_DATA_COLLECTION_KEY.SAME_ADDRESS)}
+                    {...getFieldProps(PO_FFATA_DATA_COLLECTION_KEY.SAME_ADDRESS)}
+                    onChange={setFieldValue}
+                  />
+                </Grid>
 
                 <Grid item container>
                   <Grid item xs={4}>
@@ -302,7 +311,7 @@ const FfataDataCollectionForm: React.FC<Props> = ({
                 <Grid item container spacing={3} sx={{ pt: 2 }}>
                   <Grid item xs={3}>
                     <Input
-                      label={'City'}
+                      label={'City (County)'}
                       errorMessage={_getErrorMessage(
                         PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_CITY
                       )}

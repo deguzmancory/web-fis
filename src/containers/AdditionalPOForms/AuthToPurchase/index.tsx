@@ -1,4 +1,4 @@
-import { Box, Container } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import { FormikProps, useFormik } from 'formik';
 import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
@@ -11,7 +11,7 @@ import SectionLayout from 'src/containers/shared/SectionLayout';
 import { POAuthToPurchasePayload } from 'src/queries/PurchaseOrders';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
-import { Navigator } from 'src/services';
+import { Navigator, Toastify } from 'src/services';
 import { getUncontrolledInputFieldProps } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import urljoin from 'url-join';
@@ -20,6 +20,7 @@ import CheckAndFill from './CheckAndFill';
 import FormCompleted from './FormCompleted';
 import PreAcquisition from './PreAcquisition';
 import PurchaseInfo from './RequOrPurchOrder';
+import { COLOR_CODE } from 'src/appConfig/constants';
 
 const AuthToPurchaseForm: React.FC<Props> = ({
   formRef,
@@ -88,6 +89,7 @@ const AuthToPurchaseForm: React.FC<Props> = ({
   const handleSaveForm = React.useCallback(() => {
     onSetFormData<UpsertPOFormValue>({ ...formData, authToPurchase: values });
     onSetIsImmutableFormData(true);
+    Toastify.success('Save changes successfully.');
   }, [formData, onSetFormData, onSetIsImmutableFormData, values]);
 
   React.useEffect(() => {
@@ -117,7 +119,20 @@ const AuthToPurchaseForm: React.FC<Props> = ({
           <CheckAndFill formikProps={formikProps} disabled={disabled} />
         </SectionLayout>
 
-        <SectionLayout>
+        <Typography
+          borderBottom={COLOR_CODE.DEFAULT_BORDER}
+          variant="h5"
+          sx={{
+            backgroundColor: COLOR_CODE.PRIMARY_500,
+            color: COLOR_CODE.GRAY_LIGHT,
+            py: 1.5,
+            px: 3,
+            mt: 2,
+          }}
+        >
+          Pre acquisition Equipment Screening Certification
+        </Typography>
+        <SectionLayout sx={{ mt: 0 }}>
           <PreAcquisition formikProps={formikProps} disabled={disabled} />
         </SectionLayout>
 

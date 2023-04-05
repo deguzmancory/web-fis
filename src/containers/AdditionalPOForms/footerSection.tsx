@@ -8,7 +8,7 @@ import TypographyLink from 'src/components/TypographyLink';
 import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { setHrefNavigateAdditionalForm, setIsImmutableFormData } from 'src/redux/form/formSlice';
-import { Navigator } from 'src/services';
+import { Navigator, Toastify } from 'src/services';
 import { AdditionalPOFormValue } from '../PurchaseOrderContainer/types';
 import SectionLayout from '../shared/SectionLayout';
 
@@ -39,6 +39,7 @@ const FooterSection: React.FC<Props> = ({
           onCancel: () => {
             onHideAllDialog();
             Navigator.navigate(href);
+            Toastify.success('Dismiss changes successfully.');
           },
         },
       });

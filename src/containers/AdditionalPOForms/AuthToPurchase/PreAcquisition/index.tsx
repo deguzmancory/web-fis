@@ -140,9 +140,6 @@ const PreAcquisition: React.FC<Props> = ({ formikProps, disabled = false }) => {
 
   return (
     <>
-      <Typography fontWeight="bold" borderBottom={COLOR_CODE.DEFAULT_BORDER} variant="h5" mb={1}>
-        Pre acquisition Equipment Screening Certification
-      </Typography>
       <div style={{ display: 'contents', lineHeight: '2.5' }}>
         <div style={{ display: 'contents' }}>
           In accordance with Federal Government regulations and University of Hawaii Administrative
@@ -200,7 +197,7 @@ const PreAcquisition: React.FC<Props> = ({ formikProps, disabled = false }) => {
         </Box>
       </>
       <>
-        <Typography variant="body1" mt={2}>
+        <Typography variant="body2" mt={2}>
           B. Sufficient availability does not exist because:
         </Typography>
         <TextareaAutosize
