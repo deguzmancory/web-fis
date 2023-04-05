@@ -1,6 +1,7 @@
 import { FormikErrors } from 'formik';
 import { get } from 'lodash';
 import { Callback } from 'src/redux/types';
+import { isEmpty } from 'src/validations';
 import { CommonFormikProps } from './commonTypes';
 import { convertCurrencyInputToString, MoneyInputDetect } from './formatUtils';
 import { isEqualPrevAndNextObjByPath } from './handlerUtils';
@@ -93,6 +94,7 @@ export const checkRowStateAndSetValue = <TRecord = any, TValue = any>({
   name,
   index,
   records,
+  columnKeys,
   setFieldValue,
   onRemoveRow,
   onAddRow,
@@ -102,6 +104,7 @@ export const checkRowStateAndSetValue = <TRecord = any, TValue = any>({
   value: TValue;
   index: number;
   records: TRecord[];
+  columnKeys?: string[];
   setFieldValue: (
     field: string,
     value: any,
@@ -119,6 +122,12 @@ export const checkRowStateAndSetValue = <TRecord = any, TValue = any>({
     !Object.entries(currentRow).some(([key, value]) => {
       // exclude the current field cause "currentRow" references to the previous data now
       if (name.includes(key)) return false;
+
+      // specify row keys need to check
+      if (!isEmpty(columnKeys) && !columnKeys.includes(key)) {
+        return false;
+      }
+
       return !!value;
     })
   ) {

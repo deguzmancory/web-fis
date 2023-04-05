@@ -28,6 +28,7 @@ import {
   isCUReviewPOMode,
   isFAReviewPOMode,
   isPiSuEditPOMode,
+  isPOChangeDocumentType,
   isPODocumentType,
 } from 'src/queries/PurchaseOrders/helpers';
 import usePOSearchProject, { SearchProjectsType } from './hooks/usePOSearchProject';
@@ -44,6 +45,7 @@ import SuperQuote from './superQuote';
 import { useParams } from 'react-router-dom';
 import { setFormData } from 'src/redux/form/formSlice';
 import { PO_MODE } from 'src/queries';
+import { isPOChangeAmountForm, isPOChangeDescriptionForm } from 'src/queries/POChange/helpers';
 
 const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPOMode }) => {
   const { id } = useParams<{ id: string }>();
@@ -61,13 +63,20 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
 
   const isBlankDocument = isCreatePOMode(currentPOMode);
   const isPODocument = isPODocumentType(values.documentType);
-  const isPOChangeDocument = isPODocumentType(values.documentType);
+  const isPOChangeDocument = isPOChangeDocumentType(values.documentType);
 
   // show action link only on create PO and PI SU edit mode of PO document
   const showActionLink = isBlankDocument || (isPODocument && isPiSuEditPOMode(currentPOMode));
 
+  //PO logic
   const inPOReviewMode =
     isPODocument && (isFAReviewPOMode(currentPOMode) || isCUReviewPOMode(currentPOMode));
+
+  //PO CHANGE logic
+  const isPOChangeReviewMode =
+    isPOChangeDocument &&
+    isPiSuEditPOMode(currentPOMode) &&
+    (isPOChangeDescriptionForm(values.formNumber) || isPOChangeAmountForm(values.formNumber));
 
   const currentProjectTitle = React.useMemo(() => values.projectTitle, [values.projectTitle]);
   const currentProjectNumber = React.useMemo(() => values.projectNumber, [values.projectNumber]);
@@ -206,14 +215,18 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
     <Box>
       <Grid container spacing={2}>
         <Grid item container spacing={2}>
-          <Grid item xs={12} sm={6} md={4}>
-            <Input
-              label={'Login Name'}
-              errorMessage={_getErrorMessage(PO_FORM_KEY.LOGIN_NAME)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.LOGIN_NAME)}
-              disabled
-            />
-          </Grid>
+          {/* PO logic */}
+          {(isPODocument || isBlankDocument) && (
+            <Grid item xs={12} sm={6} md={4}>
+              <Input
+                label={'Login Name'}
+                errorMessage={_getErrorMessage(PO_FORM_KEY.LOGIN_NAME)}
+                {...getUncontrolledFieldProps(PO_FORM_KEY.LOGIN_NAME)}
+                disabled
+              />
+            </Grid>
+          )}
+
           <Grid item xs={12} sm={6} md={4}>
             <Input
               label={'Date'}
@@ -222,15 +235,46 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               disabled
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Input
-              label={'Purchase Order No.'}
-              errorMessage={_getErrorMessage(PO_FORM_KEY.NUMBER)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.NUMBER)}
-              placeholder={'To be assigned'}
-              disabled
-            />
-          </Grid>
+
+          {/* PO logic */}
+          {(isPODocument || isBlankDocument) && (
+            <Grid item xs={12} sm={6} md={4}>
+              <Input
+                label={'Purchase Order No.'}
+                errorMessage={_getErrorMessage(PO_FORM_KEY.NUMBER)}
+                {...getUncontrolledFieldProps(PO_FORM_KEY.NUMBER)}
+                placeholder={'To be assigned'}
+                disabled
+              />
+            </Grid>
+          )}
+
+          {/* PO Change logic */}
+          {isPOChangeDocument && (
+            <Grid item xs={12} sm={6} md={4}>
+              <Input
+                label={'Purchase Order No. (Origin)'}
+                errorMessage={_getErrorMessage(PO_FORM_KEY.ORIGINAL_PO_NUMBER)}
+                {...getUncontrolledFieldProps(PO_FORM_KEY.ORIGINAL_PO_NUMBER)}
+                placeholder={'To be assigned'}
+                disabled
+              />
+            </Grid>
+          )}
+
+          {/* PO Change logic */}
+          {isPOChangeDocument && (
+            <Grid item xs={12} sm={6} md={4}>
+              <Input
+                label={'Purchase Order No. (New)'}
+                errorMessage={_getErrorMessage(PO_FORM_KEY.NUMBER)}
+                {...getUncontrolledFieldProps(PO_FORM_KEY.NUMBER)}
+                placeholder={'To be assigned'}
+                disabled
+              />
+            </Grid>
+          )}
+
           <Grid item xs={12} sm={8}>
             <Select
               {...getFieldProps(PO_FORM_KEY.PROJECT_TITLE)}
@@ -260,7 +304,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               isClearable={true}
               onChange={(_name, value) => updateProjectFields(value)}
               optionWithSubLabel
-              isDisabled={disabled || inPOReviewMode}
+              isDisabled={disabled || inPOReviewMode || isPOChangeReviewMode}
               footer={
                 <Typography variant="body2">
                   Use “Various" if you want to use multiple projects.
@@ -300,11 +344,10 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               isClearable={true}
               onChange={(_name, value) => updateProjectFields(value)}
               optionWithSubLabel
-              isDisabled={disabled || inPOReviewMode}
+              isDisabled={disabled || inPOReviewMode || isPOChangeReviewMode}
               menuOptionPosition="right"
             />
           </Grid>
-
           <Grid item xs={12} sm={6} md={4}>
             <Input
               label={'PI Name'}
@@ -369,7 +412,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               isClearable={true}
               onChange={(_name, value) => updateVendorFields(value)}
               optionWithSubLabel
-              isDisabled={disabled || inPOReviewMode}
+              isDisabled={disabled || inPOReviewMode || isPOChangeReviewMode}
               menuStyle={{
                 width: '800px',
               }}
@@ -431,17 +474,16 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               isClearable={true}
               onChange={(_name, value) => updateVendorFields(value)}
               optionWithSubLabel
-              isDisabled={disabled || inPOReviewMode}
+              isDisabled={disabled || inPOReviewMode || isPOChangeReviewMode}
             />
           </Grid>
-
           <Grid item xs={12} sm={6}>
             <TextareaAutosize
               label={'Vendor Address, Street/PO Box, City, State, Zip Code'}
               required
               errorMessage={_getErrorMessage(PO_FORM_KEY.VENDOR_ADDRESS)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.VENDOR_ADDRESS)}
-              disabled={disabled || inPOReviewMode}
+              disabled={disabled || inPOReviewMode || isPOChangeReviewMode}
               style={{ minHeight: '100px' }}
             />
           </Grid>
@@ -451,7 +493,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               required
               errorMessage={_getErrorMessage(PO_FORM_KEY.SHIP_TO)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.SHIP_TO)}
-              disabled={disabled || inPOReviewMode}
+              disabled={disabled || inPOReviewMode || isPOChangeReviewMode}
               style={{ minHeight: '100px' }}
             />
           </Grid>
@@ -489,7 +531,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               label={'Discount Terms'}
               errorMessage={_getErrorMessage(PO_FORM_KEY.DISCOUNT_TERMS)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.DISCOUNT_TERMS)}
-              disabled={disabled || inPOReviewMode}
+              disabled={disabled || inPOReviewMode || isPOChangeReviewMode}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -497,7 +539,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
               label={'Quotation No.'}
               errorMessage={_getErrorMessage(PO_FORM_KEY.QUOTATION_NUMBER)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.QUOTATION_NUMBER)}
-              disabled={disabled || inPOReviewMode}
+              disabled={disabled || inPOReviewMode || isPOChangeReviewMode}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -571,6 +613,8 @@ export default React.memo(GeneralInfo, (prevProps, nextProps) => {
     PO_FORM_KEY.PHONE_NUMBER,
     PO_FORM_KEY.FA_STAFF_REVIEWER,
     PO_FORM_KEY.DOCUMENT_TYPE,
+    PO_FORM_KEY.FORM_NUMBER,
+    PO_FORM_KEY.ORIGINAL_PO_NUMBER,
   ]; // only re-render if keys using in this component change
 
   return (

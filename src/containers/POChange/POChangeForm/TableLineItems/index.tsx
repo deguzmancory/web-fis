@@ -1,36 +1,39 @@
 import { Box } from '@mui/material';
 import { isBoolean, isNumber } from 'lodash';
 import React from 'react';
+import CustomTable from 'src/components/CustomTable';
+import { BodyBasicRows, CellType } from 'src/components/CustomTable/types';
 import {
   EllipsisTooltipInput,
   EllipsisTooltipInputCurrency,
   TextareaAutosize,
 } from 'src/components/common';
-import CustomTable from 'src/components/CustomTable';
-import { BodyBasicRows, CellType } from 'src/components/CustomTable/types';
+import { isVariousProject } from 'src/containers/PurchaseOrderContainer/GeneralInfo/helpers';
+import {
+  initialLineItemValue,
+  lineItemsColumnNames,
+} from 'src/containers/PurchaseOrderContainer/constants';
+import { PO_FORM_KEY, PO_LINE_ITEM_KEY } from 'src/containers/PurchaseOrderContainer/enums';
+import {
+  POLineItemFormValue,
+  UpsertPOFormValue,
+  UpsertPOFormikProps,
+} from 'src/containers/PurchaseOrderContainer/types';
 import SearchProjectNumber from 'src/containers/shared/SearchProjectNumber';
+import { PO_MODE } from 'src/queries';
 import {
   checkRowStateAndSetValue,
   getErrorMessage,
   isEqualPrevAndNextFormikValues,
 } from 'src/utils';
-import { initialLineItemValue, lineItemsColumnNames } from '../constants';
-import { PO_FORM_KEY, PO_LINE_ITEM_KEY } from '../enums';
-import { isVariousProject } from '../GeneralInfo/helpers';
-import { POLineItemFormValue, UpsertPOFormikProps, UpsertPOFormValue } from '../types';
-import { isCUReviewPOMode, isFAReviewPOMode } from 'src/queries/PurchaseOrders/helpers';
-import { PO_MODE } from 'src/queries';
 
 const TableLineItems: React.FC<Props> = ({
   formikProps,
   disabled = false,
-  currentPOMode,
+  allowUpdateInfoAndAmount,
+  allowUpdateDescription,
   filterOriginItemValue,
 }) => {
-  const isFAReviewMode = isFAReviewPOMode(currentPOMode);
-  const isCUReviewMode = isCUReviewPOMode(currentPOMode);
-  const isReviewMode = isFAReviewMode || isCUReviewMode;
-
   const { values, errors, touched, setFieldValue, getFieldProps, setFieldTouched } = formikProps;
 
   const lineItemsValue = React.useMemo(() => {
@@ -210,7 +213,7 @@ const TableLineItems: React.FC<Props> = ({
               setFieldTouched={setFieldTouched}
               setFieldValue={setFieldValue}
               sx={{ width: 155 }}
-              disabled={disabled || isCUReviewMode}
+              disabled={disabled || !allowUpdateInfoAndAmount}
               onChange={(name, value) => {
                 handleInputChange({
                   index,
@@ -239,7 +242,7 @@ const TableLineItems: React.FC<Props> = ({
               style={{ width: hideProjectNumberColumn ? 90 : 85 }}
               hideEllipsisTooltip
               maxLength={5}
-              disabled={disabled || isCUReviewMode}
+              disabled={disabled || !allowUpdateInfoAndAmount}
             />
           ),
           width: hideProjectNumberColumn ? 90 : 85,
@@ -263,7 +266,7 @@ const TableLineItems: React.FC<Props> = ({
               style={{ width: hideProjectNumberColumn ? 90 : 85 }}
               hideEllipsisTooltip
               maxLength={4}
-              disabled={disabled || isCUReviewMode}
+              disabled={disabled || !allowUpdateInfoAndAmount}
               required
             />
           ),
@@ -285,7 +288,7 @@ const TableLineItems: React.FC<Props> = ({
               style={{ width: hideProjectNumberColumn ? 90 : 85 }}
               hideEllipsisTooltip
               maxLength={3}
-              disabled={disabled || isCUReviewMode}
+              disabled={disabled || !allowUpdateInfoAndAmount}
             />
           ),
           width: hideProjectNumberColumn ? 90 : 85,
@@ -310,7 +313,7 @@ const TableLineItems: React.FC<Props> = ({
                 paddingTop: '4px',
                 paddingBottom: 0,
               }}
-              disabled={disabled || isCUReviewMode}
+              disabled={disabled || !allowUpdateDescription}
             />
           ),
         },
@@ -335,7 +338,7 @@ const TableLineItems: React.FC<Props> = ({
               style={{ width: hideProjectNumberColumn ? 100 : 80 }}
               lengthShowTooltip={hideProjectNumberColumn ? 7 : 5}
               hideArrowTypeNumber
-              disabled={disabled || isReviewMode}
+              disabled={disabled || !allowUpdateInfoAndAmount}
             />
           ),
           width: hideProjectNumberColumn ? 100 : 80,
@@ -355,7 +358,7 @@ const TableLineItems: React.FC<Props> = ({
               }
               style={{ width: hideProjectNumberColumn ? 100 : 80 }}
               lengthShowTooltip={hideProjectNumberColumn ? 7 : 5}
-              disabled={disabled || isReviewMode}
+              disabled={disabled || !allowUpdateInfoAndAmount}
             />
           ),
           width: hideProjectNumberColumn ? 100 : 80,
@@ -379,7 +382,7 @@ const TableLineItems: React.FC<Props> = ({
               }
               textAlign="right"
               lengthShowTooltip={hideProjectNumberColumn ? 14 : 11}
-              disabled={disabled || isReviewMode}
+              disabled={disabled || !allowUpdateInfoAndAmount}
               style={{ width: hideProjectNumberColumn ? 130 : 115 }}
             />
           ),
@@ -426,6 +429,8 @@ type Props = {
   disabled?: boolean;
   currentPOMode: PO_MODE;
   filterOriginItemValue?: boolean;
+  allowUpdateInfoAndAmount: boolean;
+  allowUpdateDescription: boolean;
 };
 
 export default React.memo(TableLineItems, (prevProps, nextProps) => {

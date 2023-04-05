@@ -20,6 +20,9 @@ const InputPhone: React.FC<Props> = ({
   icon = null,
   required = false,
   disabled,
+  international = true,
+  countries,
+  onlyUS,
   onChange,
   ...props
 }) => {
@@ -41,7 +44,7 @@ const InputPhone: React.FC<Props> = ({
     >
       <View className="cmp-phoneinput">
         <PhoneInput
-          international
+          international={onlyUS ? false : international}
           defaultCountry={defaultCountryCode}
           className={cn('cmp-phoneinput__input', {
             'cmp-phoneinput__input--error': !isEmpty(errorMessage),
@@ -50,6 +53,7 @@ const InputPhone: React.FC<Props> = ({
           onChange={handleChange}
           name={name}
           countryOptionsOrder={['US']}
+          countries={onlyUS ? ['US'] : countries}
           {...props}
         />
 
@@ -78,6 +82,9 @@ type Props = {
   icon?: React.ReactNode;
   required?: boolean;
   disabled?: boolean;
+  international?: boolean;
+  countries?: Country[];
+  onlyUS?: boolean;
   onChange?: Callback;
 };
 

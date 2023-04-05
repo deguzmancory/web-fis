@@ -101,7 +101,6 @@ export const getInitialPOFormValue = ({ profile }: { profile: MyProfile }): Upse
     directInquiriesTo: roleInfo?.directInquiriesTo || '',
     phoneNumber: roleInfo?.phoneNumber || '',
     faStaffReviewer: roleInfo?.faStaffToReview || '',
-    action: null,
   };
 };
 

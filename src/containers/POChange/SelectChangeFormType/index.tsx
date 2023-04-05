@@ -3,13 +3,13 @@ import React from 'react';
 import { Button } from 'src/components/common';
 import SectionLayout from 'src/containers/shared/SectionLayout';
 import BreadcrumbsPOChangeForm from '../breadcrumbs';
-import { PO_CHANGE_FORM_NUMBER, SELECT_CHANGE_FORM_TYPE_QUERY_KEY } from './enums';
+import { SELECT_CHANGE_FORM_TYPE_QUERY_KEY } from './enums';
 import { useLocation } from 'react-router-dom';
 import { usePostPoChangeType } from 'src/queries';
 import { handleShowErrorMsg } from 'src/utils';
 import { Navigator } from 'src/services';
 import { PATHS } from 'src/appConfig/paths';
-import { PO_CHANGE_FORM_QUERY_KEY } from '../POChangeForm/enums';
+import { PO_CHANGE_FORM_NUMBER } from 'src/queries/POChange/enums';
 
 const buttons = [
   {
@@ -56,7 +56,8 @@ const SelectChangeFormType: React.FC<Props> = ({ disabled = false }) => {
         onSettled: (data) => {
           //TODO: update to onSuccess
           Navigator.navigate(
-            `${PATHS.poChangeForm}?${PO_CHANGE_FORM_QUERY_KEY.FORM_NUMBER}=${formNumber}`
+            // `${PATHS.poChangeForm}?${PO_CHANGE_FORM_QUERY_KEY.FORM_NUMBER}=${formNumber}`
+            `${PATHS.poChangeForm}/${data.id}`
           );
         },
       }

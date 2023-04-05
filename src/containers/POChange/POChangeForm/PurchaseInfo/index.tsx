@@ -1,26 +1,28 @@
-import { Box, Divider, Grid, Typography } from '@mui/material';
+import { Divider, Grid, Typography } from '@mui/material';
 import React from 'react';
 import {
-  Checkbox,
   EllipsisTooltipInput,
   EllipsisTooltipInputCurrency,
-  Input,
-  RadioButton,
+  TextareaAutosize,
 } from 'src/components/common';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
-import { PO_FORM_KEY } from '../enums';
-import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
-import { fedAttachmentOptions, FED_ATTACHMENT_VALUE, MAX_TAX_NUMBER } from './helpers';
-import { isCUReviewPOMode, isFAReviewPOMode } from 'src/queries/PurchaseOrders/helpers';
+import { MAX_TAX_NUMBER } from './helpers';
+
+import { PO_FORM_KEY } from 'src/containers/PurchaseOrderContainer/enums';
+import {
+  UpsertPOFormValue,
+  UpsertPOFormikProps,
+} from 'src/containers/PurchaseOrderContainer/types';
 import { PO_MODE } from 'src/queries';
+import { getTypeOfPOChange } from '../helpers';
 
-const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPOMode }) => {
-  const isFAReviewMode = isFAReviewPOMode(currentPOMode);
-  const isCUReviewMode = isCUReviewPOMode(currentPOMode);
-  const isReviewMode = isFAReviewMode || isCUReviewMode;
-
-  const { values, errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } =
-    formikProps;
+const PurchaseInfo: React.FC<Props> = ({
+  formikProps,
+  disabled = false,
+  allowUpdateAmount = true,
+  showAmountChangeSection = false,
+}) => {
+  const { values, errors, touched, getFieldProps, setFieldValue } = formikProps;
 
   const _getErrorMessage = (fieldName: PO_FORM_KEY) => {
     return getErrorMessage(fieldName, { touched, errors });
@@ -28,9 +30,6 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentP
 
   const handleTaxTotalChange = (name, value) => {
     const taxTotalValue = value;
-    // const subTotalValue = values.subtotal || 0;
-    // const taxRateValue = (taxTotalValue / subTotalValue) * 100;
-    // setFieldValue(PO_FORM_KEY.TAX_RATE, taxRateValue.toFixed(3));
 
     setFieldValue(name, taxTotalValue);
     setFieldValue(PO_FORM_KEY.TAX_RATE, '');
@@ -57,8 +56,9 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentP
 
   // update totalValue when subTotal or taxTotal or shippingTotal change
   React.useEffect(() => {
-    const subTotalValue = values.subtotal || 0;
     let taxTotalValue = 0;
+    const subTotalValue = values.subtotal || 0;
+    const originalTotal = values.originalTotal;
 
     // if taxRate inputted => taxTotal can not over 10,000,000$
     if (!!values.taxRate) {
@@ -69,81 +69,63 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentP
     }
 
     const shippingTotalValue = values.shippingTotal || 0;
-
     const totalValue = Number(subTotalValue) + Number(taxTotalValue) + Number(shippingTotalValue);
+
     setFieldValue(PO_FORM_KEY.TOTAL, totalValue);
-  }, [setFieldValue, values.shippingTotal, values.subtotal, values.taxRate, values.taxTotal]);
+    setFieldValue(PO_FORM_KEY.AMOUNT_CHANGE, Math.abs(totalValue - Number(originalTotal)));
+  }, [
+    setFieldValue,
+    values.originalTotal,
+    values.shippingTotal,
+    values.subtotal,
+    values.taxRate,
+    values.taxTotal,
+  ]);
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={7}>
-        <Box mb={2}>
-          <Checkbox.Item
-            label="Confirming Purchase Order (Do not duplicate this order. This P.O is a formal authorization for an order sent earlier.)"
-            {...getFieldProps(PO_FORM_KEY.CONFIRMING)}
-            errorMessage={_getErrorMessage(PO_FORM_KEY.CONFIRMING)}
-            disabled={disabled || isReviewMode}
-          />
-        </Box>
-        <Box mb={2}>
-          <Checkbox.Item
-            label="RCUH considers this P.O. exempt from the Hawaii General Excise Tax."
-            {...getFieldProps(PO_FORM_KEY.GET_EXEMPT)}
-            errorMessage={_getErrorMessage(PO_FORM_KEY.GET_EXEMPT)}
-            disabled={disabled || isReviewMode}
-          />
-        </Box>
-        <Box mb={2}>
-          <Typography variant="h5">
-            EXEMPTION OF PURCHASING FROM STATE OF HAWAII GENERAL EXCISE TAX
-          </Typography>
-          <Typography variant="body2">
-            The Research Corporation of the University of Hawaii considers this purchase to be
-            exempt from the payment of the State of Hawaii general excise tax in accordance with
-            Section 237-26, HRS, as amended.
-          </Typography>
-        </Box>
-        <Box mb={2}>
-          <Typography variant="h5">
-            This order is subject to the terms and conditions attached.
-          </Typography>
-        </Box>
-        <Box mb={2}>
-          <Checkbox.Item
-            label="Attachment 31, General Terms and Conditions Applicable to All Purchase Orders"
-            {...getFieldProps(PO_FORM_KEY.ATTACHMENT_31)}
-            errorMessage={_getErrorMessage(PO_FORM_KEY.ATTACHMENT_31)}
-            disabled={disabled || isReviewMode}
-          />
-        </Box>
-        <Box mb={2}>
-          <RadioButton
-            columns={1}
-            options={[
-              ...fedAttachmentOptions,
-              {
-                label: FED_ATTACHMENT_VALUE.UH_SUBAWARD,
-                value: FED_ATTACHMENT_VALUE.UH_SUBAWARD,
-                subLabel: (
-                  <Box width={'30%'} ml={2}>
-                    <Input
-                      maxLength={10}
-                      {...getUncontrolledFieldProps(PO_FORM_KEY.UH_SUBAWARD_NUMBER)}
-                      errorMessage={_getErrorMessage(PO_FORM_KEY.UH_SUBAWARD_NUMBER)}
-                      disabled={disabled || isReviewMode}
-                    />
-                  </Box>
-                ),
-              },
-            ]}
-            {...getFieldProps(PO_FORM_KEY.FED_ATTACHMENT)}
-            errorMessage={_getErrorMessage(PO_FORM_KEY.FED_ATTACHMENT)}
-            onChange={setFieldValue}
-            itemClassName="mb-except-last-16"
-            disabled={disabled || isReviewMode}
-          />
-        </Box>
+      <Grid item xs={12}>
+        <Typography variant="body1">
+          <b>Type of Change:</b> {getTypeOfPOChange(values.formNumber)}
+        </Typography>
       </Grid>
+
+      <Grid item xs={12} md={7}>
+        <Grid item xs={11} container spacing={2}>
+          <Grid item xs={12}>
+            <TextareaAutosize
+              label={'Reason for Change'}
+              minRows={3}
+              errorMessage={_getErrorMessage(PO_FORM_KEY.REASON_FOR_CHANGE)}
+            />
+          </Grid>
+          {showAmountChangeSection && (
+            <Grid item container xs={12} spacing={2}>
+              <Grid item xs={2.5}>
+                <Typography variant="body2">Amount Change:</Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <EllipsisTooltipInputCurrency
+                  {...getFieldProps(PO_FORM_KEY.AMOUNT_CHANGE)}
+                  lengthShowTooltip={14}
+                  disabled
+                />
+              </Grid>
+              <Grid item xs={3.5}>
+                <Typography variant="body2">Remaining Balance on P.O. after this change</Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <EllipsisTooltipInputCurrency
+                  {...getFieldProps(PO_FORM_KEY.BALANCE)}
+                  lengthShowTooltip={14}
+                  disabled
+                />
+              </Grid>
+            </Grid>
+          )}
+        </Grid>
+      </Grid>
+
       <Grid item xs={12} md={5}>
         <Grid container spacing={2}>
           <Grid item xs={8} className="justify-flex-end">
@@ -168,7 +150,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentP
               lengthShowTooltip={8}
               type="number"
               hideArrowTypeNumber
-              disabled={disabled || isReviewMode}
+              disabled={disabled || !allowUpdateAmount}
             />
           </Grid>
           <Grid item xs={2} className="justify-flex-end">
@@ -180,7 +162,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentP
               onChange={handleTaxTotalChange}
               textAlign="right"
               lengthShowTooltip={14}
-              disabled={disabled || isReviewMode}
+              disabled={disabled || !allowUpdateAmount}
             />
           </Grid>
           <Grid item xs={8} className="justify-flex-end">
@@ -194,7 +176,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentP
               onChange={setFieldValue}
               textAlign="right"
               lengthShowTooltip={14}
-              disabled={disabled || isReviewMode}
+              disabled={disabled || !allowUpdateAmount}
             />
           </Grid>
           <Grid item xs={12}>
@@ -223,6 +205,8 @@ interface Props {
   formikProps: UpsertPOFormikProps;
   disabled?: boolean;
   currentPOMode: PO_MODE;
+  allowUpdateAmount: boolean;
+  showAmountChangeSection: boolean;
 }
 
 export default React.memo(PurchaseInfo, (prevProps, nextProps) => {
@@ -237,6 +221,7 @@ export default React.memo(PurchaseInfo, (prevProps, nextProps) => {
     PO_FORM_KEY.FED_ATTACHMENT,
     PO_FORM_KEY.SUBTOTAL,
     PO_FORM_KEY.TAX_RATE,
+    PO_FORM_KEY.SUPER_QUOTE_NUMBER,
     PO_FORM_KEY.TAX_TOTAL,
     PO_FORM_KEY.SHIPPING_TOTAL,
     PO_FORM_KEY.TOTAL,
@@ -244,6 +229,8 @@ export default React.memo(PurchaseInfo, (prevProps, nextProps) => {
 
   return (
     prevProps.disabled === nextProps.disabled &&
+    prevProps.allowUpdateAmount === nextProps.allowUpdateAmount &&
+    prevProps.showAmountChangeSection === nextProps.showAmountChangeSection &&
     isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
       prevFormikProps,
       nextFormikProps,

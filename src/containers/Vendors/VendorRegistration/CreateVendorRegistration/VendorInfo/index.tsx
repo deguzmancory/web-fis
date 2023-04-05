@@ -249,6 +249,7 @@ const VendorInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
             {...getFieldProps(VENDOR_REGISTRATION_FORM_KEY.VENDOR_ADDRESS_PHONE_NUMBER)}
             onChange={setFieldValue}
             disabled={disabled}
+            onlyUS
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4}>

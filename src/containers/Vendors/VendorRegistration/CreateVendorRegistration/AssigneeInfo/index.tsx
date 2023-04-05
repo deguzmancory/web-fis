@@ -129,6 +129,7 @@ const AssigneeInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
             {...getFieldProps(VENDOR_REGISTRATION_FORM_KEY.PHONE_NUMBER)}
             onChange={setFieldValue}
             disabled={disabled}
+            onlyUS
             required
           />
         </Grid>

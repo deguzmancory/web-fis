@@ -1,5 +1,9 @@
 import { PATHS } from 'src/appConfig/paths';
-import { PO_ADDITIONAL_FORM_CODE, PO_ADDITIONAL_FORM_EXTERNAL_LINK } from './enums';
+import {
+  PO_ADDITIONAL_FORM_CODE,
+  PO_ADDITIONAL_FORM_EXTERNAL_LINK,
+  PO_LINE_ITEM_KEY,
+} from './enums';
 import { AdditionalPOFormValue } from './types';
 
 export const initialAvailableForms: AdditionalPOFormValue[] = [
@@ -399,7 +403,7 @@ export const emptyUpsertPOFormValue = {
   documentType: null,
 
   //poChange
-  formNumber: '',
+  formNumber: null,
 
   //junk
   majorVersion: '',
@@ -407,3 +411,14 @@ export const emptyUpsertPOFormValue = {
   formName: '',
   shortFormName: '',
 };
+
+export const lineItemsColumnNames = [
+  PO_LINE_ITEM_KEY.SUB_PROJECT,
+  PO_LINE_ITEM_KEY.BUDGET_CATEGORY,
+  PO_LINE_ITEM_KEY.SUB_BUDGET_CATEGORY,
+  PO_LINE_ITEM_KEY.DESCRIPTION,
+  PO_LINE_ITEM_KEY.QUANTITY,
+  PO_LINE_ITEM_KEY.UNIT,
+  PO_LINE_ITEM_KEY.UNIT_PRICE,
+  PO_LINE_ITEM_KEY.EXT,
+];

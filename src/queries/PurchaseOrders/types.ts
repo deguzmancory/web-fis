@@ -1,4 +1,5 @@
 import { GetPresignedPayload } from '../File';
+import { PO_CHANGE_FORM_NUMBER } from '../POChange/enums';
 import { PO_ACTION, PO_DETAIL_STATUS, PO_DOCUMENT_TYPE } from './enums';
 
 export interface SharedPODetail {
@@ -37,6 +38,12 @@ export interface SharedPODetail {
   total: number;
   shippingTotal: number;
 
+  //original purchase info
+  originalShippingTotal?: string;
+  originalSubtotal?: string;
+  originalTaxTotal?: string;
+  originalTotal?: string;
+
   //Internal Special Instructions
   internalA: string;
   internalA1: string;
@@ -74,18 +81,21 @@ export interface SharedPODetail {
   status?: PO_DETAIL_STATUS;
   auditTrails?: POAuditTrails[];
   documentType?: PO_DOCUMENT_TYPE;
+  balance?: number;
 
   //poChange
-  formNumber?: string;
+  formNumber?: PO_CHANGE_FORM_NUMBER;
+  originalPoNumber?: number;
+  poChangeNumber?: number;
+  reasonForChange?: string;
+  amountChange?: number;
 
   //unknown //TODO: huy_dang check unused key
   majorVersion?: string;
   minorVersion: number;
   formName?: string;
   shortFormName?: string;
-  amountChange?: number;
   zipcode?: string;
-  reasonForChange?: string;
 }
 
 export interface UpsertPOPayload extends SharedPODetail {
@@ -108,13 +118,9 @@ export interface UpsertPOPayload extends SharedPODetail {
 
 export interface PODetailResponse extends SharedPODetail {
   id?: string;
-
   createdAt: string;
   updatedAt: string;
 
-  poChangeNumber: number;
-  previousPoNumber: number;
-  originalPoNumber: number;
   routeToFa: string;
   preparerEmail: string;
   faReviewer: string;
@@ -129,13 +135,8 @@ export interface PODetailResponse extends SharedPODetail {
   approved: any; //TODO: update type
   vendorName2: string;
   modifiedDate: string;
-  originalTaxTotal: number;
-  originalSubtotal: number;
-  originalTotal: number;
-  originalShippingTotal: number;
   userType: string;
   printedDate: string;
-  balance: number;
   hasChangeDocument: boolean;
   hasFinalPdf: boolean;
   isHistorical: boolean;

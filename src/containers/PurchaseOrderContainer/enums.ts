@@ -13,6 +13,7 @@ export enum PO_FORM_KEY {
   LOGIN_NAME = 'loginName',
   DATE = 'date',
   NUMBER = 'number',
+  ORIGINAL_PO_NUMBER = 'originalPoNumber',
   PROJECT_TITLE = 'projectTitle',
   PROJECT_NUMBER = 'projectNumber',
   PI_NAME = 'piName',
@@ -102,9 +103,17 @@ export enum PO_FORM_KEY {
   ACTION = 'action',
   PLACEHOLDER_FILE_ATTACHMENT = 'placeholderFileAttachment',
   DOCUMENT_TYPE = 'documentType',
+  BALANCE = 'balance',
 
   //PO CHANGE
   FORM_NUMBER = 'formNumber',
+  ORIGINAL_SHIPPING_TOTAL = 'originalShippingTotal',
+  ORIGINAL_SUBTOTAL = 'originalSubtotal',
+  ORIGINAL_TAX_TOTAL = 'originalTaxTotal',
+  ORIGINAL_TOTAL = 'originalTotal',
+  ORIGINAL_TAX_RATE = 'originalTaxRate',
+  REASON_FOR_CHANGE = 'reasonForChange',
+  AMOUNT_CHANGE = 'amountChange',
 }
 
 export enum PO_ADDITIONAL_FORM_CODE {
