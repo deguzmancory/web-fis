@@ -88,7 +88,8 @@ const NewVendorCheckList: React.FC<Props> = ({ onNextPage }) => {
           </TypographyLink>
         </TypographyListItem>
         <TypographyListItem>
-          To make permanent vendor record changes, email your request to rcuhdisb@rcuh.com.
+          To make permanent vendor record changes, email your request to{' '}
+          <TypographyLink href="mailto:rcuhdisb@rcuh.com">rcuhdisb@rcuh.com</TypographyLink>..
         </TypographyListItem>
       </Layout>
 

@@ -15,7 +15,7 @@ import { useZipCode } from 'src/queries';
 import { StateService } from 'src/services';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { VENDOR_REGISTRATION_FORM_KEY } from '../enums';
-import { VendorRegistrationFormikProps, VendorRegistrationFormValue } from '../types';
+import { VendorRegistrationFormValue, VendorRegistrationFormikProps } from '../types';
 
 const VendorInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const {
@@ -139,12 +139,14 @@ const VendorInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
           </Grid>
         </Grid>
 
+        <Typography style={{ display: 'contents' }}>
+          Or{' '}
+          <Typography style={{ display: 'contents' }} variant="body1" fontWeight="bold">
+            Business/Trade name
+          </Typography>
+        </Typography>
         <Input
-          label={
-            <>
-              Or <b>Business/Trade name</b>
-            </>
-          }
+          label=""
           errorMessage={_getErrorMessage(VENDOR_REGISTRATION_FORM_KEY.COMPANY)}
           {...getUncontrolledFieldProps(VENDOR_REGISTRATION_FORM_KEY.COMPANY)}
           disabled={disabled || disabledCompanyNameFields}

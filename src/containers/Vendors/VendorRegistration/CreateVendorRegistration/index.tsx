@@ -1,4 +1,4 @@
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { FormikProps, useFormik } from 'formik';
 import { Location } from 'history';
 import React from 'react';
@@ -23,13 +23,13 @@ import {
 import urljoin from 'url-join';
 import { VENDOR_REGISTRATION_NAVIGATE_FROM, VENDOR_REGISTRATION_PARAMS } from '../enums';
 import AssigneeInfo from './AssigneeInfo';
-import { initialVendorRegistrationFromData, vendorRegistrationValidationSchema } from './constants';
 import FileAttachments from './FileAttachments';
-import { getVendorRegistrationPayload } from './helpers';
 import SelectVendor from './SelectVendor';
-import CreateVendorRegistrationTitle from './titleHeader';
-import { VendorRegistrationFormikProps, VendorRegistrationFormValue } from './types';
 import VendorInfo from './VendorInfo';
+import { initialVendorRegistrationFromData, vendorRegistrationValidationSchema } from './constants';
+import { getVendorRegistrationPayload } from './helpers';
+import CreateVendorRegistrationTitle from './titleHeader';
+import { VendorRegistrationFormValue, VendorRegistrationFormikProps } from './types';
 
 const CreateVendorRegistration: React.FC<Props> = ({
   formData,
@@ -184,6 +184,16 @@ const CreateVendorRegistration: React.FC<Props> = ({
     return isFormDirty;
   };
 
+  const Header = React.useMemo(() => {
+    return (
+      <Stack direction={'row'} alignItems={'center'} justifyContent="end">
+        <Typography>
+          <span className="has-text-danger fw-bold text-is-16">*</span> = required field
+        </Typography>
+      </Stack>
+    );
+  }, []);
+
   return (
     <Prompt
       title={'Leave site?'}
@@ -195,7 +205,7 @@ const CreateVendorRegistration: React.FC<Props> = ({
       <Box>
         <CreateVendorRegistrationTitle />
 
-        <SectionLayout>
+        <SectionLayout header={Header}>
           <VendorInfo formikProps={formikProps} disabled={isViewOnly} />
         </SectionLayout>
         <SectionLayout>

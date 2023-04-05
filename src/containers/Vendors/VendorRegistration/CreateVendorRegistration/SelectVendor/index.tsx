@@ -4,14 +4,14 @@ import { Element, Input, RadioButton } from 'src/components/common';
 import RequiredSign from 'src/containers/shared/RequiredSign';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { vendorOptions } from '../constants';
-import { VENDOR_OPTION_VALUE, VENDOR_REGISTRATION_FORM_KEY } from '../enums';
+import { VENDOR_OPTION_LABEL, VENDOR_OPTION_VALUE, VENDOR_REGISTRATION_FORM_KEY } from '../enums';
 import {
   isVendorRequiredEinNumber,
   isVendorRequiredRcuhNumber,
   isVendorRequiredTIN,
   isVendorRequiredUhNumber,
 } from '../helpers';
-import { VendorRegistrationFormikProps, VendorRegistrationFormValue } from '../types';
+import { VendorRegistrationFormValue, VendorRegistrationFormikProps } from '../types';
 
 const SelectVendor: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const {
@@ -77,7 +77,7 @@ const SelectVendor: React.FC<Props> = ({ formikProps, disabled = false }) => {
           options={[
             ...vendorOptions,
             {
-              label: VENDOR_OPTION_VALUE.OTHER,
+              label: VENDOR_OPTION_LABEL.OTHER,
               value: VENDOR_OPTION_VALUE.OTHER,
               subLabel: (
                 <Box width={'30%'} ml={2}>
@@ -95,6 +95,7 @@ const SelectVendor: React.FC<Props> = ({ formikProps, disabled = false }) => {
               ),
             },
           ]}
+          itemStyle={{ alignItems: 'start' }}
           {...getFieldProps(VENDOR_REGISTRATION_FORM_KEY.FED_TAX_CLASS)}
           onChange={handleSelectVendorClass}
           itemClassName="mb-except-last-6"

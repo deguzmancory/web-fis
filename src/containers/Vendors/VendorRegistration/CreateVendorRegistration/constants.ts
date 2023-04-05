@@ -266,8 +266,4 @@ export const vendorOptions = [
     label: VENDOR_OPTION_LABEL.US_GOVERNMENT_ENTITY,
     value: VENDOR_OPTION_VALUE.US_GOVERNMENT_ENTITY,
   },
-  {
-    label: VENDOR_OPTION_LABEL.OTHER,
-    value: VENDOR_OPTION_VALUE.OTHER,
-  },
 ];
