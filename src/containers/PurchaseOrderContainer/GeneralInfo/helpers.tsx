@@ -83,7 +83,10 @@ export const getVendorOptions = ({ vendors }: { vendors: Vendor[] }): SelectOpti
       >
         <p style={{ width: '12%' }}>{vendor.code}</p>
         <p style={{ width: '8%' }}>{vendor.w9}</p>
-        <p style={{ width: '84%' }}>{vendor.name}</p>
+        <div style={{ width: '84%' }}>
+          <p>{vendor.name}</p>
+          <p className="mt-2">{vendor.name2}</p>
+        </div>
       </div>
     ),
     value: vendor,

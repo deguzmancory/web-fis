@@ -12,13 +12,18 @@ import { SUBMITTED_PO_QUERY } from '../enums';
 import { PO_DOCUMENT_TYPE } from 'src/queries';
 import { getSubmittedPOContent } from './helpers';
 
+export type SubmittedPOContent = ReturnType<typeof getSubmittedPOContent>;
+
 const SubmittedPO: React.FC<Props> = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const poNumber = query.get(SUBMITTED_PO_QUERY.PO_NUMBER) || null;
   const documentType = query.get(SUBMITTED_PO_QUERY.DOCUMENT_TYPE) || null;
-  const content = getSubmittedPOContent({ documentType: documentType as PO_DOCUMENT_TYPE, id });
+  const content: SubmittedPOContent = getSubmittedPOContent({
+    documentType: documentType as PO_DOCUMENT_TYPE,
+    id,
+  });
 
   return (
     <Box p={4}>

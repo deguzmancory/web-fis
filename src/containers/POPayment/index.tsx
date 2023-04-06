@@ -7,7 +7,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundary';
 import NoPermission from 'src/components/NoPermission';
-import { Accordion, LoadingCommon } from 'src/components/common';
+import { LoadingCommon } from 'src/components/common';
 import ActionButtons from 'src/containers/PurchaseOrderContainer/ActionButtons';
 import ErrorWrapperPO from 'src/containers/PurchaseOrderContainer/ErrorWrapper/index.';
 import GeneralInfo from 'src/containers/PurchaseOrderContainer/GeneralInfo';
@@ -43,25 +43,15 @@ import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, RoleService, Toastify } from 'src/services';
 import Prompt from 'src/services/Prompt';
 import { getUncontrolledInputFieldProps, handleShowErrorMsg } from 'src/utils';
-import { PO_CHANGE_FORM_QUERY_KEY } from '../POChangeForm/enums';
-import BreadcrumbsPOChangeForm from '../breadcrumbs';
-import { getPoChangeFormTitle } from './helpers';
-import { PO_CHANGE_FORM_NUMBER } from 'src/queries/POChange/enums';
-import OriginalPurchaseInfo from './OriginalPurchaseInfo';
-import PurchaseInfo from './PurchaseInfo';
-import TableLineItems from './TableLineItems';
-import AdditionalForms from 'src/containers/PurchaseOrderContainer/AdditionalForms';
-import {
-  isPOChangeAmountForm,
-  isPOChangeAmountTerminatedForm,
-  isPOChangeDescriptionForm,
-} from 'src/queries/POChange/helpers';
-import AuthorizedBy from 'src/containers/PurchaseOrderContainer/AuthorizedBy';
-import FileAttachments from 'src/containers/PurchaseOrderContainer/FileAttachments';
-import AuditInformation from 'src/containers/PurchaseOrderContainer/AuditInformation';
-import InternalComments from 'src/containers/PurchaseOrderContainer/InternalComments';
+import AuditInformation from '../PurchaseOrderContainer/AuditInformation';
+import FileAttachments from '../PurchaseOrderContainer/FileAttachments';
+import InternalComments from '../PurchaseOrderContainer/InternalComments';
+import PurchaseInfo from '../PurchaseOrderContainer/PurchaseInfo';
+import TableLineItems from '../PurchaseOrderContainer/TableLineItems';
+import BreadcrumbsPOPayment from './breadcrumbs';
+import { PO_PAYMENT_FORM_QUERY_KEY } from './enums';
 
-const POChangeForm: React.FC<Props> = ({
+const POPayment: React.FC<Props> = ({
   formData,
   isImmutableFormData,
   onSetFormData,
@@ -71,14 +61,11 @@ const POChangeForm: React.FC<Props> = ({
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const query = React.useMemo(() => new URLSearchParams(location.search), [location]);
-  // const formNumber = React.useMemo(
-  //   () => query.get(PO_CHANGE_FORM_QUERY_KEY.FORM_NUMBER) || null,
-  //   [query]
-  // );
   const scrollToParam = React.useMemo(
-    () => query.get(PO_CHANGE_FORM_QUERY_KEY.SCROLL_TO) || null,
+    () => query.get(PO_PAYMENT_FORM_QUERY_KEY.SCROLL_TO) || null,
     [query]
   );
+
   // Auto scroll to additional form section base on scrollToParam
   React.useEffect(() => {
     if (scrollToParam && scrollToParam === PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS) {
@@ -94,7 +81,6 @@ const POChangeForm: React.FC<Props> = ({
 
   const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
   const poStatus = React.useMemo(() => formData?.status, [formData?.status]);
-  const poChangeFormNumber = React.useMemo(() => formData?.formNumber, [formData?.formNumber]);
   const currentPOMode = React.useMemo(
     () => getCurrentPOEditMode({ id, poStatus, currentRole }),
     [id, poStatus, currentRole]
@@ -103,17 +89,6 @@ const POChangeForm: React.FC<Props> = ({
 
   const isPiSuEditMode = isPiSuEditPOMode(currentPOMode);
   const isFAReviewMode = isFAReviewPOMode(currentPOMode);
-
-  const isInChangeDescriptionForm = isPOChangeDescriptionForm(poChangeFormNumber);
-  const isInChangeAmountForm = isPOChangeAmountForm(poChangeFormNumber);
-  const isInChangeAmountTerminatedForm = isPOChangeAmountTerminatedForm(poChangeFormNumber);
-
-  const isAllowUpdateAmount =
-    (isInChangeAmountForm || isInChangeAmountTerminatedForm) && (isPiSuEditMode || isFAReviewMode);
-  const isAllowUpdateDescription = isInChangeDescriptionForm && (isFAReviewMode || isPiSuEditMode);
-  const isAllowUpdateAdditionalForm = isAllowUpdateAmount || isAllowUpdateDescription;
-
-  const showAmountChangeSection = isInChangeAmountForm || isInChangeAmountTerminatedForm;
 
   const { profile } = useProfile();
   const { onGetPOById, handleInvalidatePODetail } = useGetPODetail({
@@ -244,49 +219,14 @@ const POChangeForm: React.FC<Props> = ({
             currentPOMode={currentPOMode}
           />
         </SectionLayout>
+
         <SectionLayout>
-          <Accordion title="Original Order">
-            <TableLineItems
-              formikProps={formikProps}
-              disabled
-              currentPOMode={currentPOMode}
-              filterOriginItemValue={true}
-              allowUpdateDescription={false}
-              allowUpdateInfoAndAmount={false}
-            />
-            <Box mt={2}>
-              <OriginalPurchaseInfo formikProps={formikProps} />
-            </Box>
-          </Accordion>
+          <TableLineItems formikProps={formikProps} disabled currentPOMode={currentPOMode} />
         </SectionLayout>
         <SectionLayout>
-          <TableLineItems
-            formikProps={formikProps}
-            disabled={disabledSection}
-            currentPOMode={currentPOMode}
-            filterOriginItemValue={false}
-            allowUpdateInfoAndAmount={isAllowUpdateAmount}
-            allowUpdateDescription={isAllowUpdateAmount || isAllowUpdateDescription}
-          />
+          <PurchaseInfo formikProps={formikProps} disabled currentPOMode={currentPOMode} />
         </SectionLayout>
-        <SectionLayout>
-          <PurchaseInfo
-            formikProps={formikProps}
-            disabled={disabledSection}
-            currentPOMode={currentPOMode}
-            allowUpdateAmount={isAllowUpdateAmount}
-            showAmountChangeSection={showAmountChangeSection}
-          />
-        </SectionLayout>
-        <SectionLayout>
-          <AdditionalForms
-            formikProps={formikProps}
-            disabled={disabledSection || !isAllowUpdateAdditionalForm}
-          />
-        </SectionLayout>
-        <SectionLayout>
-          <AuthorizedBy formikProps={formikProps} disabled={disabledSection} />
-        </SectionLayout>
+
         <SectionLayout>
           <FileAttachments
             formikProps={formikProps}
@@ -334,11 +274,12 @@ const POChangeForm: React.FC<Props> = ({
     >
       <Box py={4}>
         <Container maxWidth="lg">
-          <BreadcrumbsPOChangeForm />
+          <BreadcrumbsPOPayment />
+
           <Typography mt={2} variant="h2">
-            RCUH Purchase Order Change Form RCUH{' '}
-            {getPoChangeFormTitle(poChangeFormNumber as PO_CHANGE_FORM_NUMBER)}
+            RCUH Purchase Order Payment
           </Typography>
+
           <Suspense fallback={<LoadingCommon />}>
             {!hasPermission ? (
               <SectionLayout>
@@ -362,7 +303,7 @@ const POChangeForm: React.FC<Props> = ({
   );
 };
 
-const POChangeFormWrapper: React.FC<Props> = ({ ...props }) => {
+const POPaymentWrapper: React.FC<Props> = ({ ...props }) => {
   return (
     <CustomErrorBoundary FallbackComponent={(props) => <ErrorWrapperPO {...props} />}>
       <Suspense
@@ -372,7 +313,7 @@ const POChangeFormWrapper: React.FC<Props> = ({ ...props }) => {
           </Box>
         }
       >
-        <POChangeForm {...props} />
+        <POPayment {...props} />
       </Suspense>
     </CustomErrorBoundary>
   );
@@ -391,4 +332,4 @@ const mapDispatchToProps = {
   onSetIsImmutableFormData: setIsImmutableFormData,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(POChangeFormWrapper);
+export default connect(mapStateToProps, mapDispatchToProps)(POPaymentWrapper);

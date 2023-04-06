@@ -41,6 +41,7 @@ const SubmittedPurchaseOrder = React.lazy(() => import('./PurchaseOrderContainer
 const PurchasingOrders = React.lazy(() => import('./POListing'));
 const SelectChangeFormType = React.lazy(() => import('./POChange/SelectChangeFormType'));
 const POChangeForm = React.lazy(() => import('./POChange/POChangeForm'));
+const POPayment = React.lazy(() => import('./POPayment'));
 
 const Routing: React.FC<{ location: Location }> = (props) => {
   Navigator.setTopHistory(useHistory());
@@ -106,6 +107,13 @@ const Routing: React.FC<{ location: Location }> = (props) => {
               pageRequiredAuth
               path={`${PATHS.poChangeForm}/:id`}
               component={POChangeForm}
+            />
+
+            {/* PO Change */}
+            <CustomRoute
+              pageRequiredAuth
+              path={`${PATHS.poPaymentForm}/:id`}
+              component={POPayment}
             />
 
             {/* Purchasing List*/}

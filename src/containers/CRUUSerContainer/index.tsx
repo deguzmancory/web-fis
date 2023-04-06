@@ -1,20 +1,19 @@
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { FormikProps, useFormik } from 'formik';
 import { Location } from 'history';
+import { isEqual } from 'lodash';
 import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
-import { Accordion, Button, LoadingCommon } from 'src/components/common';
 import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundary';
+import { Accordion, Button, LoadingCommon } from 'src/components/common';
 import { useProfile } from 'src/queries';
-import { isCU, ROLE_NAME } from 'src/queries/Profile/helpers';
+import { ROLE_NAME, isCU } from 'src/queries/Profile/helpers';
 import { useCreateUser, useGetAllUsers, useGetUser } from 'src/queries/Users';
 import { useUpdateUser } from 'src/queries/Users/useUpdateUser';
-import { setCurrentRole } from 'src/redux/auth/authSlice';
-import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { IRootState } from 'src/redux/rootReducer';
-import { Navigator, PermissionsService, RoleService, Toastify, TokenService } from 'src/services';
+import { Navigator, PermissionsService, Toastify, TokenService } from 'src/services';
 import Prompt from 'src/services/Prompt';
 import {
   deepKeys,
@@ -24,22 +23,21 @@ import {
 } from 'src/utils';
 import { localTimeToHawaii } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
+import SectionLayout from '../shared/SectionLayout';
 import BreadcrumbsUserDetail from './breadcrumbs';
 import { CRUUSER_KEY, USER_MODE } from './enums';
 import ErrorWrapperCRUUser from './error';
 import {
+  CRUUserFormValue,
   CRUUserFormikProps,
   cRUUserFormSchema,
-  CRUUserFormValue,
   formatPayloadAddNew,
   formatPayloadUpdate,
   getValueRoles,
   getValueUserStatus,
   initialCRUUserFormValue,
 } from './helper';
-import SectionLayout from '../shared/SectionLayout';
 import './styles.scss';
-import { isEqual } from 'lodash';
 
 const AuditInformation = React.lazy(() => import('./AuditInformation'));
 const UserType = React.lazy(() => import('./UserType'));
@@ -49,13 +47,7 @@ const NoPermission = React.lazy(() => import('src/components/NoPermission'));
 
 const clsPrefix = 'ctn-cruuser';
 
-const CRUUserContainer: React.FC<Props> = ({
-  currentRole,
-  onShowDialog,
-  onHideDialog,
-  onHideAllDialog,
-  onSetCurrentRole,
-}) => {
+const CRUUserContainer: React.FC<Props> = ({ currentRole }) => {
   const { userId } = useParams<{ userId: string }>();
 
   const isEditUserMode = React.useMemo(() => {
@@ -81,19 +73,7 @@ const CRUUserContainer: React.FC<Props> = ({
     createUser,
     isLoading: isLoadingCreateUser,
     isSuccess: successCreateUser,
-  } = useCreateUser({
-    onSuccess(_data, variables, _context) {
-      Toastify.success(`Add User ${variables.username} successfully.`);
-      handleInvalidateAllUser();
-    },
-    onError(error, _variables, _context) {
-      if (error.message === 'An account with this username already existed.') {
-        setFieldError(CRUUSER_KEY.USERNAME, 'The username specified already exists.');
-        handleScrollToTopError();
-      }
-      handleShowErrorMsg(error);
-    },
-  });
+  } = useCreateUser();
 
   React.useEffect(() => {
     if (successCreateUser) {
@@ -101,40 +81,48 @@ const CRUUserContainer: React.FC<Props> = ({
     }
   }, [successCreateUser]);
 
-  const { updateUser, isLoading: isLoadingUpdateUser } = useUpdateUser({
-    onSuccess(_data, variables, _context) {
-      Toastify.success(`Update User ${variables.username} successfully.`);
-      handleInvalidateUser();
-      handleInvalidateAllUser();
-      window.scrollTo(0, 0);
-      const isMyProfile = userId === mainProfile.id;
-      if (isMyProfile) {
-        const updatedDefaultRole = variables.defaultUserType as ROLE_NAME;
-
-        RoleService.setCurrentRole(updatedDefaultRole);
-        onSetCurrentRole(updatedDefaultRole);
-        handleInvalidateProfile();
-        TokenService.forceRefreshToken();
-        getMyProfile();
-      }
-    },
-    onError(error: Error, _variables, _context) {
-      if (error['error']?.includes('Already found an entry for the provided username')) {
-        setFieldError(CRUUSER_KEY.USERNAME, 'The username specified already exists.');
-        window.scrollTo(0, 0);
-      } else {
-        handleShowErrorMsg(error);
-      }
-    },
-  });
+  const { updateUser, isLoading: isLoadingUpdateUser } = useUpdateUser();
 
   const handleFormSubmit = (values: CRUUserFormValue) => {
     if (isEditUserMode) {
       const payload = formatPayloadUpdate(values, user);
-      updateUser(payload);
+      updateUser(payload, {
+        onSuccess(_data, variables, _context) {
+          Toastify.success(`Update User ${variables.username} successfully.`);
+          handleInvalidateUser();
+          handleInvalidateAllUser();
+          window.scrollTo(0, 0);
+          const isMyProfile = userId === mainProfile.id;
+          if (isMyProfile) {
+            handleInvalidateProfile();
+            TokenService.forceRefreshToken();
+            getMyProfile();
+          }
+        },
+        onError(error: Error, _variables, _context) {
+          if (error['error']?.includes('Already found an entry for the provided username')) {
+            setFieldError(CRUUSER_KEY.USERNAME, 'The username specified already exists.');
+            window.scrollTo(0, 0);
+          } else {
+            handleShowErrorMsg(error);
+          }
+        },
+      });
     } else {
       const payload = formatPayloadAddNew(values);
-      createUser(payload);
+      createUser(payload, {
+        onSuccess(_data, variables, _context) {
+          Toastify.success(`Add User ${variables.username} successfully.`);
+          handleInvalidateAllUser();
+        },
+        onError(error, _variables, _context) {
+          if (error.message === 'An account with this username already existed.') {
+            setFieldError(CRUUSER_KEY.USERNAME, 'The username specified already exists.');
+            handleScrollToTopError();
+          }
+          handleShowErrorMsg(error);
+        },
+      });
     }
   };
 
@@ -152,7 +140,7 @@ const CRUUserContainer: React.FC<Props> = ({
         username: item.delegatedUser.username,
         fullName: item.delegatedUser.fullName,
         roleName: item.userRole.role.displayName,
-        projectNumber: item.projectNumber,
+        projectNumber: item.projectNumber || null,
         startDate: item.startDate,
         startDateTemp: null,
         endDate: item.endDate,
@@ -363,12 +351,7 @@ const mapStateToProps = (state: IRootState) => ({
   currentRole: state.auth.currentRole,
 });
 
-const mapDispatchToProps = {
-  onShowDialog: showDialog,
-  onHideDialog: hideDialog,
-  onHideAllDialog: hideAllDialog,
-  onSetCurrentRole: setCurrentRole,
-};
+const mapDispatchToProps = {};
 
 const ConnectCRUUserContainer = connect(mapStateToProps, mapDispatchToProps)(CRUUserContainer);
 

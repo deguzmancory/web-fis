@@ -11,7 +11,7 @@ import { setCurrentRole } from 'src/redux/auth/authSlice';
 import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { IRootState } from 'src/redux/store';
-import { Navigator, RoleService, Toastify } from 'src/services';
+import { Navigator, Toastify } from 'src/services';
 import {
   deepKeys,
   getUncontrolledInputFieldProps,
@@ -20,18 +20,18 @@ import {
 } from 'src/utils';
 import { localTimeToHawaii } from 'src/utils/momentUtils';
 import AuditInformation from '../CRUUSerContainer/AuditInformation';
-import { CRUUSER_KEY, USER_MODE } from '../CRUUSerContainer/enums';
 import GeneralInfo from '../CRUUSerContainer/GeneralInfo';
+import InternalComments from '../CRUUSerContainer/InternalComments';
+import UserType from '../CRUUSerContainer/UserType';
+import { CRUUSER_KEY, USER_MODE } from '../CRUUSerContainer/enums';
 import {
-  CRUUserFormikProps,
   CRUUserFormValue,
+  CRUUserFormikProps,
   getValueRoles,
   getValueUserStatus,
   initialCRUUserFormValue,
 } from '../CRUUSerContainer/helper';
-import InternalComments from '../CRUUSerContainer/InternalComments';
 import SectionLayout from '../shared/SectionLayout';
-import UserType from '../CRUUSerContainer/UserType';
 import BreadcrumbsEditProfile from './breadcrumbs';
 import { editProfileFormSchema, formatEditProfilePayload } from './helpers';
 
@@ -45,15 +45,6 @@ const EditProfile: React.FC<Props> = ({
   const { myPermissions } = useMyPermissions();
   const formRef = useRef<FormikProps<CRUUserFormValue>>(null);
   const { isLoading: loading, updateProfile } = useUpdateProfile({
-    onSuccess(_data, variables, _context) {
-      const updatedDefaultRole = variables.defaultUserType as ROLE_NAME;
-
-      Toastify.success(`Profile updated successfully.`);
-      RoleService.setCurrentRole(updatedDefaultRole);
-      onSetCurrentRole(updatedDefaultRole);
-      handleInvalidateProfile();
-      window.scrollTo(0, 0);
-    },
     onError(error, _variables, _context) {
       if (error.message?.includes('Current password is incorrect')) {
         setFieldError(CRUUSER_KEY.CURRENT_PASSWORD, 'Current password is incorrect');
@@ -70,7 +61,7 @@ const EditProfile: React.FC<Props> = ({
       username: item.delegatedUser.username,
       fullName: item.delegatedUser.fullName,
       roleName: item.userRole.role.displayName,
-      projectNumber: item.projectNumber,
+      projectNumber: item.projectNumber || null,
       startDate: item.startDate,
       startDateTemp: null,
       endDate: item.endDate,
@@ -123,7 +114,13 @@ const EditProfile: React.FC<Props> = ({
   const handleFormSubmit = (values: CRUUserFormValue) => {
     const payload = formatEditProfilePayload(values, mainProfile);
 
-    updateProfile(payload);
+    updateProfile(payload, {
+      onSuccess(_data, _variables, _context) {
+        Toastify.success(`Profile updated successfully.`);
+        handleInvalidateProfile();
+        window.scrollTo(0, 0);
+      },
+    });
   };
 
   const {

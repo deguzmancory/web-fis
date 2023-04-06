@@ -68,12 +68,11 @@ const CreateVendorRegistration: React.FC<Props> = ({
 
     updateVendorRegistration(payload, {
       onSuccess: async ({ data }) => {
-        //TODO: huy_dang check response
         if (redirectSection === VENDOR_REGISTRATION_NAVIGATE_FROM.PO) {
           const vendorResponse = {
             name: data.line1,
-            code: data.code,
             name2: data.line2,
+            code: data.code,
             w9: data.w9,
             address1: data.line3,
             address2: data.line4,

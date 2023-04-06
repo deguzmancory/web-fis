@@ -1,6 +1,5 @@
 import { Box, Typography } from '@mui/material';
 import React from 'react';
-import { COLOR_CODE } from 'src/appConfig/constants';
 import { DatePicker, Input, TextareaAutosize } from 'src/components/common';
 import CustomTable from 'src/components/CustomTable';
 import { BodyBasicRows, CellType } from 'src/components/CustomTable/types';

@@ -49,7 +49,7 @@ const BreadcrumbsVendorRegistration: React.FC<Props> = ({ isFrom }) => {
           <Typography variant="body2">Create Vendor</Typography>,
         ];
     }
-  }, [documentId, isFrom]);
+  }, [dispatch, documentId, isFrom]);
 
   return (
     <Breadcrumbs aria-label="breadcrumb">

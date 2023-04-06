@@ -253,7 +253,7 @@ export const getPayloadDelegateAccess = (delegateAccess: CRUUserFormValue['deleg
     startDate: item.startDate ? dayjs(item.startDate).format(DateFormatWithYear) : null,
     endDate: item.endDate ? dayjs(item.endDate).format(DateFormatWithYear) : null,
     isAllProjects: false,
-    projectNumber: item.projectNumber,
+    projectNumber: item.projectNumber || null,
     id: item.id || undefined,
   }));
 };

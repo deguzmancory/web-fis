@@ -8,7 +8,7 @@ import { Button, Select } from 'src/components/common';
 import { CRUUSER_USER_TYPE_KEY } from 'src/containers/CRUUSerContainer/enums';
 import { CRUUserFormikProps } from 'src/containers/CRUUSerContainer/helper';
 import { UserFiCode } from 'src/queries/Contents/types';
-import { isPI, ROLE_NAME } from 'src/queries/Profile/helpers';
+import { ROLE_NAME, isPI } from 'src/queries/Profile/helpers';
 import { FinancialProject } from 'src/queries/Projects/types';
 import { useGetFinancialProjects } from 'src/queries/Projects/useGetFinancialProjects';
 import { getDateDisplay } from 'src/utils';
@@ -115,7 +115,18 @@ const SearchProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoa
           options={
             filteredFinancialProjects
               ? filteredFinancialProjects.map((project) => ({
-                  label: `${project.number} ${project.name}`,
+                  label: (
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: '64px auto',
+                        columnGap: '10px',
+                      }}
+                    >
+                      <p>{project.number}</p>
+                      <p>{project.name}</p>
+                    </div>
+                  ),
                   value: { projectNumber: project.number },
                   subLabel: `(${getDateDisplay(project.startDate)} - ${getDateDisplay(
                     project.endDate
@@ -126,6 +137,9 @@ const SearchProjects: React.FC<Props> = ({ formikProps, prefix = '', type, isLoa
           isLoading={isLoadingSearchProjects}
           onInputChange={(value: string) => {
             debounceSearchProjectsValue(value);
+          }}
+          filterOption={(_option, _inputValue) => {
+            return true; //ignore default filter option by label
           }}
           hideSearchIcon
           isClearable={true}

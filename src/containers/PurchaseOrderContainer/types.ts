@@ -41,19 +41,9 @@ export interface UpsertPOFormValue
     | 'vendorCode'
     | 'lineItems'
     | 'equipmentInventory'
-    // | 'subtotal'
-    // | 'taxRate'
-    // | 'taxTotal'
-    // | 'total'
-    // | 'shippingTotal'
   > {
   placeholderFileAttachment: POPlaceholderFileAttachment;
 
-  // subtotal: number;
-  // taxRate: number;
-  // taxTotal: number;
-  // total: number;
-  // shippingTotal: number;
   projectTitle: string | FinancialProject;
   projectNumber: string | FinancialProject;
   vendorName: string | Vendor;
