@@ -3,19 +3,17 @@ import { FormikProps, useFormik } from 'formik';
 import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { PATHS } from 'src/appConfig/paths';
 import { initialSoleSourceValue } from 'src/containers/PurchaseOrderContainer/constants';
-import { PO_FORM_ELEMENT_ID, PO_FORM_PARAMS } from 'src/containers/PurchaseOrderContainer/enums';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
 import { POSoleSourcePayload } from 'src/queries/PurchaseOrders';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
-import { Navigator, Toastify } from 'src/services';
+import { Toastify } from 'src/services';
 import { getUncontrolledInputFieldProps } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
-import urljoin from 'url-join';
 import HeaderOfSection from '../headerSection';
+import { handleNavigateBackToMainForm } from '../helpers';
 import Certification from '../shared/Certification';
 import SoleSourceInfo from './SoleSourceInfo';
 import SoleSourceStatement from './SoleSourceStatement';
@@ -34,20 +32,11 @@ const SoleSourceForm: React.FC<Props> = ({
 
   const handleFormSubmit = () => {
     handleSaveForm();
-
-    if (documentId) {
-      Navigator.navigate(
-        `${urljoin(PATHS.purchaseOrderDetail, documentId)}?${PO_FORM_PARAMS.SCROLL_TO}=${
-          PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS
-        }`
-      );
-    } else if (hrefNavigationForm) {
-      Navigator.navigate(hrefNavigationForm);
-    } else {
-      Navigator.navigate(
-        `${PATHS.createPurchaseOrders}?${PO_FORM_PARAMS.SCROLL_TO}=${PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS}`
-      );
-    }
+    handleNavigateBackToMainForm({
+      documentId,
+      hrefNavigationForm,
+      documentType: formData?.documentType,
+    });
   };
 
   const handleResetForm = () => {
@@ -75,8 +64,10 @@ const SoleSourceForm: React.FC<Props> = ({
   const handleSaveForm = React.useCallback(() => {
     onSetFormData<UpsertPOFormValue>({ ...formData, soleSource: values });
     onSetIsImmutableFormData(true);
-    Toastify.success('Save changes successfully.');
-  }, [formData, onSetFormData, onSetIsImmutableFormData, values]);
+    if (!disabled) {
+      Toastify.success('Save changes successfully.');
+    }
+  }, [formData, disabled, onSetFormData, onSetIsImmutableFormData, values]);
 
   React.useEffect(() => {
     return history.listen(() => {

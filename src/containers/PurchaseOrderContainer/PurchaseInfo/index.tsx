@@ -11,14 +11,9 @@ import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
 import { fedAttachmentOptions, FED_ATTACHMENT_VALUE, MAX_TAX_NUMBER } from './helpers';
-import { isCUReviewPOMode, isFAReviewPOMode } from 'src/queries/PurchaseOrders/helpers';
 import { PO_MODE } from 'src/queries';
 
 const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPOMode }) => {
-  const isFAReviewMode = isFAReviewPOMode(currentPOMode);
-  const isCUReviewMode = isCUReviewPOMode(currentPOMode);
-  const isReviewMode = isFAReviewMode || isCUReviewMode;
-
   const { values, errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } =
     formikProps;
 
@@ -82,7 +77,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentP
             label="Confirming Purchase Order (Do not duplicate this order. This P.O is a formal authorization for an order sent earlier.)"
             {...getFieldProps(PO_FORM_KEY.CONFIRMING)}
             errorMessage={_getErrorMessage(PO_FORM_KEY.CONFIRMING)}
-            disabled={disabled || isReviewMode}
+            disabled={disabled}
           />
         </Box>
         <Box mb={2}>
@@ -90,7 +85,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentP
             label="RCUH considers this P.O. exempt from the Hawaii General Excise Tax."
             {...getFieldProps(PO_FORM_KEY.GET_EXEMPT)}
             errorMessage={_getErrorMessage(PO_FORM_KEY.GET_EXEMPT)}
-            disabled={disabled || isReviewMode}
+            disabled={disabled}
           />
         </Box>
         <Box mb={2}>
@@ -113,7 +108,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentP
             label="Attachment 31, General Terms and Conditions Applicable to All Purchase Orders"
             {...getFieldProps(PO_FORM_KEY.ATTACHMENT_31)}
             errorMessage={_getErrorMessage(PO_FORM_KEY.ATTACHMENT_31)}
-            disabled={disabled || isReviewMode}
+            disabled={disabled}
           />
         </Box>
         <Box mb={2}>
@@ -130,7 +125,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentP
                       maxLength={10}
                       {...getUncontrolledFieldProps(PO_FORM_KEY.UH_SUBAWARD_NUMBER)}
                       errorMessage={_getErrorMessage(PO_FORM_KEY.UH_SUBAWARD_NUMBER)}
-                      disabled={disabled || isReviewMode}
+                      disabled={disabled}
                     />
                   </Box>
                 ),
@@ -140,7 +135,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentP
             errorMessage={_getErrorMessage(PO_FORM_KEY.FED_ATTACHMENT)}
             onChange={setFieldValue}
             itemClassName="mb-except-last-16"
-            disabled={disabled || isReviewMode}
+            disabled={disabled}
           />
         </Box>
       </Grid>
@@ -168,7 +163,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentP
               lengthShowTooltip={8}
               type="number"
               hideArrowTypeNumber
-              disabled={disabled || isReviewMode}
+              disabled={disabled}
             />
           </Grid>
           <Grid item xs={2} className="justify-flex-end">
@@ -180,7 +175,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentP
               onChange={handleTaxTotalChange}
               textAlign="right"
               lengthShowTooltip={14}
-              disabled={disabled || isReviewMode}
+              disabled={disabled}
             />
           </Grid>
           <Grid item xs={8} className="justify-flex-end">
@@ -194,7 +189,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentP
               onChange={setFieldValue}
               textAlign="right"
               lengthShowTooltip={14}
-              disabled={disabled || isReviewMode}
+              disabled={disabled}
             />
           </Grid>
           <Grid item xs={12}>

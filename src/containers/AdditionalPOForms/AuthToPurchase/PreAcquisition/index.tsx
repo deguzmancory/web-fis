@@ -83,6 +83,7 @@ const PreAcquisition: React.FC<Props> = ({ formikProps, disabled = false }) => {
               }
               style={{ width: 370, padding: '0 2px', marginTop: '2px' }}
               resize="none"
+              disabled={disabled}
             />
           ),
           width: 90,
@@ -104,6 +105,7 @@ const PreAcquisition: React.FC<Props> = ({ formikProps, disabled = false }) => {
               }}
               resize="none"
               style={{ width: 480, padding: '0 2px', marginTop: '2px' }}
+              disabled={disabled}
             />
           ),
           width: 90,

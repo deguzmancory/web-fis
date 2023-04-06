@@ -71,10 +71,6 @@ const POChangeForm: React.FC<Props> = ({
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const query = React.useMemo(() => new URLSearchParams(location.search), [location]);
-  // const formNumber = React.useMemo(
-  //   () => query.get(PO_CHANGE_FORM_QUERY_KEY.FORM_NUMBER) || null,
-  //   [query]
-  // );
   const scrollToParam = React.useMemo(
     () => query.get(PO_CHANGE_FORM_QUERY_KEY.SCROLL_TO) || null,
     [query]
@@ -195,6 +191,11 @@ const POChangeForm: React.FC<Props> = ({
 
   const initialFormValue = React.useMemo(() => formData || emptyUpsertPOFormValue, [formData]);
 
+  const validationSchema = React.useMemo(
+    () => getPOFormValidationSchema({ action: formAction }),
+    [formAction]
+  );
+
   const handleFormSubmit = (values: UpsertPOFormValue) => {
     const editPOPayload = getUpsertPOPayload({ formValues: values, action: values.action });
     updatePO(editPOPayload);
@@ -212,7 +213,7 @@ const POChangeForm: React.FC<Props> = ({
     validateForm,
   } = useFormik<UpsertPOFormValue>({
     initialValues: initialFormValue,
-    validationSchema: getPOFormValidationSchema,
+    validationSchema: validationSchema,
     enableReinitialize: true,
     onSubmit: handleFormSubmit,
   });
@@ -309,6 +310,11 @@ const POChangeForm: React.FC<Props> = ({
   };
 
   const blockCondition = (location: Location<string>) => {
+    if (location.pathname.includes(PATHS.createPurchaseOrders)) {
+      onSetIsImmutableFormData(false);
+      return true;
+    }
+
     const acceptablePaths = [PATHS.poAdditionalForm, PATHS.poChangeForm];
     const isAcceptablePath = acceptablePaths.some((path) => location.pathname.includes(path));
 

@@ -41,7 +41,7 @@ const EditProfile: React.FC<Props> = ({
   onHideAllDialog,
   onSetCurrentRole,
 }) => {
-  const { mainProfile, handleInvalidateProfile } = useProfile();
+  const { mainProfile, handleInvalidateProfile, getMyProfile } = useProfile();
   const { myPermissions } = useMyPermissions();
   const formRef = useRef<FormikProps<CRUUserFormValue>>(null);
   const { isLoading: loading, updateProfile } = useUpdateProfile({
@@ -118,6 +118,7 @@ const EditProfile: React.FC<Props> = ({
       onSuccess(_data, _variables, _context) {
         Toastify.success(`Profile updated successfully.`);
         handleInvalidateProfile();
+        getMyProfile();
         window.scrollTo(0, 0);
       },
     });

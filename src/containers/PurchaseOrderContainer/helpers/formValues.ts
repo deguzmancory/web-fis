@@ -90,7 +90,7 @@ export const getInitialPOFormValue = ({ profile }: { profile: MyProfile }): Upse
       }${roleInfo.addressZip4 && `${roleInfo.addressZip4} `}${
         roleInfo.addressCountry && `${roleInfo.addressCountry} `
       }
-  `
+      `
     : '';
 
   return {

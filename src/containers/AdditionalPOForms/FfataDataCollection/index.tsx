@@ -5,21 +5,18 @@ import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import { optionYesNoValue } from 'src/appConfig/options';
-import { PATHS } from 'src/appConfig/paths';
 import { Input, RadioButton, TextareaAutosize } from 'src/components/common';
 import { initialFfataValue } from 'src/containers/PurchaseOrderContainer/constants';
-import { PO_FORM_ELEMENT_ID, PO_FORM_PARAMS } from 'src/containers/PurchaseOrderContainer/enums';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
 import { FfataPayload } from 'src/queries/PurchaseOrders';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
-import { Navigator } from 'src/services';
-import { getErrorMessage, getUncontrolledInputFieldProps } from 'src/utils';
-import urljoin from 'url-join';
-import HeaderOfSection from '../headerSection';
-import { PO_FFATA_DATA_COLLECTION_KEY } from './enum';
 import { Toastify } from 'src/services';
+import { getErrorMessage, getUncontrolledInputFieldProps } from 'src/utils';
+import HeaderOfSection from '../headerSection';
+import { handleNavigateBackToMainForm } from '../helpers';
+import { PO_FFATA_DATA_COLLECTION_KEY } from './enum';
 
 const FfataDataCollectionForm: React.FC<Props> = ({
   formRef,
@@ -34,20 +31,11 @@ const FfataDataCollectionForm: React.FC<Props> = ({
 
   const handleFormSubmit = () => {
     handleSaveForm();
-
-    if (documentId) {
-      Navigator.navigate(
-        `${urljoin(PATHS.purchaseOrderDetail, documentId)}?${PO_FORM_PARAMS.SCROLL_TO}=${
-          PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS
-        }`
-      );
-    } else if (hrefNavigationForm) {
-      Navigator.navigate(hrefNavigationForm);
-    } else {
-      Navigator.navigate(
-        `${PATHS.createPurchaseOrders}?${PO_FORM_PARAMS.SCROLL_TO}=${PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS}`
-      );
-    }
+    handleNavigateBackToMainForm({
+      documentId,
+      hrefNavigationForm,
+      documentType: formData?.documentType,
+    });
   };
 
   const handleResetForm = () => {
@@ -78,8 +66,10 @@ const FfataDataCollectionForm: React.FC<Props> = ({
   const handleSaveForm = React.useCallback(() => {
     onSetFormData<UpsertPOFormValue>({ ...formData, ffata: values });
     onSetIsImmutableFormData(true);
-    Toastify.success('Save changes successfully.');
-  }, [formData, onSetFormData, onSetIsImmutableFormData, values]);
+    if (!disabled) {
+      Toastify.success('Save changes successfully.');
+    }
+  }, [formData, disabled, onSetFormData, onSetIsImmutableFormData, values]);
 
   React.useEffect(() => {
     return history.listen(() => {
@@ -243,6 +233,7 @@ const FfataDataCollectionForm: React.FC<Props> = ({
                   errorMessage={_getErrorMessage(PO_FFATA_DATA_COLLECTION_KEY.EXCEEDS_300000)}
                   {...getFieldProps(PO_FFATA_DATA_COLLECTION_KEY.EXCEEDS_300000)}
                   onChange={setFieldValue}
+                  disabled={disabled}
                 />
               </Grid>
               <Grid item sx={{ px: 2, mb: 1 }}>
@@ -267,6 +258,7 @@ const FfataDataCollectionForm: React.FC<Props> = ({
                     PO_FFATA_DATA_COLLECTION_KEY.SUB_AWARD_TITLE_AND_DESC
                   )}
                   {...getFieldProps(PO_FFATA_DATA_COLLECTION_KEY.SUB_AWARD_TITLE_AND_DESC)}
+                  disabled={disabled}
                 />
               </Grid>
 
@@ -285,6 +277,7 @@ const FfataDataCollectionForm: React.FC<Props> = ({
                     errorMessage={_getErrorMessage(PO_FFATA_DATA_COLLECTION_KEY.SAME_ADDRESS)}
                     {...getFieldProps(PO_FFATA_DATA_COLLECTION_KEY.SAME_ADDRESS)}
                     onChange={setFieldValue}
+                    disabled={disabled}
                   />
                 </Grid>
 
@@ -304,6 +297,7 @@ const FfataDataCollectionForm: React.FC<Props> = ({
                       {...getFieldProps(
                         PO_FFATA_DATA_COLLECTION_KEY.PERFORMANCE_SITE_ADDRESS_STREET
                       )}
+                      disabled={disabled}
                     />
                   </Grid>
                 </Grid>

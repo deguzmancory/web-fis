@@ -23,6 +23,7 @@ import urljoin from 'url-join';
 import BreadcrumbsAdditionalPOForms from './breadcrumbs';
 import { PO_ADDITIONAL_FORM_PARAMS } from './enum';
 import FooterSection from './footerSection';
+import { handleNavigateBackToMainForm } from './helpers';
 
 const SoleSource = React.lazy(() => import('./SoleSource'));
 const AuthToPurchase = React.lazy(() => import('./AuthToPurchase'));
@@ -124,7 +125,11 @@ const PurchaseOrderContainer: React.FC<Props> = ({
             setTimeout(() => {
               formRef.current.handleReset();
               onSetIsImmutableFormData(true);
-              Navigator.navigate(PATHS.createPurchaseOrders);
+              handleNavigateBackToMainForm({
+                documentId,
+                hrefNavigationForm: null,
+                documentType: formData?.documentType,
+              });
             }, 50);
           },
           onCancel: () => {
@@ -134,9 +139,20 @@ const PurchaseOrderContainer: React.FC<Props> = ({
       });
     } else {
       onSetIsImmutableFormData(true);
-      Navigator.navigate(PATHS.createPurchaseOrders);
+      handleNavigateBackToMainForm({
+        documentId,
+        hrefNavigationForm: null,
+        documentType: formData?.documentType,
+      });
     }
-  }, [onHideAllDialog, onHideDialog, onSetIsImmutableFormData, onShowDialog]);
+  }, [
+    documentId,
+    onShowDialog,
+    onHideDialog,
+    onSetIsImmutableFormData,
+    formData?.documentType,
+    onHideAllDialog,
+  ]);
 
   const handleSubmitForm = () => {
     formRef.current.handleSubmit();
@@ -166,13 +182,15 @@ const PurchaseOrderContainer: React.FC<Props> = ({
         <FooterSection
           formCode={formCode as PO_ADDITIONAL_FORM_CODE}
           formAttachments={formData?.formAttachments}
+          documentId={documentId}
+          documentType={formData?.documentType}
           formRef={formRef}
         />
         <Stack my={4} flexDirection={'row'} justifyContent="center">
           <Button variant="outline" className="mr-8" onClick={() => handleCancelButton()}>
-            Cancel
+            {isViewOnly ? 'Back' : 'Cancel'}
           </Button>
-          <Button onClick={() => handleSubmitForm()}>Save</Button>
+          {!isViewOnly && <Button onClick={() => handleSubmitForm()}>Save</Button>}
         </Stack>
       </Container>
     </Box>

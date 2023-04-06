@@ -93,7 +93,11 @@ export const getPOLinkByDocumentType = (poItem: PurchaseOrderItem) => {
         </Link>
       );
     case PO_DOCUMENT_TYPE.PO_CHANGE:
-      return <Typography variant="body2">{poItem.number ?? '--'}</Typography>;
+      return (
+        <Link to={`${PATHS.poChangeForm}/${poItem.id}`}>
+          <TypographyLink>{poItem.number ?? '--'}</TypographyLink>
+        </Link>
+      );
     // TODO: Tuyen Tran replace Typography
     case PO_DOCUMENT_TYPE.PO_PAYMENT:
       return <Typography variant="body2">{poItem.number ?? '--'}</Typography>;

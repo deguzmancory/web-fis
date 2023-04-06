@@ -16,7 +16,7 @@ const configs = {
 };
 
 const common = {
-  CONNECTION_TIMEOUT: 30000,
+  CONNECTION_TIMEOUT: 60000,
   MAXIMUM_FILE_SIZE: 1024 * 1024 * 7, //7 MB
   WAITING_TIME: 5000, // 5 secs
   ANIMATION_TIME: 300,

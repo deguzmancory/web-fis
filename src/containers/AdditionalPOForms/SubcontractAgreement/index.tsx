@@ -3,23 +3,21 @@ import { FormikProps, useFormik } from 'formik';
 import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { PATHS } from 'src/appConfig/paths';
 import { TextareaAutosize } from 'src/components/common';
 import { initialSubcontractorValue } from 'src/containers/PurchaseOrderContainer/constants';
-import { PO_FORM_ELEMENT_ID, PO_FORM_PARAMS } from 'src/containers/PurchaseOrderContainer/enums';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
 import { SubcontractorPayload } from 'src/queries';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
-import { Navigator, Toastify } from 'src/services';
+import { Toastify } from 'src/services';
 import { getErrorMessage, getUncontrolledInputFieldProps } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
-import urljoin from 'url-join';
 import HeaderOfSection from '../headerSection';
-import { PO_SUBCONTRACT_AGREEMENT_KEY } from './enum';
+import { handleNavigateBackToMainForm } from '../helpers';
 import StandardsLayout from './StanDards';
 import WitnessethFormLayout from './Witnesseth';
+import { PO_SUBCONTRACT_AGREEMENT_KEY } from './enum';
 
 const SubcontractAgreementForm: React.FC<Props> = ({
   formRef,
@@ -34,20 +32,11 @@ const SubcontractAgreementForm: React.FC<Props> = ({
 
   const handleFormSubmit = () => {
     handleSaveForm();
-
-    if (documentId) {
-      Navigator.navigate(
-        `${urljoin(PATHS.purchaseOrderDetail, documentId)}?${PO_FORM_PARAMS.SCROLL_TO}=${
-          PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS
-        }`
-      );
-    } else if (hrefNavigationForm) {
-      Navigator.navigate(hrefNavigationForm);
-    } else {
-      Navigator.navigate(
-        `${PATHS.createPurchaseOrders}?${PO_FORM_PARAMS.SCROLL_TO}=${PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS}`
-      );
-    }
+    handleNavigateBackToMainForm({
+      documentId,
+      hrefNavigationForm,
+      documentType: formData?.documentType,
+    });
   };
 
   const handleResetForm = () => {
@@ -89,8 +78,10 @@ const SubcontractAgreementForm: React.FC<Props> = ({
   const handleSaveForm = React.useCallback(() => {
     onSetFormData<UpsertPOFormValue>({ ...formData, subcontractor: values });
     onSetIsImmutableFormData(true);
-    Toastify.success('Save changes successfully.');
-  }, [formData, onSetFormData, onSetIsImmutableFormData, values]);
+    if (!disabled) {
+      Toastify.success('Save changes successfully.');
+    }
+  }, [formData, disabled, onSetFormData, onSetIsImmutableFormData, values]);
 
   React.useEffect(() => {
     return history.listen(() => {
@@ -123,6 +114,7 @@ const SubcontractAgreementForm: React.FC<Props> = ({
             style={{ width: '100%', padding: '2px 16px', marginTop: '10px' }}
             errorMessage={_getErrorMessage(PO_SUBCONTRACT_AGREEMENT_KEY.SUBCONTRACTOR)}
             {..._getUncontrolledFieldProps(PO_SUBCONTRACT_AGREEMENT_KEY.SUBCONTRACTOR)}
+            disabled={disabled}
           />
         </Stack>
 
