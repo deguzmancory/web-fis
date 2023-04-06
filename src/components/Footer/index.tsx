@@ -18,65 +18,55 @@ const Footer: React.FC<Props> = () => {
           backgroundSize: 'contain',
         }}
       >
-        <Container maxWidth="lg">
-          <Grid flexDirection={'row'} container spacing={1} pt={3}>
-            <Box width={'260px'}>
+        <Container maxWidth="md">
+          <Box sx={{ display: 'flex', pt: 3 }}>
+            <Box sx={{ width: '30%' }}>
               <TypoTitle text={'General Inquiries Email'} />
               <TypoDescription text={' rcuh@rcuh.com'} type={'email'} />
               <TypoDescription text={''} type={''} />
+              <Box sx={{ my: '10px' }} />
 
               <TypoTitle text={'HR & Payroll Inquiries Email'} />
               <TypoDescription text={' rcuhhr@rcuh.com'} type={'email'} />
             </Box>
-            <Box width={'calc(100% - 260px)'}>
-              <Grid width="100%" container spacing={1}>
-                <Grid item xs={6}>
-                  <TypoTitle text={'Human Resources/ Payroll '} />
-                  <TypoDescription text={'808.956.3100'} type={'phone'} />
-                  <TypoDescription
-                    text={
-                      '1601 East-West Road | Burns Hall 4th Floor, Makai Wing | Honolulu, HI 96848'
-                    }
-                    type={'location'}
-                  />
 
-                  <TypoDescription text={' '} type="" />
-
-                  <TypoTitle text={'Accounting & Project Admin'} />
-                  <TypoDescription text={'808.988.8300'} type={'phone'} />
-                  <TypoDescription
-                    text={'2800 Woodlawn Drive, Suite 200 | Honolulu, HI 96822'}
-                    type={'location'}
-                  />
-                </Grid>
-                <Grid item xs={6} container justifyContent={'flex-end'}>
-                  <Grid item xs={11}>
-                    <TypoTitle text={'Disbursing / Procurement'} />
-                    <TypoDescription text={'808.956.3608'} type={'phone'} />
-                    <TypoDescription
-                      text={'2800 Woodlawn Drive, Suite 200 | Honolulu, HI 96822'}
-                      type={'location'}
-                    />
-
-                    <TypoDescription text={' '} type="" />
-
-                    <Box
-                      sx={{
-                        transform: 'translateY(16px)',
-                      }}
-                    >
-                      <TypoTitle text={`Executive Director's Office`} />
-                      <TypoDescription text={'808.988.8311'} type={'phone'} />
-                      <TypoDescription
-                        text={'2800 Woodlawn Drive, Suite 200 | Honolulu, HI 96822'}
-                        type={'location'}
-                      />
-                    </Box>
-                  </Grid>
-                </Grid>
-              </Grid>
+            <Box sx={{ width: '45%' }}>
+              <Box sx={{ width: '80%' }}>
+                <TypoTitle text={'Human Resources/ Payroll '} />
+                <TypoDescription text={'808.956.3100'} type={'phone'} />
+                <TypoDescription
+                  text={'1601 East-West Road  Burns Hall 4th Floor, Makai Wing  Honolulu, HI 96848'}
+                  type={'location'}
+                />
+                <TypoDescription text={' '} type="" />
+                <TypoTitle text={'Accounting & Project Admin'} />
+                <TypoDescription text={'808.988.8300'} type={'phone'} />
+                <TypoDescription
+                  text={'2800 Woodlawn Drive, Suite 200  Honolulu, HI 96822'}
+                  type={'location'}
+                />
+              </Box>
             </Box>
-          </Grid>
+
+            <Box>
+              <TypoTitle text={'Disbursing / Procurement'} />
+              <TypoDescription text={'808.956.3608'} type={'phone'} />
+              <TypoDescription
+                text={'2800 Woodlawn Drive, Suite 200  Honolulu, HI 96822'}
+                type={'location'}
+              />
+
+              <TypoDescription text={' '} type="" />
+
+              <TypoTitle text={`Executive Director's Office`} />
+              <TypoDescription text={'808.988.8311'} type={'phone'} />
+              <TypoDescription
+                text={'2800 Woodlawn Drive, Suite 200  Honolulu, HI 96822'}
+                type={'location'}
+              />
+            </Box>
+          </Box>
+
           <Box>
             <Stack flexDirection={'row'} justifyContent="center" py={1}>
               <Typography variant="body2" fontWeight={'bold'} color="white">
@@ -105,7 +95,7 @@ const Footer: React.FC<Props> = () => {
 
 const TypoTitle = ({ text }) => {
   return (
-    <Typography variant="subtitle1" fontWeight={'bold'} color={'white'}>
+    <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: 'white' }}>
       {!isEmpty(text) ? text : <br />}
     </Typography>
   );
@@ -126,7 +116,7 @@ const TypoDescription = ({ text, type }) => {
   };
 
   return (
-    <Stack flexDirection="row" alignItems={'flex-start'}>
+    <Stack flexDirection="row">
       <Icon
         sx={{
           '& svg': {
