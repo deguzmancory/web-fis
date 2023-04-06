@@ -18,7 +18,7 @@ import { GetPropertiesParams } from 'src/queries/helpers';
 import { IRootState } from 'src/redux/rootReducer';
 import { handleShowErrorMsg } from 'src/utils';
 import { isEmpty } from 'src/validations';
-import { PURCHASING_LIST_WORK_FLOW_STATUS_KEY, QUERY_KEY } from '../enum';
+import { PURCHASING_LIST_WORK_FLOW_STATUS_KEY, PO_LIST_QUERY_KEY } from '../enum';
 import {
   allApprovedColumns,
   allColumnsPendingReviewApprove,
@@ -38,7 +38,11 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
   const location = useLocation();
   const query = React.useMemo(() => new URLSearchParams(location.search), [location]);
   const workFlowTypeStatus = React.useMemo(
-    () => query.get(QUERY_KEY.WORKFLOW_STATUS) || undefined,
+    () => query.get(PO_LIST_QUERY_KEY.WORKFLOW_STATUS) || undefined,
+    [query]
+  );
+  const poNumberSearch = React.useMemo(
+    () => query.get(PO_LIST_QUERY_KEY.NUMBER) || undefined,
     [query]
   );
 
@@ -65,7 +69,7 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
   });
 
   const searchPurchasingDocument = React.useMemo(
-    () => query.get(QUERY_KEY.DOCUMENT_TYPE) || undefined,
+    () => query.get(PO_LIST_QUERY_KEY.DOCUMENT_TYPE) || undefined,
     [query]
   );
 
@@ -86,6 +90,7 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
         ...params,
         workflowStatus: workFlowTypeStatus,
         documentType: searchPurchasingDocument,
+        number: poNumberSearch,
       };
 
       const sort = params?.sort;
@@ -98,7 +103,7 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
       }
       setParams(newParams);
     },
-    [workFlowTypeStatus, searchPurchasingDocument, setParams]
+    [workFlowTypeStatus, searchPurchasingDocument, poNumberSearch, setParams]
   );
 
   React.useEffect(() => {

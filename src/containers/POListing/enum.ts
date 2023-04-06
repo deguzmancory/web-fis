@@ -17,7 +17,8 @@ export enum PURCHASING_LIST_WORK_FLOW_STATUS_KEY {
   PO_PAYMENT = 'poPayment',
 }
 
-export enum QUERY_KEY {
+export enum PO_LIST_QUERY_KEY {
   WORKFLOW_STATUS = 'workflowStatus',
   DOCUMENT_TYPE = 'documentType',
+  NUMBER = 'number',
 }
