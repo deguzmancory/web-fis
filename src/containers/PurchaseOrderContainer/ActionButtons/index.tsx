@@ -1,16 +1,12 @@
 import { Error } from '@mui/icons-material';
 import { Stack } from '@mui/material';
 import React from 'react';
+import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import { Button } from 'src/components/common';
+import { PO_ACTION, PO_MODE, usePostPOCloneDocument } from 'src/queries';
 import { ROLE_NAME, isPI, isSU } from 'src/queries/Profile/helpers';
-import { DIALOG_TYPES } from 'src/redux/dialog/type';
-import { Navigator, RoleService, Toastify } from 'src/services';
-import { handleScrollToTopError } from 'src/utils';
-import { isEmpty } from 'src/validations';
-import { PO_FORM_KEY } from '../enums';
-import { UpsertPOFormValue, UpsertPOFormikProps } from '../types';
-import DeletePOWarning from '../deletePOWarning';
 import {
   isCUReviewPOMode,
   isFAReviewPOMode,
@@ -23,13 +19,17 @@ import {
   isPiSuEditPOMode,
   isViewOnlyPOMode,
 } from 'src/queries/PurchaseOrders/helpers';
-import { IRootState } from 'src/redux/rootReducer';
-import { setFormData, setIsImmutableFormData, setPoFormAction } from 'src/redux/form/formSlice';
 import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
-import { connect } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { PO_ACTION, PO_MODE, usePostPOCloneDocument } from 'src/queries';
+import { DIALOG_TYPES } from 'src/redux/dialog/type';
+import { setFormData, setIsImmutableFormData, setPoFormAction } from 'src/redux/form/formSlice';
+import { IRootState } from 'src/redux/rootReducer';
+import { Navigator, RoleService, Toastify } from 'src/services';
+import { handleScrollToTopError } from 'src/utils';
+import { isEmpty } from 'src/validations';
 import urljoin from 'url-join';
+import DeletePOWarning from '../deletePOWarning';
+import { PO_FORM_KEY } from '../enums';
+import { UpsertPOFormValue, UpsertPOFormikProps } from '../types';
 
 const ActionButtons: React.FC<Props> = ({
   formikProps,
@@ -136,7 +136,7 @@ const ActionButtons: React.FC<Props> = ({
   };
 
   const handleViewVendorPrintMode = () => {
-    //TODO: implement
+    Navigator.navigate(urljoin(PATHS.vendorPrintMode, values?.id));
   };
 
   const handleCloneDocument = () => {

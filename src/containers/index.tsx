@@ -42,6 +42,7 @@ const PurchasingOrders = React.lazy(() => import('./POListing'));
 const SelectChangeFormType = React.lazy(() => import('./POChange/SelectChangeFormType'));
 const POChangeForm = React.lazy(() => import('./POChange/POChangeForm'));
 const POPayment = React.lazy(() => import('./POPayment'));
+const VendorPrintMode = React.lazy(() => import('./PurchaseOrderContainer/VendorPrintMode'));
 
 const Routing: React.FC<{ location: Location }> = (props) => {
   Navigator.setTopHistory(useHistory());
@@ -121,6 +122,13 @@ const Routing: React.FC<{ location: Location }> = (props) => {
               pageRequiredAuth
               path={PATHS.purchasingOrders}
               component={PurchasingOrders}
+            />
+
+            {/* Vendor Print Mode */}
+            <CustomRoute
+              pageRequiredAuth
+              path={`${PATHS.vendorPrintMode}/:id`}
+              component={VendorPrintMode}
             />
 
             {/* Vendors */}

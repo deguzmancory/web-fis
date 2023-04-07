@@ -10,6 +10,8 @@ export enum CellType {
   INPUT = 'input',
   CURRENCY_INPUT = 'currency-input',
   CURRENCY_VALUE = 'currency-value',
+  PRINT_CELL = 'print-cell',
+  PRINT_CELL_RIGHT = 'print-cell-right',
 }
 
 export interface BaseTableCell {

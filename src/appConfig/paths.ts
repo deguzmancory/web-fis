@@ -35,6 +35,9 @@ export const PATHS = {
   // PO Payment
   poPaymentForm: '/po-payment',
 
+  // Vendor Print Mode
+  vendorPrintMode: '/vendor-print-mode',
+
   // miscellaneous / Global settings
   globalSettings: '/global-settings',
   expiredPassword: '/expired-password',

@@ -64,6 +64,15 @@ export const cellInputStyles = {
   ...cellBaseStyles,
   padding: '4px',
 };
+export const printCellStyles = {
+  ...cellBaseStyles,
+  border: 'double',
+};
+
+export const printCellRightStyles = {
+  ...cellBaseStyles,
+  borderRight: 'double',
+};
 
 const getDefaultCellStyleByType = (cellType: CellType) => {
   switch (cellType) {
@@ -73,6 +82,10 @@ const getDefaultCellStyleByType = (cellType: CellType) => {
       return cellCurrencyValueStyles;
     case CellType.INPUT:
       return cellInputStyles;
+    case CellType.PRINT_CELL:
+      return printCellStyles;
+    case CellType.PRINT_CELL_RIGHT:
+      return printCellRightStyles;
     case CellType.DEFAULT:
       return {};
 
