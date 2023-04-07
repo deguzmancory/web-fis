@@ -166,13 +166,15 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
   return (
     <Box>
       <Suspense fallback={<LoadingCommon />}>
-        <PDFView
-          url={pdfUrl}
-          title={getFileName(pdfUrl)}
-          isVisible={!isEmpty(pdfUrl)}
-          onClose={() => setPdfUrl(null)}
-          onDownload={() => handleParseAndDownloadFile(pdfUrl)}
-        />
+        {!isEmpty(pdfUrl) && (
+          <PDFView
+            url={pdfUrl}
+            title={getFileName(pdfUrl)}
+            isVisible={!isEmpty(pdfUrl)}
+            onClose={() => setPdfUrl(null)}
+            onDownload={() => handleParseAndDownloadFile(pdfUrl)}
+          />
+        )}
       </Suspense>
       <HeaderTable />
       <Table
