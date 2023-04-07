@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { initialDeterminationValue } from 'src/containers/PurchaseOrderContainer/constants';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
-import { PODeterminationPayload } from 'src/queries/PurchaseOrders';
+import { PODetermination } from 'src/queries/PurchaseOrders';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Toastify } from 'src/services';
@@ -48,7 +48,7 @@ const DeterminationForm: React.FC<Props> = ({
     onSetIsImmutableFormData(true);
   };
 
-  const formik = useFormik<PODeterminationPayload>({
+  const formik = useFormik<PODetermination>({
     initialValues: formData?.determination || initialDeterminationValue,
     validationSchema: null,
     enableReinitialize: true,
@@ -62,7 +62,7 @@ const DeterminationForm: React.FC<Props> = ({
 
   const { values, errors, touched, setFieldValue, setFieldTouched, getFieldProps } = formik;
 
-  const formikProps: CommonFormikProps<PODeterminationPayload> = {
+  const formikProps: CommonFormikProps<PODetermination> = {
     values,
     errors,
     touched,

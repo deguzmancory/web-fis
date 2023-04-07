@@ -9,7 +9,7 @@ import { Input, RadioButton, TextareaAutosize } from 'src/components/common';
 import { initialFfataValue } from 'src/containers/PurchaseOrderContainer/constants';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
-import { FfataPayload } from 'src/queries/PurchaseOrders';
+import { POFfata } from 'src/queries/PurchaseOrders';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Toastify } from 'src/services';
@@ -43,7 +43,7 @@ const FfataDataCollectionForm: React.FC<Props> = ({
     onSetIsImmutableFormData(true);
   };
 
-  const formik = useFormik<FfataPayload>({
+  const formik = useFormik<POFfata>({
     initialValues: formData?.ffata || initialFfataValue,
     validationSchema: null,
     enableReinitialize: true,

@@ -7,7 +7,7 @@ import { COLOR_CODE } from 'src/appConfig/constants';
 import { initialAuthToPurchaseValue } from 'src/containers/PurchaseOrderContainer/constants';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
-import { POAuthToPurchasePayload } from 'src/queries/PurchaseOrders';
+import { POAuthToPurchase } from 'src/queries/PurchaseOrders';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Toastify } from 'src/services';
@@ -48,7 +48,7 @@ const AuthToPurchaseForm: React.FC<Props> = ({
     onSetIsImmutableFormData(true);
   };
 
-  const formik = useFormik<POAuthToPurchasePayload>({
+  const formik = useFormik<POAuthToPurchase>({
     initialValues: formData?.authToPurchase || initialAuthToPurchaseValue,
     validationSchema: null,
     enableReinitialize: true,
@@ -62,7 +62,7 @@ const AuthToPurchaseForm: React.FC<Props> = ({
 
   const { values, errors, touched, setFieldValue, setFieldTouched, getFieldProps } = formik;
 
-  const formikProps: CommonFormikProps<POAuthToPurchasePayload> = {
+  const formikProps: CommonFormikProps<POAuthToPurchase> = {
     values,
     errors,
     touched,

@@ -1,8 +1,8 @@
 import { FinancialProject } from 'src/queries/Projects';
 import {
   AdditionalPOForm,
-  POEquipmentInventoryPayload,
-  POLineItemPayload,
+  POEquipmentInventory,
+  POLineItem,
   UpsertPOPayload,
 } from 'src/queries/PurchaseOrders';
 import { Vendor } from 'src/queries/Vendors';
@@ -13,12 +13,11 @@ export interface AdditionalPOFormValue extends AdditionalPOForm {
   href: string;
 }
 
-export interface POLineItemFormValue extends Omit<POLineItemPayload, 'itemProjectNumber'> {
+export interface POLineItemFormValue extends Omit<POLineItem, 'itemProjectNumber'> {
   itemProjectNumber: string | FinancialProject;
 }
 
-export interface POEquipmentInventoryFormValue
-  extends Omit<POEquipmentInventoryPayload, 'equipmentType'> {
+export interface POEquipmentInventoryFormValue extends Omit<POEquipmentInventory, 'equipmentType'> {
   equipmentType: string[];
 }
 

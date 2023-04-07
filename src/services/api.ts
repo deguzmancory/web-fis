@@ -8,6 +8,7 @@ import {
   GetTokenDelegationPayload,
   PostPOChangeTypePayload,
   UpdateGlobalSettingPayload,
+  UpdatePOPaymentPayload,
   UpdateProfilePayload,
 } from 'src/queries';
 import { GetPresignedPayload, UploadFilePayload } from 'src/queries/File/types';
@@ -355,7 +356,7 @@ const create = (baseURL = appConfig.API_URL) => {
   };
 
   // ====================== PO ======================
-  const getPO = (params: { id: string }) => {
+  const getPODetail = (params: { id: string }) => {
     return api.get(`/financial-svc/v1/purchase-orders/${params.id}`, {}, newCancelToken());
   };
 
@@ -422,7 +423,7 @@ const create = (baseURL = appConfig.API_URL) => {
   };
 
   // ====================== PO Change ======================
-  const postPoChangeType = (payload: PostPOChangeTypePayload) => {
+  const createPOChange = (payload: PostPOChangeTypePayload) => {
     return api.post(
       `/financial-svc/v1/purchase-orders/${payload.poId}/po-change`,
       {
@@ -430,6 +431,33 @@ const create = (baseURL = appConfig.API_URL) => {
       },
       newCancelToken()
     );
+  };
+
+  // ====================== PO Payment ======================
+  const getPOPaymentDetail = (params: GetPropertiesParams) => {
+    return api.get(`/financial-svc/v1/po-payments/${params.id}`);
+  };
+
+  const createPOPayment = (params: { id: string }) => {
+    return api.post(
+      `/financial-svc/v1/purchase-orders/${params.id}/po-payment`,
+      {},
+      newCancelToken()
+    );
+  };
+
+  const updatePOPayment = (payload: UpdatePOPaymentPayload) => {
+    return api.put(
+      `/financial-svc/v1/po-payments/${payload.id}?action=${payload.action}`,
+      {
+        ...payload,
+      },
+      newCancelToken()
+    );
+  };
+
+  const deletePOPayment = (params: { id: string }) => {
+    return api.delete(`/financial-svc/v1/po-payments/${params.id}`, {}, newCancelToken());
   };
 
   // ====================== Global Settings ======================
@@ -448,6 +476,7 @@ const create = (baseURL = appConfig.API_URL) => {
     );
   };
 
+  // ================== Purchasing List ===============
   const getAppPurchasingList = (params: GetPropertiesParams) => {
     const queryString = stringify(params);
     return api.get(`/financial-svc/v1/purchase-orders?${queryString}`, {}, newCancelToken());
@@ -459,10 +488,6 @@ const create = (baseURL = appConfig.API_URL) => {
 
   const patchPrintedPurchaseOrder = (params: GetPropertiesParams) => {
     return api.patch(`/financial-svc/v1/purchase-orders/${params.id}/printed`);
-  };
-
-  const getPOPaymentDetail = (params: GetPropertiesParams) => {
-    return api.get(`/financial-svc/v1/po-payments/${params.id}`);
   };
 
   //
@@ -539,7 +564,7 @@ const create = (baseURL = appConfig.API_URL) => {
     searchSuperQuotes,
 
     // ====================== PO ======================
-    getPO,
+    getPO: getPODetail,
     createPO,
     updatePO,
     deletePO,
@@ -550,15 +575,20 @@ const create = (baseURL = appConfig.API_URL) => {
     postPOCloneDocument,
 
     // ====================== PO Change ======================
-    postPoChangeType,
+    createPOChange,
+
+    // ====================== PO Payment ======================
+    getPOPaymentDetail,
+    createPOPayment,
+    updatePOPayment,
+    deletePOPayment,
 
     // ================== Purchasing List ===============
     getAppPurchasingList,
     getFinalPdfPurchaseOrder,
     patchPrintedPurchaseOrder,
-    getPOPaymentDetail,
 
-    // Global Settings
+    // ================== Global Setting ===============
     getAllGlobalSettings,
     updateGlobalSetting,
   };

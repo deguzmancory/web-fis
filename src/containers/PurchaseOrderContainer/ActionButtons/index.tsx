@@ -5,7 +5,9 @@ import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import { Button } from 'src/components/common';
-import { PO_ACTION, PO_MODE, usePostPOCloneDocument } from 'src/queries';
+import DeletePOPaymentWarning from 'src/containers/POPayment/DeletePOPaymentWarning';
+import { UpdatePOPaymentFormikProps } from 'src/containers/POPayment/types';
+import { PO_ACTION, PO_DOCUMENT_TYPE, PO_MODE, usePostPOCloneDocument } from 'src/queries';
 import { ROLE_NAME, isPI, isSU } from 'src/queries/Profile/helpers';
 import {
   isCUReviewPOMode,
@@ -14,6 +16,7 @@ import {
   isPOAdditionalInfoAction,
   isPOApprovedAction,
   isPODisapproveAction,
+  isPOPaymentDocumentType,
   isPOSaveAction,
   isPOSubmitAction,
   isPiSuEditPOMode,
@@ -27,22 +30,23 @@ import { Navigator, RoleService, Toastify } from 'src/services';
 import { handleScrollToTopError } from 'src/utils';
 import { isEmpty } from 'src/validations';
 import urljoin from 'url-join';
-import DeletePOWarning from '../deletePOWarning';
+import DeletePOWarning from '../DeletePOWarning';
 import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormValue, UpsertPOFormikProps } from '../types';
 
-const ActionButtons: React.FC<Props> = ({
+const ActionButtons = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>({
   formikProps,
   currentPOMode,
   disabled = false,
   loading = false,
+  formAction,
+  documentType = PO_DOCUMENT_TYPE.PURCHASE_ORDER,
   onSetFormData,
   onSetIsImmutableFormData,
-  formAction,
   onSetPoFormAction,
   onShowDialog,
   onHideDialog,
-}) => {
+}: Props<T>) => {
   const { id } = useParams<{ id: string }>();
   const isEditPOMode = !!id;
   const [isTriedSubmit, setIsTriedSubmit] = React.useState<boolean>(false);
@@ -130,7 +134,11 @@ const ActionButtons: React.FC<Props> = ({
         title: 'Delete',
         iconTitle: <Error color="error" sx={{ mt: '2px' }} />,
         hideFooter: true,
-        content: <DeletePOWarning id={id} />,
+        content: isPOPaymentDocumentType(documentType) ? (
+          <DeletePOPaymentWarning id={id} />
+        ) : (
+          <DeletePOWarning id={id} />
+        ),
       },
     });
   };
@@ -227,12 +235,15 @@ const ActionButtons: React.FC<Props> = ({
   );
 };
 
-type Props = ReturnType<typeof mapStateToProps> &
+type Props<T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps> = ReturnType<
+  typeof mapStateToProps
+> &
   typeof mapDispatchToProps & {
-    formikProps: UpsertPOFormikProps;
+    formikProps: T extends UpsertPOFormikProps ? UpsertPOFormikProps : UpdatePOPaymentFormikProps;
     disabled?: boolean;
     loading?: boolean;
     currentPOMode?: PO_MODE;
+    documentType: PO_DOCUMENT_TYPE;
   };
 
 const mapStateToProps = (state: IRootState<UpsertPOFormValue>) => ({

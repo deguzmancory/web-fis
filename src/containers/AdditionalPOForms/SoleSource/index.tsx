@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { initialSoleSourceValue } from 'src/containers/PurchaseOrderContainer/constants';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
-import { POSoleSourcePayload } from 'src/queries/PurchaseOrders';
+import { POSoleSource } from 'src/queries/PurchaseOrders';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Toastify } from 'src/services';
@@ -47,7 +47,7 @@ const SoleSourceForm: React.FC<Props> = ({
     onSetIsImmutableFormData(true);
   };
 
-  const formik = useFormik<POSoleSourcePayload>({
+  const formik = useFormik<POSoleSource>({
     initialValues: formData?.soleSource || initialSoleSourceValue,
     validationSchema: null,
     enableReinitialize: true,
@@ -77,7 +77,7 @@ const SoleSourceForm: React.FC<Props> = ({
     });
   }, [history, handleSaveForm]);
 
-  const formikProps: CommonFormikProps<POSoleSourcePayload> = {
+  const formikProps: CommonFormikProps<POSoleSource> = {
     values,
     errors,
     touched,

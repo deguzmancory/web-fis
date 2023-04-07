@@ -9,8 +9,15 @@ import { useDispatch } from 'react-redux';
 import { hideDialog } from 'src/redux/dialog/dialogSlice';
 import { PO_FORM_KEY } from '../enums';
 import { isEqualPrevAndNextFormikValues } from 'src/utils';
+import {
+  UpdatePOPaymentFormValue,
+  UpdatePOPaymentFormikProps,
+} from 'src/containers/POPayment/types';
 
-const SuperQuote: React.FC<Props> = ({ formikProps, disabled = false }) => {
+const SuperQuote = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>({
+  formikProps,
+  disabled = false,
+}: Props<T>) => {
   const { values, setFieldValue } = formikProps;
   const [error, setError] = React.useState('');
   const [searchQuote, setSearchQuote] = React.useState('');
@@ -77,10 +84,10 @@ const SuperQuote: React.FC<Props> = ({ formikProps, disabled = false }) => {
   );
 };
 
-interface Props {
-  formikProps: UpsertPOFormikProps;
+type Props<T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps> = {
+  formikProps: T extends UpsertPOFormikProps ? UpsertPOFormikProps : UpdatePOPaymentFormikProps;
   disabled?: boolean;
-}
+};
 
 export default React.memo(SuperQuote, (prevProps, nextProps) => {
   const prevFormikProps = prevProps.formikProps;
@@ -88,7 +95,7 @@ export default React.memo(SuperQuote, (prevProps, nextProps) => {
 
   const formKeysNeedRender = [PO_FORM_KEY.SUPER_QUOTE_NUMBER, PO_FORM_KEY.SUPER_QUOTE_BID_ID]; // only re-render if keys using in this component change
 
-  return isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
+  return isEqualPrevAndNextFormikValues<UpsertPOFormValue | UpdatePOPaymentFormValue>({
     prevFormikProps,
     nextFormikProps,
     formKeysNeedRender,

@@ -159,6 +159,8 @@ export const getPOFormValueFromResponse = ({
   return {
     ...response,
     ...preFillSendInvoiceDataInFAReviewMode({ response, profile }),
+    action: null,
+    placeholderFileAttachment: null,
     date: getDateDisplay(response.date),
     availableForms: getAvailableFormsFromResponse(response.availableForms),
     formAttachments: getAvailableFormsFromResponse(response.formAttachments),
@@ -211,8 +213,6 @@ export const getPOFormValueFromResponse = ({
             : [],
         }
       : null,
-    action: null,
-    placeholderFileAttachment: null,
   };
 };
 

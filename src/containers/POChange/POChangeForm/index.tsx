@@ -9,8 +9,13 @@ import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundar
 import NoPermission from 'src/components/NoPermission';
 import { Accordion, LoadingCommon } from 'src/components/common';
 import ActionButtons from 'src/containers/PurchaseOrderContainer/ActionButtons';
+import AdditionalForms from 'src/containers/PurchaseOrderContainer/AdditionalForms';
+import AuditInformation from 'src/containers/PurchaseOrderContainer/AuditInformation';
+import AuthorizedBy from 'src/containers/PurchaseOrderContainer/AuthorizedBy';
 import ErrorWrapperPO from 'src/containers/PurchaseOrderContainer/ErrorWrapper/index.';
+import FileAttachments from 'src/containers/PurchaseOrderContainer/FileAttachments';
 import GeneralInfo from 'src/containers/PurchaseOrderContainer/GeneralInfo';
+import InternalComments from 'src/containers/PurchaseOrderContainer/InternalComments';
 import { emptyUpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/constants';
 import {
   PO_FORM_ELEMENT_ID,
@@ -29,6 +34,12 @@ import {
 } from 'src/containers/PurchaseOrderContainer/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
 import { PO_ACTION, PO_DOCUMENT_TYPE, useGetPODetail, useProfile, useUpdatePO } from 'src/queries';
+import { PO_CHANGE_FORM_NUMBER } from 'src/queries/POChange/enums';
+import {
+  isPOChangeAmountForm,
+  isPOChangeAmountTerminatedForm,
+  isPOChangeDescriptionForm,
+} from 'src/queries/POChange/helpers';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import {
   isFAReviewPOMode,
@@ -45,21 +56,10 @@ import Prompt from 'src/services/Prompt';
 import { getUncontrolledInputFieldProps, handleShowErrorMsg } from 'src/utils';
 import { PO_CHANGE_FORM_QUERY_KEY } from '../POChangeForm/enums';
 import BreadcrumbsPOChangeForm from '../breadcrumbs';
-import { getPoChangeFormTitle } from './helpers';
-import { PO_CHANGE_FORM_NUMBER } from 'src/queries/POChange/enums';
 import OriginalPurchaseInfo from './OriginalPurchaseInfo';
 import PurchaseInfo from './PurchaseInfo';
 import TableLineItems from './TableLineItems';
-import AdditionalForms from 'src/containers/PurchaseOrderContainer/AdditionalForms';
-import {
-  isPOChangeAmountForm,
-  isPOChangeAmountTerminatedForm,
-  isPOChangeDescriptionForm,
-} from 'src/queries/POChange/helpers';
-import AuthorizedBy from 'src/containers/PurchaseOrderContainer/AuthorizedBy';
-import FileAttachments from 'src/containers/PurchaseOrderContainer/FileAttachments';
-import AuditInformation from 'src/containers/PurchaseOrderContainer/AuditInformation';
-import InternalComments from 'src/containers/PurchaseOrderContainer/InternalComments';
+import { getPoChangeFormTitle } from './helpers';
 
 const POChangeForm: React.FC<Props> = ({
   formData,
@@ -115,7 +115,10 @@ const POChangeForm: React.FC<Props> = ({
   const { onGetPOById, handleInvalidatePODetail } = useGetPODetail({
     id: id,
     onSuccess: (data) => {
-      const formValue: UpsertPOFormValue = getPOFormValueFromResponse({ response: data, profile });
+      const formValue: UpsertPOFormValue = getPOFormValueFromResponse({
+        response: data,
+        profile,
+      });
       onSetFormData<UpsertPOFormValue>(formValue);
     },
     onError: (error) => {
@@ -243,6 +246,7 @@ const POChangeForm: React.FC<Props> = ({
             formikProps={formikProps}
             disabled={disabledSection}
             currentPOMode={currentPOMode}
+            documentType={PO_DOCUMENT_TYPE.PO_CHANGE}
           />
         </SectionLayout>
         <SectionLayout>
@@ -358,6 +362,7 @@ const POChangeForm: React.FC<Props> = ({
                   formikProps={formikProps}
                   loading={isLoading}
                   disabled={isLoading}
+                  documentType={PO_DOCUMENT_TYPE.PO_CHANGE}
                 />
               </>
             )}

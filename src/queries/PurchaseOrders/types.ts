@@ -2,8 +2,7 @@ import { GetPresignedPayload } from '../File';
 import { PO_CHANGE_FORM_NUMBER } from '../POChange/enums';
 import { PO_ACTION, PO_DETAIL_STATUS, PO_DOCUMENT_TYPE } from './enums';
 
-export interface SharedPODetail {
-  //general info
+export interface POGeneralInfo {
   loginName: string;
   date: string;
   number: string;
@@ -25,8 +24,9 @@ export interface SharedPODetail {
   directInquiriesTo: string;
   phoneNumber: string;
   faStaffReviewer: string;
+}
 
-  //purchase info
+export interface POPurchaseInfo {
   confirming: boolean;
   getExempt: boolean;
   attachment31: boolean;
@@ -37,24 +37,28 @@ export interface SharedPODetail {
   taxTotal: number;
   total: number;
   shippingTotal: number;
+}
 
-  //original purchase info
+export interface POOriginalPurchaseInfo {
   originalShippingTotal?: string;
   originalSubtotal?: string;
   originalTaxTotal?: string;
   originalTotal?: string;
+}
 
-  //Internal Special Instructions
+export interface POExternalSpecialInstruction {
+  presetInstructions: string;
+  externalSpecialInstructions: string;
+}
+
+export interface POInternalSpecialInstruction {
   internalA: string;
   internalA1: string;
   internalB: string;
   internalC: string;
+}
 
-  // External Special Instructions
-  presetInstructions: string;
-  externalSpecialInstructions: string;
-
-  // send invoice info
+export interface POSendInvoiceInfo {
   sendInvoiceTo: string;
   sendInvoiceToClearFlag: boolean;
   sendInvoiceToFaEmail: string;
@@ -65,6 +69,26 @@ export interface SharedPODetail {
   invoiceZip: string;
   invoiceZip4: string;
   invoiceCountry: string;
+}
+
+export interface SharedPODetail
+  extends POGeneralInfo,
+    POPurchaseInfo,
+    POOriginalPurchaseInfo,
+    POInternalSpecialInstruction,
+    POExternalSpecialInstruction,
+    POSendInvoiceInfo {
+  // general info
+
+  // purchase info
+
+  // original purchase info
+
+  // Internal Special Instructions
+
+  // External Special Instructions
+
+  // send invoice info
 
   //Internal Comments
   poComments: string;
@@ -98,86 +122,29 @@ export interface SharedPODetail {
   zipcode?: string;
 }
 
+// PO & PO change
 export interface UpsertPOPayload extends SharedPODetail {
   id?: string;
   action: PO_ACTION;
 
   availableForms: AdditionalPOForm[];
-  lineItems: POLineItemPayload[];
-  fileAttachments: POFileAttachmentPayload[];
+  lineItems: POLineItem[];
+  fileAttachments: POFileAttachment[];
   formAttachments: AdditionalPOForm[];
-  determination: PODeterminationPayload;
-  soleSource: POSoleSourcePayload;
-  authToPurchase: POAuthToPurchasePayload;
-  equipmentInventory: POEquipmentInventoryPayload;
-  subcontractor: SubcontractorPayload;
-  agreement: POAgreementPayload;
-  agreementUh: POAgreementUhPayload;
-  ffata: FfataPayload;
+  determination: PODetermination;
+  soleSource: POSoleSource;
+  authToPurchase: POAuthToPurchase;
+  equipmentInventory: POEquipmentInventory;
+  subcontractor: Subcontractor;
+  agreement: POAgreement;
+  agreementUh: POAgreementUh;
+  ffata: POFfata;
 }
 
 export interface PODetailResponse extends SharedPODetail {
   id?: string;
   createdAt: string;
   updatedAt: string;
-
-  routeToFa: string;
-  preparerEmail: string;
-  faReviewer: string;
-  faEmail: string;
-  faName: string;
-  faCode: string;
-  faApprover: string;
-  faApprovedDate: string;
-  rcuhApprover: string;
-  rcuhApprovedDate: string;
-  finalApprovedDate: string;
-  approved: any; //TODO: update type
-  vendorName2: string;
-  modifiedDate: string;
-  userType: string;
-  printedDate: string;
-  hasChangeDocument: boolean;
-  hasFinalPdf: boolean;
-  isHistorical: boolean;
-  updateVersionNumber: number;
-  paymentDirectInquiriesTo: string;
-  paymentPhoneNumber: string;
-  paymentFaStaffReviewer: string;
-  paymentDate: string;
-  paymentRequestNumber: string;
-  paymentLoginName: string;
-  paymentAuthorizedBy: string;
-  paymentType: string;
-  paymentReceiptAcknowledgement: string;
-  paymentRemittanceDifferentName: string;
-  paymentRemittanceDifferentAddress: string;
-  paymentRemittanceDifferentAttn: string;
-  paymentRemittanceDifferentStreet: string;
-  paymentRemittanceDifferentCity: string;
-  paymentRemittanceDifferentZip: string;
-  paymentRemittanceDifferentZip4: string;
-  paymentReturnRemittanceToFiscalOffice: boolean;
-  paymentRemittanceAdviceName: string;
-  paymentRemittanceAdvicePhoneNumber: string;
-  paymentEquipmentInventoryManualFlag: boolean;
-  paymentTotal: number;
-  paymentRemittanceAdviceTotal: number;
-  totalAmount: number;
-  checkNumber: string;
-  checkDate: string;
-  remittanceVendorAddress: string;
-  paymentRemittanceDifferentState: string;
-  preferredPaymentMethod: string;
-  preferredPaymentMethodTimestamp: string;
-  paymentMethod: string;
-  piUserId: string;
-  faUserId: string;
-  cuUserId: string;
-  piOriginalUserId: string;
-  faOriginalUserId: string;
-  cuOriginalUserId: string;
-  createdById: string;
 
   agreement: POAgreementResponse;
   agreementUh: POAgreementUhResponse;
@@ -199,29 +166,29 @@ export interface POCommonResponse {
   purchaseOrderId: string;
 }
 
-export interface POAgreementResponse extends POAgreementPayload, POCommonResponse {}
+export interface POAgreementResponse extends POAgreement, POCommonResponse {}
 
-export interface POAgreementUhResponse extends POAgreementUhPayload, POCommonResponse {}
+export interface POAgreementUhResponse extends POAgreementUh, POCommonResponse {}
 
-export interface POFileAttachmentResponse extends POFileAttachmentPayload, POCommonResponse {}
+export interface POFileAttachmentResponse extends POFileAttachment {
+  purchaseOrderId: string;
+}
 
 export interface POAdditionalFormResponse extends AdditionalPOForm, POCommonResponse {}
 
-export interface PODeterminationResponse extends PODeterminationPayload, POCommonResponse {}
+export interface PODeterminationResponse extends PODetermination, POCommonResponse {}
 
-export interface POLineItemResponse extends POLineItemPayload, POCommonResponse {}
+export interface POLineItemResponse extends POLineItem, POCommonResponse {}
 
-export interface POSoleSourceResponse extends POSoleSourcePayload, POCommonResponse {}
+export interface POSoleSourceResponse extends POSoleSource, POCommonResponse {}
 
-export interface POAuthToPurchaseResponse extends POAuthToPurchasePayload, POCommonResponse {}
+export interface POAuthToPurchaseResponse extends POAuthToPurchase, POCommonResponse {}
 
-export interface POEquipmentInventoryResponse
-  extends POEquipmentInventoryPayload,
-    POCommonResponse {}
+export interface POEquipmentInventoryResponse extends POEquipmentInventory, POCommonResponse {}
 
-export interface SubcontractorResponse extends SubcontractorPayload, POCommonResponse {}
+export interface SubcontractorResponse extends Subcontractor, POCommonResponse {}
 
-export interface FfataReponse extends FfataPayload, POCommonResponse {}
+export interface FfataReponse extends POFfata, POCommonResponse {}
 
 export interface AdditionalPOForm {
   id?: string;
@@ -241,7 +208,7 @@ export interface POAuditTrails {
   userType: string;
 }
 
-export interface POLineItemPayload {
+export interface POLineItem {
   id?: string;
   itemProjectNumber: string;
   subProject: string;
@@ -255,10 +222,11 @@ export interface POLineItemPayload {
   isOriginal?: boolean;
 }
 
-export interface POFileAttachmentPayload {
+export interface POFileAttachment {
   id?: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
+
   name: string;
   uploadDate: string;
   size: string;
@@ -268,7 +236,7 @@ export interface POFileAttachmentPayload {
   url: string;
 }
 
-export interface PODeterminationPayload {
+export interface PODetermination {
   id?: string;
   to: string;
   dDate: Date | string;
@@ -316,7 +284,7 @@ export interface PODeterminationPayload {
   requestForQuotationsInvitationForBidLowest: string;
 }
 
-export interface POSoleSourcePayload {
+export interface POSoleSource {
   id?: string;
   to: string;
   ssDate: string | Date;
@@ -334,7 +302,7 @@ export interface POSoleSourcePayload {
   approvedDuoDate: Date | string;
 }
 
-export interface POAuthToPurchasePayload {
+export interface POAuthToPurchase {
   id?: string;
   grantNumber: string;
   contractNumber: string;
@@ -357,17 +325,17 @@ export interface POAuthToPurchasePayload {
   availabilityNotExistsReason: string;
   formCompletedBy: string;
   multipleFederalSponsors: string;
-  responses: AuthToPurchaseResponse[];
+  responses: AuthToPurchase[];
 }
 
-export interface AuthToPurchaseResponse {
+export interface AuthToPurchase {
   id?: string;
   attachmentName: string;
   attachmentResponse: string;
   attachmentDate: Date | string;
 }
 
-export interface POEquipmentInventoryPayload {
+export interface POEquipmentInventory {
   id?: string;
   buildingCode: string;
   equipmentDescription: string;
@@ -380,7 +348,7 @@ export interface POEquipmentInventoryPayload {
   completedBy: string;
 }
 
-export interface SubcontractorPayload {
+export interface Subcontractor {
   id?: string;
   subcontractor: string;
   date: string | Date;
@@ -402,7 +370,7 @@ export interface SubcontractorPayload {
   socSubcontractorTitle: string;
 }
 
-export interface POAgreementPayload {
+export interface POAgreement {
   id?: string;
   day: string;
   month: string;
@@ -429,7 +397,7 @@ export interface POAgreementPayload {
   rcuhDepartment: string;
 }
 
-export interface POAgreementUhPayload {
+export interface POAgreementUh {
   id?: string;
   day: string;
   month: string;
@@ -456,7 +424,7 @@ export interface POAgreementUhPayload {
   rcuhDepartment: string;
 }
 
-export interface FfataPayload {
+export interface POFfata {
   id?: string;
   awardId: string;
   poNumber: string; // TODO: tuyen_tran: will remove if not need

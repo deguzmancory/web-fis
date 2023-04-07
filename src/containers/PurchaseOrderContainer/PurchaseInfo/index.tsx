@@ -12,8 +12,16 @@ import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
 import { fedAttachmentOptions, FED_ATTACHMENT_VALUE, MAX_TAX_NUMBER } from './helpers';
 import { PO_MODE } from 'src/queries';
+import {
+  UpdatePOPaymentFormValue,
+  UpdatePOPaymentFormikProps,
+} from 'src/containers/POPayment/types';
 
-const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPOMode }) => {
+const PurchaseInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>({
+  formikProps,
+  disabled = false,
+  currentPOMode,
+}: Props<T>) => {
   const { values, errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } =
     formikProps;
 
@@ -214,11 +222,11 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, disabled = false, currentP
   );
 };
 
-interface Props {
-  formikProps: UpsertPOFormikProps;
+type Props<T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps> = {
+  formikProps: T extends UpsertPOFormikProps ? UpsertPOFormikProps : UpdatePOPaymentFormikProps;
   disabled?: boolean;
   currentPOMode: PO_MODE;
-}
+};
 
 export default React.memo(PurchaseInfo, (prevProps, nextProps) => {
   const prevFormikProps = prevProps.formikProps;
@@ -239,7 +247,7 @@ export default React.memo(PurchaseInfo, (prevProps, nextProps) => {
 
   return (
     prevProps.disabled === nextProps.disabled &&
-    isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
+    isEqualPrevAndNextFormikValues<UpsertPOFormValue | UpdatePOPaymentFormValue>({
       prevFormikProps,
       nextFormikProps,
       formKeysNeedRender,

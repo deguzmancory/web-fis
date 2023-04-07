@@ -114,6 +114,28 @@ export enum PO_FORM_KEY {
   ORIGINAL_TAX_RATE = 'originalTaxRate',
   REASON_FOR_CHANGE = 'reasonForChange',
   AMOUNT_CHANGE = 'amountChange',
+
+  //PO PAYMENT
+  // payment general info
+  PAYMENT_LOGIN_NAME = 'paymentLoginName',
+  PAYMENT_DATE = 'paymentDate',
+  PAYMENT_REQUEST_NUMBER = 'paymentRequestNumber',
+  PAYMENT_DIRECT_INQUIRIES_TO = 'paymentDirectInquiriesTo',
+  PAYMENT_PHONE_NUMBER = 'paymentPhoneNumber',
+  PAYMENT_FA_STAFF_REVIEWER = 'paymentFaStaffReviewer',
+
+  // Receipt Acknowledgment and Payment Authorization Exception
+  PAYMENT_RECEIPT_ACKNOWLEDGEMENT = 'paymentReceiptAcknowledgement',
+  PAYMENT_TYPE = 'paymentType',
+
+  // Payment Authorized By
+  PAYMENT_AUTHORIZED_BY = 'paymentAuthorizedBy',
+
+  // Payment summary
+  PAYMENT_LINE_ITEMS = 'paymentLineItems',
+  PAYMENT_TOTAL = 'paymentTotal',
+
+  // Remittance Information
 }
 
 export enum PO_ADDITIONAL_FORM_CODE {

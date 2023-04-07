@@ -9,7 +9,7 @@ import {
   InputPhone,
 } from 'src/components/common';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
-import { PODeterminationPayload } from 'src/queries/PurchaseOrders';
+import { PODetermination } from 'src/queries/PurchaseOrders';
 import { IRootState } from 'src/redux/rootReducer';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
@@ -130,7 +130,7 @@ const SubjectDetermination: React.FC<Props> = ({ formikProps, formData, disabled
 
 type Props = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps & {
-    formikProps: CommonFormikProps<PODeterminationPayload>;
+    formikProps: CommonFormikProps<PODetermination>;
     disabled: boolean;
   };
 
@@ -156,7 +156,7 @@ export default React.memo(
 
     return (
       prevProps.disabled === nextProps.disabled &&
-      isEqualPrevAndNextFormikValues<PODeterminationPayload>({
+      isEqualPrevAndNextFormikValues<PODetermination>({
         prevFormikProps,
         nextFormikProps,
         formKeysNeedRender,

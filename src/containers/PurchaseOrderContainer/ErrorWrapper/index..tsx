@@ -21,7 +21,9 @@ const ErrorWrapperPO: React.FC<FallbackProps> = ({
         <SectionLayout>
           {isEditMode ? (
             <Box>
-              <Typography>Something went wrong.</Typography>
+              <Typography variant="h3" textAlign={'center'} mb={3}>
+                Something went wrong.
+              </Typography>
               <RefetchPO resetErrorBoundary={resetErrorBoundary} />
             </Box>
           ) : (

@@ -2,7 +2,7 @@ import { Box, Divider, Grid, Typography } from '@mui/material';
 import React from 'react';
 import { DatePicker, Input, TextareaAutosize } from 'src/components/common';
 import { getAfterDate } from 'src/containers/CRUUSerContainer/UserType/GrantDelegation/helpers';
-import { SubcontractorPayload } from 'src/queries';
+import { Subcontractor } from 'src/queries';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_SUBCONTRACT_AGREEMENT_KEY } from '../enum';
@@ -496,7 +496,7 @@ const WitnessethFormLayout: React.FC<Props> = ({ formikProps, disabled }) => {
 };
 
 type Props = {
-  formikProps: CommonFormikProps<SubcontractorPayload>;
+  formikProps: CommonFormikProps<Subcontractor>;
   disabled: boolean;
 };
 
@@ -522,7 +522,7 @@ export default React.memo(WitnessethFormLayout, (prevProps, nextProps) => {
 
   return (
     prevProps.disabled === nextProps.disabled &&
-    isEqualPrevAndNextFormikValues<SubcontractorPayload>({
+    isEqualPrevAndNextFormikValues<Subcontractor>({
       prevFormikProps,
       nextFormikProps,
       formKeysNeedRender,

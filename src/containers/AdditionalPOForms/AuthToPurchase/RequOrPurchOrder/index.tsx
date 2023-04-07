@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Input } from 'src/components/common';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
-import { POAuthToPurchasePayload } from 'src/queries/PurchaseOrders';
+import { POAuthToPurchase } from 'src/queries/PurchaseOrders';
 import { IRootState } from 'src/redux/rootReducer';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
@@ -59,7 +59,7 @@ const PurchaseInfo: React.FC<Props> = ({ formikProps, formData, disabled = false
 
 type Props = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps & {
-    formikProps: CommonFormikProps<POAuthToPurchasePayload>;
+    formikProps: CommonFormikProps<POAuthToPurchase>;
     disabled: boolean;
   };
 
@@ -83,7 +83,7 @@ export default React.memo(
 
     return (
       prevProps.disabled === nextProps.disabled &&
-      isEqualPrevAndNextFormikValues<POAuthToPurchasePayload>({
+      isEqualPrevAndNextFormikValues<POAuthToPurchase>({
         prevFormikProps,
         nextFormikProps,
         formKeysNeedRender,

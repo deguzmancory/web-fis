@@ -10,7 +10,12 @@ import { getVendorAddress } from 'src/containers/PurchaseOrderContainer/GeneralI
 import { getPOFormValueFromResponse } from 'src/containers/PurchaseOrderContainer/helpers';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
-import { useGetPODetail, useProfile, useUpdateVendorRegistration } from 'src/queries';
+import {
+  useGetPODetail,
+  useGetPOPaymentDetail,
+  useProfile,
+  useUpdateVendorRegistration,
+} from 'src/queries';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/store';
 import { Navigator, Toastify } from 'src/services';

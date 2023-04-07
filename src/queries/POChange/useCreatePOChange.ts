@@ -1,23 +1,24 @@
 import { useMutation, UseMutationOptions } from 'react-query';
 import apiClient from '../apiClient';
 import { responseWrapper } from '../helpers';
+import { PODetailResponse } from '../PurchaseOrders';
 import { PostPOChangeTypePayload } from './types';
 
-export function usePostPoChangeType(
-  options?: UseMutationOptions<any, Error, PostPOChangeTypePayload>
+export function useCreatePOChange(
+  options?: UseMutationOptions<PODetailResponse, Error, PostPOChangeTypePayload>
 ) {
   const {
-    mutate: postPoChangeType,
+    mutate: createPOChange,
     isLoading,
     isSuccess,
-  } = useMutation<any, Error, PostPOChangeTypePayload>({
+  } = useMutation<PODetailResponse, Error, PostPOChangeTypePayload>({
     mutationFn: (payload: PostPOChangeTypePayload) =>
-      responseWrapper(apiClient.postPoChangeType, [payload]),
+      responseWrapper(apiClient.createPOChange, [payload]),
     ...options,
   });
 
   return {
-    postPoChangeType,
+    createPOChange: createPOChange,
     isLoading,
     isSuccess,
   };

@@ -7,7 +7,7 @@ import { TextareaAutosize } from 'src/components/common';
 import { initialSubcontractorValue } from 'src/containers/PurchaseOrderContainer/constants';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
-import { SubcontractorPayload } from 'src/queries';
+import { Subcontractor } from 'src/queries';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Toastify } from 'src/services';
@@ -47,7 +47,7 @@ const SubcontractAgreementForm: React.FC<Props> = ({
     onSetIsImmutableFormData(true);
   };
 
-  const formik = useFormik<SubcontractorPayload>({
+  const formik = useFormik<Subcontractor>({
     initialValues: formData?.subcontractor || initialSubcontractorValue,
     validationSchema: null,
     enableReinitialize: true,
@@ -61,7 +61,7 @@ const SubcontractAgreementForm: React.FC<Props> = ({
 
   const { values, errors, touched, setFieldValue, setFieldTouched, getFieldProps } = formik;
 
-  const formikProps: CommonFormikProps<SubcontractorPayload> = {
+  const formikProps: CommonFormikProps<Subcontractor> = {
     values,
     errors,
     touched,

@@ -8,7 +8,7 @@ import {
   Link,
   TextareaAutosize,
 } from 'src/components/common';
-import { PODeterminationPayload } from 'src/queries/PurchaseOrders';
+import { PODetermination } from 'src/queries/PurchaseOrders';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_DETERMINATION_KEY } from '../enum';
@@ -441,7 +441,7 @@ const ConditionsAndCost: React.FC<Props> = ({ formikProps, disabled = false }) =
 };
 
 type Props = {
-  formikProps: CommonFormikProps<PODeterminationPayload>;
+  formikProps: CommonFormikProps<PODetermination>;
   disabled: boolean;
 };
 
@@ -483,7 +483,7 @@ export default React.memo(ConditionsAndCost, (prevProps, nextProps) => {
 
   return (
     prevProps.disabled === nextProps.disabled &&
-    isEqualPrevAndNextFormikValues<PODeterminationPayload>({
+    isEqualPrevAndNextFormikValues<PODetermination>({
       prevFormikProps,
       nextFormikProps,
       formKeysNeedRender,

@@ -30,10 +30,11 @@ import {
   isPiSuEditPOMode,
   isPOChangeDocumentType,
   isPODocumentType,
+  isPOPaymentDocumentType,
 } from 'src/queries/PurchaseOrders/helpers';
 import usePOSearchProject, { SearchProjectsType } from './hooks/usePOSearchProject';
 import usePOSearchVender, { SearchVendorsType } from './hooks/usePOSearchVender';
-import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
+import { UpsertPOFormValue, UpsertPOFormikProps } from '../types';
 import {
   getVendorAddress,
   getVendorOptions,
@@ -44,10 +45,19 @@ import {
 import SuperQuote from './superQuote';
 import { useParams } from 'react-router-dom';
 import { setFormData } from 'src/redux/form/formSlice';
-import { PO_MODE } from 'src/queries';
+import { PO_DOCUMENT_TYPE, PO_MODE } from 'src/queries';
 import { isPOChangeAmountForm, isPOChangeDescriptionForm } from 'src/queries/POChange/helpers';
+import {
+  UpdatePOPaymentFormValue,
+  UpdatePOPaymentFormikProps,
+} from 'src/containers/POPayment/types';
 
-const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPOMode }) => {
+const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>({
+  formikProps,
+  disabled = false,
+  currentPOMode,
+  documentType = PO_DOCUMENT_TYPE.PURCHASE_ORDER,
+}: Props<T>) => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
 
@@ -62,8 +72,9 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
   } = formikProps;
 
   const isBlankDocument = isCreatePOMode(currentPOMode);
-  const isPODocument = isPODocumentType(values.documentType);
-  const isPOChangeDocument = isPOChangeDocumentType(values.documentType);
+  const isPODocument = isPODocumentType(documentType);
+  const isPOChangeDocument = isPOChangeDocumentType(documentType);
+  const isPOPaymentDocument = isPOPaymentDocumentType(documentType);
 
   // show action link only on create PO and PI SU edit mode of PO document
   const showActionLink = isBlankDocument || (isPODocument && isPiSuEditPOMode(currentPOMode));
@@ -216,7 +227,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
       <Grid container spacing={2}>
         <Grid item container spacing={2}>
           {/* PO logic */}
-          {(isPODocument || isBlankDocument) && (
+          {(isPODocument || isPOPaymentDocument || isBlankDocument) && (
             <Grid item xs={12} sm={6} md={4}>
               <Input
                 label={'Login Name'}
@@ -237,7 +248,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
           </Grid>
 
           {/* PO logic */}
-          {(isPODocument || isBlankDocument) && (
+          {(isPODocument || isPOPaymentDocument || isBlankDocument) && (
             <Grid item xs={12} sm={6} md={4}>
               <Input
                 label={'Purchase Order No.'}
@@ -575,10 +586,11 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPO
   );
 };
 
-type Props = {
-  formikProps: UpsertPOFormikProps;
+type Props<T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps> = {
+  formikProps: T extends UpsertPOFormikProps ? UpsertPOFormikProps : UpdatePOPaymentFormikProps;
   disabled?: boolean;
   currentPOMode: PO_MODE;
+  documentType: PO_DOCUMENT_TYPE;
 };
 
 export default React.memo(GeneralInfo, (prevProps, nextProps) => {
@@ -620,7 +632,8 @@ export default React.memo(GeneralInfo, (prevProps, nextProps) => {
   return (
     prevProps.disabled === nextProps.disabled &&
     prevProps.currentPOMode === nextProps.currentPOMode &&
-    isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
+    prevProps.documentType === nextProps.documentType &&
+    isEqualPrevAndNextFormikValues<UpsertPOFormValue | UpdatePOPaymentFormValue>({
       prevFormikProps,
       nextFormikProps,
       formKeysNeedRender,

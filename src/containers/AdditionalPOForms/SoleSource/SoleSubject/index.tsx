@@ -9,7 +9,7 @@ import {
   InputPhone,
 } from 'src/components/common';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
-import { POSoleSourcePayload } from 'src/queries';
+import { POSoleSource } from 'src/queries';
 import { IRootState } from 'src/redux/rootReducer';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
@@ -135,7 +135,7 @@ const SoleSourceSubject: React.FC<Props> = ({ formikProps, formData, disabled })
 
 type Props = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps & {
-    formikProps: CommonFormikProps<POSoleSourcePayload>;
+    formikProps: CommonFormikProps<POSoleSource>;
     disabled: boolean;
   };
 
@@ -162,7 +162,7 @@ export default React.memo(
 
     return (
       prevProps.disabled === nextProps.disabled &&
-      isEqualPrevAndNextFormikValues<POSoleSourcePayload>({
+      isEqualPrevAndNextFormikValues<POSoleSource>({
         prevFormikProps,
         nextFormikProps,
         formKeysNeedRender,

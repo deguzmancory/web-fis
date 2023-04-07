@@ -1,11 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import FileAttachmentsSection from 'src/containers/shared/FileAttachmentsSection';
-import {
-  POFileAttachmentPayload,
-  useAddPOAttachment,
-  useUploadPOFileAttachment,
-} from 'src/queries';
+import { POFileAttachment, useAddPOAttachment, useUploadPOFileAttachment } from 'src/queries';
 import { useDeletePOAttachment } from 'src/queries/PurchaseOrders/useDeletePOAttachment';
 import { useGetPOAttachmentPresignedUrl } from 'src/queries/PurchaseOrders/useGetPOAttachmentPresignedUrl';
 import { hideAllDialog, showDialog } from 'src/redux/dialog/dialogSlice';
@@ -14,13 +10,17 @@ import { FileCache, Toastify } from 'src/services';
 import { handleShowErrorMsg, isEqualPrevAndNextFormikValues, niceBytes, trimUrl } from 'src/utils';
 import { isEmpty } from 'src/validations';
 import { PO_FORM_KEY } from '../enums';
-import { UpsertPOFormikProps } from '../types';
+import { UpsertPOFormValue, UpsertPOFormikProps } from '../types';
+import {
+  UpdatePOPaymentFormValue,
+  UpdatePOPaymentFormikProps,
+} from 'src/containers/POPayment/types';
 
-const FileAttachments: React.FC<Props> = ({
+const FileAttachments = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>({
   formikProps,
   disabled = false,
   allowActionAfterFinalApproveOnly = false,
-}) => {
+}: Props<T>) => {
   const { fileAttachments, id: poId, placeholderFileAttachment } = formikProps.values;
   const { setFieldValue } = formikProps;
   const dispatch = useDispatch();
@@ -103,7 +103,7 @@ const FileAttachments: React.FC<Props> = ({
   });
 
   const handleDeleteAttachment = React.useCallback(
-    (attachment: POFileAttachmentPayload) => {
+    (attachment: POFileAttachment) => {
       dispatch(
         showDialog({
           type: DIALOG_TYPES.YESNO_DIALOG,
@@ -218,8 +218,8 @@ const FileAttachments: React.FC<Props> = ({
   );
 };
 
-type Props = {
-  formikProps: UpsertPOFormikProps;
+type Props<T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps> = {
+  formikProps: T extends UpsertPOFormikProps ? UpsertPOFormikProps : UpdatePOPaymentFormikProps;
   disabled?: boolean;
   allowActionAfterFinalApproveOnly?: boolean;
 };
@@ -236,7 +236,7 @@ export default React.memo(FileAttachments, (prevProps, nextProps) => {
   return (
     prevProps.disabled === nextProps.disabled &&
     prevProps.allowActionAfterFinalApproveOnly === nextProps.allowActionAfterFinalApproveOnly &&
-    isEqualPrevAndNextFormikValues({
+    isEqualPrevAndNextFormikValues<UpsertPOFormValue | UpdatePOPaymentFormValue>({
       prevFormikProps,
       nextFormikProps,
       formKeysNeedRender: [

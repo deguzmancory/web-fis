@@ -5,10 +5,16 @@ import { isEqualPrevAndNextFormikValues } from 'src/utils';
 import { localTimeToHawaii } from 'src/utils/momentUtils';
 import { isEmpty } from 'src/validations';
 import { PO_FORM_KEY } from '../enums';
-import { UpsertPOFormikProps } from '../types';
+import { UpsertPOFormValue, UpsertPOFormikProps } from '../types';
 import { Accordion } from 'src/components/common';
+import {
+  UpdatePOPaymentFormValue,
+  UpdatePOPaymentFormikProps,
+} from 'src/containers/POPayment/types';
 
-const AuditInformation: React.FC<Props> = ({ formikProps }) => {
+const AuditInformation = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>({
+  formikProps,
+}: Props<T>) => {
   const audits = React.useMemo(() => {
     if (isEmpty(formikProps.values.auditTrails)) return [];
 
@@ -74,14 +80,15 @@ const AuditInformation: React.FC<Props> = ({ formikProps }) => {
     </Accordion>
   );
 };
-type Props = {
-  formikProps: UpsertPOFormikProps;
+type Props<T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps> = {
+  formikProps: T extends UpsertPOFormikProps ? UpsertPOFormikProps : UpdatePOPaymentFormikProps;
 };
+
 export default React.memo(AuditInformation, (prevProps, nextProps) => {
   const prevFormikProps = prevProps.formikProps;
   const nextFormikProps = nextProps.formikProps;
 
-  return isEqualPrevAndNextFormikValues({
+  return isEqualPrevAndNextFormikValues<UpsertPOFormValue | UpdatePOPaymentFormValue>({
     prevFormikProps,
     nextFormikProps,
     formKeysNeedRender: [PO_FORM_KEY.AUDIT_TRAILS],

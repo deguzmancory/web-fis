@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import React from 'react';
 import { TextareaAutosize } from 'src/components/common';
-import { POSoleSourcePayload } from 'src/queries';
+import { POSoleSource } from 'src/queries';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_SOLE_SOURCE_FORM_KEY } from '../enum';
@@ -107,7 +107,7 @@ const SoleSourceStatement: React.FC<Props> = ({ formikProps, disabled }) => {
 };
 
 type Props = {
-  formikProps: CommonFormikProps<POSoleSourcePayload>;
+  formikProps: CommonFormikProps<POSoleSource>;
   disabled: boolean;
 };
 
@@ -124,7 +124,7 @@ export default React.memo(SoleSourceStatement, (prevProps, nextProps) => {
 
   return (
     prevProps.disabled === nextProps.disabled &&
-    isEqualPrevAndNextFormikValues<POSoleSourcePayload>({
+    isEqualPrevAndNextFormikValues<POSoleSource>({
       prevFormikProps,
       nextFormikProps,
       formKeysNeedRender,

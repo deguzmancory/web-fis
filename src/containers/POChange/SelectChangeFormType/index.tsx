@@ -5,7 +5,7 @@ import SectionLayout from 'src/containers/shared/SectionLayout';
 import BreadcrumbsPOChangeForm from '../breadcrumbs';
 import { SELECT_CHANGE_FORM_TYPE_QUERY_KEY } from './enums';
 import { useLocation } from 'react-router-dom';
-import { usePostPoChangeType } from 'src/queries';
+import { useCreatePOChange } from 'src/queries';
 import { handleShowErrorMsg } from 'src/utils';
 import { Navigator } from 'src/services';
 import { PATHS } from 'src/appConfig/paths';
@@ -40,7 +40,7 @@ const SelectChangeFormType: React.FC<Props> = ({ disabled = false }) => {
     [query]
   );
 
-  const { postPoChangeType } = usePostPoChangeType({
+  const { createPOChange: postPoChangeType } = useCreatePOChange({
     onError: (error) => {
       handleShowErrorMsg(error);
     },

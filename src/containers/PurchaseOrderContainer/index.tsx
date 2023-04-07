@@ -17,6 +17,11 @@ import {
   useUpdatePO,
 } from 'src/queries';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
+import {
+  isFinalPOMode,
+  isPOSaveAction,
+  isViewOnlyPOMode,
+} from 'src/queries/PurchaseOrders/helpers';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, RoleService, Toastify } from 'src/services';
@@ -46,11 +51,6 @@ import {
   getUpsertPOPayload,
 } from './helpers';
 import { UpsertPOFormValue, UpsertPOFormikProps } from './types';
-import {
-  isFinalPOMode,
-  isPOSaveAction,
-  isViewOnlyPOMode,
-} from 'src/queries/PurchaseOrders/helpers';
 
 const AuditInformation = React.lazy(() => import('./AuditInformation'));
 const FileAttachments = React.lazy(() => import('./FileAttachments'));
@@ -77,9 +77,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
     () => getCurrentPOEditMode({ id, poStatus, currentRole }),
     [id, poStatus, currentRole]
   );
-
   const disabledSection = isViewOnlyPOMode(currentPOMode) || isFinalPOMode(currentPOMode);
-
   const { profile } = useProfile();
   const { onGetPOById, handleInvalidatePODetail } = useGetPODetail({
     id: id,
@@ -316,6 +314,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
                     formikProps={formikProps}
                     disabled={disabledSection}
                     currentPOMode={currentPOMode}
+                    documentType={PO_DOCUMENT_TYPE.PURCHASE_ORDER}
                   />
                 </SectionLayout>
                 <SectionLayout>
@@ -380,6 +379,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
                   formikProps={formikProps}
                   loading={isLoading}
                   disabled={isLoading}
+                  documentType={PO_DOCUMENT_TYPE.PURCHASE_ORDER}
                 />
               </>
             )}

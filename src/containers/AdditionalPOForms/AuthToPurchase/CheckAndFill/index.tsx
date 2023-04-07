@@ -1,7 +1,7 @@
 import { Box, Grid, Typography } from '@mui/material';
 import React from 'react';
 import { Checkbox, Input, TextareaAutosize } from 'src/components/common';
-import { POAuthToPurchasePayload } from 'src/queries/PurchaseOrders';
+import { POAuthToPurchase } from 'src/queries/PurchaseOrders';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { PO_AUTH_TO_PURCHASE_KEY } from '../enum';
@@ -167,7 +167,7 @@ const CheckAndFill: React.FC<Props> = ({ formikProps, disabled = false }) => {
 };
 
 type Props = {
-  formikProps: CommonFormikProps<POAuthToPurchasePayload>;
+  formikProps: CommonFormikProps<POAuthToPurchase>;
   disabled: boolean;
 };
 
@@ -193,7 +193,7 @@ export default React.memo(CheckAndFill, (prevProps, nextProps) => {
 
   return (
     prevProps.disabled === nextProps.disabled &&
-    isEqualPrevAndNextFormikValues<POAuthToPurchasePayload>({
+    isEqualPrevAndNextFormikValues<POAuthToPurchase>({
       prevFormikProps,
       nextFormikProps,
       formKeysNeedRender,

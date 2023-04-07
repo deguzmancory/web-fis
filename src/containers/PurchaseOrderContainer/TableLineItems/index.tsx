@@ -20,13 +20,17 @@ import { isVariousProject } from '../GeneralInfo/helpers';
 import { POLineItemFormValue, UpsertPOFormikProps, UpsertPOFormValue } from '../types';
 import { isCUReviewPOMode, isFAReviewPOMode } from 'src/queries/PurchaseOrders/helpers';
 import { PO_MODE } from 'src/queries';
+import {
+  UpdatePOPaymentFormValue,
+  UpdatePOPaymentFormikProps,
+} from 'src/containers/POPayment/types';
 
-const TableLineItems: React.FC<Props> = ({
+const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>({
   formikProps,
   disabled = false,
   currentPOMode,
   filterOriginItemValue,
-}) => {
+}: Props<T>) => {
   const isFAReviewMode = isFAReviewPOMode(currentPOMode);
   const isCUReviewMode = isCUReviewPOMode(currentPOMode);
   const isReviewMode = isFAReviewMode || isCUReviewMode;
@@ -421,8 +425,8 @@ const TableLineItems: React.FC<Props> = ({
   );
 };
 
-type Props = {
-  formikProps: UpsertPOFormikProps;
+type Props<T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps> = {
+  formikProps: T extends UpsertPOFormikProps ? UpsertPOFormikProps : UpdatePOPaymentFormikProps;
   disabled?: boolean;
   currentPOMode: PO_MODE;
   filterOriginItemValue?: boolean;
@@ -436,7 +440,7 @@ export default React.memo(TableLineItems, (prevProps, nextProps) => {
 
   return (
     prevProps.disabled === nextProps.disabled &&
-    isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
+    isEqualPrevAndNextFormikValues<UpsertPOFormValue | UpdatePOPaymentFormValue>({
       prevFormikProps,
       nextFormikProps,
       formKeysNeedRender,

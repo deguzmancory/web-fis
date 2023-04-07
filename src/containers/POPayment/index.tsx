@@ -1,9 +1,9 @@
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Container, Grid, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { Location } from 'history';
 import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundary';
 import NoPermission from 'src/components/NoPermission';
@@ -11,31 +11,24 @@ import { LoadingCommon } from 'src/components/common';
 import ActionButtons from 'src/containers/PurchaseOrderContainer/ActionButtons';
 import ErrorWrapperPO from 'src/containers/PurchaseOrderContainer/ErrorWrapper/index.';
 import GeneralInfo from 'src/containers/PurchaseOrderContainer/GeneralInfo';
-import { emptyUpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/constants';
-import {
-  PO_FORM_ELEMENT_ID,
-  SUBMITTED_PO_QUERY,
-} from 'src/containers/PurchaseOrderContainer/enums';
+import { SUBMITTED_PO_QUERY } from 'src/containers/PurchaseOrderContainer/enums';
 import HeaderOfSection from 'src/containers/PurchaseOrderContainer/headerOfSection';
 import {
   getCurrentPOEditMode,
   getPOFormValidationSchema,
-  getPOFormValueFromResponse,
-  getUpsertPOPayload,
 } from 'src/containers/PurchaseOrderContainer/helpers';
-import {
-  UpsertPOFormValue,
-  UpsertPOFormikProps,
-} from 'src/containers/PurchaseOrderContainer/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
-import { PO_ACTION, PO_DOCUMENT_TYPE, useGetPODetail, useProfile, useUpdatePO } from 'src/queries';
+import {
+  PO_ACTION,
+  PO_DOCUMENT_TYPE,
+  useGetPOPaymentDetail,
+  useProfile,
+  useUpdatePOPayment,
+} from 'src/queries';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import {
-  isFAReviewPOMode,
   isFinalPOMode,
-  isPOChangeDocumentType,
   isPOSaveAction,
-  isPiSuEditPOMode,
   isViewOnlyPOMode,
 } from 'src/queries/PurchaseOrders/helpers';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
@@ -49,7 +42,13 @@ import InternalComments from '../PurchaseOrderContainer/InternalComments';
 import PurchaseInfo from '../PurchaseOrderContainer/PurchaseInfo';
 import TableLineItems from '../PurchaseOrderContainer/TableLineItems';
 import BreadcrumbsPOPayment from './breadcrumbs';
-import { PO_PAYMENT_FORM_QUERY_KEY } from './enums';
+import {
+  emptyUpdatePOPaymentFormValue,
+  getPOPaymentFormValueFromResponse,
+} from './helpers/formValues';
+import { UpdatePOPaymentFormValue, UpdatePOPaymentFormikProps } from './types';
+import ReceiptAndPaymentType from './ReceiptAndPaymentType';
+import PaymentGeneralInfo from './PaymentGeneralInfo';
 
 const POPayment: React.FC<Props> = ({
   formData,
@@ -59,25 +58,6 @@ const POPayment: React.FC<Props> = ({
   formAction,
 }) => {
   const { id } = useParams<{ id: string }>();
-  const location = useLocation();
-  const query = React.useMemo(() => new URLSearchParams(location.search), [location]);
-  const scrollToParam = React.useMemo(
-    () => query.get(PO_PAYMENT_FORM_QUERY_KEY.SCROLL_TO) || null,
-    [query]
-  );
-
-  // Auto scroll to additional form section base on scrollToParam
-  React.useEffect(() => {
-    if (scrollToParam && scrollToParam === PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS) {
-      const additionalFormId = document.getElementById(PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS);
-
-      if (additionalFormId) {
-        setTimeout(() => {
-          additionalFormId.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
-      }
-    }
-  }, [scrollToParam]);
 
   const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
   const poStatus = React.useMemo(() => formData?.status, [formData?.status]);
@@ -87,15 +67,18 @@ const POPayment: React.FC<Props> = ({
   );
   const disabledSection = isViewOnlyPOMode(currentPOMode) || isFinalPOMode(currentPOMode);
 
-  const isPiSuEditMode = isPiSuEditPOMode(currentPOMode);
-  const isFAReviewMode = isFAReviewPOMode(currentPOMode);
+  // const isPiSuEditMode = isPiSuEditPOMode(currentPOMode);
+  // const isFAReviewMode = isFAReviewPOMode(currentPOMode);
 
   const { profile } = useProfile();
-  const { onGetPOById, handleInvalidatePODetail } = useGetPODetail({
+  const { onGetPOById, handleInvalidatePOPaymentDetail } = useGetPOPaymentDetail({
     id: id,
     onSuccess: (data) => {
-      const formValue: UpsertPOFormValue = getPOFormValueFromResponse({ response: data, profile });
-      onSetFormData<UpsertPOFormValue>(formValue);
+      const formValue: UpdatePOPaymentFormValue = getPOPaymentFormValueFromResponse({
+        profile,
+        response: data,
+      });
+      onSetFormData<UpdatePOPaymentFormValue>(formValue);
     },
     onError: (error) => {
       handleShowErrorMsg(error);
@@ -103,11 +86,11 @@ const POPayment: React.FC<Props> = ({
     suspense: true,
   });
   const {
-    updatePO,
-    data: updatePOResponse,
-    isLoading: updatePOLoading,
-    isSuccess: isUpdatePOSuccess,
-  } = useUpdatePO({
+    updatePOPayment,
+    data: updatePOPaymentResponse,
+    isLoading: updatePOPaymentLoading,
+    isSuccess: isUpdatePOPaymentSuccess,
+  } = useUpdatePOPayment({
     onSuccess: () => {
       if (!isPOSaveAction(formAction)) {
         onSetFormData(null);
@@ -121,34 +104,34 @@ const POPayment: React.FC<Props> = ({
     },
   });
 
-  const isLoading = updatePOLoading;
+  const isLoading = updatePOPaymentLoading;
 
   // Navigate to submitted PO success page
   React.useEffect(() => {
-    if (isUpdatePOSuccess && !isLoading) {
-      const responseData = updatePOResponse;
+    if (isUpdatePOPaymentSuccess && !isLoading) {
+      const responseData = updatePOPaymentResponse;
 
       switch (formAction) {
         case PO_ACTION.SAVE: {
           Toastify.success(`Saved form successfully.`);
-          Navigator.navigate(`${PATHS.poChangeForm}/${responseData.data.id}`);
+          Navigator.navigate(`${PATHS.poPaymentForm}/${responseData.data.id}`);
           return;
         }
         case PO_ACTION.SUBMIT: {
           Navigator.navigate(
-            `${PATHS.submittedPurchaseOrder}/${responseData.data.id}?${SUBMITTED_PO_QUERY.PO_NUMBER}=${responseData.data.number}&${SUBMITTED_PO_QUERY.DOCUMENT_TYPE}=${PO_DOCUMENT_TYPE.PO_CHANGE}`
+            `${PATHS.submittedPurchaseOrder}/${responseData.data.id}?${SUBMITTED_PO_QUERY.PO_NUMBER}=${responseData.data.number}&${SUBMITTED_PO_QUERY.DOCUMENT_TYPE}=${PO_DOCUMENT_TYPE.PO_PAYMENT}`
           );
           return;
         }
 
         default: {
-          handleInvalidatePODetail();
+          handleInvalidatePOPaymentDetail();
           onGetPOById();
         }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isUpdatePOSuccess]);
+  }, [isUpdatePOPaymentSuccess]);
 
   /* INIT DATA */
   React.useEffect(() => {
@@ -168,11 +151,19 @@ const POPayment: React.FC<Props> = ({
     };
   }, [onSetIsImmutableFormData]);
 
-  const initialFormValue = React.useMemo(() => formData || emptyUpsertPOFormValue, [formData]);
+  const initialFormValue = React.useMemo(
+    () => formData || emptyUpdatePOPaymentFormValue,
+    [formData]
+  );
 
-  const handleFormSubmit = (values: UpsertPOFormValue) => {
-    const editPOPayload = getUpsertPOPayload({ formValues: values, action: values.action });
-    updatePO(editPOPayload);
+  const validationSchema = React.useMemo(
+    () => getPOFormValidationSchema({ action: formAction }),
+    [formAction]
+  );
+
+  const handleFormSubmit = (values: UpdatePOPaymentFormValue) => {
+    // const editPOPayload = getUpsertPOPayload({ formValues: values, action: values.action });
+    // updatePOPayment(editPOPayload);
   };
 
   const {
@@ -185,14 +176,14 @@ const POPayment: React.FC<Props> = ({
     setFieldTouched,
     handleSubmit,
     validateForm,
-  } = useFormik<UpsertPOFormValue>({
+  } = useFormik<UpdatePOPaymentFormValue>({
     initialValues: initialFormValue,
-    validationSchema: getPOFormValidationSchema,
+    validationSchema: validationSchema,
     enableReinitialize: true,
     onSubmit: handleFormSubmit,
   });
 
-  const formikProps: UpsertPOFormikProps = {
+  const formikProps: UpdatePOPaymentFormikProps = {
     values,
     errors,
     touched,
@@ -213,20 +204,36 @@ const POPayment: React.FC<Props> = ({
     return (
       <>
         <SectionLayout header={<HeaderOfSection />}>
-          <GeneralInfo
+          <PaymentGeneralInfo
             formikProps={formikProps}
-            disabled={disabledSection}
+            disabled={isViewOnlyPOMode(currentPOMode)}
             currentPOMode={currentPOMode}
           />
         </SectionLayout>
-
+        <SectionLayout>
+          <GeneralInfo
+            formikProps={formikProps}
+            disabled
+            currentPOMode={currentPOMode}
+            documentType={PO_DOCUMENT_TYPE.PO_PAYMENT}
+          />
+        </SectionLayout>
         <SectionLayout>
           <TableLineItems formikProps={formikProps} disabled currentPOMode={currentPOMode} />
         </SectionLayout>
         <SectionLayout>
           <PurchaseInfo formikProps={formikProps} disabled currentPOMode={currentPOMode} />
         </SectionLayout>
-
+        <Grid container>
+          <Grid item xs={12} md={6}>
+            <SectionLayout>
+              <ReceiptAndPaymentType
+                formikProps={formikProps}
+                disabled={isViewOnlyPOMode(currentPOMode)}
+              />
+            </SectionLayout>
+          </Grid>
+        </Grid>
         <SectionLayout>
           <FileAttachments
             formikProps={formikProps}
@@ -256,12 +263,12 @@ const POPayment: React.FC<Props> = ({
       return false;
     }
 
-    if (!isUpdatePOSuccess) {
+    if (!isUpdatePOPaymentSuccess) {
       return isFormDirty;
     }
   };
 
-  const hasPermission = true || isPOChangeDocumentType(values.documentType); //TODO: update when enhancement needed
+  const hasPermission = true; //TODO: update when enhancement needed
 
   return (
     <Prompt
@@ -293,6 +300,7 @@ const POPayment: React.FC<Props> = ({
                   formikProps={formikProps}
                   loading={isLoading}
                   disabled={isLoading}
+                  documentType={PO_DOCUMENT_TYPE.PO_PAYMENT}
                 />
               </>
             )}
@@ -321,7 +329,7 @@ const POPaymentWrapper: React.FC<Props> = ({ ...props }) => {
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const mapStateToProps = (state: IRootState<UpsertPOFormValue>) => ({
+const mapStateToProps = (state: IRootState<UpdatePOPaymentFormValue>) => ({
   formData: state.form.formData,
   isImmutableFormData: state.form.isImmutableFormData,
   formAction: state.form.poFormAction,

@@ -4,7 +4,7 @@ import { DatePicker, Input, TextareaAutosize } from 'src/components/common';
 import CustomTable from 'src/components/CustomTable';
 import { BodyBasicRows, CellType } from 'src/components/CustomTable/types';
 import { initialAuthToPurchaseLineItemsValue } from 'src/containers/PurchaseOrderContainer/constants';
-import { AuthToPurchaseResponse, POAuthToPurchasePayload } from 'src/queries/PurchaseOrders';
+import { AuthToPurchase, POAuthToPurchase } from 'src/queries/PurchaseOrders';
 import {
   checkRowStateAndSetValue,
   getErrorMessage,
@@ -47,7 +47,7 @@ const PreAcquisition: React.FC<Props> = ({ formikProps, disabled = false }) => {
   );
 
   const handleInputChange = ({ name, value, index }) => {
-    checkRowStateAndSetValue<AuthToPurchaseResponse>({
+    checkRowStateAndSetValue<AuthToPurchase>({
       name,
       value,
       index,
@@ -213,7 +213,7 @@ const PreAcquisition: React.FC<Props> = ({ formikProps, disabled = false }) => {
 };
 
 type Props = {
-  formikProps: CommonFormikProps<POAuthToPurchasePayload>;
+  formikProps: CommonFormikProps<POAuthToPurchase>;
   disabled: boolean;
 };
 
@@ -231,7 +231,7 @@ export default React.memo(PreAcquisition, (prevProps, nextProps) => {
 
   return (
     prevProps.disabled === nextProps.disabled &&
-    isEqualPrevAndNextFormikValues<POAuthToPurchasePayload>({
+    isEqualPrevAndNextFormikValues<POAuthToPurchase>({
       prevFormikProps,
       nextFormikProps,
       formKeysNeedRender,
