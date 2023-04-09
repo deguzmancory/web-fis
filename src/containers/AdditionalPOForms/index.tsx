@@ -163,7 +163,10 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   return (
     <Box py={4}>
       <Container maxWidth="lg">
-        <BreadcrumbsAdditionalPOForms isViewMode={false} />
+        <BreadcrumbsAdditionalPOForms
+          documentId={documentId}
+          documentType={formData?.documentType}
+        />
         <Typography mt={2} variant="body2" textAlign={'center'}>
           Research Corporation of the University of Hawaii
         </Typography>

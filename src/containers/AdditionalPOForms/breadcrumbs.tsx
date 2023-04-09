@@ -1,19 +1,28 @@
 import { Breadcrumbs, Typography } from '@mui/material';
+import { isEmpty } from 'lodash';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import TypographyLink from 'src/components/TypographyLink';
+import { PO_DOCUMENT_TYPE } from 'src/queries';
 import { setIsImmutableFormData } from 'src/redux/form/formSlice';
+import { handleNavigateBackToMainForm } from './helpers';
 
-const BreadcrumbsAdditionalPOForms: React.FC<Props> = ({ isViewMode }) => {
+const BreadcrumbsAdditionalPOForms: React.FC<Props> = ({ documentId, documentType }) => {
   const dispatch = useDispatch();
   const getTitleBreadcrumbs = () => {
-    if (isViewMode) {
+    if (!isEmpty(documentId)) {
       return 'View/Edit';
     }
     return 'Create';
   };
+
+  const handleNavigateForm = () => {
+    dispatch(setIsImmutableFormData(true));
+    handleNavigateBackToMainForm({ documentId, hrefNavigationForm: null, documentType });
+  };
+
   return (
     <Breadcrumbs aria-label="breadcrumb">
       <Link to={PATHS.dashboard}>
@@ -22,12 +31,7 @@ const BreadcrumbsAdditionalPOForms: React.FC<Props> = ({ isViewMode }) => {
 
       <Typography variant="body2">Purchasing (POs & PO Payments)</Typography>
 
-      <Link
-        to={PATHS.createPurchaseOrders}
-        onClick={() => {
-          dispatch(setIsImmutableFormData(true));
-        }}
-      >
+      <Link to={null} onClick={() => handleNavigateForm()}>
         <TypographyLink>{getTitleBreadcrumbs()} PO</TypographyLink>
       </Link>
 
@@ -37,7 +41,8 @@ const BreadcrumbsAdditionalPOForms: React.FC<Props> = ({ isViewMode }) => {
 };
 
 type Props = {
-  isViewMode: boolean;
+  documentId: string;
+  documentType: PO_DOCUMENT_TYPE;
 };
 
 export default BreadcrumbsAdditionalPOForms;
