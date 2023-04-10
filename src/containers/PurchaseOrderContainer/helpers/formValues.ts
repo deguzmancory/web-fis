@@ -1,5 +1,6 @@
 import { PATHS } from 'src/appConfig/paths';
 import { MyProfile } from 'src/queries';
+import { isPOChangeAmountForm, isPOChangeAmountTerminatedForm } from 'src/queries/POChange/helpers';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import {
   AdditionalPOForm,
@@ -7,6 +8,7 @@ import {
   PO_ACTION,
   UpsertPOPayload,
 } from 'src/queries/PurchaseOrders';
+import { isPOChangeDocumentType } from 'src/queries/PurchaseOrders/helpers';
 import { PIDetail, SUDetail } from 'src/queries/Users';
 import { RoleService } from 'src/services';
 import {
@@ -21,7 +23,12 @@ import { isEmpty } from 'src/validations';
 import { isVariousProject } from '../GeneralInfo/helpers';
 import { PO_ADDITIONAL_FORM_CODE, PO_ADDITIONAL_FORM_EXTERNAL_LINK } from '../enums';
 import { AdditionalPOFormValue, UpsertPOFormValue } from '../types';
-import { emptyUpsertPOFormValue, externalFormAttachments, initialLineItemValue } from './constants';
+import {
+  emptyUpsertPOFormValue,
+  externalFormAttachments,
+  initialLineItemPOChangeValue,
+  initialLineItemValue,
+} from './constants';
 import { checkIsFAReviewMode } from './utils';
 
 export const getExternalLinkFromFormCode = (formCode: PO_ADDITIONAL_FORM_CODE) => {
@@ -152,6 +159,11 @@ export const getPOFormValueFromResponse = ({
     ext: Number(lineItem.unitPrice || 0),
   }));
 
+  const isAllowUpdateLineItemPOChangeForm =
+    isPOChangeDocumentType(response.documentType) &&
+    (isPOChangeAmountForm(response.formNumber) ||
+      isPOChangeAmountTerminatedForm(response.formNumber));
+
   return {
     ...response,
     ...preFillSendInvoiceDataInFAReviewMode({ response, profile }),
@@ -165,7 +177,9 @@ export const getPOFormValueFromResponse = ({
     taxRate: Number(response.taxRate || 0),
     total: Number(response.total || 0),
     shippingTotal: Number(response.shippingTotal || 0),
-    lineItems: [...transformedLineItems, initialLineItemValue],
+    lineItems: isAllowUpdateLineItemPOChangeForm
+      ? [...transformedLineItems, initialLineItemPOChangeValue]
+      : [...transformedLineItems, initialLineItemValue],
     determination: response.determination
       ? {
           ...response.determination,

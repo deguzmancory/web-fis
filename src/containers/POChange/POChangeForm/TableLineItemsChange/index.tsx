@@ -9,11 +9,11 @@ import {
   TextareaAutosize,
 } from 'src/components/common';
 import { isVariousProject } from 'src/containers/PurchaseOrderContainer/GeneralInfo/helpers';
+import { PO_FORM_KEY, PO_LINE_ITEM_KEY } from 'src/containers/PurchaseOrderContainer/enums';
 import {
-  initialLineItemValue,
+  initialLineItemPOChangeValue,
   lineItemsColumnNames,
 } from 'src/containers/PurchaseOrderContainer/helpers';
-import { PO_FORM_KEY, PO_LINE_ITEM_KEY } from 'src/containers/PurchaseOrderContainer/enums';
 import {
   POLineItemFormValue,
   UpsertPOFormValue,
@@ -21,6 +21,7 @@ import {
 } from 'src/containers/PurchaseOrderContainer/types';
 import SearchProjectNumber from 'src/containers/shared/SearchProjectNumber';
 import { PO_MODE } from 'src/queries';
+import { isPOChangeDescriptionForm } from 'src/queries/POChange/helpers';
 import {
   checkRowStateAndSetValue,
   getErrorMessage,
@@ -44,6 +45,8 @@ const TableLineItemsPOChange: React.FC<Props> = ({
     return values.lineItems;
   }, [values.lineItems, filterOriginItemValue]);
 
+  const isInPOChangeDescriptionForm = isPOChangeDescriptionForm(values?.formNumber);
+
   const hideProjectNumberColumn = React.useMemo(
     () => !isVariousProject(values.projectNumber),
     [values.projectNumber]
@@ -64,7 +67,7 @@ const TableLineItemsPOChange: React.FC<Props> = ({
   );
 
   const addNewRow = React.useCallback(() => {
-    setFieldValue(`${PO_FORM_KEY.LINE_ITEMS}`, [...lineItemsValue, initialLineItemValue]);
+    setFieldValue(`${PO_FORM_KEY.LINE_ITEMS}`, [...lineItemsValue, initialLineItemPOChangeValue]);
   }, [lineItemsValue, setFieldValue]);
 
   const updateExtItem = React.useCallback(
@@ -300,13 +303,19 @@ const TableLineItemsPOChange: React.FC<Props> = ({
             <TextareaAutosize
               {...getFieldProps(`${prefixLineItem}.${PO_LINE_ITEM_KEY.DESCRIPTION}`)}
               errorMessage={_getErrorMessage(`${prefixLineItem}.${PO_LINE_ITEM_KEY.DESCRIPTION}`)}
-              onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
+              onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
+                const nameDescription = `${prefixLineItem}.${PO_LINE_ITEM_KEY.DESCRIPTION}`;
+                const valueDescription = event.target.value;
+                if (isInPOChangeDescriptionForm) {
+                  setFieldValue(nameDescription, valueDescription);
+                  return;
+                }
                 handleInputChange({
                   index,
-                  name: `${prefixLineItem}.${PO_LINE_ITEM_KEY.DESCRIPTION}`,
-                  value: event.target.value,
-                })
-              }
+                  name: nameDescription,
+                  value: valueDescription,
+                });
+              }}
               required
               style={{
                 width: hideProjectNumberColumn ? 265 : 190,

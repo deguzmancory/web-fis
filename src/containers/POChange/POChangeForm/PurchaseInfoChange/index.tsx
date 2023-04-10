@@ -184,7 +184,7 @@ const PurchaseInfoChange: React.FC<Props> = ({
           </Grid>
           <Grid item xs={8} className="justify-flex-end">
             <Typography variant="body2" fontWeight={'bold'}>
-              TOTAL
+              {showAmountChangeSection ? 'NEW TOTAL' : 'TOTAL'}
             </Typography>
           </Grid>
           <Grid item xs={4}>

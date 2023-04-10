@@ -86,6 +86,19 @@ export const initialLineItemValue = {
   ext: 0,
 };
 
+export const initialLineItemPOChangeValue = {
+  itemProjectNumber: '',
+  subProject: '',
+  budgetCategory: '',
+  subBudgetCategory: '',
+  description: '',
+  quantity: '',
+  unit: '',
+  unitPrice: null,
+  ext: 0,
+  isOriginal: false,
+};
+
 export const initialFileAttachmentValue = {
   id: '',
   name: '',

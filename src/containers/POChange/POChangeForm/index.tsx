@@ -1,9 +1,11 @@
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Container, Stack, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { Location } from 'history';
 import React, { Suspense } from 'react';
+import { AiFillWarning } from 'react-icons/ai';
 import { connect } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
+import { COLOR_CODE } from 'src/appConfig/constants';
 import { PATHS } from 'src/appConfig/paths';
 import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundary';
 import NoPermission from 'src/components/NoPermission';
@@ -16,13 +18,13 @@ import ErrorWrapperPO from 'src/containers/PurchaseOrderContainer/ErrorWrapper/i
 import FileAttachments from 'src/containers/PurchaseOrderContainer/FileAttachments';
 import GeneralInfo from 'src/containers/PurchaseOrderContainer/GeneralInfo';
 import InternalComments from 'src/containers/PurchaseOrderContainer/InternalComments';
-import { emptyUpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/helpers';
 import {
   PO_FORM_ELEMENT_ID,
   SUBMITTED_PO_QUERY,
 } from 'src/containers/PurchaseOrderContainer/enums';
 import HeaderOfSection from 'src/containers/PurchaseOrderContainer/headerOfSection';
 import {
+  emptyUpsertPOFormValue,
   getCurrentPOEditMode,
   getPOFormValidationSchema,
   getPOFormValueFromResponse,
@@ -96,6 +98,7 @@ const POChangeForm: React.FC<Props> = ({
     () => getCurrentPOEditMode({ id, poStatus, currentRole }),
     [id, poStatus, currentRole]
   );
+
   const disabledSection = isViewOnlyPOMode(currentPOMode) || isFinalPOMode(currentPOMode);
 
   const isPiSuEditMode = isPiSuEditPOMode(currentPOMode);
@@ -252,22 +255,46 @@ const POChangeForm: React.FC<Props> = ({
             currentPOMode={currentPOMode}
             documentType={PO_DOCUMENT_TYPE.PO_CHANGE}
           />
+          {isInChangeAmountTerminatedForm && (
+            <Stack
+              bgcolor={COLOR_CODE.WARNING}
+              sx={{ p: 1, mt: 2, flexDirection: 'row', alignItems: 'center' }}
+            >
+              <AiFillWarning color={COLOR_CODE.WHITE} fontSize={24} />
+              <Typography variant="body2" color={COLOR_CODE.WHITE} sx={{ ml: 1 }}>
+                Internal Purposes Only - Do not send to vendor
+              </Typography>
+            </Stack>
+          )}
         </SectionLayout>
-        <SectionLayout>
-          <Accordion title="Original Order">
-            <TableLineItemsPOChange
-              formikProps={formikProps}
-              disabled
-              currentPOMode={currentPOMode}
-              filterOriginItemValue={true}
-              allowUpdateDescription={false}
-              allowUpdateInfoAndAmount={false}
-            />
-            <Box mt={2}>
-              <OriginalPurchaseInfo formikProps={formikProps} />
-            </Box>
-          </Accordion>
-        </SectionLayout>
+        {!isInChangeTotalCancellationForm && (
+          <SectionLayout>
+            <Accordion title="Original Order">
+              <TableLineItemsPOChange
+                formikProps={formikProps}
+                disabled
+                currentPOMode={currentPOMode}
+                filterOriginItemValue={true}
+                allowUpdateDescription={false}
+                allowUpdateInfoAndAmount={false}
+              />
+              <Box mt={2}>
+                <OriginalPurchaseInfo formikProps={formikProps} />
+              </Box>
+            </Accordion>
+          </SectionLayout>
+        )}
+
+        {!isInChangeTotalCancellationForm && (
+          <Typography
+            bgcolor={'white'}
+            border={COLOR_CODE.DEFAULT_BORDER}
+            variant="h5"
+            sx={{ py: 1, px: 3, mt: 2, mb: -2 }}
+          >
+            Change Order to Read
+          </Typography>
+        )}
         <SectionLayout>
           <TableLineItemsPOChange
             formikProps={formikProps}
@@ -278,6 +305,7 @@ const POChangeForm: React.FC<Props> = ({
             allowUpdateDescription={isAllowUpdateAmount || isAllowUpdateDescription}
           />
         </SectionLayout>
+
         <SectionLayout>
           <PurchaseInfoChange
             formikProps={formikProps}
