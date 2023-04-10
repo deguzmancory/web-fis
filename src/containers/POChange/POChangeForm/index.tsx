@@ -39,6 +39,7 @@ import {
   isPOChangeAmountForm,
   isPOChangeAmountTerminatedForm,
   isPOChangeDescriptionForm,
+  isPOChangeTotalCancellationForm,
 } from 'src/queries/POChange/helpers';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import {
@@ -100,10 +101,13 @@ const POChangeForm: React.FC<Props> = ({
   const isPiSuEditMode = isPiSuEditPOMode(currentPOMode);
   const isFAReviewMode = isFAReviewPOMode(currentPOMode);
 
+  const isInChangeTotalCancellationForm = isPOChangeTotalCancellationForm(poChangeFormNumber);
   const isInChangeDescriptionForm = isPOChangeDescriptionForm(poChangeFormNumber);
   const isInChangeAmountForm = isPOChangeAmountForm(poChangeFormNumber);
   const isInChangeAmountTerminatedForm = isPOChangeAmountTerminatedForm(poChangeFormNumber);
 
+  const disabledGeneralInfoSection =
+    isInChangeTotalCancellationForm || isInChangeAmountTerminatedForm;
   const isAllowUpdateAmount =
     (isInChangeAmountForm || isInChangeAmountTerminatedForm) && (isPiSuEditMode || isFAReviewMode);
   const isAllowUpdateDescription = isInChangeDescriptionForm && (isFAReviewMode || isPiSuEditMode);
@@ -244,7 +248,7 @@ const POChangeForm: React.FC<Props> = ({
         <SectionLayout header={<HeaderOfSection />}>
           <GeneralInfo
             formikProps={formikProps}
-            disabled={disabledSection}
+            disabled={disabledSection || disabledGeneralInfoSection}
             currentPOMode={currentPOMode}
             documentType={PO_DOCUMENT_TYPE.PO_CHANGE}
           />

@@ -1,15 +1,15 @@
 import { Box, ButtonGroup, Container, Typography } from '@mui/material';
 import React from 'react';
+import { useLocation } from 'react-router-dom';
+import { PATHS } from 'src/appConfig/paths';
 import { Button } from 'src/components/common';
 import SectionLayout from 'src/containers/shared/SectionLayout';
+import { useCreatePOChange } from 'src/queries';
+import { PO_CHANGE_FORM_NUMBER } from 'src/queries/POChange/enums';
+import { Navigator } from 'src/services';
+import { handleShowErrorMsg } from 'src/utils';
 import BreadcrumbsPOChangeForm from '../breadcrumbs';
 import { SELECT_CHANGE_FORM_TYPE_QUERY_KEY } from './enums';
-import { useLocation } from 'react-router-dom';
-import { useCreatePOChange } from 'src/queries';
-import { handleShowErrorMsg } from 'src/utils';
-import { Navigator } from 'src/services';
-import { PATHS } from 'src/appConfig/paths';
-import { PO_CHANGE_FORM_NUMBER } from 'src/queries/POChange/enums';
 
 const buttons = [
   {
@@ -40,25 +40,25 @@ const SelectChangeFormType: React.FC<Props> = ({ disabled = false }) => {
     [query]
   );
 
-  const { createPOChange: postPoChangeType } = useCreatePOChange({
+  const { createPOChange } = useCreatePOChange({
     onError: (error) => {
       handleShowErrorMsg(error);
     },
   });
 
   const handleSelectChangeFormType = (formNumber: PO_CHANGE_FORM_NUMBER) => {
-    postPoChangeType(
+    createPOChange(
       {
         poId: documentId,
         formNumber: formNumber,
       },
       {
-        onSettled: (data) => {
-          //TODO: update to onSuccess
-          Navigator.navigate(
-            // `${PATHS.poChangeForm}?${PO_CHANGE_FORM_QUERY_KEY.FORM_NUMBER}=${formNumber}`
-            `${PATHS.poChangeForm}/${data.id}`
-          );
+        onSuccess: ({ data }) => {
+          Navigator.navigate(`${PATHS.poChangeForm}/${data.id}`);
+          // Toastify.success('Create PO Change successfully');
+        },
+        onError: (error) => {
+          handleShowErrorMsg(error);
         },
       }
     );
