@@ -9,7 +9,6 @@ import { Callback } from 'src/redux/types';
 
 const DateSelector: React.FC<Props> = ({
   label,
-  onChange,
   errorMessage,
   containerClassName,
   classNames,
@@ -17,8 +16,10 @@ const DateSelector: React.FC<Props> = ({
   dateFormat = 'MM/dd/yyyy',
   required,
   name,
-  onBlur,
   positionFixed = true,
+  hideIcon = false,
+  onChange,
+  onBlur,
   ...props
 }) => {
   const id = useRef<string>(`datepicker-${getRandomId()}`);
@@ -38,7 +39,11 @@ const DateSelector: React.FC<Props> = ({
       id={id.current}
       errorMessage={errorMessage}
       label={label}
-      className={cn('cmp-datepicker', containerClassName)}
+      className={cn(
+        'cmp-datepicker',
+        { 'cmp-datepicker__icon--hide': hideIcon },
+        containerClassName
+      )}
       required={required}
     >
       <DatePicker
@@ -49,6 +54,7 @@ const DateSelector: React.FC<Props> = ({
         className={cn(
           'cmp-datepicker__input',
           { 'cmp-datepicker__input--error': hasError },
+
           classNames
         )}
         showPopperArrow={false}
@@ -78,10 +84,11 @@ type Props = BaseDatePickerProps & {
   placeholder?: string;
   mask?: string;
   label?: string | React.ReactNode;
-  onChange: Callback;
-  onBlur?: Callback;
   hasDifferentValue?: boolean;
   positionFixed?: boolean;
+  hideIcon?: boolean;
+  onChange: Callback;
+  onBlur?: Callback;
 };
 
 export default DateSelector;

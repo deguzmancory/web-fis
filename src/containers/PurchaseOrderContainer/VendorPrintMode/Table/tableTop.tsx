@@ -1,6 +1,5 @@
 import { Grid, Stack, Typography } from '@mui/material';
 import React from 'react';
-import { FiArrowRight } from 'react-icons/fi';
 import { connect } from 'react-redux';
 import CustomTable from 'src/components/CustomTable';
 import { BodyRows, CellType } from 'src/components/CustomTable/types';

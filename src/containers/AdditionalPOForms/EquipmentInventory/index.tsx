@@ -4,7 +4,7 @@ import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Checkbox, EllipsisTooltipInput, Input, TextareaAutosize } from 'src/components/common';
-import { initialEquipmentInventoryValue } from 'src/containers/PurchaseOrderContainer/constants';
+import { initialEquipmentInventoryValue } from 'src/containers/PurchaseOrderContainer/helpers';
 import {
   POEquipmentInventoryFormValue,
   UpsertPOFormValue,

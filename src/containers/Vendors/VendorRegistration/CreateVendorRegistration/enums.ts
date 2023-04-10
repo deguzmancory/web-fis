@@ -29,10 +29,6 @@ export enum VENDOR_REGISTRATION_FORM_KEY {
   SSN_3 = 'ssn3',
   EIN_1 = 'ein1',
   EIN_2 = 'ein2',
-  // UH_EMP_NUMBER = 'uhEmpNumber',
-  // RCUH_EMP_NUMBER = 'rcuhEmpNumber', //TODO: huy_dang emp number or employed?
-  // EMPLOYED_BY_RCUH = 'employedByRcuh',
-  // EMPLOYED_BY_UH = 'employedByUh',
   RCUH_ID = 'rcuhId',
   UH_ID = 'uhId',
   PREPARED_BY = 'preparedBy',
@@ -76,13 +72,13 @@ export enum VENDOR_OPTION_VALUE {
   PARTNERSHIP = 'P',
   TRUST_OR_ESTATE = 'T',
   RCUH_STUDENT_EMPLOYEE = 'U',
-  RCUH_EMPLOYEE = 'RCUH Employee, excluding student employees; GO TO #6',
+  RCUH_EMPLOYEE = 'K',
   UH_GRADUATE_ASSISTANT_EMPLOYEE = 'U2',
   UH_STUDENT_EMPLOYEE = 'U3',
   UH_EMERITUS_FACULTY = 'E',
   UH_NON_COMPENSATED_APPOINTEE = 'W',
-  UH_EMPLOYEE = 'UH Employee (regular, casual), excluding graduate assistant and student employees; GO TO #6',
-  US_GOVERNMENT_ENTITY = 'U.S GOVERNMENT ENTITY (Federal, State, Local government office, agency, or instrumentality;50 States and the District of Columbia only); GO TO #7',
+  UH_EMPLOYEE = 'K2',
+  US_GOVERNMENT_ENTITY = 'G',
   OTHER = 'O',
 }
 

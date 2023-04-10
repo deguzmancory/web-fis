@@ -3,7 +3,7 @@ import React from 'react';
 import { DatePicker, Input, TextareaAutosize } from 'src/components/common';
 import CustomTable from 'src/components/CustomTable';
 import { BodyBasicRows, CellType } from 'src/components/CustomTable/types';
-import { initialAuthToPurchaseLineItemsValue } from 'src/containers/PurchaseOrderContainer/constants';
+import { initialAuthToPurchaseLineItemsValue } from 'src/containers/PurchaseOrderContainer/helpers';
 import { AuthToPurchase, POAuthToPurchase } from 'src/queries/PurchaseOrders';
 import {
   checkRowStateAndSetValue,

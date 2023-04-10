@@ -3,7 +3,7 @@ import { FormikProps, useFormik } from 'formik';
 import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { initialDeterminationValue } from 'src/containers/PurchaseOrderContainer/constants';
+import { initialDeterminationValue } from 'src/containers/PurchaseOrderContainer/helpers';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
 import { PODetermination } from 'src/queries/PurchaseOrders';

@@ -16,7 +16,7 @@ import ErrorWrapperPO from 'src/containers/PurchaseOrderContainer/ErrorWrapper/i
 import FileAttachments from 'src/containers/PurchaseOrderContainer/FileAttachments';
 import GeneralInfo from 'src/containers/PurchaseOrderContainer/GeneralInfo';
 import InternalComments from 'src/containers/PurchaseOrderContainer/InternalComments';
-import { emptyUpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/constants';
+import { emptyUpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/helpers';
 import {
   PO_FORM_ELEMENT_ID,
   SUBMITTED_PO_QUERY,
@@ -57,8 +57,8 @@ import { getUncontrolledInputFieldProps, handleShowErrorMsg } from 'src/utils';
 import { PO_CHANGE_FORM_QUERY_KEY } from '../POChangeForm/enums';
 import BreadcrumbsPOChangeForm from '../breadcrumbs';
 import OriginalPurchaseInfo from './OriginalPurchaseInfo';
-import PurchaseInfo from './PurchaseInfo';
-import TableLineItems from './TableLineItems';
+import PurchaseInfoChange from './PurchaseInfoChange';
+import TableLineItemsPOChange from './TableLineItemsChange';
 import { getPoChangeFormTitle } from './helpers';
 
 const POChangeForm: React.FC<Props> = ({
@@ -251,7 +251,7 @@ const POChangeForm: React.FC<Props> = ({
         </SectionLayout>
         <SectionLayout>
           <Accordion title="Original Order">
-            <TableLineItems
+            <TableLineItemsPOChange
               formikProps={formikProps}
               disabled
               currentPOMode={currentPOMode}
@@ -265,7 +265,7 @@ const POChangeForm: React.FC<Props> = ({
           </Accordion>
         </SectionLayout>
         <SectionLayout>
-          <TableLineItems
+          <TableLineItemsPOChange
             formikProps={formikProps}
             disabled={disabledSection}
             currentPOMode={currentPOMode}
@@ -275,7 +275,7 @@ const POChangeForm: React.FC<Props> = ({
           />
         </SectionLayout>
         <SectionLayout>
-          <PurchaseInfo
+          <PurchaseInfoChange
             formikProps={formikProps}
             disabled={disabledSection}
             currentPOMode={currentPOMode}

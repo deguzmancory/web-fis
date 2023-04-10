@@ -42,13 +42,12 @@ import InternalComments from '../PurchaseOrderContainer/InternalComments';
 import PurchaseInfo from '../PurchaseOrderContainer/PurchaseInfo';
 import TableLineItems from '../PurchaseOrderContainer/TableLineItems';
 import BreadcrumbsPOPayment from './breadcrumbs';
-import {
-  emptyUpdatePOPaymentFormValue,
-  getPOPaymentFormValueFromResponse,
-} from './helpers/formValues';
+import { emptyUpdatePOPaymentFormValue, getPOPaymentFormValueFromResponse } from './helpers';
 import { UpdatePOPaymentFormValue, UpdatePOPaymentFormikProps } from './types';
 import ReceiptAndPaymentType from './ReceiptAndPaymentType';
 import PaymentGeneralInfo from './PaymentGeneralInfo';
+import PaymentAuthorizedBy from './PaymentAuthorizedBy';
+import PaymentLineItems from './PaymentLineItems';
 
 const POPayment: React.FC<Props> = ({
   formData,
@@ -71,7 +70,7 @@ const POPayment: React.FC<Props> = ({
   // const isFAReviewMode = isFAReviewPOMode(currentPOMode);
 
   const { profile } = useProfile();
-  const { onGetPOById, handleInvalidatePOPaymentDetail } = useGetPOPaymentDetail({
+  const { onGetPOPaymentById, handleInvalidatePOPaymentDetail } = useGetPOPaymentDetail({
     id: id,
     onSuccess: (data) => {
       const formValue: UpdatePOPaymentFormValue = getPOPaymentFormValueFromResponse({
@@ -126,7 +125,7 @@ const POPayment: React.FC<Props> = ({
 
         default: {
           handleInvalidatePOPaymentDetail();
-          onGetPOById();
+          onGetPOPaymentById();
         }
       }
     }
@@ -136,10 +135,10 @@ const POPayment: React.FC<Props> = ({
   /* INIT DATA */
   React.useEffect(() => {
     if (!isImmutableFormData) {
-      onGetPOById();
+      onGetPOPaymentById();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, onGetPOById]);
+  }, [id, onGetPOPaymentById]);
 
   // mark as form no longer is immutable.
   // The next time component did mount:
@@ -210,6 +209,7 @@ const POPayment: React.FC<Props> = ({
             currentPOMode={currentPOMode}
           />
         </SectionLayout>
+
         <SectionLayout>
           <GeneralInfo
             formikProps={formikProps}
@@ -218,22 +218,59 @@ const POPayment: React.FC<Props> = ({
             documentType={PO_DOCUMENT_TYPE.PO_PAYMENT}
           />
         </SectionLayout>
+
         <SectionLayout>
           <TableLineItems formikProps={formikProps} disabled currentPOMode={currentPOMode} />
         </SectionLayout>
+
         <SectionLayout>
           <PurchaseInfo formikProps={formikProps} disabled currentPOMode={currentPOMode} />
         </SectionLayout>
-        <Grid container>
+
+        <Grid container columnSpacing={2}>
           <Grid item xs={12} md={6}>
             <SectionLayout>
               <ReceiptAndPaymentType
                 formikProps={formikProps}
                 disabled={isViewOnlyPOMode(currentPOMode)}
+                currentPOMode={currentPOMode}
+              />
+            </SectionLayout>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <SectionLayout>
+              <PaymentAuthorizedBy
+                formikProps={formikProps}
+                disabled={isViewOnlyPOMode(currentPOMode)}
+                currentPOMode={currentPOMode}
               />
             </SectionLayout>
           </Grid>
         </Grid>
+
+        <Grid container columnSpacing={2}>
+          <Grid item xs={12} md={6}>
+            <SectionLayout sx={{ p: 1 }}>
+              <PaymentLineItems
+                formikProps={formikProps}
+                disabled={isViewOnlyPOMode(currentPOMode)}
+                currentPOMode={currentPOMode}
+              />
+            </SectionLayout>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <SectionLayout>
+              <PaymentAuthorizedBy
+                formikProps={formikProps}
+                disabled={isViewOnlyPOMode(currentPOMode)}
+                currentPOMode={currentPOMode}
+              />
+            </SectionLayout>
+          </Grid>
+        </Grid>
+
         <SectionLayout>
           <FileAttachments
             formikProps={formikProps}
@@ -241,9 +278,11 @@ const POPayment: React.FC<Props> = ({
             allowActionAfterFinalApproveOnly={isFinalPOMode(currentPOMode)}
           />
         </SectionLayout>
+
         <SectionLayout>
           <AuditInformation formikProps={formikProps} />
         </SectionLayout>
+
         <SectionLayout>
           <InternalComments formikProps={formikProps} disabled={disabledSection} />
         </SectionLayout>

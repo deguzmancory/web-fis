@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import TypographyLink from 'src/components/TypographyLink';

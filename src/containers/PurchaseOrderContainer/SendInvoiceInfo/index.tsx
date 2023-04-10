@@ -219,6 +219,7 @@ export default React.memo(SendInvoiceInfo, (prevProps, nextProps) => {
 
   return (
     prevProps.disabled === nextProps.disabled &&
+    prevProps.currentPOMode === nextProps.currentPOMode &&
     isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
       prevFormikProps,
       nextFormikProps,

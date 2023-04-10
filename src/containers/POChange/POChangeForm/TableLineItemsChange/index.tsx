@@ -12,7 +12,7 @@ import { isVariousProject } from 'src/containers/PurchaseOrderContainer/GeneralI
 import {
   initialLineItemValue,
   lineItemsColumnNames,
-} from 'src/containers/PurchaseOrderContainer/constants';
+} from 'src/containers/PurchaseOrderContainer/helpers';
 import { PO_FORM_KEY, PO_LINE_ITEM_KEY } from 'src/containers/PurchaseOrderContainer/enums';
 import {
   POLineItemFormValue,
@@ -27,7 +27,7 @@ import {
   isEqualPrevAndNextFormikValues,
 } from 'src/utils';
 
-const TableLineItems: React.FC<Props> = ({
+const TableLineItemsPOChange: React.FC<Props> = ({
   formikProps,
   disabled = false,
   allowUpdateInfoAndAmount,
@@ -433,7 +433,7 @@ type Props = {
   allowUpdateDescription: boolean;
 };
 
-export default React.memo(TableLineItems, (prevProps, nextProps) => {
+export default React.memo(TableLineItemsPOChange, (prevProps, nextProps) => {
   const prevFormikProps = prevProps.formikProps;
   const nextFormikProps = nextProps.formikProps;
 
@@ -441,6 +441,9 @@ export default React.memo(TableLineItems, (prevProps, nextProps) => {
 
   return (
     prevProps.disabled === nextProps.disabled &&
+    prevProps.currentPOMode === nextProps.currentPOMode &&
+    prevProps.allowUpdateInfoAndAmount === nextProps.allowUpdateInfoAndAmount &&
+    prevProps.allowUpdateDescription === nextProps.allowUpdateDescription &&
     isEqualPrevAndNextFormikValues<UpsertPOFormValue>({
       prevFormikProps,
       nextFormikProps,

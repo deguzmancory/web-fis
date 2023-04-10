@@ -3,8 +3,8 @@ import {
   PO_ADDITIONAL_FORM_CODE,
   PO_ADDITIONAL_FORM_EXTERNAL_LINK,
   PO_LINE_ITEM_KEY,
-} from './enums';
-import { AdditionalPOFormValue } from './types';
+} from '../enums';
+import { AdditionalPOFormValue } from '../types';
 
 export const initialAvailableForms: AdditionalPOFormValue[] = [
   {

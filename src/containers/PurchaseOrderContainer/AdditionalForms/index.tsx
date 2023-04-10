@@ -8,7 +8,7 @@ import { PO_ADDITIONAL_FORM_PARAMS } from 'src/containers/AdditionalPOForms/enum
 import { AdditionalPOForm } from 'src/queries/PurchaseOrders';
 import { setFormData } from 'src/redux/form/formSlice';
 import { Navigator } from 'src/services';
-import { externalFormAttachments } from '../constants';
+import { externalFormAttachments } from '../helpers/constants';
 import { PO_FORM_ELEMENT_ID, PO_FORM_KEY } from '../enums';
 import { AdditionalPOFormValue, UpsertPOFormikProps } from '../types';
 import FormAttachmentItem from './formAttachmentItem';

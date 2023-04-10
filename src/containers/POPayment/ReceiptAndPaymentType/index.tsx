@@ -1,15 +1,38 @@
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import React from 'react';
-import { TextareaAutosize } from 'src/components/common';
+import { RadioButton, TextareaAutosize } from 'src/components/common';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import {
   UpdatePOPaymentFormValue,
   UpdatePOPaymentFormikProps,
 } from 'src/containers/POPayment/types';
 import { PO_FORM_KEY } from 'src/containers/PurchaseOrderContainer/enums';
+import { RadioGroupOptions } from 'src/components/common/RadioButton';
+import { PAYMENT_RECEIPT_ACKNOWLEDGEMENT, PO_MODE } from 'src/queries';
+
+export const paymentReceiptAcknowledgementOptions: RadioGroupOptions = [
+  {
+    label: 'Partial Payment',
+    value: PAYMENT_RECEIPT_ACKNOWLEDGEMENT.PARTIAL_PAYMENT,
+  },
+  {
+    label: 'Final Payment',
+    value: PAYMENT_RECEIPT_ACKNOWLEDGEMENT.FINAL_PAYMENT,
+  },
+  {
+    label: '',
+    subLabel: (
+      <Typography variant="body2">
+        Advance Payment{' '}
+        <span style={{ fontStyle: 'italic' }}>(Uses an RCUH Internal Account for payment)</span>
+      </Typography>
+    ),
+    value: PAYMENT_RECEIPT_ACKNOWLEDGEMENT.ADVANCE_PAYMENT,
+  },
+];
 
 const ReceiptAndPaymentType: React.FC<Props> = ({ formikProps, disabled = false }) => {
-  const { errors, touched, getUncontrolledFieldProps } = formikProps;
+  const { errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } = formikProps;
 
   const _getErrorMessage = (fieldName: PO_FORM_KEY) => {
     return getErrorMessage(fieldName, { touched, errors });
@@ -22,10 +45,22 @@ const ReceiptAndPaymentType: React.FC<Props> = ({ formikProps, disabled = false 
       </Typography>
       <TextareaAutosize
         label={''}
-        errorMessage={_getErrorMessage(PO_FORM_KEY.PO_COMMENTS)}
-        {...getUncontrolledFieldProps(PO_FORM_KEY.PO_COMMENTS)}
+        errorMessage={_getErrorMessage(PO_FORM_KEY.PAYMENT_RECEIPT_ACKNOWLEDGEMENT)}
+        {...getUncontrolledFieldProps(PO_FORM_KEY.PAYMENT_RECEIPT_ACKNOWLEDGEMENT)}
         disabled={disabled}
         minRows={2}
+        className="mb-4"
+      />
+      <RadioButton
+        label={<b>Payment Type:</b>}
+        columns={1}
+        required
+        options={paymentReceiptAcknowledgementOptions}
+        {...getFieldProps(PO_FORM_KEY.PAYMENT_TYPE)}
+        errorMessage={_getErrorMessage(PO_FORM_KEY.PAYMENT_TYPE)}
+        onChange={setFieldValue}
+        itemClassName="mb-except-last-8"
+        disabled={disabled}
       />
     </Box>
   );
@@ -34,6 +69,7 @@ const ReceiptAndPaymentType: React.FC<Props> = ({ formikProps, disabled = false 
 type Props = {
   formikProps: UpdatePOPaymentFormikProps;
   disabled?: boolean;
+  currentPOMode: PO_MODE;
 };
 
 export default React.memo(ReceiptAndPaymentType, (prevProps, nextProps) => {
@@ -42,10 +78,11 @@ export default React.memo(ReceiptAndPaymentType, (prevProps, nextProps) => {
 
   return (
     prevProps.disabled === nextProps.disabled &&
+    prevProps.currentPOMode === nextProps.currentPOMode &&
     isEqualPrevAndNextFormikValues<UpdatePOPaymentFormValue>({
       prevFormikProps,
       nextFormikProps,
-      formKeysNeedRender: [PO_FORM_KEY.PO_COMMENTS],
+      formKeysNeedRender: [PO_FORM_KEY.PAYMENT_RECEIPT_ACKNOWLEDGEMENT, PO_FORM_KEY.PAYMENT_TYPE],
     })
   );
 });

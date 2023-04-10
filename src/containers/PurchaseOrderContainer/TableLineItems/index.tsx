@@ -14,7 +14,7 @@ import {
   getErrorMessage,
   isEqualPrevAndNextFormikValues,
 } from 'src/utils';
-import { initialLineItemValue, lineItemsColumnNames } from '../constants';
+import { initialLineItemValue, lineItemsColumnNames } from '../helpers/constants';
 import { PO_FORM_KEY, PO_LINE_ITEM_KEY } from '../enums';
 import { isVariousProject } from '../GeneralInfo/helpers';
 import { POLineItemFormValue, UpsertPOFormikProps, UpsertPOFormValue } from '../types';

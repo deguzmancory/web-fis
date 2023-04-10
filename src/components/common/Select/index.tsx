@@ -74,6 +74,7 @@ const SelectCmp: React.FC<Props> = ({
   subLabelStyle,
   labelStyle,
   menuOptionPosition = 'left',
+  hideDropdownIndicator = false,
   onChange = (name, value) => {},
   onBlur = (name, value) => {},
   onInputChange = (value) => {},
@@ -189,13 +190,17 @@ const SelectCmp: React.FC<Props> = ({
               ...(menuOptionPosition === 'right' && menuRightPositionStyle),
             }),
           }}
-          components={{
-            DropdownIndicator,
-            Control: hideSearchIcon ? ControlNoSearchIcon : Control,
-            ...(optionWithSubLabel && {
-              Option: Option,
-            }),
-          }}
+          components={
+            hideDropdownIndicator
+              ? { DropdownIndicator: () => null, IndicatorSeparator: () => null }
+              : {
+                  DropdownIndicator,
+                  Control: hideSearchIcon ? ControlNoSearchIcon : Control,
+                  ...(optionWithSubLabel && {
+                    Option: Option,
+                  }),
+                }
+          }
           menuPosition={menuPosition}
           onInputChange={onInputChange}
           {...props}
@@ -243,6 +248,7 @@ type Props = Omit<SelectProps, 'onBlur' | 'onChange'> & {
   labelStyle?: React.CSSProperties; //work only when optionWithSubLabel = true
   customSelectedOptionValue?: any;
   menuOptionPosition?: 'left' | 'right';
+  hideDropdownIndicator?: boolean;
   onChange?: (name, value) => void;
   onBlur?: Callback;
   onInputChange?: Callback;

@@ -4,7 +4,7 @@ import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { TextareaAutosize } from 'src/components/common';
-import { initialSubcontractorValue } from 'src/containers/PurchaseOrderContainer/constants';
+import { initialSubcontractorValue } from 'src/containers/PurchaseOrderContainer/helpers';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
 import { Subcontractor } from 'src/queries';

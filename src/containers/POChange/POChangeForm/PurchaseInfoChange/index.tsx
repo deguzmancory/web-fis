@@ -16,7 +16,7 @@ import {
 import { PO_MODE } from 'src/queries';
 import { getTypeOfPOChange } from '../helpers';
 
-const PurchaseInfo: React.FC<Props> = ({
+const PurchaseInfoChange: React.FC<Props> = ({
   formikProps,
   disabled = false,
   allowUpdateAmount = true,
@@ -209,7 +209,7 @@ interface Props {
   showAmountChangeSection: boolean;
 }
 
-export default React.memo(PurchaseInfo, (prevProps, nextProps) => {
+export default React.memo(PurchaseInfoChange, (prevProps, nextProps) => {
   const prevFormikProps = prevProps.formikProps;
   const nextFormikProps = nextProps.formikProps;
 
@@ -229,6 +229,7 @@ export default React.memo(PurchaseInfo, (prevProps, nextProps) => {
 
   return (
     prevProps.disabled === nextProps.disabled &&
+    prevProps.currentPOMode === nextProps.currentPOMode &&
     prevProps.allowUpdateAmount === nextProps.allowUpdateAmount &&
     prevProps.showAmountChangeSection === nextProps.showAmountChangeSection &&
     isEqualPrevAndNextFormikValues<UpsertPOFormValue>({

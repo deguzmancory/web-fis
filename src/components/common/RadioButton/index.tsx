@@ -94,10 +94,12 @@ const Group: React.FC<RadioGroupProps> = ({
   );
 };
 
+export type RadioGroupOptions = { value: any; label: string; subLabel?: React.ReactNode }[];
+
 type RadioGroupProps = {
   label?: string | React.ReactNode;
   subLabel?: string | React.ReactNode;
-  options?: { value: any; label: string; subLabel?: React.ReactNode }[];
+  options?: RadioGroupOptions;
   value?: any;
   name?: string;
   errorMessage?: string;

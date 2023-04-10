@@ -19,13 +19,9 @@ import {
 } from 'src/utils';
 import { isEmpty } from 'src/validations';
 import { isVariousProject } from '../GeneralInfo/helpers';
-import {
-  emptyUpsertPOFormValue,
-  externalFormAttachments,
-  initialLineItemValue,
-} from '../constants';
 import { PO_ADDITIONAL_FORM_CODE, PO_ADDITIONAL_FORM_EXTERNAL_LINK } from '../enums';
 import { AdditionalPOFormValue, UpsertPOFormValue } from '../types';
+import { emptyUpsertPOFormValue, externalFormAttachments, initialLineItemValue } from './constants';
 import { checkIsFAReviewMode } from './utils';
 
 export const getExternalLinkFromFormCode = (formCode: PO_ADDITIONAL_FORM_CODE) => {

@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import { optionYesNoValue } from 'src/appConfig/options';
 import { Input, RadioButton, TextareaAutosize } from 'src/components/common';
-import { initialFfataValue } from 'src/containers/PurchaseOrderContainer/constants';
+import { initialFfataValue } from 'src/containers/PurchaseOrderContainer/helpers';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
 import { POFfata } from 'src/queries/PurchaseOrders';

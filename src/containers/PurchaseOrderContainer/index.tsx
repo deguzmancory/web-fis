@@ -40,7 +40,7 @@ import PurchaseInfo from './PurchaseInfo';
 import SendInvoiceInfo from './SendInvoiceInfo';
 import TableLineItems from './TableLineItems';
 import BreadcrumbsPODetail from './breadcrumbs';
-import { emptyUpsertPOFormValue } from './constants';
+import { emptyUpsertPOFormValue } from './helpers/constants';
 import { PO_FORM_ELEMENT_ID, PO_FORM_PARAMS, SUBMITTED_PO_QUERY } from './enums';
 import HeaderOfSection from './headerOfSection';
 import {

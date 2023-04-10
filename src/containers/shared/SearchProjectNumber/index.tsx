@@ -12,6 +12,7 @@ const SearchProjectNumber: React.FC<Props> = ({
   errorMessage,
   fieldProps,
   disabled = false,
+  isClearable = true,
   sx,
   setFieldTouched,
   onChange,
@@ -100,10 +101,11 @@ const SearchProjectNumber: React.FC<Props> = ({
           width: '760px',
         }}
         hideSearchIcon
-        isClearable={true}
+        isClearable={isClearable}
         onChange={onChange}
         optionWithSubLabel
         isDisabled={disabled}
+        hideDropdownIndicator
       />
     </Box>
   );
@@ -114,6 +116,7 @@ type Props = {
   fieldProps: FieldInputProps<FinancialProject | string>;
   disabled?: boolean;
   sx?: SxProps;
+  isClearable?: boolean;
   setFieldTouched?: (field: string, touched?: boolean, shouldValidate?: boolean) => void;
   setFieldValue?: (field: string, value: any, shouldValidate?: boolean) => void;
   onChange: (name, value) => void;

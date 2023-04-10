@@ -1,5 +1,5 @@
 import { Email, LocationOn, Phone } from '@mui/icons-material';
-import { Box, Container, Grid, Icon, Link, Stack, Typography } from '@mui/material';
+import { Box, Container, Icon, Link, Stack, Typography } from '@mui/material';
 import React from 'react';
 import appConfig from 'src/appConfig';
 import { IMAGES } from 'src/appConfig/images';

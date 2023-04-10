@@ -14,7 +14,7 @@ export function useGetPOPaymentDetail(
     error,
     isError,
     isFetching: isLoading,
-    refetch: onGetPOById,
+    refetch: onGetPOPaymentById,
   } = useQuery<ApiResponseType<POPaymentResponse>, Error, POPaymentResponse>(
     [API_QUERIES.PO_PAYMENT_DETAIL, { id: options.id }],
     {
@@ -41,7 +41,7 @@ export function useGetPOPaymentDetail(
     error,
     isError,
     isLoading,
-    onGetPOById,
+    onGetPOPaymentById,
     handleInvalidatePOPaymentDetail,
   };
 }
