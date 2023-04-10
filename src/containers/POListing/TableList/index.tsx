@@ -26,8 +26,11 @@ import {
   allOutstandingColumns,
 } from './allColumns';
 import HeaderTable from './header';
-import { RoleService } from 'src/services';
+import { Navigator, RoleService } from 'src/services';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
+import { useCreatePOPayment } from 'src/queries';
+import { PATHS } from 'src/appConfig/paths';
+import LoadingContainer from 'src/containers/StartupContainers/LoadingContainer';
 
 const PDFView = React.lazy(() => import('src/components/common/PDFView'));
 
@@ -68,6 +71,12 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
     },
   });
 
+  const { createPOPayment, isLoading: isCreatePOPaymentLoading } = useCreatePOPayment({
+    onError: (error) => {
+      handleShowErrorMsg(error);
+    },
+  });
+
   const searchPurchasingDocument = React.useMemo(
     () => query.get(PO_LIST_QUERY_KEY.DOCUMENT_TYPE) || undefined,
     [query]
@@ -76,8 +85,8 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
   const {
     purchases,
     totalRecords,
-    setParams,
     isFetching,
+    setParams,
     onGetPurchasing,
     handleInvalidateAllPurchases,
   } = useGetAllPurchasingList({
@@ -142,13 +151,25 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
       case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.PO_PAYMENT:
         return allCreateChangePOColumns({
           typeStatus: workFlowTypeStatus,
+          onCreatePOPayment: (poId) => {
+            createPOPayment(
+              {
+                id: poId,
+              },
+              {
+                onSuccess: ({ data }) => {
+                  Navigator.navigate(`${PATHS.poPaymentForm}/${data.id}`);
+                },
+              }
+            );
+          },
         });
       case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.OUTSTANDING_PO_DOCUMENTS:
         return allOutstandingColumns();
       default:
         return null;
     }
-  }, [handlePrintedId, handleViewFinalPDF, workFlowTypeStatus]);
+  }, [createPOPayment, handlePrintedId, handleViewFinalPDF, workFlowTypeStatus]);
 
   const tableOptions: MUIDataTableOptions = React.useMemo(
     () => ({
@@ -177,6 +198,7 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
         )}
       </Suspense>
       <HeaderTable />
+      {isCreatePOPaymentLoading && <LoadingContainer hideBackdropPageContent={false} />}
       <Table
         title={''}
         onAction={handleGetPurchasing}

@@ -1,11 +1,16 @@
 import { PO_ACTION } from 'src/queries';
-import { isPOSubmitAction } from 'src/queries/PurchaseOrders/helpers';
+import {
+  isPOApprovedAction,
+  isPODocumentType,
+  isPOSubmitAction,
+} from 'src/queries/PurchaseOrders/helpers';
 import { ErrorService, Yup } from 'src/services';
 import { SHIP_VIA_VALUE, isVariousProject } from '../GeneralInfo/helpers';
 import { FED_ATTACHMENT_VALUE } from '../PurchaseInfo/helpers';
 
 export const getPOFormValidationSchema = ({ action }: { action: PO_ACTION }) => {
   const isSubmitAction = isPOSubmitAction(action);
+  const isApproveAction = isPOApprovedAction(action);
 
   return Yup.object().shape({
     projectTitle: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
@@ -55,9 +60,23 @@ export const getPOFormValidationSchema = ({ action }: { action: PO_ACTION }) => 
           })
         );
     }),
-
-    uhSubawardNumber: Yup.string().when('fedAttachment', {
-      is: FED_ATTACHMENT_VALUE.UH_SUBAWARD,
+    fedAttachment: isApproveAction
+      ? Yup.string().when(['documentType'], {
+          is: (documentType) => isPODocumentType(documentType),
+          then: (schema) =>
+            schema
+              .required(
+                'Please select a Federal attachment or check Non-Federal or UH Subaward when Approving.'
+              )
+              .typeError(
+                'Please select a Federal attachment or check Non-Federal or UH Subaward when Approving.'
+              ),
+          otherwise: (schema) => schema.nullable(),
+        })
+      : Yup.string().nullable(),
+    uhSubawardNumber: Yup.string().when(['fedAttachment', 'documentType'], {
+      is: (fedAttachment, documentType) =>
+        isPODocumentType(documentType) && fedAttachment === FED_ATTACHMENT_VALUE.UH_SUBAWARD,
       then: (schema) => schema.required().typeError(ErrorService.MESSAGES.required),
       otherwise: (schema) => schema.nullable(),
     }),

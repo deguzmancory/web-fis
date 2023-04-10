@@ -1,5 +1,5 @@
 import { MyProfile, POPaymentResponse } from 'src/queries';
-import { DateFormat, getDateDisplay, localTimeToHawaii } from 'src/utils';
+import { DateFormat, getDate, getDateDisplay, localTimeToHawaii } from 'src/utils';
 import { UpdatePOPaymentFormValue } from '../types';
 
 export const getPOPaymentFormValueFromResponse = ({
@@ -13,6 +13,11 @@ export const getPOPaymentFormValueFromResponse = ({
     ...lineItem,
     unitPrice: lineItem.unitPrice ? Number(lineItem.unitPrice || 0) : null,
     ext: Number(lineItem.unitPrice || 0),
+  }));
+
+  const transformedPaymentLineItems = response.paymentLineItems.map((lineItem) => ({
+    ...lineItem,
+    serviceDate: getDate(lineItem.serviceDate),
   }));
 
   return {
@@ -36,5 +41,7 @@ export const getPOPaymentFormValueFromResponse = ({
     total: Number(response.total || 0),
     shippingTotal: Number(response.shippingTotal || 0),
     lineItems: transformedLineItems,
+
+    paymentLineItems: transformedPaymentLineItems,
   };
 };

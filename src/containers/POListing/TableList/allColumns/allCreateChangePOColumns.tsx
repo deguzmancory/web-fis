@@ -9,8 +9,10 @@ import { getCreatePOChangeOrPaymentLink, transformDocumentType } from '../helper
 
 export const allCreateChangePOColumns = ({
   typeStatus,
+  onCreatePOPayment,
 }: {
   typeStatus: string;
+  onCreatePOPayment: (poId: string) => void;
 }): MUIDataTableColumn[] => [
   {
     name: '',
@@ -27,7 +29,13 @@ export const allCreateChangePOColumns = ({
 
         return (
           <Stack direction="row" alignItems={'center'}>
-            <Box>{getCreatePOChangeOrPaymentLink(rowData, typeStatus as PO_DOCUMENT_TYPE)}</Box>
+            <Box>
+              {getCreatePOChangeOrPaymentLink({
+                poItem: rowData,
+                typeStatus: typeStatus as PO_DOCUMENT_TYPE,
+                onCreatePOPayment: () => onCreatePOPayment(rowData.id),
+              })}
+            </Box>
           </Stack>
         );
       },

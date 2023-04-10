@@ -1,17 +1,19 @@
 import { Backdrop, Box, CircularProgress } from '@mui/material';
 import { COLOR_CODE } from 'src/appConfig/constants';
 
-const LoadingContainer: React.FC<Props> = () => {
+const LoadingContainer: React.FC<Props> = ({ hideBackdropPageContent = true }) => {
   return (
     <>
       <Backdrop sx={{ color: COLOR_CODE.WHITE, zIndex: 9999 }} open={true} onClick={() => {}}>
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Box sx={{ minHeight: '50vh' }} />
+      {hideBackdropPageContent && <Box sx={{ minHeight: '50vh' }} />}
     </>
   );
 };
 
-type Props = {};
+type Props = {
+  hideBackdropPageContent?: boolean;
+};
 
 export default LoadingContainer;

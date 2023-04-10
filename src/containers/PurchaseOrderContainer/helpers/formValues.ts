@@ -172,6 +172,7 @@ export const getPOFormValueFromResponse = ({
     date: getDateDisplay(response.date),
     availableForms: getAvailableFormsFromResponse(response.availableForms),
     formAttachments: getAvailableFormsFromResponse(response.formAttachments),
+
     taxTotal: Number(response.taxTotal || 0),
     subtotal: Number(response.subtotal || 0),
     taxRate: Number(response.taxRate || 0),
@@ -180,6 +181,7 @@ export const getPOFormValueFromResponse = ({
     lineItems: isAllowUpdateLineItemPOChangeForm
       ? [...transformedLineItems, initialLineItemPOChangeValue]
       : [...transformedLineItems, initialLineItemValue],
+    amountChange: response.amountChange ? Number(response.amountChange) : null,
     determination: response.determination
       ? {
           ...response.determination,

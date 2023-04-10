@@ -124,8 +124,8 @@ export const vendorRegistrationValidationSchema = Yup.object().shape<
 
     //select vendor
     fedTaxClass: Yup.string()
-      .required(ErrorService.MESSAGES.selectRequired)
-      .typeError(ErrorService.MESSAGES.selectRequired)
+      .required(ErrorService.MESSAGES.required)
+      .typeError(ErrorService.MESSAGES.required)
       .test(
         'required-attachment',
         'A W-9 must be attached for all ** categories (UH WH-1 is also acceptable for individuals).',

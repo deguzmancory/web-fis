@@ -55,10 +55,6 @@ const SelectChangeFormType: React.FC<Props> = ({ disabled = false }) => {
       {
         onSuccess: ({ data }) => {
           Navigator.navigate(`${PATHS.poChangeForm}/${data.id}`);
-          // Toastify.success('Create PO Change successfully');
-        },
-        onError: (error) => {
-          handleShowErrorMsg(error);
         },
       }
     );

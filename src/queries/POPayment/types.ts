@@ -141,7 +141,7 @@ export interface POPaymentLineItem {
   subProject: string;
   budgetCategory: string;
   subBudgetCategory: string;
-  serviceDate: string;
+  serviceDate: string | Date;
   amount: number;
 
   externalId?: number;

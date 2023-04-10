@@ -20,7 +20,6 @@ import {
 import { PO_PAYMENT_LINE_ITEM_KEY } from '../enums';
 import { initialPaymentLineItemValue, paymentLineItemsColumnNames } from '../helpers';
 import { UpdatePOPaymentFormValue, UpdatePOPaymentFormikProps } from '../types';
-import dayjs from 'dayjs';
 
 const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const { values, errors, touched, setFieldValue, getFieldProps, setFieldTouched } = formikProps;
@@ -29,8 +28,8 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
     return values.paymentLineItems;
   }, [values.paymentLineItems]);
 
-  const hideProjectNumberColumn = React.useMemo(
-    () => !isVariousProject(values.projectNumber),
+  const isVariousProjectNumber = React.useMemo(
+    () => isVariousProject(values.projectNumber),
     [values.projectNumber]
   );
 
@@ -51,9 +50,12 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
   const addNewRow = React.useCallback(() => {
     setFieldValue(`${PO_FORM_KEY.PAYMENT_LINE_ITEMS}`, [
       ...paymentLineItemsValue,
-      initialPaymentLineItemValue,
+      {
+        ...initialPaymentLineItemValue,
+        itemProjectNumber: isVariousProjectNumber ? '' : values.projectNumber,
+      },
     ]);
-  }, [paymentLineItemsValue, setFieldValue]);
+  }, [isVariousProjectNumber, paymentLineItemsValue, setFieldValue, values.projectNumber]);
 
   const updatePaymentTotal = React.useCallback(
     ({
@@ -79,14 +81,6 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
     },
     [setFieldValue, paymentLineItemsValue, values]
   );
-
-  // const columnNamesByProjectNumber = React.useMemo(
-  //   () =>
-  //     hideProjectNumberColumn
-  //       ? lineItemsColumnNames
-  //       : [...lineItemsColumnNames, PO_PAYMENT_LINE_ITEM_KEY.ITEM_PROJECT_NUMBER],
-  //   [hideProjectNumberColumn]
-  // );
 
   const handleAmountChange = React.useCallback(
     ({
@@ -181,7 +175,7 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
               setFieldValue={setFieldValue}
               sx={{ width: 90 }}
               isClearable={false}
-              disabled={disabled}
+              disabled={disabled || !isVariousProjectNumber}
               onChange={(name, value) => {
                 handleInputChange({
                   index,
@@ -192,10 +186,12 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
             />
           ),
           width: 90,
-          // hide: hideProjectNumberColumn,
           headerStyle: {
             paddingRight: 0,
-            paddingLeft: '10px',
+            paddingLeft: '6px',
+          },
+          style: {
+            paddingRight: 0,
           },
         },
         {
@@ -211,15 +207,18 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
                   value: event.target.value,
                 })
               }
-              style={{ width: hideProjectNumberColumn ? 72 : 70 }}
+              style={{ width: 60, padding: '6px' }}
               maxLength={5}
               disabled={disabled}
             />
           ),
-          width: hideProjectNumberColumn ? 72 : 70,
+          width: 60,
           headerStyle: {
             paddingRight: 0,
-            paddingLeft: '10px',
+            paddingLeft: '6px',
+          },
+          style: {
+            paddingRight: 0,
           },
         },
         {
@@ -238,17 +237,20 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
                   value: event.target.value,
                 })
               }
-              style={{ width: hideProjectNumberColumn ? 65 : 60 }}
+              style={{ width: 60, padding: '6px' }}
               hideEllipsisTooltip
               maxLength={4}
               disabled={disabled}
               required
             />
           ),
-          width: hideProjectNumberColumn ? 65 : 60,
+          width: 60,
           headerStyle: {
             paddingRight: 0,
-            paddingLeft: '10px',
+            paddingLeft: '6px',
+          },
+          style: {
+            paddingRight: 0,
           },
         },
         {
@@ -266,23 +268,26 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
                   value: event.target.value,
                 })
               }
-              style={{ width: hideProjectNumberColumn ? 62 : 60 }}
+              style={{ width: 60, padding: '6px' }}
               hideEllipsisTooltip
               maxLength={3}
               disabled={disabled}
             />
           ),
-          width: hideProjectNumberColumn ? 62 : 60,
+          width: 60,
           headerStyle: {
             paddingRight: 0,
-            paddingLeft: '10px',
+            paddingLeft: '4px',
+          },
+          style: {
+            paddingRight: 0,
           },
         },
         {
           type: CellType.INPUT,
           label: 'Service Date',
           content: (
-            <Box width={90}>
+            <Box width={105}>
               <DatePicker
                 {...getFieldProps(`${prefixLineItem}.${PO_PAYMENT_LINE_ITEM_KEY.SERVICE_DATE}`)}
                 onChange={(name, value) =>
@@ -292,15 +297,10 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
                     value,
                   })
                 }
-                dateFormat={'MM/dd/yy'}
+                dateFormat={'MM/dd/yyyy'}
                 // todo: remove ternary condition
                 selected={
                   getFieldProps(`${prefixLineItem}.${PO_PAYMENT_LINE_ITEM_KEY.SERVICE_DATE}`).value
-                    ? dayjs(
-                        getFieldProps(`${prefixLineItem}.${PO_PAYMENT_LINE_ITEM_KEY.SERVICE_DATE}`)
-                          .value
-                      ).toDate()
-                    : null
                 }
                 disabled={disabled}
                 placeholder=""
@@ -308,10 +308,13 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
               />
             </Box>
           ),
-          width: hideProjectNumberColumn ? 90 : 90,
+          width: 90,
           headerStyle: {
             paddingRight: 0,
-            paddingLeft: '10px',
+            paddingLeft: '6px',
+          },
+          style: {
+            paddingRight: 0,
           },
         },
         {
@@ -334,13 +337,16 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
               textAlign="right"
               lengthShowTooltip={8}
               disabled={disabled}
-              style={{ width: hideProjectNumberColumn ? 90 : 80 }}
+              style={{ width: 115, padding: '6px' }}
             />
           ),
-          width: hideProjectNumberColumn ? 90 : 80,
+          width: 115,
           headerStyle: {
             paddingRight: 0,
-            paddingLeft: '10px',
+            paddingLeft: '6px',
+          },
+          style: {
+            paddingRight: 0,
           },
         },
       ],
@@ -354,7 +360,7 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
       <CustomTable.Basic bodyList={lineItemRows} />
 
       <Grid container mt={2}>
-        <Grid item xs={8.5} className="justify-flex-start">
+        <Grid item xs={8} className="justify-flex-start">
           <Typography variant="body2">
             (The payment will be for the Total amount shown here)
           </Typography>
@@ -364,7 +370,7 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
             TOTAL
           </Typography>
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={2.5}>
           <EllipsisTooltipInputCurrency
             {...getFieldProps(PO_FORM_KEY.PAYMENT_TOTAL)}
             textAlign="right"
@@ -391,6 +397,7 @@ export default React.memo(TablePaymentLineItems, (prevProps, nextProps) => {
     PO_FORM_KEY.PAYMENT_LINE_ITEMS,
     PO_FORM_KEY.PROJECT_NUMBER,
     PO_FORM_KEY.PAYMENT_TOTAL,
+    PO_FORM_KEY.PAYMENT_TYPE,
   ];
 
   return (

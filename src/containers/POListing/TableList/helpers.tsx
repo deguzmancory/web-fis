@@ -6,6 +6,7 @@ import { PO_DETAIL_STATUS, PO_DOCUMENT_TYPE } from 'src/queries';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { PurchaseOrderItem } from 'src/queries/PurchasingListing';
 import { PURCHASING_LIST_WORK_FLOW_STATUS_KEY } from '../enum';
+import { Callback } from 'src/redux/types';
 
 export const purchasingListType = [
   {
@@ -108,10 +109,15 @@ export const getPOLinkByDocumentType = (poItem: PurchaseOrderItem) => {
   }
 };
 
-export const getCreatePOChangeOrPaymentLink = (
-  poItem: PurchaseOrderItem,
-  typeStatus: PO_DOCUMENT_TYPE
-) => {
+export const getCreatePOChangeOrPaymentLink = ({
+  poItem,
+  typeStatus,
+  onCreatePOPayment,
+}: {
+  poItem: PurchaseOrderItem;
+  typeStatus: PO_DOCUMENT_TYPE;
+  onCreatePOPayment: Callback;
+}) => {
   switch (typeStatus) {
     case PO_DOCUMENT_TYPE.PO_CHANGE:
       return (
@@ -121,15 +127,9 @@ export const getCreatePOChangeOrPaymentLink = (
           <TypographyLink>Create PO Chg</TypographyLink>
         </Link>
       );
-    // TODO: Tuyen Tran replace PATHS
-    case PO_DOCUMENT_TYPE.PO_PAYMENT:
-      return (
-        <Link
-          to={`${PATHS.poPaymentForm}?${SELECT_CHANGE_FORM_TYPE_QUERY_KEY.DOCUMENT_ID}=${poItem.id}`}
-        >
-          <TypographyLink>Create PO Pm</TypographyLink>
-        </Link>
-      );
+    case PO_DOCUMENT_TYPE.PO_PAYMENT: {
+      return <TypographyLink onClick={onCreatePOPayment}>Create PO Pm</TypographyLink>;
+    }
     default:
       return null;
   }

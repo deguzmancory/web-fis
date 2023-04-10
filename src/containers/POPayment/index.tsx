@@ -123,6 +123,27 @@ const POPayment: React.FC<Props> = ({
           return;
         }
 
+        case PO_ACTION.APPROVE: {
+          Toastify.success(`Approve successfully.`);
+          handleInvalidatePOPaymentDetail();
+          onGetPOPaymentById();
+          return;
+        }
+
+        case PO_ACTION.DISAPPROVE: {
+          Toastify.success(`Disapprove successfully.`);
+          handleInvalidatePOPaymentDetail();
+          onGetPOPaymentById();
+          return;
+        }
+
+        case PO_ACTION.ADDITIONAL_INFO: {
+          Toastify.success(`Request more info successfully.`);
+          handleInvalidatePOPaymentDetail();
+          onGetPOPaymentById();
+          return;
+        }
+
         default: {
           handleInvalidatePOPaymentDetail();
           onGetPOPaymentById();

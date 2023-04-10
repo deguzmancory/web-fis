@@ -145,6 +145,27 @@ const PurchaseOrderContainer: React.FC<Props> = ({
           return;
         }
 
+        case PO_ACTION.APPROVE: {
+          Toastify.success(`Approve successfully.`);
+          handleInvalidatePODetail();
+          onGetPOById();
+          return;
+        }
+
+        case PO_ACTION.DISAPPROVE: {
+          Toastify.success(`Disapprove successfully.`);
+          handleInvalidatePODetail();
+          onGetPOById();
+          return;
+        }
+
+        case PO_ACTION.ADDITIONAL_INFO: {
+          Toastify.success(`Request more info successfully.`);
+          handleInvalidatePODetail();
+          onGetPOById();
+          return;
+        }
+
         default: {
           handleInvalidatePODetail();
           onGetPOById();

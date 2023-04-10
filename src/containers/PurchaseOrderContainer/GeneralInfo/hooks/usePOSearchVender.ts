@@ -52,35 +52,6 @@ const usePOSearchVender = ({ currentVendorName, currentVendorCode }) => {
     });
   }, [searchVendors.code, setSearchVendorParams]);
 
-  // // fetch vendor first mounted with data from get PO response
-  // React.useEffect(() => {
-  //   if (!!currentVendorCode && typeof currentVendorCode === 'string') {
-  //     setSearchVendorParams({
-  //       search: currentVendorCode,
-  //     });
-
-  //     return;
-  //   }
-
-  //   if (!!currentVendorName && typeof currentVendorName === 'string') {
-  //     setSearchVendorParams({
-  //       search: currentVendorName,
-  //     });
-
-  //     return;
-  //   }
-  // }, [currentVendorCode, currentVendorName, setSearchVendorParams]);
-
-  // // fetch project first mounted when just back from additional forms
-  // React.useLayoutEffect(() => {
-  //   if (!!currentVendorCode && typeof currentVendorCode !== 'string') {
-  //     setSearchVendorParams({
-  //       search: currentVendorCode.code,
-  //     });
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
   return {
     isLoadingSearchVendors,
     searchedVendorNameOptions,

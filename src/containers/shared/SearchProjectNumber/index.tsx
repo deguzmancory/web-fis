@@ -1,8 +1,8 @@
 import { Box, SxProps } from '@mui/material';
 import { FieldInputProps } from 'formik';
-import { debounce } from 'lodash';
+import { debounce, isString } from 'lodash';
 import React from 'react';
-import { Select } from 'src/components/common';
+import { Input, Select } from 'src/components/common';
 import { SelectOption } from 'src/components/common/Select';
 import { FinancialProject, useGetProfileProjects } from 'src/queries';
 import { isEmpty } from 'src/validations';
@@ -73,40 +73,44 @@ const SearchProjectNumber: React.FC<Props> = ({
 
   return (
     <Box sx={sx}>
-      <Select
-        {...fieldProps}
-        errorMessage={errorMessage}
-        onBlur={setFieldTouched}
-        label={''}
-        placeholder={'Search'}
-        options={filteredProjectNumberOptions}
-        isLoading={isLoadingSearchProjects}
-        onInputChange={handleInputChange}
-        defaultInputValue={selectedProjectNumber} //first mounted with data get from PO response
-        {...(!isClearedDefaultValue && {
-          inputValue: hasValueButOptions ? selectedProjectNumber : undefined,
-        })} //available in case have value but lack of options
-        getOptionLabel={(option: SelectOption<FinancialProject>) => {
-          return option.value?.number;
-        }}
-        customSelectedOptionValue={
-          filteredProjectNumberOptions.find(
-            (option: SelectOption<FinancialProject>) => option.value?.number === value
-          ) || null
-        }
-        filterOption={(_option, _inputValue) => {
-          return true; //ignore default filter option by label
-        }}
-        menuStyle={{
-          width: '760px',
-        }}
-        hideSearchIcon
-        isClearable={isClearable}
-        onChange={onChange}
-        optionWithSubLabel
-        isDisabled={disabled}
-        hideDropdownIndicator
-      />
+      {disabled ? (
+        <Input value={isString(value) ? value : value.number} disabled />
+      ) : (
+        <Select
+          {...fieldProps}
+          errorMessage={errorMessage}
+          onBlur={setFieldTouched}
+          label={''}
+          placeholder={'Search'}
+          options={filteredProjectNumberOptions}
+          isLoading={isLoadingSearchProjects}
+          onInputChange={handleInputChange}
+          defaultInputValue={selectedProjectNumber} //first mounted with data get from PO response
+          {...(!isClearedDefaultValue && {
+            inputValue: hasValueButOptions ? selectedProjectNumber : undefined,
+          })} //available in case have value but lack of options
+          getOptionLabel={(option: SelectOption<FinancialProject>) => {
+            return option.value?.number;
+          }}
+          customSelectedOptionValue={
+            filteredProjectNumberOptions.find(
+              (option: SelectOption<FinancialProject>) => option.value?.number === value
+            ) || null
+          }
+          filterOption={(_option, _inputValue) => {
+            return true; //ignore default filter option by label
+          }}
+          menuStyle={{
+            width: '760px',
+          }}
+          hideSearchIcon
+          isClearable={isClearable}
+          onChange={onChange}
+          optionWithSubLabel
+          // isDisabled={disabled}
+          hideDropdownIndicator
+        />
+      )}
     </Box>
   );
 };
