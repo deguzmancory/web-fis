@@ -44,7 +44,7 @@ const InputPhone: React.FC<Props> = ({
     >
       <View className="cmp-phoneinput">
         <PhoneInput
-          international={onlyUS ? false : international}
+          international={international}
           defaultCountry={defaultCountryCode}
           className={cn('cmp-phoneinput__input', {
             'cmp-phoneinput__input--error': !isEmpty(errorMessage),

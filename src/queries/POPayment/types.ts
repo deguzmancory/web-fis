@@ -7,6 +7,7 @@ import {
   PO_DETAIL_STATUS,
   SharedPODetail,
 } from '../PurchaseOrders';
+import { PO_PAYMENT_TYPE } from './enums';
 
 export interface POPaymentGeneralInfo {
   paymentLoginName: string;
@@ -19,7 +20,7 @@ export interface POPaymentGeneralInfo {
 
 export interface POPaymentReceiptAndPaymentType {
   paymentReceiptAcknowledgement: string;
-  paymentType: string;
+  paymentType: PO_PAYMENT_TYPE;
 }
 
 export interface POPaymentSummary {
@@ -81,7 +82,12 @@ export interface UpdatePOPaymentPayload
   paymentMethod?: string;
 }
 
-export interface POPaymentResponse extends SharedPODetail {
+export interface POPaymentResponse
+  extends SharedPODetail,
+    POPaymentGeneralInfo,
+    POPaymentRemittanceInfo,
+    POPaymentSummary,
+    POPaymentReceiptAndPaymentType {
   id: string;
   createdAt: string;
   updatedAt: string;
@@ -108,31 +114,16 @@ export interface POPaymentResponse extends SharedPODetail {
   hasFinalPdf: boolean;
   isHistorical: boolean;
   updateVersionNumber: number;
-  paymentDirectInquiriesTo: string;
-  paymentPhoneNumber: string;
-  paymentFaStaffReviewer: string;
-  paymentDate: string;
-  paymentRequestNumber: string;
-  paymentLoginName: string;
-  paymentAuthorizedBy: string;
-  paymentType: string;
-  paymentReceiptAcknowledgement: string;
-  paymentEquipmentInventoryManualFlag: boolean;
-  paymentTotal: number;
   totalAmount: number;
   checkNumber: string;
   checkDate: string;
   remittanceVendorAddress: string;
-  preferredPaymentMethod: string;
-  preferredPaymentMethodTimestamp: string;
   paymentMethod: string;
+  paymentAuthorizedBy: string;
 
   lineItems: POLineItemPOPaymentResponse[];
-  paymentLineItems: POPaymentLineItem[];
-  remittanceLineItems: POPaymentRemittanceLineItem[];
   paymentEquipmentInventories: POPaymentEquipmentInventory[];
   fileAttachments: POFileAttachment[];
-  remittance: POPaymentRemittance;
 }
 
 export interface POPaymentLineItem {

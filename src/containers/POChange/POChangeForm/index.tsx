@@ -98,9 +98,6 @@ const POChangeForm: React.FC<Props> = ({
     () => getCurrentPOEditMode({ id, poStatus, currentRole }),
     [id, poStatus, currentRole]
   );
-
-  const disabledSection = isViewOnlyPOMode(currentPOMode) || isFinalPOMode(currentPOMode);
-
   const isPiSuEditMode = isPiSuEditPOMode(currentPOMode);
   const isFAReviewMode = isFAReviewPOMode(currentPOMode);
 
@@ -109,14 +106,21 @@ const POChangeForm: React.FC<Props> = ({
   const isInChangeAmountForm = isPOChangeAmountForm(poChangeFormNumber);
   const isInChangeAmountTerminatedForm = isPOChangeAmountTerminatedForm(poChangeFormNumber);
 
+  // all sections
+  const disabledSection = isViewOnlyPOMode(currentPOMode) || isFinalPOMode(currentPOMode);
+
+  // general info section
   const disabledGeneralInfoSection =
     isInChangeTotalCancellationForm || isInChangeAmountTerminatedForm;
+
+  // line items and purchase info sections
   const isAllowUpdateAmount =
     (isInChangeAmountForm || isInChangeAmountTerminatedForm) && (isPiSuEditMode || isFAReviewMode);
-  const isAllowUpdateDescription = isInChangeDescriptionForm && (isFAReviewMode || isPiSuEditMode);
-  const isAllowUpdateAdditionalForm = isAllowUpdateAmount || isAllowUpdateDescription;
-
+  const isAllowUpdateDescription = isInChangeDescriptionForm && (isPiSuEditMode || isFAReviewMode);
   const showAmountChangeSection = isInChangeAmountForm || isInChangeAmountTerminatedForm;
+
+  // additional form sections
+  const isAllowUpdateAdditionalForm = isAllowUpdateAmount || isAllowUpdateDescription;
 
   const { profile } = useProfile();
   const { onGetPOById, handleInvalidatePODetail } = useGetPODetail({
@@ -169,6 +173,26 @@ const POChangeForm: React.FC<Props> = ({
           Navigator.navigate(
             `${PATHS.submittedPurchaseOrder}/${responseData.data.id}?${SUBMITTED_PO_QUERY.PO_NUMBER}=${responseData.data.number}&${SUBMITTED_PO_QUERY.DOCUMENT_TYPE}=${PO_DOCUMENT_TYPE.PO_CHANGE}`
           );
+          return;
+        }
+        case PO_ACTION.APPROVE: {
+          Toastify.success(`Approve successfully.`);
+          handleInvalidatePODetail();
+          onGetPOById();
+          return;
+        }
+
+        case PO_ACTION.DISAPPROVE: {
+          Toastify.success(`Disapprove successfully.`);
+          handleInvalidatePODetail();
+          onGetPOById();
+          return;
+        }
+
+        case PO_ACTION.ADDITIONAL_INFO: {
+          Toastify.success(`Request more info successfully.`);
+          handleInvalidatePODetail();
+          onGetPOById();
           return;
         }
 

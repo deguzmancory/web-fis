@@ -84,9 +84,13 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
     isPODocument && (isFAReviewPOMode(currentPOMode) || isCUReviewPOMode(currentPOMode));
 
   //PO CHANGE logic
-  const isPOChangeReviewMode =
+  const isPOChangeEditMode =
     isPOChangeDocument &&
     isPiSuEditPOMode(currentPOMode) &&
+    (isPOChangeDescriptionForm(values.formNumber) || isPOChangeAmountForm(values.formNumber));
+  const isPOChangeReviewMode =
+    isPOChangeDocument &&
+    (isFAReviewPOMode(currentPOMode) || isCUReviewPOMode(currentPOMode)) &&
     (isPOChangeDescriptionForm(values.formNumber) || isPOChangeAmountForm(values.formNumber));
 
   const currentProjectTitle = React.useMemo(() => values.projectTitle, [values.projectTitle]);
@@ -265,8 +269,8 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
             <Grid item xs={12} sm={6} md={4}>
               <Input
                 label={'Purchase Order No. (Origin)'}
-                errorMessage={_getErrorMessage(PO_FORM_KEY.ORIGINAL_PO_NUMBER)}
-                {...getUncontrolledFieldProps(PO_FORM_KEY.ORIGINAL_PO_NUMBER)}
+                errorMessage={_getErrorMessage(PO_FORM_KEY.PREVIOUS_PO_NUMBER)}
+                {...getUncontrolledFieldProps(PO_FORM_KEY.PREVIOUS_PO_NUMBER)}
                 placeholder={'To be assigned'}
                 disabled
               />
@@ -315,7 +319,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
               isClearable={true}
               onChange={(_name, value) => updateProjectFields(value)}
               optionWithSubLabel
-              isDisabled={disabled || inPOReviewMode || isPOChangeReviewMode}
+              isDisabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
               footer={
                 <Typography variant="body2">
                   Use “Various" if you want to use multiple projects.
@@ -355,7 +359,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
               isClearable={true}
               onChange={(_name, value) => updateProjectFields(value)}
               optionWithSubLabel
-              isDisabled={disabled || inPOReviewMode || isPOChangeReviewMode}
+              isDisabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
               menuOptionPosition="right"
             />
           </Grid>
@@ -423,7 +427,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
               isClearable={true}
               onChange={(_name, value) => updateVendorFields(value)}
               optionWithSubLabel
-              isDisabled={disabled || inPOReviewMode || isPOChangeReviewMode}
+              isDisabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
               menuStyle={{
                 width: '800px',
               }}
@@ -485,7 +489,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
               isClearable={true}
               onChange={(_name, value) => updateVendorFields(value)}
               optionWithSubLabel
-              isDisabled={disabled || inPOReviewMode || isPOChangeReviewMode}
+              isDisabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -494,7 +498,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
               required
               errorMessage={_getErrorMessage(PO_FORM_KEY.VENDOR_ADDRESS)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.VENDOR_ADDRESS)}
-              disabled={disabled || inPOReviewMode || isPOChangeReviewMode}
+              disabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
               style={{ minHeight: '100px' }}
             />
           </Grid>
@@ -504,7 +508,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
               required
               errorMessage={_getErrorMessage(PO_FORM_KEY.SHIP_TO)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.SHIP_TO)}
-              disabled={disabled || inPOReviewMode || isPOChangeReviewMode}
+              disabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
               style={{ minHeight: '100px' }}
             />
           </Grid>
@@ -515,7 +519,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
               label={'Ship Via'}
               placeholder={'Select'}
               options={shipViaOptions}
-              isDisabled={disabled || inPOReviewMode}
+              isDisabled={disabled || inPOReviewMode || isPOChangeReviewMode}
               onChange={setFieldValue}
               isSearchable={false}
               hideSearchIcon
@@ -526,7 +530,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
               label={'Ship Via Instructions'}
               errorMessage={_getErrorMessage(PO_FORM_KEY.SHIP_OTHER)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.SHIP_OTHER)}
-              disabled={disabled || inPOReviewMode}
+              disabled={disabled || inPOReviewMode || isPOChangeReviewMode}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -542,7 +546,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
               label={'Discount Terms'}
               errorMessage={_getErrorMessage(PO_FORM_KEY.DISCOUNT_TERMS)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.DISCOUNT_TERMS)}
-              disabled={disabled || inPOReviewMode || isPOChangeReviewMode}
+              disabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -550,7 +554,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
               label={'Quotation No.'}
               errorMessage={_getErrorMessage(PO_FORM_KEY.QUOTATION_NUMBER)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.QUOTATION_NUMBER)}
-              disabled={disabled || inPOReviewMode || isPOChangeReviewMode}
+              disabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -559,7 +563,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
               required
               errorMessage={_getErrorMessage(PO_FORM_KEY.DIRECT_INQUIRIES_TO)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.DIRECT_INQUIRIES_TO)}
-              disabled={disabled}
+              disabled={disabled || isPOChangeReviewMode}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -567,7 +571,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
               label={'Phone Number'}
               errorMessage={_getErrorMessage(PO_FORM_KEY.PHONE_NUMBER)}
               {...getFieldProps(PO_FORM_KEY.PHONE_NUMBER)}
-              disabled={disabled}
+              disabled={disabled || isPOChangeReviewMode}
               onChange={setFieldValue}
             />
           </Grid>
@@ -577,7 +581,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
               required
               errorMessage={_getErrorMessage(PO_FORM_KEY.FA_STAFF_REVIEWER)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.FA_STAFF_REVIEWER)}
-              disabled={disabled}
+              disabled={disabled || isPOChangeReviewMode}
             />
           </Grid>
         </Grid>
@@ -626,7 +630,7 @@ export default React.memo(GeneralInfo, (prevProps, nextProps) => {
     PO_FORM_KEY.FA_STAFF_REVIEWER,
     PO_FORM_KEY.DOCUMENT_TYPE,
     PO_FORM_KEY.FORM_NUMBER,
-    PO_FORM_KEY.ORIGINAL_PO_NUMBER,
+    PO_FORM_KEY.PREVIOUS_PO_NUMBER,
   ]; // only re-render if keys using in this component change
 
   return (

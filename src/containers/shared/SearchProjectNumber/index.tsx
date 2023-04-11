@@ -74,7 +74,7 @@ const SearchProjectNumber: React.FC<Props> = ({
   return (
     <Box sx={sx}>
       {disabled ? (
-        <Input value={isString(value) ? value : value.number} disabled />
+        <Input value={isString(value) ? value : value?.number || ''} disabled />
       ) : (
         <Select
           {...fieldProps}

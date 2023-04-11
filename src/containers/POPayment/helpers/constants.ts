@@ -2,12 +2,15 @@ import { initialLineItemValue } from 'src/containers/PurchaseOrderContainer/help
 import { PO_PAYMENT_LINE_ITEM_KEY } from '../enums';
 import { UpdatePOPaymentFormValue } from './../types';
 
+export const ADVANCE_PAYMENT_ITEM_PROJECT_NUMBER = '0000005';
+export const ADVANCE_PAYMENT_BUDGET_CATEGORY = '0060';
+
 export const initialPaymentLineItemValue = {
   itemProjectNumber: '',
   subProject: '',
   budgetCategory: '',
   subBudgetCategory: '',
-  serviceDate: '',
+  serviceDate: null,
   amount: 0,
 };
 
@@ -90,7 +93,9 @@ export const emptyUpdatePOPaymentFormValue: UpdatePOPaymentFormValue = {
   paymentAuthorizedBy: '',
 
   // Payment summary
-  paymentLineItems: [initialPaymentLineItemValue],
+  // paymentLineItems: [initialPaymentLineItemValue],
+  advancePaymentLineItem: [initialPaymentLineItemValue],
+  partialOrFinalPaymentLineItem: [initialPaymentLineItemValue],
   paymentTotal: 0,
 
   // Remittance Information

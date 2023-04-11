@@ -41,13 +41,13 @@ import FileAttachments from '../PurchaseOrderContainer/FileAttachments';
 import InternalComments from '../PurchaseOrderContainer/InternalComments';
 import PurchaseInfo from '../PurchaseOrderContainer/PurchaseInfo';
 import TableLineItems from '../PurchaseOrderContainer/TableLineItems';
+import PaymentAuthorizedBy from './PaymentAuthorizedBy';
+import PaymentGeneralInfo from './PaymentGeneralInfo';
+import PaymentLineItems from './PaymentLineItems';
+import ReceiptAndPaymentType from './ReceiptAndPaymentType';
 import BreadcrumbsPOPayment from './breadcrumbs';
 import { emptyUpdatePOPaymentFormValue, getPOPaymentFormValueFromResponse } from './helpers';
 import { UpdatePOPaymentFormValue, UpdatePOPaymentFormikProps } from './types';
-import ReceiptAndPaymentType from './ReceiptAndPaymentType';
-import PaymentGeneralInfo from './PaymentGeneralInfo';
-import PaymentAuthorizedBy from './PaymentAuthorizedBy';
-import PaymentLineItems from './PaymentLineItems';
 
 const POPayment: React.FC<Props> = ({
   formData,
@@ -66,9 +66,6 @@ const POPayment: React.FC<Props> = ({
   );
   const disabledSection = isViewOnlyPOMode(currentPOMode) || isFinalPOMode(currentPOMode);
 
-  // const isPiSuEditMode = isPiSuEditPOMode(currentPOMode);
-  // const isFAReviewMode = isFAReviewPOMode(currentPOMode);
-
   const { profile } = useProfile();
   const { onGetPOPaymentById, handleInvalidatePOPaymentDetail } = useGetPOPaymentDetail({
     id: id,
@@ -85,7 +82,7 @@ const POPayment: React.FC<Props> = ({
     suspense: true,
   });
   const {
-    updatePOPayment,
+    // updatePOPayment,
     data: updatePOPaymentResponse,
     isLoading: updatePOPaymentLoading,
     isSuccess: isUpdatePOPaymentSuccess,
@@ -226,7 +223,7 @@ const POPayment: React.FC<Props> = ({
         <SectionLayout header={<HeaderOfSection />}>
           <PaymentGeneralInfo
             formikProps={formikProps}
-            disabled={isViewOnlyPOMode(currentPOMode)}
+            disabled={disabledSection}
             currentPOMode={currentPOMode}
           />
         </SectionLayout>

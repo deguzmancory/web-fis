@@ -13,7 +13,7 @@ export enum PO_FORM_KEY {
   LOGIN_NAME = 'loginName',
   DATE = 'date',
   NUMBER = 'number',
-  ORIGINAL_PO_NUMBER = 'originalPoNumber',
+  PREVIOUS_PO_NUMBER = 'previousPoNumber',
   PROJECT_TITLE = 'projectTitle',
   PROJECT_NUMBER = 'projectNumber',
   PI_NAME = 'piName',
@@ -132,7 +132,9 @@ export enum PO_FORM_KEY {
   PAYMENT_AUTHORIZED_BY = 'paymentAuthorizedBy',
 
   // Payment summary
-  PAYMENT_LINE_ITEMS = 'paymentLineItems',
+  // PAYMENT_LINE_ITEMS = 'paymentLineItems',
+  ADVANCED_PAYMENT_LINE_ITEMS = 'advancePaymentLineItem',
+  PARTIAL_OR_FINAL_PAYMENT_LINE_ITEMS = 'partialOrFinalPaymentLineItem',
   PAYMENT_TOTAL = 'paymentTotal',
 
   // Remittance Information

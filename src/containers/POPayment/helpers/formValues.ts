@@ -1,6 +1,7 @@
-import { MyProfile, POPaymentResponse } from 'src/queries';
-import { DateFormat, getDate, getDateDisplay, localTimeToHawaii } from 'src/utils';
+import { MyProfile, PO_PAYMENT_TYPE, POPaymentResponse } from 'src/queries';
+import { DateFormat, getDateDisplay, localTimeToHawaii } from 'src/utils';
 import { UpdatePOPaymentFormValue } from '../types';
+import { getPaymentLineItemFormValueByPaymentType } from './utils';
 
 export const getPOPaymentFormValueFromResponse = ({
   response,
@@ -9,15 +10,12 @@ export const getPOPaymentFormValueFromResponse = ({
   response: POPaymentResponse;
   profile: MyProfile;
 }): UpdatePOPaymentFormValue => {
+  const responsePaymentType = response.paymentType || PO_PAYMENT_TYPE.PARTIAL_PAYMENT;
+
   const transformedLineItems = response.lineItems.map((lineItem) => ({
     ...lineItem,
     unitPrice: lineItem.unitPrice ? Number(lineItem.unitPrice || 0) : null,
     ext: Number(lineItem.unitPrice || 0),
-  }));
-
-  const transformedPaymentLineItems = response.paymentLineItems.map((lineItem) => ({
-    ...lineItem,
-    serviceDate: getDate(lineItem.serviceDate),
   }));
 
   return {
@@ -42,6 +40,15 @@ export const getPOPaymentFormValueFromResponse = ({
     shippingTotal: Number(response.shippingTotal || 0),
     lineItems: transformedLineItems,
 
-    paymentLineItems: transformedPaymentLineItems,
+    paymentType: responsePaymentType,
+
+    partialOrFinalPaymentLineItem: getPaymentLineItemFormValueByPaymentType({
+      response,
+      isAdvancePayment: false,
+    }),
+    advancePaymentLineItem: getPaymentLineItemFormValueByPaymentType({
+      response,
+      isAdvancePayment: true,
+    }),
   };
 };

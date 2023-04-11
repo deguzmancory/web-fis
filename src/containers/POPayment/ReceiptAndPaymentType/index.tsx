@@ -8,16 +8,16 @@ import {
 } from 'src/containers/POPayment/types';
 import { PO_FORM_KEY } from 'src/containers/PurchaseOrderContainer/enums';
 import { RadioGroupOptions } from 'src/components/common/RadioButton';
-import { PAYMENT_RECEIPT_ACKNOWLEDGEMENT, PO_MODE } from 'src/queries';
+import { PO_PAYMENT_TYPE, PO_MODE } from 'src/queries';
 
 export const paymentReceiptAcknowledgementOptions: RadioGroupOptions = [
   {
     label: 'Partial Payment',
-    value: PAYMENT_RECEIPT_ACKNOWLEDGEMENT.PARTIAL_PAYMENT,
+    value: PO_PAYMENT_TYPE.PARTIAL_PAYMENT,
   },
   {
     label: 'Final Payment',
-    value: PAYMENT_RECEIPT_ACKNOWLEDGEMENT.FINAL_PAYMENT,
+    value: PO_PAYMENT_TYPE.FINAL_PAYMENT,
   },
   {
     label: '',
@@ -27,7 +27,7 @@ export const paymentReceiptAcknowledgementOptions: RadioGroupOptions = [
         <span style={{ fontStyle: 'italic' }}>(Uses an RCUH Internal Account for payment)</span>
       </Typography>
     ),
-    value: PAYMENT_RECEIPT_ACKNOWLEDGEMENT.ADVANCE_PAYMENT,
+    value: PO_PAYMENT_TYPE.ADVANCE_PAYMENT,
   },
 ];
 

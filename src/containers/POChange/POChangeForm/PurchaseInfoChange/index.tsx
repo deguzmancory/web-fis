@@ -15,6 +15,7 @@ import {
 } from 'src/containers/PurchaseOrderContainer/types';
 import { PO_MODE } from 'src/queries';
 import { getTypeOfPOChange } from '../helpers';
+import { isPOChangeTotalCancellationForm } from 'src/queries/POChange/helpers';
 
 const PurchaseInfoChange: React.FC<Props> = ({
   formikProps,
@@ -22,7 +23,10 @@ const PurchaseInfoChange: React.FC<Props> = ({
   allowUpdateAmount = true,
   showAmountChangeSection = false,
 }) => {
-  const { values, errors, touched, getFieldProps, setFieldValue } = formikProps;
+  const { values, errors, touched, getFieldProps, setFieldValue, getUncontrolledFieldProps } =
+    formikProps;
+
+  const isTotalCancellationForm = isPOChangeTotalCancellationForm(values.formNumber);
 
   const _getErrorMessage = (fieldName: PO_FORM_KEY) => {
     return getErrorMessage(fieldName, { touched, errors });
@@ -94,9 +98,11 @@ const PurchaseInfoChange: React.FC<Props> = ({
         <Grid item xs={11} container spacing={2}>
           <Grid item xs={12}>
             <TextareaAutosize
-              label={'Reason for Change'}
+              label={isTotalCancellationForm ? 'Reason for Cancellation' : 'Reason for Change'}
               minRows={3}
+              {...getUncontrolledFieldProps(PO_FORM_KEY.REASON_FOR_CHANGE)}
               errorMessage={_getErrorMessage(PO_FORM_KEY.REASON_FOR_CHANGE)}
+              disabled={disabled}
             />
           </Grid>
           {showAmountChangeSection && (

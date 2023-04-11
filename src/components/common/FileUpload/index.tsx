@@ -13,12 +13,12 @@ import './styles.scss';
 
 const FileUpload: React.FC<Props> = ({
   className,
-  onChange,
-  innerRef,
   numberAllow = null,
-  onError,
   acceptFileType,
   message = `Drop files to attach or browse`,
+  innerRef,
+  onChange,
+  onError,
 }) => {
   const [myFiles, setMyFiles] = useState<File[]>([]);
   const [rejectFiles, setRejectFiles] = useState<FileRejection[]>([]);
@@ -45,7 +45,7 @@ const FileUpload: React.FC<Props> = ({
     }
     if (rejectFiles.length > 0) {
       if (rejectFiles[0]?.file?.size > appConfig.MAXIMUM_AVATAR_SIZE)
-        onError('Your file size is greater than 16MB. Please try again.');
+        if (onError) onError('Your file size is greater than 16MB. Please try again.');
     }
   }, [rejectFiles]);
 

@@ -20,13 +20,20 @@ import {
 import { PO_PAYMENT_LINE_ITEM_KEY } from '../enums';
 import { initialPaymentLineItemValue, paymentLineItemsColumnNames } from '../helpers';
 import { UpdatePOPaymentFormValue, UpdatePOPaymentFormikProps } from '../types';
+import { isAdvancePOPayment } from 'src/queries/POPayment/helpers';
 
 const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const { values, errors, touched, setFieldValue, getFieldProps, setFieldTouched } = formikProps;
 
+  const isAdvancePayment = isAdvancePOPayment(values.paymentType);
+
   const paymentLineItemsValue = React.useMemo(() => {
-    return values.paymentLineItems;
-  }, [values.paymentLineItems]);
+    return isAdvancePayment ? values.advancePaymentLineItem : values.partialOrFinalPaymentLineItem;
+  }, [isAdvancePayment, values.advancePaymentLineItem, values.partialOrFinalPaymentLineItem]);
+
+  const paymentLineItemKey = isAdvancePayment
+    ? PO_FORM_KEY.ADVANCED_PAYMENT_LINE_ITEMS
+    : PO_FORM_KEY.PARTIAL_OR_FINAL_PAYMENT_LINE_ITEMS;
 
   const isVariousProjectNumber = React.useMemo(
     () => isVariousProject(values.projectNumber),
@@ -40,33 +47,31 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
   const removeRow = React.useCallback(
     (index: number) => {
       setFieldValue(
-        `${PO_FORM_KEY.PAYMENT_LINE_ITEMS}`,
+        `${paymentLineItemKey}`,
         paymentLineItemsValue.filter((_row, idx) => idx !== index)
       );
     },
-    [paymentLineItemsValue, setFieldValue]
+    [paymentLineItemKey, paymentLineItemsValue, setFieldValue]
   );
 
   const addNewRow = React.useCallback(() => {
-    setFieldValue(`${PO_FORM_KEY.PAYMENT_LINE_ITEMS}`, [
+    setFieldValue(`${paymentLineItemKey}`, [
       ...paymentLineItemsValue,
       {
         ...initialPaymentLineItemValue,
         itemProjectNumber: isVariousProjectNumber ? '' : values.projectNumber,
       },
     ]);
-  }, [isVariousProjectNumber, paymentLineItemsValue, setFieldValue, values.projectNumber]);
+  }, [
+    isVariousProjectNumber,
+    paymentLineItemKey,
+    paymentLineItemsValue,
+    setFieldValue,
+    values.projectNumber,
+  ]);
 
   const updatePaymentTotal = React.useCallback(
-    ({
-      lineItemRow,
-      index,
-    }: {
-      lineItemRow: POPaymentLineItem;
-      prefixLineItem: string;
-      index: number;
-      isEditQuantity: boolean;
-    }) => {
+    ({ lineItemRow, index }: { lineItemRow: POPaymentLineItem; index: number }) => {
       let updatedPaymentTotal = Number(values.paymentTotal || 0);
       const currentLineItemAmount = Number(lineItemRow.amount || 0);
 
@@ -87,19 +92,27 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
       name,
       value,
       lineItemRow,
-      prefixLineItem,
       key,
       index,
-      isEditQuantity,
     }: {
       name: string;
       value: any;
       lineItemRow: POPaymentLineItem;
-      prefixLineItem: string;
       key: PO_PAYMENT_LINE_ITEM_KEY;
       index: number;
-      isEditQuantity: boolean;
     }) => {
+      if (isAdvancePayment) {
+        setFieldValue(name, value);
+        updatePaymentTotal({
+          index,
+          lineItemRow: {
+            ...lineItemRow,
+            [key]: value,
+          },
+        });
+        return;
+      }
+
       checkRowStateAndSetValue<POPaymentLineItem>({
         name,
         value,
@@ -112,8 +125,6 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
         callback: () => {
           updatePaymentTotal({
             index,
-            prefixLineItem,
-            isEditQuantity,
             lineItemRow: {
               ...lineItemRow,
               [key]: value,
@@ -122,10 +133,22 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
         },
       });
     },
-    [paymentLineItemsValue, setFieldValue, addNewRow, removeRow, updatePaymentTotal]
+    [
+      isAdvancePayment,
+      paymentLineItemsValue,
+      setFieldValue,
+      addNewRow,
+      removeRow,
+      updatePaymentTotal,
+    ]
   );
 
   const handleInputChange = ({ name, value, index }) => {
+    if (isAdvancePayment) {
+      setFieldValue(name, value);
+      return;
+    }
+
     checkRowStateAndSetValue<POPaymentLineItem>({
       name,
       value,
@@ -139,7 +162,7 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
   };
 
   const lineItemRows: BodyBasicRows = paymentLineItemsValue.map((lineItemRow, index) => {
-    const prefixLineItem = `${PO_FORM_KEY.PAYMENT_LINE_ITEMS}.${index}`;
+    const prefixLineItem = `${paymentLineItemKey}.${index}`;
 
     return {
       style: {
@@ -175,7 +198,7 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
               setFieldValue={setFieldValue}
               sx={{ width: 90 }}
               isClearable={false}
-              disabled={disabled || !isVariousProjectNumber}
+              disabled={disabled || !isVariousProjectNumber || isAdvancePayment}
               onChange={(name, value) => {
                 handleInputChange({
                   index,
@@ -209,7 +232,7 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
               }
               style={{ width: 60, padding: '6px' }}
               maxLength={5}
-              disabled={disabled}
+              disabled={disabled || isAdvancePayment}
             />
           ),
           width: 60,
@@ -240,7 +263,7 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
               style={{ width: 60, padding: '6px' }}
               hideEllipsisTooltip
               maxLength={4}
-              disabled={disabled}
+              disabled={disabled || isAdvancePayment}
               required
             />
           ),
@@ -271,7 +294,7 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
               style={{ width: 60, padding: '6px' }}
               hideEllipsisTooltip
               maxLength={3}
-              disabled={disabled}
+              disabled={disabled || isAdvancePayment}
             />
           ),
           width: 60,
@@ -328,9 +351,7 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
                   name,
                   value,
                   lineItemRow,
-                  prefixLineItem,
                   index,
-                  isEditQuantity: false,
                   key: PO_PAYMENT_LINE_ITEM_KEY.AMOUNT,
                 })
               }
@@ -356,7 +377,7 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
   return (
     <Box>
       {/* Hidden input for scroll to error purpose */}
-      <input name={PO_FORM_KEY.PAYMENT_LINE_ITEMS} hidden />
+      <input name={paymentLineItemKey} hidden />
       <CustomTable.Basic bodyList={lineItemRows} />
 
       <Grid container mt={2}>
@@ -394,7 +415,8 @@ export default React.memo(TablePaymentLineItems, (prevProps, nextProps) => {
   const nextFormikProps = nextProps.formikProps;
 
   const formKeysNeedRender = [
-    PO_FORM_KEY.PAYMENT_LINE_ITEMS,
+    PO_FORM_KEY.PARTIAL_OR_FINAL_PAYMENT_LINE_ITEMS,
+    PO_FORM_KEY.ADVANCED_PAYMENT_LINE_ITEMS,
     PO_FORM_KEY.PROJECT_NUMBER,
     PO_FORM_KEY.PAYMENT_TOTAL,
     PO_FORM_KEY.PAYMENT_TYPE,
