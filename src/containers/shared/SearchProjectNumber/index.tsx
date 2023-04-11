@@ -1,6 +1,6 @@
 import { Box, SxProps } from '@mui/material';
 import { FieldInputProps } from 'formik';
-import { debounce, isString } from 'lodash';
+import { debounce } from 'lodash';
 import React from 'react';
 import { Input, Select } from 'src/components/common';
 import { SelectOption } from 'src/components/common/Select';
@@ -74,7 +74,7 @@ const SearchProjectNumber: React.FC<Props> = ({
   return (
     <Box sx={sx}>
       {disabled ? (
-        <Input value={isString(value) ? value : value?.number || ''} disabled />
+        <Input value={typeof value === 'string' ? value : value?.number || ''} disabled />
       ) : (
         <Select
           {...fieldProps}
