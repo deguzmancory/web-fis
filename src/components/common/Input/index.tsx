@@ -25,6 +25,7 @@ const Input: React.FC<InputProps> = ({
   iconPosition = 'right',
   subLabel,
   required,
+  extraRequired,
   hideIconError = false,
   infoTooltipMessage,
   infoTooltipPlacement,
@@ -56,6 +57,7 @@ const Input: React.FC<InputProps> = ({
       className={containerClassName}
       subLabel={subLabel}
       required={required}
+      extraRequired={extraRequired}
       infoTooltipMessage={infoTooltipMessage}
       infoTooltipPlacement={infoTooltipPlacement}
       infoToolTipWithArrow={infoToolTipWithArrow}
@@ -149,6 +151,7 @@ export type InputProps = BaseInputProps & {
   iconPosition?: 'left' | 'right';
   label?: string | React.ReactNode;
   required?: boolean;
+  extraRequired?: boolean;
   iconComponent?: React.ReactNode;
   hideIconError?: boolean;
   customIcon?: React.ReactElement;

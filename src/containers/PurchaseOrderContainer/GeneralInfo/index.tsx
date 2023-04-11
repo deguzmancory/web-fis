@@ -3,17 +3,34 @@ import { Box, Grid, Typography } from '@mui/material';
 import { debounce } from 'lodash';
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import { Input, InputPhone, Link, Select, TextareaAutosize } from 'src/components/common';
 import { SelectOption } from 'src/components/common/Select';
 import {
+  UpdatePOPaymentFormValue,
+  UpdatePOPaymentFormikProps,
+} from 'src/containers/POPayment/types';
+import {
   VENDOR_REGISTRATION_NAVIGATE_FROM,
   VENDOR_REGISTRATION_PARAMS,
 } from 'src/containers/Vendors/VendorRegistration/enums';
+import { PO_DOCUMENT_TYPE, PO_MODE } from 'src/queries';
+import { isPOChangeAmountForm, isPOChangeDescriptionForm } from 'src/queries/POChange/helpers';
 import { FinancialProject } from 'src/queries/Projects/types';
+import {
+  isCUReviewPOMode,
+  isCreatePOMode,
+  isFAReviewPOMode,
+  isPOChangeDocumentType,
+  isPODocumentType,
+  isPOPaymentDocumentType,
+  isPiSuEditPOMode,
+} from 'src/queries/PurchaseOrders/helpers';
 import { Vendor } from 'src/queries/Vendors';
 import { showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
+import { setFormData } from 'src/redux/form/formSlice';
 import { Navigator } from 'src/services';
 import {
   getDateDisplay,
@@ -23,34 +40,17 @@ import {
 } from 'src/utils';
 import { isEmpty } from 'src/validations';
 import { PO_FORM_KEY } from '../enums';
-import {
-  isCreatePOMode,
-  isCUReviewPOMode,
-  isFAReviewPOMode,
-  isPiSuEditPOMode,
-  isPOChangeDocumentType,
-  isPODocumentType,
-  isPOPaymentDocumentType,
-} from 'src/queries/PurchaseOrders/helpers';
-import usePOSearchProject, { SearchProjectsType } from './hooks/usePOSearchProject';
-import usePOSearchVender, { SearchVendorsType } from './hooks/usePOSearchVender';
 import { UpsertPOFormValue, UpsertPOFormikProps } from '../types';
 import {
+  VARIOUS_PROJECT_LABEL,
   getVendorAddress,
   getVendorOptions,
   isVariousProject,
   shipViaOptions,
-  VARIOUS_PROJECT_LABEL,
 } from './helpers';
+import usePOSearchProject, { SearchProjectsType } from './hooks/usePOSearchProject';
+import usePOSearchVender, { SearchVendorsType } from './hooks/usePOSearchVender';
 import SuperQuote from './superQuote';
-import { useParams } from 'react-router-dom';
-import { setFormData } from 'src/redux/form/formSlice';
-import { PO_DOCUMENT_TYPE, PO_MODE } from 'src/queries';
-import { isPOChangeAmountForm, isPOChangeDescriptionForm } from 'src/queries/POChange/helpers';
-import {
-  UpdatePOPaymentFormValue,
-  UpdatePOPaymentFormikProps,
-} from 'src/containers/POPayment/types';
 
 const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>({
   formikProps,
@@ -226,10 +226,13 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
     []
   );
 
+  const disabledProjectFields =
+    disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode;
+
   return (
     <Box>
       <Grid container spacing={2}>
-        {/* PO logic */}
+        {/* PO, PO Payment logic */}
         {(isPODocument || isPOPaymentDocument || isBlankDocument) && (
           <Grid item xs={12} sm={6} md={4}>
             <Input
@@ -250,7 +253,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
           />
         </Grid>
 
-        {/* PO logic */}
+        {/* PO, PO Payment logic */}
         {(isPODocument || isPOPaymentDocument || isBlankDocument) && (
           <Grid item xs={12} sm={6} md={4}>
             <Input
@@ -290,77 +293,98 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
         )}
 
         <Grid item xs={12} sm={8}>
-          <Select
-            {...getFieldProps(PO_FORM_KEY.PROJECT_TITLE)}
-            errorMessage={_getErrorMessage(PO_FORM_KEY.PROJECT_TITLE)}
-            onBlur={setFieldTouched}
-            label={'Project Title'}
-            placeholder={'Search'}
-            extraRequired
-            options={searchedProjectTitleOptions}
-            isLoading={isLoadingSearchProjects}
-            onInputChange={(value: string) => {
-              debounceSearchProjectsInput('title', value);
-            }}
-            getOptionLabel={(option: SelectOption<FinancialProject>) => {
-              return option.value.name;
-            }}
-            customSelectedOptionValue={
-              searchedProjectTitleOptions.find(
-                (option: SelectOption<FinancialProject>) =>
-                  option.value?.name === values.projectTitle
-              ) || null
-            }
-            filterOption={(_option, _inputValue) => {
-              return true; //ignore default filter option by label
-            }}
-            hideSearchIcon
-            isClearable={true}
-            onChange={(_name, value) => updateProjectFields(value)}
-            optionWithSubLabel
-            isDisabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
-            footer={
-              <Typography variant="body2">
-                Use “Various" if you want to use multiple projects.
-              </Typography>
-            }
-          />
+          {disabledProjectFields ? (
+            <Input
+              label={'Project Title'}
+              value={
+                isString(values.projectTitle) ? values.projectTitle : values.projectTitle?.name
+              }
+              disabled
+              extraRequired
+            />
+          ) : (
+            <Select
+              {...getFieldProps(PO_FORM_KEY.PROJECT_TITLE)}
+              errorMessage={_getErrorMessage(PO_FORM_KEY.PROJECT_TITLE)}
+              onBlur={setFieldTouched}
+              label={'Project Title'}
+              placeholder={'Search'}
+              extraRequired
+              options={searchedProjectTitleOptions}
+              isLoading={isLoadingSearchProjects}
+              onInputChange={(value: string) => {
+                debounceSearchProjectsInput('title', value);
+              }}
+              getOptionLabel={(option: SelectOption<FinancialProject>) => {
+                return option.value.name;
+              }}
+              customSelectedOptionValue={
+                searchedProjectTitleOptions.find(
+                  (option: SelectOption<FinancialProject>) =>
+                    option.value?.name === values.projectTitle
+                ) || null
+              }
+              filterOption={(_option, _inputValue) => {
+                return true; //ignore default filter option by label
+              }}
+              hideSearchIcon
+              isClearable={true}
+              onChange={(_name, value) => updateProjectFields(value)}
+              optionWithSubLabel
+              footer={
+                <Typography variant="body2">
+                  Use “Various" if you want to use multiple projects.
+                </Typography>
+              }
+            />
+          )}
         </Grid>
         <Grid item xs={12} sm={4}>
-          <Select
-            {...getFieldProps(PO_FORM_KEY.PROJECT_NUMBER)}
-            errorMessage={_getErrorMessage(PO_FORM_KEY.PROJECT_NUMBER)}
-            onBlur={setFieldTouched}
-            label={'Project #'}
-            placeholder={'Search'}
-            extraRequired
-            options={searchedProjectNumberOptions}
-            isLoading={isLoadingSearchProjects}
-            onInputChange={(value: string) => {
-              debounceSearchProjectsInput('number', value);
-            }}
-            getOptionLabel={(option: SelectOption<FinancialProject>) => {
-              return option.value.number;
-            }}
-            customSelectedOptionValue={
-              searchedProjectNumberOptions.find(
-                (option: SelectOption<FinancialProject>) =>
-                  option.value?.number === values.projectNumber
-              ) || null
-            }
-            filterOption={(_option, _inputValue) => {
-              return true; //ignore default filter option by label
-            }}
-            menuStyle={{
-              width: '760px',
-            }}
-            hideSearchIcon
-            isClearable={true}
-            onChange={(_name, value) => updateProjectFields(value)}
-            optionWithSubLabel
-            isDisabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
-            menuOptionPosition="right"
-          />
+          {disabledProjectFields ? (
+            <Input
+              label={'Project #'}
+              value={
+                isString(values.projectNumber) ? values.projectNumber : values.projectNumber?.number
+              }
+              disabled
+              extraRequired
+            />
+          ) : (
+            <Select
+              {...getFieldProps(PO_FORM_KEY.PROJECT_NUMBER)}
+              errorMessage={_getErrorMessage(PO_FORM_KEY.PROJECT_NUMBER)}
+              onBlur={setFieldTouched}
+              label={'Project #'}
+              placeholder={'Search'}
+              extraRequired
+              options={searchedProjectNumberOptions}
+              isLoading={isLoadingSearchProjects}
+              onInputChange={(value: string) => {
+                debounceSearchProjectsInput('number', value);
+              }}
+              getOptionLabel={(option: SelectOption<FinancialProject>) => {
+                return option.value.number;
+              }}
+              customSelectedOptionValue={
+                searchedProjectNumberOptions.find(
+                  (option: SelectOption<FinancialProject>) =>
+                    option.value?.number === values.projectNumber
+                ) || null
+              }
+              filterOption={(_option, _inputValue) => {
+                return true; //ignore default filter option by label
+              }}
+              menuStyle={{
+                width: '760px',
+              }}
+              hideSearchIcon
+              isClearable={true}
+              onChange={(_name, value) => updateProjectFields(value)}
+              optionWithSubLabel
+              isDisabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
+              menuOptionPosition="right"
+            />
+          )}
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
           <Input

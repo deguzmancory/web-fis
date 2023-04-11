@@ -7,6 +7,7 @@ import { SelectOption } from 'src/components/common/Select';
 import { FinancialProject, useGetProfileProjects } from 'src/queries';
 import { isEmpty } from 'src/validations';
 import { getFinancialProjectNumberOptions } from './helpers';
+import { isString } from 'src/utils';
 
 const SearchProjectNumber: React.FC<Props> = ({
   errorMessage,
@@ -74,7 +75,7 @@ const SearchProjectNumber: React.FC<Props> = ({
   return (
     <Box sx={sx}>
       {disabled ? (
-        <Input value={typeof value === 'string' ? value : value?.number || ''} disabled />
+        <Input value={isString(value) ? value : value?.number || ''} disabled />
       ) : (
         <Select
           {...fieldProps}

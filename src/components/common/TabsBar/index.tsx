@@ -36,7 +36,6 @@ const TabsBar: React.FC<Props> = ({
         scrollButtons="auto"
         sx={{
           maxWidth: '92vw',
-          maxHeight: '70vh',
           ...sx,
         }}
         TabIndicatorProps={{

@@ -17,6 +17,10 @@ export interface POLineItemFormValue extends Omit<POLineItem, 'itemProjectNumber
   itemProjectNumber: string | FinancialProject;
 }
 
+export interface POOriginalLineItemFormValue extends Omit<POLineItem, 'itemProjectNumber'> {
+  itemProjectNumber: string;
+}
+
 export interface POEquipmentInventoryFormValue extends Omit<POEquipmentInventory, 'equipmentType'> {
   equipmentType: string[];
 }
@@ -42,7 +46,6 @@ export interface UpsertPOFormValue
     | 'equipmentInventory'
   > {
   placeholderFileAttachment: POPlaceholderFileAttachment;
-
   projectTitle: string | FinancialProject;
   projectNumber: string | FinancialProject;
   vendorName: string | Vendor;
@@ -51,6 +54,9 @@ export interface UpsertPOFormValue
   formAttachments: AdditionalPOFormValue[];
   lineItems: POLineItemFormValue[];
   equipmentInventory: POEquipmentInventoryFormValue;
+
+  //po change
+  originalLineItems?: POOriginalLineItemFormValue[];
 }
 
 export type UpsertPOFormikProps = CommonFormikProps<UpsertPOFormValue>;

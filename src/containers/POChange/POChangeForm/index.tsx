@@ -300,7 +300,7 @@ const POChangeForm: React.FC<Props> = ({
                 formikProps={formikProps}
                 disabled
                 currentPOMode={currentPOMode}
-                filterOriginItemValue={true}
+                isOriginItems={true}
                 allowUpdateDescription={false}
                 allowUpdateInfoAndAmount={false}
               />
@@ -327,7 +327,7 @@ const POChangeForm: React.FC<Props> = ({
             formikProps={formikProps}
             disabled={disabledSection}
             currentPOMode={currentPOMode}
-            filterOriginItemValue={false}
+            isOriginItems={false}
             allowUpdateInfoAndAmount={isAllowUpdateAmount}
             allowUpdateDescription={isAllowUpdateAmount || isAllowUpdateDescription}
           />

@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { isBoolean, isNumber } from 'lodash';
+import { isNumber } from 'lodash';
 import React from 'react';
 import CustomTable from 'src/components/CustomTable';
 import { BodyBasicRows, CellType } from 'src/components/CustomTable/types';
@@ -33,19 +33,19 @@ const TableLineItemsPOChange: React.FC<Props> = ({
   disabled = false,
   allowUpdateInfoAndAmount,
   allowUpdateDescription,
-  filterOriginItemValue,
+  isOriginItems,
 }) => {
   const { values, errors, touched, setFieldValue, getFieldProps, setFieldTouched } = formikProps;
 
   const lineItemsValue = React.useMemo(() => {
-    if (isBoolean(filterOriginItemValue)) {
-      return (
-        values.lineItems.filter((lineItem) => lineItem.isOriginal === filterOriginItemValue) || []
-      );
+    if (isOriginItems) {
+      return values.originalLineItems || [];
     }
 
     return values.lineItems || [];
-  }, [values.lineItems, filterOriginItemValue]);
+  }, [isOriginItems, values.lineItems, values.originalLineItems]);
+
+  const prefixLineItems = isOriginItems ? PO_FORM_KEY.ORIGINAL_LINE_ITEMS : PO_FORM_KEY.LINE_ITEMS;
 
   const isInPOChangeDescriptionForm = isPOChangeDescriptionForm(values?.formNumber);
 
@@ -185,7 +185,7 @@ const TableLineItemsPOChange: React.FC<Props> = ({
   };
 
   const lineItemRows: BodyBasicRows = lineItemsValue.map((lineItemRow, index) => {
-    const prefixLineItem = `${PO_FORM_KEY.LINE_ITEMS}.${index}`;
+    const prefixLineItem = `${prefixLineItems}.${index}`;
 
     return {
       style: {
@@ -439,7 +439,7 @@ type Props = {
   formikProps: UpsertPOFormikProps;
   disabled?: boolean;
   currentPOMode: PO_MODE;
-  filterOriginItemValue?: boolean;
+  isOriginItems?: boolean;
   allowUpdateInfoAndAmount: boolean;
   allowUpdateDescription: boolean;
 };
@@ -448,7 +448,11 @@ export default React.memo(TableLineItemsPOChange, (prevProps, nextProps) => {
   const prevFormikProps = prevProps.formikProps;
   const nextFormikProps = nextProps.formikProps;
 
-  const formKeysNeedRender = [PO_FORM_KEY.LINE_ITEMS, PO_FORM_KEY.PROJECT_NUMBER];
+  const formKeysNeedRender = [
+    PO_FORM_KEY.LINE_ITEMS,
+    PO_FORM_KEY.ORIGINAL_LINE_ITEMS,
+    PO_FORM_KEY.PROJECT_NUMBER,
+  ];
 
   return (
     prevProps.disabled === nextProps.disabled &&

@@ -16,6 +16,7 @@ import {
   getDate,
   getDateDisplay,
   getRoleInfoOfProfile,
+  isString,
   isoFormat,
   localTimeToHawaii,
 } from 'src/utils';
@@ -84,14 +85,14 @@ export const getInitialPOFormValue = ({ profile }: { profile: MyProfile }): Upse
   const roleInfo = getRoleInfoOfProfile({ profile }) as SUDetail | PIDetail;
 
   const shipTo = roleInfo
-    ? `${roleInfo.sendInvoiceTo && `${roleInfo.sendInvoiceTo}\n`}${
-        roleInfo.department && `${roleInfo.department}\n`
-      }${roleInfo.addressStreet && `${roleInfo.addressStreet}\n`}${
-        roleInfo.addressCity && `${roleInfo.addressCity} `
-      }${roleInfo.addressState && `${roleInfo.addressState} `}${
-        roleInfo.addressZip && `${roleInfo.addressZip} `
-      }${roleInfo.addressZip4 && `${roleInfo.addressZip4} `}${
-        roleInfo.addressCountry && `${roleInfo.addressCountry} `
+    ? `${roleInfo.sendInvoiceTo ? `${roleInfo.sendInvoiceTo}\n` : ''}${
+        roleInfo.department ? `${roleInfo.department}\n` : ''
+      }${roleInfo.addressStreet ? `${roleInfo.addressStreet}\n` : ''}${
+        roleInfo.addressCity ? `${roleInfo.addressCity} ` : ''
+      }${roleInfo.addressState ? `${roleInfo.addressState} ` : ''}${
+        roleInfo.addressZip ? `${roleInfo.addressZip} ` : ''
+      }${roleInfo.addressZip4 ? `${roleInfo.addressZip4} ` : ''}${
+        roleInfo.addressCountry ? `${roleInfo.addressCountry} ` : ''
       }
       `
     : '';
@@ -153,16 +154,22 @@ export const getPOFormValueFromResponse = ({
   response: PODetailResponse;
   profile: MyProfile;
 }): UpsertPOFormValue => {
-  const transformedLineItems = response.lineItems.map((lineItem) => ({
-    ...lineItem,
-    unitPrice: lineItem.unitPrice ? Number(lineItem.unitPrice || 0) : null,
-    ext: Number(lineItem.unitPrice || 0),
-  }));
+  const transformedLineItems =
+    response.lineItems.map((lineItem) => ({
+      ...lineItem,
+      unitPrice: lineItem.unitPrice ? Number(lineItem.unitPrice || 0) : null,
+      ext: Number(lineItem.unitPrice || 0),
+    })) || [];
 
+  const isPOChangeForm = isPOChangeDocumentType(response.documentType);
   const isAllowUpdateLineItemPOChangeForm =
-    isPOChangeDocumentType(response.documentType) &&
+    isPOChangeForm &&
     (isPOChangeAmountForm(response.formNumber) ||
       isPOChangeAmountTerminatedForm(response.formNumber));
+
+  const lineItems = isPOChangeForm
+    ? transformedLineItems.filter((lineItem) => !lineItem.isOriginal) //PO change line items
+    : transformedLineItems; //PO line items
 
   return {
     ...response,
@@ -178,10 +185,16 @@ export const getPOFormValueFromResponse = ({
     taxRate: Number(response.taxRate || 0),
     total: Number(response.total || 0),
     shippingTotal: Number(response.shippingTotal || 0),
-    lineItems: isAllowUpdateLineItemPOChangeForm
-      ? [...transformedLineItems, initialLineItemPOChangeValue]
-      : [...transformedLineItems, initialLineItemValue],
     amountChange: response.amountChange ? Number(response.amountChange) : null,
+
+    lineItems: isAllowUpdateLineItemPOChangeForm
+      ? [...lineItems, initialLineItemPOChangeValue] //po change only
+      : [...lineItems, initialLineItemValue], // both po and po change
+    //for po change only
+    originalLineItems: isPOChangeDocumentType(response.documentType)
+      ? transformedLineItems.filter((lineItem) => lineItem.isOriginal)
+      : undefined,
+
     determination: response.determination
       ? {
           ...response.determination,
@@ -239,50 +252,54 @@ export const getUpsertPOPayload = ({
 
   //ignore last row of line items
   const lineItemsFormValue = formValues.lineItems.slice(0, -1);
+
   //get project number value
-  const notVariousProjectNumberPayload =
-    typeof formValues.projectNumber === 'string'
-      ? formValues.projectNumber
-      : formValues.projectNumber.number;
-  const ineItemsPayload =
+  const projectNumberValue = isString(formValues.projectNumber)
+    ? formValues.projectNumber
+    : formValues.projectNumber.number;
+
+  const isPOChangeForm = isPOChangeDocumentType(formValues.documentType);
+
+  const lineItemsPayload =
     //various project can have multiple project number's line items
     isVariousProject(formValues.projectNumber)
       ? lineItemsFormValue.map((lineItem) => ({
           ...lineItem,
-          itemProjectNumber:
-            typeof lineItem.itemProjectNumber === 'string'
-              ? lineItem.itemProjectNumber
-              : lineItem.itemProjectNumber.number,
+          itemProjectNumber: isString(lineItem.itemProjectNumber)
+            ? lineItem.itemProjectNumber
+            : lineItem.itemProjectNumber.number,
           quantity: lineItem.quantity ? lineItem.quantity.toString() : '',
-        }))
+        })) || []
       : //non-various project only have one project number for all line items
         lineItemsFormValue.map((lineItem) => ({
           ...lineItem,
-          itemProjectNumber: notVariousProjectNumberPayload,
+          itemProjectNumber: projectNumberValue,
           quantity: lineItem.quantity ? lineItem.quantity.toString() : '',
-        }));
+        })) || [];
+
+  // po change only
+  const originalLineItems = isPOChangeForm ? formValues.originalLineItems || [] : [];
 
   return {
     ...formValues,
 
     action: action,
     date: isEdit ? formValues.date : localTimeToHawaii(new Date(), isoFormat),
-    lineItems: ineItemsPayload,
+    lineItems: isPOChangeForm
+      ? [...lineItemsPayload, ...originalLineItems] // po change only, need to merge origin and changed line items
+      : lineItemsPayload,
     agreement: null,
     agreementUh: null,
-    projectTitle:
-      typeof formValues.projectTitle === 'string'
-        ? formValues.projectTitle
-        : formValues.projectTitle.name,
-    projectNumber: notVariousProjectNumberPayload,
-    vendorName:
-      typeof formValues.vendorName === 'string'
-        ? formValues.vendorName
-        : formValues.vendorName.name,
-    vendorCode:
-      typeof formValues.vendorCode === 'string'
-        ? formValues.vendorCode
-        : formValues.vendorCode.code,
+    projectTitle: isString(formValues.projectTitle)
+      ? formValues.projectTitle
+      : formValues.projectTitle.name,
+    projectNumber: projectNumberValue,
+    vendorName: isString(formValues.vendorName)
+      ? formValues.vendorName
+      : formValues.vendorName.name,
+    vendorCode: isString(formValues.vendorCode)
+      ? formValues.vendorCode
+      : formValues.vendorCode.code,
     availableForms: formValues.availableForms.map((availableForm) => ({
       name: availableForm.name,
       code: availableForm.code,

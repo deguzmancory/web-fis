@@ -35,6 +35,7 @@ export enum PO_FORM_KEY {
 
   // line items
   LINE_ITEMS = 'lineItems',
+  ORIGINAL_LINE_ITEMS = 'originalLineItems',
 
   // purchase info
   CONFIRMING = 'confirming',

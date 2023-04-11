@@ -1,7 +1,7 @@
 import React from 'react';
 import CurrencyFormat from 'react-currency-format';
 import { Callback } from 'src/redux/types';
-import { emptyFunction, MoneyInputDetect } from 'src/utils';
+import { emptyFunction, isString, MoneyInputDetect } from 'src/utils';
 import { Input } from '..';
 import EllipsisTooltipBaseInput, {
   EllipsisTooltipBaseInputProps,
@@ -74,10 +74,10 @@ const InputCurrency: React.FC<Props> = ({
       disabled={disabled}
       onValueChange={handleChange}
       {...(value !== undefined && {
-        value: typeof value === 'string' ? value : MoneyInputDetect(value),
+        value: isString(value) ? value : MoneyInputDetect(value),
       })}
       {...(defaultValue !== undefined && {
-        value: typeof defaultValue === 'string' ? defaultValue : MoneyInputDetect(defaultValue),
+        value: isString(defaultValue) ? defaultValue : MoneyInputDetect(defaultValue),
       })}
       {...props}
     />
