@@ -438,6 +438,10 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.get(`/financial-svc/v1/po-payments/${params.id}`);
   };
 
+  const getPOPaymentRemainingBalance = (params: GetPropertiesParams) => {
+    return api.get(`/financial-svc/v1/po-payments/${params.id}/remaining-balance`);
+  };
+
   const createPOPayment = (params: { id: string }) => {
     return api.post(
       `/financial-svc/v1/purchase-orders/${params.id}/po-payment`,
@@ -582,6 +586,7 @@ const create = (baseURL = appConfig.API_URL) => {
     createPOPayment,
     updatePOPayment,
     deletePOPayment,
+    getPOPaymentRemainingBalance,
 
     // ================== Purchasing List ===============
     getAppPurchasingList,

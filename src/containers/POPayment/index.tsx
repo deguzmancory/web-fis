@@ -48,6 +48,7 @@ import ReceiptAndPaymentType from './ReceiptAndPaymentType';
 import BreadcrumbsPOPayment from './breadcrumbs';
 import { emptyUpdatePOPaymentFormValue, getPOPaymentFormValueFromResponse } from './helpers';
 import { UpdatePOPaymentFormValue, UpdatePOPaymentFormikProps } from './types';
+import TablePaymentRemainingBalanceLineItems from './PaymentBalanceLineItems';
 
 const POPayment: React.FC<Props> = ({
   formData,
@@ -279,8 +280,8 @@ const POPayment: React.FC<Props> = ({
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <SectionLayout>
-              <PaymentAuthorizedBy
+            <SectionLayout sx={{ p: 1 }}>
+              <TablePaymentRemainingBalanceLineItems
                 formikProps={formikProps}
                 disabled={isViewOnlyPOMode(currentPOMode)}
                 currentPOMode={currentPOMode}

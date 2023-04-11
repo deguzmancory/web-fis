@@ -25,6 +25,7 @@ export enum API_QUERIES {
   GET_PURCHASE_ORDERS = '/financial-svc/v1/purchase-orders',
   PO_DETAIL = '/purchase-orders/:id',
   PO_PAYMENT_DETAIL = '/po-payments/:id',
+  PO_PAYMENT_REMAINING_BALANCE = 'po-payment/:id/remaining-balance',
 
   // Vendor
   SEARCH_VENDOR = '/vendor/search',

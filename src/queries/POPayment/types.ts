@@ -190,6 +190,14 @@ export interface POPaymentRemittance {
   updatedAt?: string;
 }
 
+export interface POPaymentRemainingBalance {
+  projectNumber: string;
+  subProject: string;
+  budgetCategory: string;
+  subBudgetCategory: string;
+  amount: string;
+}
+
 export interface POPaymentCommonResponse {}
 
 export interface POLineItemPOPaymentResponse extends POLineItem, POPaymentCommonResponse {}
