@@ -15,8 +15,12 @@ const FileUpload: React.FC<Props> = ({
   className,
   numberAllow = null,
   acceptFileType,
-  message = `Drop files to attach or browse`,
   innerRef,
+  message = (
+    <span>
+      Drop files to attach or <span style={{ color: COLOR_CODE.LINK }}>Browse</span>
+    </span>
+  ),
   onChange,
   onError,
 }) => {
@@ -92,7 +96,7 @@ type Props = {
   onChange: (...args: any[]) => void;
   onError?: (value: any) => void;
   acceptFileType?: Accept;
-  message?: string;
+  message?: React.ReactNode;
 };
 
 export default FileUpload;
