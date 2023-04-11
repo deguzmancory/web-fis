@@ -131,13 +131,16 @@ const TablePaymentRemainingBalanceLineItems: React.FC<Props> = ({
 
   return (
     <Box>
-      <Typography variant="h5" fontWeight="bold" style={{ display: 'contents' }} mb={4}>
-        PO Remaining Balance As of: {/* TODO: Tuyen Tran update real time when refresh data */}
-        <Typography style={{ display: 'contents' }}>{localTimeToHawaii(values.date)}</Typography>
-      </Typography>
+      <Box mb={1}>
+        <Typography variant="h5" fontWeight="bold" style={{ display: 'contents' }}>
+          PO Remaining Balance As of: {/* TODO: Tuyen Tran update real time when refresh data */}
+          <Typography style={{ display: 'contents' }}>{localTimeToHawaii(values.date)}</Typography>
+        </Typography>
+      </Box>
+
       <CustomTable.Basic bodyList={lineItemRows} />
 
-      <Grid container mt={5}>
+      <Grid container mt={2}>
         <Grid item xs={8} className="justify-flex-start">
           <TypographyLink
             variant="body2"

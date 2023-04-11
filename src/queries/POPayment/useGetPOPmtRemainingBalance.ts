@@ -22,6 +22,7 @@ export function useGetPOPmtRemainingBalance(
     [API_QUERIES.PO_PAYMENT_REMAINING_BALANCE, { id: options.id }],
     {
       queryFn: (query) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [_, ...params] = query.queryKey;
         return responseWrapper<ApiResponseType<POPaymentRemainingBalance[]>>(
           apiClient.getPOPaymentRemainingBalance,

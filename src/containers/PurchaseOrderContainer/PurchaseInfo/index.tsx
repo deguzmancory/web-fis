@@ -80,7 +80,7 @@ const PurchaseInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={7}>
-        <Box mb={2}>
+        <Box mb={1}>
           <Checkbox.Item
             label="Confirming Purchase Order (Do not duplicate this order. This P.O is a formal authorization for an order sent earlier.)"
             {...getFieldProps(PO_FORM_KEY.CONFIRMING)}
@@ -111,7 +111,7 @@ const PurchaseInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps
             This order is subject to the terms and conditions attached.
           </Typography>
         </Box>
-        <Box mb={2}>
+        <Box mb={1}>
           <Checkbox.Item
             label="Attachment 31, General Terms and Conditions Applicable to All Purchase Orders"
             {...getFieldProps(PO_FORM_KEY.ATTACHMENT_31)}
@@ -142,7 +142,7 @@ const PurchaseInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps
             {...getFieldProps(PO_FORM_KEY.FED_ATTACHMENT)}
             errorMessage={_getErrorMessage(PO_FORM_KEY.FED_ATTACHMENT)}
             onChange={setFieldValue}
-            itemClassName="mb-except-last-16"
+            itemClassName="mb-except-last-8"
             disabled={disabled}
           />
         </Box>

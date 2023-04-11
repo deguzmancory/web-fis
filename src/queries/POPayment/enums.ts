@@ -3,3 +3,9 @@ export enum PO_PAYMENT_TYPE {
   FINAL_PAYMENT = 'final',
   ADVANCE_PAYMENT = 'advance',
 }
+
+export enum PO_PAYMENT_EQUIPMENT_INVENTORY_OWNERSHIP {
+  UNIVERSITY_OF_HAWAII = 'U',
+  FED_GOVERNMENT = 'F',
+  OTHER_AGENCY = 'A',
+}

@@ -229,361 +229,359 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
   return (
     <Box>
       <Grid container spacing={2}>
-        <Grid item container spacing={2}>
-          {/* PO logic */}
-          {(isPODocument || isPOPaymentDocument || isBlankDocument) && (
-            <Grid item xs={12} sm={6} md={4}>
-              <Input
-                label={'Login Name'}
-                errorMessage={_getErrorMessage(PO_FORM_KEY.LOGIN_NAME)}
-                {...getUncontrolledFieldProps(PO_FORM_KEY.LOGIN_NAME)}
-                disabled
-              />
-            </Grid>
-          )}
-
+        {/* PO logic */}
+        {(isPODocument || isPOPaymentDocument || isBlankDocument) && (
           <Grid item xs={12} sm={6} md={4}>
             <Input
-              label={'Date'}
-              errorMessage={_getErrorMessage(PO_FORM_KEY.DATE)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.DATE)}
+              label={'Login Name'}
+              errorMessage={_getErrorMessage(PO_FORM_KEY.LOGIN_NAME)}
+              {...getUncontrolledFieldProps(PO_FORM_KEY.LOGIN_NAME)}
               disabled
             />
           </Grid>
+        )}
 
-          {/* PO logic */}
-          {(isPODocument || isPOPaymentDocument || isBlankDocument) && (
-            <Grid item xs={12} sm={6} md={4}>
-              <Input
-                label={'Purchase Order No.'}
-                errorMessage={_getErrorMessage(PO_FORM_KEY.NUMBER)}
-                {...getUncontrolledFieldProps(PO_FORM_KEY.NUMBER)}
-                placeholder={'To be assigned'}
-                disabled
-              />
-            </Grid>
-          )}
+        <Grid item xs={12} sm={6} md={4}>
+          <Input
+            label={'Date'}
+            errorMessage={_getErrorMessage(PO_FORM_KEY.DATE)}
+            {...getUncontrolledFieldProps(PO_FORM_KEY.DATE)}
+            disabled
+          />
+        </Grid>
 
-          {/* PO Change logic */}
-          {isPOChangeDocument && (
-            <Grid item xs={12} sm={6} md={4}>
-              <Input
-                label={'Purchase Order No. (Origin)'}
-                errorMessage={_getErrorMessage(PO_FORM_KEY.PREVIOUS_PO_NUMBER)}
-                {...getUncontrolledFieldProps(PO_FORM_KEY.PREVIOUS_PO_NUMBER)}
-                placeholder={'To be assigned'}
-                disabled
-              />
-            </Grid>
-          )}
-
-          {/* PO Change logic */}
-          {isPOChangeDocument && (
-            <Grid item xs={12} sm={6} md={4}>
-              <Input
-                label={'Purchase Order No. (New)'}
-                errorMessage={_getErrorMessage(PO_FORM_KEY.NUMBER)}
-                {...getUncontrolledFieldProps(PO_FORM_KEY.NUMBER)}
-                placeholder={'To be assigned'}
-                disabled
-              />
-            </Grid>
-          )}
-
-          <Grid item xs={12} sm={8}>
-            <Select
-              {...getFieldProps(PO_FORM_KEY.PROJECT_TITLE)}
-              errorMessage={_getErrorMessage(PO_FORM_KEY.PROJECT_TITLE)}
-              onBlur={setFieldTouched}
-              label={'Project Title'}
-              placeholder={'Search'}
-              extraRequired
-              options={searchedProjectTitleOptions}
-              isLoading={isLoadingSearchProjects}
-              onInputChange={(value: string) => {
-                debounceSearchProjectsInput('title', value);
-              }}
-              getOptionLabel={(option: SelectOption<FinancialProject>) => {
-                return option.value.name;
-              }}
-              customSelectedOptionValue={
-                searchedProjectTitleOptions.find(
-                  (option: SelectOption<FinancialProject>) =>
-                    option.value?.name === values.projectTitle
-                ) || null
-              }
-              filterOption={(_option, _inputValue) => {
-                return true; //ignore default filter option by label
-              }}
-              hideSearchIcon
-              isClearable={true}
-              onChange={(_name, value) => updateProjectFields(value)}
-              optionWithSubLabel
-              isDisabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
-              footer={
-                <Typography variant="body2">
-                  Use “Various" if you want to use multiple projects.
-                </Typography>
-              }
-            />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Select
-              {...getFieldProps(PO_FORM_KEY.PROJECT_NUMBER)}
-              errorMessage={_getErrorMessage(PO_FORM_KEY.PROJECT_NUMBER)}
-              onBlur={setFieldTouched}
-              label={'Project #'}
-              placeholder={'Search'}
-              extraRequired
-              options={searchedProjectNumberOptions}
-              isLoading={isLoadingSearchProjects}
-              onInputChange={(value: string) => {
-                debounceSearchProjectsInput('number', value);
-              }}
-              getOptionLabel={(option: SelectOption<FinancialProject>) => {
-                return option.value.number;
-              }}
-              customSelectedOptionValue={
-                searchedProjectNumberOptions.find(
-                  (option: SelectOption<FinancialProject>) =>
-                    option.value?.number === values.projectNumber
-                ) || null
-              }
-              filterOption={(_option, _inputValue) => {
-                return true; //ignore default filter option by label
-              }}
-              menuStyle={{
-                width: '760px',
-              }}
-              hideSearchIcon
-              isClearable={true}
-              onChange={(_name, value) => updateProjectFields(value)}
-              optionWithSubLabel
-              isDisabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
-              menuOptionPosition="right"
-            />
-          </Grid>
+        {/* PO logic */}
+        {(isPODocument || isPOPaymentDocument || isBlankDocument) && (
           <Grid item xs={12} sm={6} md={4}>
             <Input
-              label={'PI Name'}
-              errorMessage={_getErrorMessage(PO_FORM_KEY.PI_NAME)}
-              {...getFieldProps(PO_FORM_KEY.PI_NAME)}
+              label={'Purchase Order No.'}
+              errorMessage={_getErrorMessage(PO_FORM_KEY.NUMBER)}
+              {...getUncontrolledFieldProps(PO_FORM_KEY.NUMBER)}
+              placeholder={'To be assigned'}
               disabled
             />
           </Grid>
+        )}
+
+        {/* PO Change logic */}
+        {isPOChangeDocument && (
           <Grid item xs={12} sm={6} md={4}>
             <Input
-              label={'Project Period'}
-              errorMessage={_getErrorMessage(PO_FORM_KEY.PROJECT_PERIOD)}
-              {...getFieldProps(PO_FORM_KEY.PROJECT_PERIOD)}
+              label={'Purchase Order No. (Origin)'}
+              errorMessage={_getErrorMessage(PO_FORM_KEY.PREVIOUS_PO_NUMBER)}
+              {...getUncontrolledFieldProps(PO_FORM_KEY.PREVIOUS_PO_NUMBER)}
+              placeholder={'To be assigned'}
               disabled
             />
           </Grid>
+        )}
+
+        {/* PO Change logic */}
+        {isPOChangeDocument && (
           <Grid item xs={12} sm={6} md={4}>
             <Input
-              label={'SuperQUOTE No.'}
-              errorMessage={_getErrorMessage(PO_FORM_KEY.SUPER_QUOTE_NUMBER)}
-              {...getFieldProps(PO_FORM_KEY.SUPER_QUOTE_NUMBER)}
+              label={'Purchase Order No. (New)'}
+              errorMessage={_getErrorMessage(PO_FORM_KEY.NUMBER)}
+              {...getUncontrolledFieldProps(PO_FORM_KEY.NUMBER)}
+              placeholder={'To be assigned'}
               disabled
-              footer={
-                showActionLink ? (
-                  <Link
-                    type="icon-link"
-                    icon={<Add fontSize="small" />}
-                    textVariant="body2"
-                    onClick={handleImportSuperQuoteClick}
-                  >
-                    Import from SuperQUOTE
-                  </Link>
-                ) : null
-              }
             />
           </Grid>
-          <Grid item xs={12} sm={8}>
-            <Select
-              {...getFieldProps(PO_FORM_KEY.VENDOR_NAME)}
-              errorMessage={_getErrorMessage(PO_FORM_KEY.VENDOR_NAME)}
-              onBlur={setFieldTouched}
-              label={'Vendor Name'}
-              placeholder={'Search'}
-              extraRequired
-              options={vendorNameOptions}
-              isLoading={isLoadingSearchVendors}
-              onInputChange={(value: string) => {
-                debounceSearchVendorsInput('name', value);
-              }}
-              getOptionLabel={(option: SelectOption<Vendor | string>) => {
-                return isString(option.value) ? option.value : option.value.name;
-              }}
-              filterOption={(_option, _inputValue) => {
-                return true; //ignore default filter option by label
-              }}
-              customSelectedOptionValue={
-                vendorNameOptions.find(
-                  (option: SelectOption<Vendor>) => option.value?.name === values.vendorName
-                ) || null
-              }
-              hideSearchIcon
-              isClearable={true}
-              onChange={(_name, value) => updateVendorFields(value)}
-              optionWithSubLabel
-              isDisabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
-              menuStyle={{
-                width: '800px',
-              }}
-              labelStyle={{
-                width: '65%',
-              }}
-              subLabelStyle={{
-                width: '30%',
-              }}
-              footer={
-                showActionLink ? (
-                  <Link
-                    type="icon-link"
-                    icon={<Add fontSize="small" />}
-                    textVariant="body2"
-                    onClick={handleCreateNewVenderLinkClick}
-                  >
-                    Create New Vendor
-                  </Link>
-                ) : null
-              }
-            />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Select
-              {...getFieldProps(PO_FORM_KEY.VENDOR_CODE)}
-              errorMessage={_getErrorMessage(PO_FORM_KEY.VENDOR_CODE)}
-              onBlur={setFieldTouched}
-              label={'Vendor Code'}
-              placeholder={'Search'}
-              extraRequired
-              options={vendorCodeOptions}
-              isLoading={isLoadingSearchVendors}
-              onInputChange={(value: string) => {
-                debounceSearchVendorsInput('code', value);
-              }}
-              getOptionLabel={(option: SelectOption<Vendor | string>) => {
-                return isString(option.value) ? option.value : option.value.code;
-              }}
-              customSelectedOptionValue={
-                vendorCodeOptions.find(
-                  (option: SelectOption<Vendor>) => option.value?.code === values.vendorCode
-                ) || null
-              }
-              filterOption={(_option, _inputValue) => {
-                return true; //ignore default filter option by label
-              }}
-              menuStyle={{
-                width: '800px',
-              }}
-              labelStyle={{
-                width: '65%',
-              }}
-              subLabelStyle={{
-                width: '30%',
-              }}
-              menuOptionPosition="right"
-              hideSearchIcon
-              isClearable={true}
-              onChange={(_name, value) => updateVendorFields(value)}
-              optionWithSubLabel
-              isDisabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextareaAutosize
-              label={'Vendor Address, Street/PO Box, City, State, Zip Code'}
-              required
-              errorMessage={_getErrorMessage(PO_FORM_KEY.VENDOR_ADDRESS)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.VENDOR_ADDRESS)}
-              disabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
-              style={{ minHeight: '100px' }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextareaAutosize
-              label={'Ship To Information (Name, Address)'}
-              required
-              errorMessage={_getErrorMessage(PO_FORM_KEY.SHIP_TO)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.SHIP_TO)}
-              disabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
-              style={{ minHeight: '100px' }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Select
-              {...getFieldProps(PO_FORM_KEY.SHIP_VIA)}
-              errorMessage={_getErrorMessage(PO_FORM_KEY.SHIP_VIA)}
-              label={'Ship Via'}
-              placeholder={'Select'}
-              options={shipViaOptions}
-              isDisabled={disabled || inPOReviewMode || isPOChangeReviewMode}
-              onChange={setFieldValue}
-              isSearchable={false}
-              hideSearchIcon
-            />
-          </Grid>
-          <Grid item xs={12} sm={8}>
-            <Input
-              label={'Ship Via Instructions'}
-              errorMessage={_getErrorMessage(PO_FORM_KEY.SHIP_OTHER)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.SHIP_OTHER)}
-              disabled={disabled || inPOReviewMode || isPOChangeReviewMode}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Input
-              label={'Delivery Required By'}
-              errorMessage={_getErrorMessage(PO_FORM_KEY.DELIVERY_BY)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.DELIVERY_BY)}
-              disabled={disabled || inPOReviewMode}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Input
-              label={'Discount Terms'}
-              errorMessage={_getErrorMessage(PO_FORM_KEY.DISCOUNT_TERMS)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.DISCOUNT_TERMS)}
-              disabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Input
-              label={'Quotation No.'}
-              errorMessage={_getErrorMessage(PO_FORM_KEY.QUOTATION_NUMBER)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.QUOTATION_NUMBER)}
-              disabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Input
-              label={'Direct Inquiries on This Request To'}
-              required
-              errorMessage={_getErrorMessage(PO_FORM_KEY.DIRECT_INQUIRIES_TO)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.DIRECT_INQUIRIES_TO)}
-              disabled={disabled || isPOChangeReviewMode}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <InputPhone
-              label={'Phone Number'}
-              errorMessage={_getErrorMessage(PO_FORM_KEY.PHONE_NUMBER)}
-              {...getFieldProps(PO_FORM_KEY.PHONE_NUMBER)}
-              disabled={disabled || isPOChangeReviewMode}
-              onChange={setFieldValue}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Input
-              label={'FA Staff to Review'}
-              required
-              errorMessage={_getErrorMessage(PO_FORM_KEY.FA_STAFF_REVIEWER)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.FA_STAFF_REVIEWER)}
-              disabled={disabled || isPOChangeReviewMode}
-            />
-          </Grid>
+        )}
+
+        <Grid item xs={12} sm={8}>
+          <Select
+            {...getFieldProps(PO_FORM_KEY.PROJECT_TITLE)}
+            errorMessage={_getErrorMessage(PO_FORM_KEY.PROJECT_TITLE)}
+            onBlur={setFieldTouched}
+            label={'Project Title'}
+            placeholder={'Search'}
+            extraRequired
+            options={searchedProjectTitleOptions}
+            isLoading={isLoadingSearchProjects}
+            onInputChange={(value: string) => {
+              debounceSearchProjectsInput('title', value);
+            }}
+            getOptionLabel={(option: SelectOption<FinancialProject>) => {
+              return option.value.name;
+            }}
+            customSelectedOptionValue={
+              searchedProjectTitleOptions.find(
+                (option: SelectOption<FinancialProject>) =>
+                  option.value?.name === values.projectTitle
+              ) || null
+            }
+            filterOption={(_option, _inputValue) => {
+              return true; //ignore default filter option by label
+            }}
+            hideSearchIcon
+            isClearable={true}
+            onChange={(_name, value) => updateProjectFields(value)}
+            optionWithSubLabel
+            isDisabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
+            footer={
+              <Typography variant="body2">
+                Use “Various" if you want to use multiple projects.
+              </Typography>
+            }
+          />
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Select
+            {...getFieldProps(PO_FORM_KEY.PROJECT_NUMBER)}
+            errorMessage={_getErrorMessage(PO_FORM_KEY.PROJECT_NUMBER)}
+            onBlur={setFieldTouched}
+            label={'Project #'}
+            placeholder={'Search'}
+            extraRequired
+            options={searchedProjectNumberOptions}
+            isLoading={isLoadingSearchProjects}
+            onInputChange={(value: string) => {
+              debounceSearchProjectsInput('number', value);
+            }}
+            getOptionLabel={(option: SelectOption<FinancialProject>) => {
+              return option.value.number;
+            }}
+            customSelectedOptionValue={
+              searchedProjectNumberOptions.find(
+                (option: SelectOption<FinancialProject>) =>
+                  option.value?.number === values.projectNumber
+              ) || null
+            }
+            filterOption={(_option, _inputValue) => {
+              return true; //ignore default filter option by label
+            }}
+            menuStyle={{
+              width: '760px',
+            }}
+            hideSearchIcon
+            isClearable={true}
+            onChange={(_name, value) => updateProjectFields(value)}
+            optionWithSubLabel
+            isDisabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
+            menuOptionPosition="right"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Input
+            label={'PI Name'}
+            errorMessage={_getErrorMessage(PO_FORM_KEY.PI_NAME)}
+            {...getFieldProps(PO_FORM_KEY.PI_NAME)}
+            disabled
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Input
+            label={'Project Period'}
+            errorMessage={_getErrorMessage(PO_FORM_KEY.PROJECT_PERIOD)}
+            {...getFieldProps(PO_FORM_KEY.PROJECT_PERIOD)}
+            disabled
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Input
+            label={'SuperQUOTE No.'}
+            errorMessage={_getErrorMessage(PO_FORM_KEY.SUPER_QUOTE_NUMBER)}
+            {...getFieldProps(PO_FORM_KEY.SUPER_QUOTE_NUMBER)}
+            disabled
+            footer={
+              showActionLink ? (
+                <Link
+                  type="icon-link"
+                  icon={<Add fontSize="small" />}
+                  textVariant="body2"
+                  onClick={handleImportSuperQuoteClick}
+                >
+                  Import from SuperQUOTE
+                </Link>
+              ) : null
+            }
+          />
+        </Grid>
+        <Grid item xs={12} sm={8}>
+          <Select
+            {...getFieldProps(PO_FORM_KEY.VENDOR_NAME)}
+            errorMessage={_getErrorMessage(PO_FORM_KEY.VENDOR_NAME)}
+            onBlur={setFieldTouched}
+            label={'Vendor Name'}
+            placeholder={'Search'}
+            extraRequired
+            options={vendorNameOptions}
+            isLoading={isLoadingSearchVendors}
+            onInputChange={(value: string) => {
+              debounceSearchVendorsInput('name', value);
+            }}
+            getOptionLabel={(option: SelectOption<Vendor | string>) => {
+              return isString(option.value) ? option.value : option.value.name;
+            }}
+            filterOption={(_option, _inputValue) => {
+              return true; //ignore default filter option by label
+            }}
+            customSelectedOptionValue={
+              vendorNameOptions.find(
+                (option: SelectOption<Vendor>) => option.value?.name === values.vendorName
+              ) || null
+            }
+            hideSearchIcon
+            isClearable={true}
+            onChange={(_name, value) => updateVendorFields(value)}
+            optionWithSubLabel
+            isDisabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
+            menuStyle={{
+              width: '800px',
+            }}
+            labelStyle={{
+              width: '65%',
+            }}
+            subLabelStyle={{
+              width: '30%',
+            }}
+            footer={
+              showActionLink ? (
+                <Link
+                  type="icon-link"
+                  icon={<Add fontSize="small" />}
+                  textVariant="body2"
+                  onClick={handleCreateNewVenderLinkClick}
+                >
+                  Create New Vendor
+                </Link>
+              ) : null
+            }
+          />
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Select
+            {...getFieldProps(PO_FORM_KEY.VENDOR_CODE)}
+            errorMessage={_getErrorMessage(PO_FORM_KEY.VENDOR_CODE)}
+            onBlur={setFieldTouched}
+            label={'Vendor Code'}
+            placeholder={'Search'}
+            extraRequired
+            options={vendorCodeOptions}
+            isLoading={isLoadingSearchVendors}
+            onInputChange={(value: string) => {
+              debounceSearchVendorsInput('code', value);
+            }}
+            getOptionLabel={(option: SelectOption<Vendor | string>) => {
+              return isString(option.value) ? option.value : option.value.code;
+            }}
+            customSelectedOptionValue={
+              vendorCodeOptions.find(
+                (option: SelectOption<Vendor>) => option.value?.code === values.vendorCode
+              ) || null
+            }
+            filterOption={(_option, _inputValue) => {
+              return true; //ignore default filter option by label
+            }}
+            menuStyle={{
+              width: '800px',
+            }}
+            labelStyle={{
+              width: '65%',
+            }}
+            subLabelStyle={{
+              width: '30%',
+            }}
+            menuOptionPosition="right"
+            hideSearchIcon
+            isClearable={true}
+            onChange={(_name, value) => updateVendorFields(value)}
+            optionWithSubLabel
+            isDisabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextareaAutosize
+            label={'Vendor Address, Street/PO Box, City, State, Zip Code'}
+            required
+            errorMessage={_getErrorMessage(PO_FORM_KEY.VENDOR_ADDRESS)}
+            {...getUncontrolledFieldProps(PO_FORM_KEY.VENDOR_ADDRESS)}
+            disabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
+            style={{ minHeight: '100px' }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextareaAutosize
+            label={'Ship To Information (Name, Address)'}
+            required
+            errorMessage={_getErrorMessage(PO_FORM_KEY.SHIP_TO)}
+            {...getUncontrolledFieldProps(PO_FORM_KEY.SHIP_TO)}
+            disabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
+            style={{ minHeight: '100px' }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Select
+            {...getFieldProps(PO_FORM_KEY.SHIP_VIA)}
+            errorMessage={_getErrorMessage(PO_FORM_KEY.SHIP_VIA)}
+            label={'Ship Via'}
+            placeholder={'Select'}
+            options={shipViaOptions}
+            isDisabled={disabled || inPOReviewMode || isPOChangeReviewMode}
+            onChange={setFieldValue}
+            isSearchable={false}
+            hideSearchIcon
+          />
+        </Grid>
+        <Grid item xs={12} sm={8}>
+          <Input
+            label={'Ship Via Instructions'}
+            errorMessage={_getErrorMessage(PO_FORM_KEY.SHIP_OTHER)}
+            {...getUncontrolledFieldProps(PO_FORM_KEY.SHIP_OTHER)}
+            disabled={disabled || inPOReviewMode || isPOChangeReviewMode}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Input
+            label={'Delivery Required By'}
+            errorMessage={_getErrorMessage(PO_FORM_KEY.DELIVERY_BY)}
+            {...getUncontrolledFieldProps(PO_FORM_KEY.DELIVERY_BY)}
+            disabled={disabled || inPOReviewMode}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Input
+            label={'Discount Terms'}
+            errorMessage={_getErrorMessage(PO_FORM_KEY.DISCOUNT_TERMS)}
+            {...getUncontrolledFieldProps(PO_FORM_KEY.DISCOUNT_TERMS)}
+            disabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Input
+            label={'Quotation No.'}
+            errorMessage={_getErrorMessage(PO_FORM_KEY.QUOTATION_NUMBER)}
+            {...getUncontrolledFieldProps(PO_FORM_KEY.QUOTATION_NUMBER)}
+            disabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Input
+            label={'Direct Inquiries on This Request To'}
+            required
+            errorMessage={_getErrorMessage(PO_FORM_KEY.DIRECT_INQUIRIES_TO)}
+            {...getUncontrolledFieldProps(PO_FORM_KEY.DIRECT_INQUIRIES_TO)}
+            disabled={disabled || isPOChangeReviewMode}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <InputPhone
+            label={'Phone Number'}
+            errorMessage={_getErrorMessage(PO_FORM_KEY.PHONE_NUMBER)}
+            {...getFieldProps(PO_FORM_KEY.PHONE_NUMBER)}
+            disabled={disabled || isPOChangeReviewMode}
+            onChange={setFieldValue}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Input
+            label={'FA Staff to Review'}
+            required
+            errorMessage={_getErrorMessage(PO_FORM_KEY.FA_STAFF_REVIEWER)}
+            {...getUncontrolledFieldProps(PO_FORM_KEY.FA_STAFF_REVIEWER)}
+            disabled={disabled || isPOChangeReviewMode}
+          />
         </Grid>
       </Grid>
     </Box>

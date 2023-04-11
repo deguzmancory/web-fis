@@ -31,9 +31,13 @@ export interface POPaymentSummary {
 export interface POPaymentRemittanceInfo {
   remittanceLineItems: POPaymentRemittanceLineItem[];
   remittance: POPaymentRemittance;
-  paymentEquipmentInventoryManualFlag: boolean;
   preferredPaymentMethod: string;
   preferredPaymentMethodTimestamp: string;
+}
+
+export interface POPaymentEquipmentInventories {
+  paymentEquipmentInventories: POPaymentEquipmentInventory[];
+  paymentEquipmentInventoryManualFlag: boolean;
 }
 
 // PO Payment
@@ -41,7 +45,8 @@ export interface UpdatePOPaymentPayload
   extends POPaymentGeneralInfo,
     POPaymentReceiptAndPaymentType,
     POPaymentSummary,
-    POPaymentRemittanceInfo {
+    POPaymentRemittanceInfo,
+    POPaymentEquipmentInventories {
   id?: string;
   action: PO_ACTION;
 
@@ -63,7 +68,6 @@ export interface UpdatePOPaymentPayload
   // Remittance Information
 
   // Equipment Inventory
-  paymentEquipmentInventories: POPaymentEquipmentInventory[];
 
   // file attachment
   fileAttachments: POFileAttachment[];
@@ -87,7 +91,8 @@ export interface POPaymentResponse
     POPaymentGeneralInfo,
     POPaymentRemittanceInfo,
     POPaymentSummary,
-    POPaymentReceiptAndPaymentType {
+    POPaymentReceiptAndPaymentType,
+    POPaymentEquipmentInventories {
   id: string;
   createdAt: string;
   updatedAt: string;
@@ -119,8 +124,8 @@ export interface POPaymentResponse
   checkDate: string;
   remittanceVendorAddress: string;
   paymentMethod: string;
-  paymentAuthorizedBy: string;
 
+  paymentAuthorizedBy: string;
   lineItems: POLineItemPOPaymentResponse[];
   paymentEquipmentInventories: POPaymentEquipmentInventory[];
   fileAttachments: POFileAttachment[];

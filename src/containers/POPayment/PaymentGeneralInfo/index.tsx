@@ -16,63 +16,61 @@ const PaymentGeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, cu
   return (
     <Box>
       <Grid container spacing={2}>
-        <Grid item container spacing={2}>
-          <Grid item xs={12} sm={6} md={4}>
-            <Input
-              label={'Login Name'}
-              errorMessage={_getErrorMessage(PO_FORM_KEY.PAYMENT_LOGIN_NAME)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.PAYMENT_LOGIN_NAME)}
-              disabled
-            />
-          </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Input
+            label={'Login Name'}
+            errorMessage={_getErrorMessage(PO_FORM_KEY.PAYMENT_LOGIN_NAME)}
+            {...getUncontrolledFieldProps(PO_FORM_KEY.PAYMENT_LOGIN_NAME)}
+            disabled
+          />
+        </Grid>
 
-          <Grid item xs={12} sm={6} md={4}>
-            <Input
-              label={'Date'}
-              errorMessage={_getErrorMessage(PO_FORM_KEY.PAYMENT_DATE)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.PAYMENT_DATE)}
-              disabled
-            />
-          </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Input
+            label={'Date'}
+            errorMessage={_getErrorMessage(PO_FORM_KEY.PAYMENT_DATE)}
+            {...getUncontrolledFieldProps(PO_FORM_KEY.PAYMENT_DATE)}
+            disabled
+          />
+        </Grid>
 
-          <Grid item xs={12} sm={6} md={4}>
-            <Input
-              label={'Payment Req No.'}
-              errorMessage={_getErrorMessage(PO_FORM_KEY.PAYMENT_REQUEST_NUMBER)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.PAYMENT_REQUEST_NUMBER)}
-              placeholder={'To be assigned'}
-              disabled
-            />
-          </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Input
+            label={'Payment Req No.'}
+            errorMessage={_getErrorMessage(PO_FORM_KEY.PAYMENT_REQUEST_NUMBER)}
+            {...getUncontrolledFieldProps(PO_FORM_KEY.PAYMENT_REQUEST_NUMBER)}
+            placeholder={'To be assigned'}
+            disabled
+          />
+        </Grid>
 
-          <Grid item xs={12} sm={6} md={4}>
-            <Input
-              label={'Direct Inquiries on This Request To'}
-              errorMessage={_getErrorMessage(PO_FORM_KEY.PAYMENT_DIRECT_INQUIRIES_TO)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.PAYMENT_DIRECT_INQUIRIES_TO)}
-              placeholder={'To be assigned'}
-              required
-              disabled={disabled}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <InputPhone
-              label={'Phone Number'}
-              errorMessage={_getErrorMessage(PO_FORM_KEY.PAYMENT_PHONE_NUMBER)}
-              {...getFieldProps(PO_FORM_KEY.PAYMENT_PHONE_NUMBER)}
-              disabled={disabled}
-              onChange={setFieldValue}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Input
-              label={'FA Staff to Review'}
-              required
-              errorMessage={_getErrorMessage(PO_FORM_KEY.PAYMENT_FA_STAFF_REVIEWER)}
-              {...getUncontrolledFieldProps(PO_FORM_KEY.PAYMENT_FA_STAFF_REVIEWER)}
-              disabled={disabled}
-            />
-          </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Input
+            label={'Direct Inquiries on This Request To'}
+            errorMessage={_getErrorMessage(PO_FORM_KEY.PAYMENT_DIRECT_INQUIRIES_TO)}
+            {...getUncontrolledFieldProps(PO_FORM_KEY.PAYMENT_DIRECT_INQUIRIES_TO)}
+            placeholder={'To be assigned'}
+            required
+            disabled={disabled}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <InputPhone
+            label={'Phone Number'}
+            errorMessage={_getErrorMessage(PO_FORM_KEY.PAYMENT_PHONE_NUMBER)}
+            {...getFieldProps(PO_FORM_KEY.PAYMENT_PHONE_NUMBER)}
+            disabled={disabled}
+            onChange={setFieldValue}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Input
+            label={'FA Staff to Review'}
+            required
+            errorMessage={_getErrorMessage(PO_FORM_KEY.PAYMENT_FA_STAFF_REVIEWER)}
+            {...getUncontrolledFieldProps(PO_FORM_KEY.PAYMENT_FA_STAFF_REVIEWER)}
+            disabled={disabled}
+          />
         </Grid>
       </Grid>
     </Box>

@@ -49,6 +49,7 @@ import BreadcrumbsPOPayment from './breadcrumbs';
 import { emptyUpdatePOPaymentFormValue, getPOPaymentFormValueFromResponse } from './helpers';
 import { UpdatePOPaymentFormValue, UpdatePOPaymentFormikProps } from './types';
 import TablePaymentRemainingBalanceLineItems from './PaymentBalanceLineItems';
+import EquipmentInventories from './EquipmentInventories';
 
 const POPayment: React.FC<Props> = ({
   formData,
@@ -251,7 +252,7 @@ const POPayment: React.FC<Props> = ({
             <SectionLayout>
               <ReceiptAndPaymentType
                 formikProps={formikProps}
-                disabled={isViewOnlyPOMode(currentPOMode)}
+                disabled={disabledSection}
                 currentPOMode={currentPOMode}
               />
             </SectionLayout>
@@ -261,7 +262,7 @@ const POPayment: React.FC<Props> = ({
             <SectionLayout>
               <PaymentAuthorizedBy
                 formikProps={formikProps}
-                disabled={isViewOnlyPOMode(currentPOMode)}
+                disabled={disabledSection}
                 currentPOMode={currentPOMode}
               />
             </SectionLayout>
@@ -273,7 +274,7 @@ const POPayment: React.FC<Props> = ({
             <SectionLayout sx={{ p: 1 }}>
               <PaymentLineItems
                 formikProps={formikProps}
-                disabled={isViewOnlyPOMode(currentPOMode)}
+                disabled={disabledSection}
                 currentPOMode={currentPOMode}
               />
             </SectionLayout>
@@ -283,12 +284,20 @@ const POPayment: React.FC<Props> = ({
             <SectionLayout sx={{ p: 1 }}>
               <TablePaymentRemainingBalanceLineItems
                 formikProps={formikProps}
-                disabled={isViewOnlyPOMode(currentPOMode)}
+                disabled={disabledSection}
                 currentPOMode={currentPOMode}
               />
             </SectionLayout>
           </Grid>
         </Grid>
+
+        <SectionLayout>
+          <EquipmentInventories
+            formikProps={formikProps}
+            disabled={disabledSection}
+            currentPOMode={currentPOMode}
+          />
+        </SectionLayout>
 
         <SectionLayout>
           <FileAttachments
@@ -314,7 +323,12 @@ const POPayment: React.FC<Props> = ({
   };
 
   const blockCondition = (location: Location<string>) => {
-    const acceptablePaths = [PATHS.poAdditionalForm, PATHS.poChangeForm];
+    if (location.pathname.includes(PATHS.createPurchaseOrders)) {
+      onSetIsImmutableFormData(false);
+      return true;
+    }
+
+    const acceptablePaths = [PATHS.poPaymentForm];
     const isAcceptablePath = acceptablePaths.some((path) => location.pathname.includes(path));
 
     if (isAcceptablePath) {

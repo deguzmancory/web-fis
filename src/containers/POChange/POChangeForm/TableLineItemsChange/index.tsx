@@ -39,10 +39,12 @@ const TableLineItemsPOChange: React.FC<Props> = ({
 
   const lineItemsValue = React.useMemo(() => {
     if (isBoolean(filterOriginItemValue)) {
-      return values.lineItems.filter((lineItem) => lineItem.isOriginal === filterOriginItemValue);
+      return (
+        values.lineItems.filter((lineItem) => lineItem.isOriginal === filterOriginItemValue) || []
+      );
     }
 
-    return values.lineItems;
+    return values.lineItems || [];
   }, [values.lineItems, filterOriginItemValue]);
 
   const isInPOChangeDescriptionForm = isPOChangeDescriptionForm(values?.formNumber);

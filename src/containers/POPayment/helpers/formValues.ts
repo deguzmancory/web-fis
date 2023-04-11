@@ -1,6 +1,8 @@
 import { MyProfile, PO_PAYMENT_TYPE, POPaymentResponse } from 'src/queries';
-import { DateFormat, getDateDisplay, localTimeToHawaii } from 'src/utils';
+import { DateFormat, getDate, getDateDisplay, localTimeToHawaii } from 'src/utils';
+import { isEmpty } from 'src/validations';
 import { UpdatePOPaymentFormValue } from '../types';
+import { initialPaymentEquipmentInventory } from './constants';
 import { getPaymentLineItemFormValueByPaymentType } from './utils';
 
 export const getPOPaymentFormValueFromResponse = ({
@@ -17,6 +19,13 @@ export const getPOPaymentFormValueFromResponse = ({
     unitPrice: lineItem.unitPrice ? Number(lineItem.unitPrice || 0) : null,
     ext: Number(lineItem.unitPrice || 0),
   }));
+
+  const transformedPaymentEquipmentInventories = !isEmpty(response.paymentEquipmentInventories)
+    ? response.paymentEquipmentInventories.map((equipmentInventory) => ({
+        ...equipmentInventory,
+        receiveDate: getDate(equipmentInventory.receiveDate),
+      }))
+    : [initialPaymentEquipmentInventory];
 
   return {
     ...response,
@@ -50,5 +59,7 @@ export const getPOPaymentFormValueFromResponse = ({
       response,
       isAdvancePayment: true,
     }),
+
+    paymentEquipmentInventories: transformedPaymentEquipmentInventories,
   };
 };

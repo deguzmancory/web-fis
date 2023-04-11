@@ -279,6 +279,7 @@ const POChangeForm: React.FC<Props> = ({
             currentPOMode={currentPOMode}
             documentType={PO_DOCUMENT_TYPE.PO_CHANGE}
           />
+
           {isInChangeAmountTerminatedForm && (
             <Stack
               bgcolor={COLOR_CODE.WARNING}
@@ -291,6 +292,7 @@ const POChangeForm: React.FC<Props> = ({
             </Stack>
           )}
         </SectionLayout>
+
         {!isInChangeTotalCancellationForm && (
           <SectionLayout>
             <Accordion title="Original Order">
@@ -319,6 +321,7 @@ const POChangeForm: React.FC<Props> = ({
             Change Order to Read
           </Typography>
         )}
+
         <SectionLayout>
           <TableLineItemsPOChange
             formikProps={formikProps}
@@ -339,15 +342,18 @@ const POChangeForm: React.FC<Props> = ({
             showAmountChangeSection={showAmountChangeSection}
           />
         </SectionLayout>
+
         <SectionLayout>
           <AdditionalForms
             formikProps={formikProps}
             disabled={disabledSection || !isAllowUpdateAdditionalForm}
           />
         </SectionLayout>
+
         <SectionLayout>
           <AuthorizedBy formikProps={formikProps} disabled={disabledSection} />
         </SectionLayout>
+
         <SectionLayout>
           <FileAttachments
             formikProps={formikProps}
@@ -355,9 +361,11 @@ const POChangeForm: React.FC<Props> = ({
             allowActionAfterFinalApproveOnly={isFinalPOMode(currentPOMode)}
           />
         </SectionLayout>
+
         <SectionLayout>
           <AuditInformation formikProps={formikProps} />
         </SectionLayout>
+
         <SectionLayout>
           <InternalComments formikProps={formikProps} disabled={disabledSection} />
         </SectionLayout>

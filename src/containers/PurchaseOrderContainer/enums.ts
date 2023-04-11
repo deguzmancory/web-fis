@@ -138,6 +138,10 @@ export enum PO_FORM_KEY {
   PAYMENT_TOTAL = 'paymentTotal',
 
   // Remittance Information
+
+  // Equipment Inventory
+  PAYMENT_EQUIPMENT_INVENTORIES = 'paymentEquipmentInventories',
+  PAYMENT_EQUIPMENT_INVENTORY_MANUAL_FLAG = 'paymentEquipmentInventoryManualFlag',
 }
 
 export enum PO_ADDITIONAL_FORM_CODE {

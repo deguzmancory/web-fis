@@ -33,7 +33,7 @@ export const initialPaymentEquipmentInventory = {
   component: '',
   fabricatedA: '',
   fabricatedB: '',
-  receiveDate: '',
+  receiveDate: null,
 };
 
 export const emptyUpdatePOPaymentFormValue: UpdatePOPaymentFormValue = {

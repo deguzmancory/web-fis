@@ -190,17 +190,15 @@ const SelectCmp: React.FC<Props> = ({
               ...(menuOptionPosition === 'right' && menuRightPositionStyle),
             }),
           }}
-          components={
-            hideDropdownIndicator
+          components={{
+            Control: hideSearchIcon ? ControlNoSearchIcon : Control,
+            ...(hideDropdownIndicator
               ? { DropdownIndicator: () => null, IndicatorSeparator: () => null }
-              : {
-                  DropdownIndicator,
-                  Control: hideSearchIcon ? ControlNoSearchIcon : Control,
-                  ...(optionWithSubLabel && {
-                    Option: Option,
-                  }),
-                }
-          }
+              : DropdownIndicator),
+            ...(optionWithSubLabel && {
+              Option: Option,
+            }),
+          }}
           menuPosition={menuPosition}
           onInputChange={onInputChange}
           {...props}

@@ -376,7 +376,9 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
 
   return (
     <Box>
-      <Typography variant="h5">PAYMENT SUMMARY</Typography>
+      <Typography variant="h5" mb={1}>
+        PAYMENT SUMMARY
+      </Typography>
       {/* Hidden input for scroll to error purpose */}
       <input name={paymentLineItemKey} hidden />
       <CustomTable.Basic bodyList={lineItemRows} />
