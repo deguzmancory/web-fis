@@ -30,12 +30,18 @@ import { initialVendorRegistrationFromData, vendorRegistrationValidationSchema }
 import { getVendorRegistrationPayload } from './helpers';
 import CreateVendorRegistrationTitle from './titleHeader';
 import { VendorRegistrationFormValue, VendorRegistrationFormikProps } from './types';
+import { isEmpty } from 'src/validations';
+import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
+import { DIALOG_TYPES } from 'src/redux/dialog/type';
+import { VENDOR_REGISTRATION_FORM_KEY } from './enums';
 
 const CreateVendorRegistration: React.FC<Props> = ({
   formData,
   isViewOnly = false,
   onSetFormData,
   onSetIsImmutableFormData,
+  onShowDialog,
+  onHideDialog,
 }) => {
   const formRef = React.useRef<FormikProps<VendorRegistrationFormValue>>(null);
 
@@ -63,7 +69,7 @@ const CreateVendorRegistration: React.FC<Props> = ({
     },
   });
 
-  const handleFormSubmit = (values) => {
+  const handleConfirmSubmit = (values) => {
     const payload = getVendorRegistrationPayload({ values, vendorRegistrationId });
 
     updateVendorRegistration(payload, {
@@ -122,6 +128,28 @@ const CreateVendorRegistration: React.FC<Props> = ({
     });
   };
 
+  const handleSubmitForm = (values) => {
+    if (!isEmpty(values.placeholderFileAttachment)) {
+      onShowDialog({
+        type: DIALOG_TYPES.YESNO_DIALOG,
+        data: {
+          title: 'Attention',
+          content: 'Your file wasn’t uploaded. Do you want to continue without uploading the file?',
+          onOk: () => {
+            handleConfirmSubmit(values);
+            setFieldValue(VENDOR_REGISTRATION_FORM_KEY.PLACEHOLDER_FILE_ATTACHMENT, null);
+            onHideDialog();
+          },
+          onCancel: () => {
+            onHideDialog();
+          },
+        },
+      });
+    } else {
+      handleConfirmSubmit(values);
+    }
+  };
+
   const {
     values,
     errors,
@@ -137,7 +165,7 @@ const CreateVendorRegistration: React.FC<Props> = ({
     validationSchema: vendorRegistrationValidationSchema,
     innerRef: formRef,
     enableReinitialize: true,
-    onSubmit: handleFormSubmit,
+    onSubmit: handleSubmitForm,
   });
 
   const _handleScrollToTopError = React.useCallback((errors) => {
@@ -263,6 +291,8 @@ const mapStateToProps = (state: IRootState) => ({
 const mapDispatchToProps = {
   onSetFormData: setFormData,
   onSetIsImmutableFormData: setIsImmutableFormData,
+  onShowDialog: showDialog,
+  onHideDialog: hideDialog,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateVendorRegistration);

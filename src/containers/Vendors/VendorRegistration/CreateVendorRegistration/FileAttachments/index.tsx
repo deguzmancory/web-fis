@@ -20,7 +20,7 @@ const FileAttachments: React.FC<Props> = ({
   disabled = false,
   vendorRegistrationId,
 }) => {
-  const { fileAttachments } = formikProps.values;
+  const { fileAttachments, placeholderFileAttachment } = formikProps.values;
   const { setFieldValue } = formikProps;
   const dispatch = useDispatch();
   const attachments = React.useMemo(() => {
@@ -31,27 +31,24 @@ const FileAttachments: React.FC<Props> = ({
     });
   }, [fileAttachments]);
 
-  const [fileSelected, setFileSelected] = React.useState<{
-    file: File;
-    descriptions: string;
-    size: string;
-  }>(null);
-
   const allowUploadFile = !disabled;
   const allowRemoveFile = !disabled;
   const defaultExpandedAccordion = !isEmpty(attachments);
 
-  const handleFileSelect = React.useCallback((files: File[]) => {
-    if (isEmpty(files)) {
-      Toastify.warning('Please select a file');
-      return;
-    }
-    setFileSelected((prevFile) => ({
-      ...prevFile,
-      file: files[0],
-      size: niceBytes(files[0].size),
-    }));
-  }, []);
+  const handleFileSelect = React.useCallback(
+    (files: File[]) => {
+      if (isEmpty(files)) {
+        Toastify.warning('Please select a file');
+        return;
+      }
+      setFieldValue(VENDOR_REGISTRATION_FORM_KEY.PLACEHOLDER_FILE_ATTACHMENT, {
+        ...placeholderFileAttachment,
+        file: files[0],
+        size: niceBytes(files[0].size),
+      });
+    },
+    [placeholderFileAttachment, setFieldValue]
+  );
 
   const [uploadProgress, setUploadProgress] = React.useState(0);
 
@@ -60,9 +57,9 @@ const FileAttachments: React.FC<Props> = ({
       onUploadSuccess(data, variables, context) {
         addVendorRegistrationAttachment({
           id: vendorRegistrationId,
-          name: fileSelected.file.name,
-          size: fileSelected.size,
-          description: fileSelected.descriptions,
+          name: placeholderFileAttachment.file.name,
+          size: placeholderFileAttachment.size,
+          description: placeholderFileAttachment.descriptions,
           url: trimUrl(variables?.url),
         });
       },
@@ -79,8 +76,7 @@ const FileAttachments: React.FC<Props> = ({
         Toastify.success('Upload file attachment successfully');
 
         setUploadProgress(0);
-        setFileSelected(null);
-
+        setFieldValue(VENDOR_REGISTRATION_FORM_KEY.PLACEHOLDER_FILE_ATTACHMENT, null);
         setFieldValue(VENDOR_REGISTRATION_FORM_KEY.FILE_ATTACHMENTS, [...fileAttachments, data]);
       },
       onError(error) {
@@ -89,12 +85,12 @@ const FileAttachments: React.FC<Props> = ({
     });
 
   const handleUploadFile = React.useCallback(() => {
-    if (!fileSelected) {
+    if (!placeholderFileAttachment) {
       Toastify.warning('Please select a file');
       return;
     }
-    getPresignedUploadUrl(fileSelected.file);
-  }, [fileSelected, getPresignedUploadUrl]);
+    getPresignedUploadUrl(placeholderFileAttachment.file);
+  }, [placeholderFileAttachment, getPresignedUploadUrl]);
 
   const { deleteVendorRegistrationAttachment, isLoading } = useDeleteVendorRegistrationAttachment({
     onError(error) {
@@ -189,12 +185,12 @@ const FileAttachments: React.FC<Props> = ({
   const handleDescriptionInputChange = React.useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       const value = event.target.value || '';
-      setFileSelected((prevFile) => ({
-        ...prevFile,
+      setFieldValue(VENDOR_REGISTRATION_FORM_KEY.PLACEHOLDER_FILE_ATTACHMENT, {
+        ...placeholderFileAttachment,
         descriptions: value,
-      }));
+      });
     },
-    []
+    [placeholderFileAttachment, setFieldValue]
   );
 
   const loading = React.useMemo(() => {
@@ -210,12 +206,12 @@ const FileAttachments: React.FC<Props> = ({
       uploadProgress={uploadProgress}
       allowUploadFile={allowUploadFile}
       allowRemoveFile={allowRemoveFile}
-      fileSelected={fileSelected}
+      fileSelected={placeholderFileAttachment}
       defaultExpandedAccordion={defaultExpandedAccordion}
       onFileSelect={handleFileSelect}
       onDescriptionInputChange={handleDescriptionInputChange}
       onRemoveSelectedFile={() => {
-        setFileSelected(null);
+        setFieldValue(VENDOR_REGISTRATION_FORM_KEY.PLACEHOLDER_FILE_ATTACHMENT, null);
       }}
       onUploadFile={handleUploadFile}
       onGetDecodeUrl={handleGetDecodeUrl}

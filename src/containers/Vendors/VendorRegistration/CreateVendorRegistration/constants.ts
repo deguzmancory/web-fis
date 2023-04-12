@@ -40,10 +40,6 @@ export const initialVendorRegistrationFromData: VendorRegistrationFormValue = {
   // ssn3: '',
   // ein1: '',
   // ein2: '',
-  // uhEmpNumber: '',
-  // rcuhEmpNumber: '',
-  // employedByRcuh: '', //TODO: huy_dang emp number or employed?
-  // employedByUh: '',
   rcuhId: '',
   uhId: '',
   preparedBy: '',
@@ -58,6 +54,7 @@ export const initialVendorRegistrationFromData: VendorRegistrationFormValue = {
 
   //file attachments
   fileAttachments: [],
+  placeholderFileAttachment: null,
 
   // TODO: check usage
   formName: '',

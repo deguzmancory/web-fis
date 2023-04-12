@@ -29,7 +29,7 @@ export interface POPlaceholderFileAttachment {
   file: File;
   descriptions: string;
   size: string;
-  isArtifact: boolean;
+  isArtifact?: boolean;
 }
 
 export interface UpsertPOFormValue

@@ -1,3 +1,4 @@
+import { POPlaceholderFileAttachment } from 'src/containers/PurchaseOrderContainer/types';
 import { VendorRegistrationPayload } from 'src/queries';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 
@@ -10,6 +11,9 @@ export interface VendorRegistrationFormValue
   ssn: string;
   ein: string;
   hasSsnOrEin: boolean;
+
+  //file attachments
+  placeholderFileAttachment: POPlaceholderFileAttachment;
 }
 
 export type VendorRegistrationFormikProps = CommonFormikProps<VendorRegistrationFormValue>;

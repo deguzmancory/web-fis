@@ -32,8 +32,6 @@ const FileAttachments = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPr
     });
   }, [fileAttachments]);
 
-  // const [fileSelected, setFieldValue]PO_FORM_KEY.PLACE_HOLDER_FILE_ATTACHMENT , = React.useState<POPlaceholderFileAttachment>(null);
-
   const [uploadProgress, setUploadProgress] = React.useState(0);
 
   const allowUploadFile = !disabled;
@@ -80,7 +78,6 @@ const FileAttachments = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPr
 
       setUploadProgress(0);
       setFieldValue(PO_FORM_KEY.PLACEHOLDER_FILE_ATTACHMENT, null);
-
       setFieldValue(PO_FORM_KEY.FILE_ATTACHMENTS, [...fileAttachments, data]);
     },
     onError(error) {

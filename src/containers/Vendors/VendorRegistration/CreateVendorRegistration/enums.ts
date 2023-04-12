@@ -43,6 +43,7 @@ export enum VENDOR_REGISTRATION_FORM_KEY {
 
   //file attachments
   FILE_ATTACHMENTS = 'fileAttachments',
+  PLACEHOLDER_FILE_ATTACHMENT = 'placeholderFileAttachment',
 
   // TODO: check usage
   FORM_NAME = 'formName',
