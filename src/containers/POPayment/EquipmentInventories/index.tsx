@@ -15,14 +15,14 @@ import {
   Accordion,
   AnimatedTabPanel,
   Button,
+  Checkbox,
   DatePicker,
+  Element,
   Input,
   InputPhone,
   RadioButton,
   TabsBar,
   TextareaAutosize,
-  Checkbox,
-  Element,
 } from 'src/components/common';
 import {
   UpdatePOPaymentFormValue,
@@ -31,11 +31,10 @@ import {
 import { PO_FORM_KEY } from 'src/containers/PurchaseOrderContainer/enums';
 import { PO_MODE } from 'src/queries';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
-import { initialPaymentEquipmentInventory } from '../helpers';
-import { PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY } from '../enums';
-import { ownershipOptions } from './helpers';
 import { isEmpty } from 'src/validations';
-import { isArray } from 'lodash';
+import { PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY } from '../enums';
+import { initialPaymentEquipmentInventory } from '../helpers';
+import { ownershipOptions } from './helpers';
 
 const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const [currentTabIndex, setCurrentTabIndex] = React.useState<number>(0);
@@ -63,7 +62,7 @@ const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }
   React.useEffect(() => {
     if (
       !isEmpty(errors.paymentEquipmentInventories) &&
-      isArray(errors.paymentEquipmentInventories)
+      Array.isArray(errors.paymentEquipmentInventories)
     ) {
       const firstTabIndexHasErrors = errors.paymentEquipmentInventories.findIndex(
         (inventory) => !!inventory
