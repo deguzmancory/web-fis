@@ -54,8 +54,8 @@ const TableCodes: React.FC<Props> = ({ rows, type, readonly, onDeleteCode }) => 
                 <StyledTableRow key={`${row.code}-${row.codeType}-${index}`}>
                   <StyledTableCell
                     sx={{
-                      minWidth: 100,
-                      maxWidth: 100,
+                      minWidth: readonly ? 165 : 100,
+                      maxWidth: readonly ? 165 : 100,
                     }}
                     className={cn({ 'marquee-left': codeInfo.length > 10 })}
                   >
