@@ -13,15 +13,13 @@ import ErrorWrapperPO from 'src/containers/PurchaseOrderContainer/ErrorWrapper/i
 import GeneralInfo from 'src/containers/PurchaseOrderContainer/GeneralInfo';
 import { SUBMITTED_PO_QUERY } from 'src/containers/PurchaseOrderContainer/enums';
 import HeaderOfSection from 'src/containers/PurchaseOrderContainer/headerOfSection';
-import {
-  getCurrentPOEditMode,
-  getPOFormValidationSchema,
-} from 'src/containers/PurchaseOrderContainer/helpers';
+import { getCurrentPOEditMode } from 'src/containers/PurchaseOrderContainer/helpers';
 import SectionLayout from 'src/containers/shared/SectionLayout';
 import {
   PO_ACTION,
   PO_DOCUMENT_TYPE,
   useGetPOPaymentDetail,
+  useGetPOPmtRemainingBalance,
   useProfile,
   useUpdatePOPayment,
 } from 'src/queries';
@@ -41,15 +39,19 @@ import FileAttachments from '../PurchaseOrderContainer/FileAttachments';
 import InternalComments from '../PurchaseOrderContainer/InternalComments';
 import PurchaseInfo from '../PurchaseOrderContainer/PurchaseInfo';
 import TableLineItems from '../PurchaseOrderContainer/TableLineItems';
+import EquipmentInventories from './EquipmentInventories';
 import PaymentAuthorizedBy from './PaymentAuthorizedBy';
+import TablePaymentRemainingBalanceLineItems from './PaymentBalanceLineItems';
 import PaymentGeneralInfo from './PaymentGeneralInfo';
 import PaymentLineItems from './PaymentLineItems';
 import ReceiptAndPaymentType from './ReceiptAndPaymentType';
 import BreadcrumbsPOPayment from './breadcrumbs';
-import { emptyUpdatePOPaymentFormValue, getPOPaymentFormValueFromResponse } from './helpers';
+import {
+  emptyUpdatePOPaymentFormValue,
+  getPOPaymentFormValidationSchema,
+  getPOPaymentFormValueFromResponse,
+} from './helpers';
 import { UpdatePOPaymentFormValue, UpdatePOPaymentFormikProps } from './types';
-import TablePaymentRemainingBalanceLineItems from './PaymentBalanceLineItems';
-import EquipmentInventories from './EquipmentInventories';
 
 const POPayment: React.FC<Props> = ({
   formData,
@@ -69,13 +71,21 @@ const POPayment: React.FC<Props> = ({
   const disabledSection = isViewOnlyPOMode(currentPOMode) || isFinalPOMode(currentPOMode);
 
   const { profile } = useProfile();
+  const { onGetRemainingBalance } = useGetPOPmtRemainingBalance({
+    onError: (error: Error) => handleShowErrorMsg(error),
+    id: id,
+  });
   const { onGetPOPaymentById, handleInvalidatePOPaymentDetail } = useGetPOPaymentDetail({
     id: id,
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
+      const { data: remainingBalanceResponse } = await onGetRemainingBalance();
+
       const formValue: UpdatePOPaymentFormValue = getPOPaymentFormValueFromResponse({
         profile,
-        response: data,
+        remainingBalanceResponse,
+        poPaymentResponse: data,
       });
+
       onSetFormData<UpdatePOPaymentFormValue>(formValue);
     },
     onError: (error) => {
@@ -176,7 +186,7 @@ const POPayment: React.FC<Props> = ({
   );
 
   const validationSchema = React.useMemo(
-    () => getPOFormValidationSchema({ action: formAction }),
+    () => getPOPaymentFormValidationSchema({ action: formAction }),
     [formAction]
   );
 
@@ -190,6 +200,7 @@ const POPayment: React.FC<Props> = ({
     errors,
     touched,
     dirty: isFormDirty,
+    submitCount,
     setFieldValue,
     getFieldProps,
     setFieldTouched,
@@ -207,6 +218,7 @@ const POPayment: React.FC<Props> = ({
     errors,
     touched,
     dirty: isFormDirty,
+    submitCount,
     setFieldValue,
     getFieldProps,
     setFieldTouched,
@@ -291,7 +303,7 @@ const POPayment: React.FC<Props> = ({
           </Grid>
         </Grid>
 
-        <SectionLayout>
+        <SectionLayout sx={{ p: 0, border: 'none' }}>
           <EquipmentInventories
             formikProps={formikProps}
             disabled={disabledSection}
@@ -299,7 +311,7 @@ const POPayment: React.FC<Props> = ({
           />
         </SectionLayout>
 
-        <SectionLayout>
+        <SectionLayout sx={{ p: 0, border: 'none' }}>
           <FileAttachments
             formikProps={formikProps}
             disabled={isViewOnlyPOMode(currentPOMode)}
@@ -307,7 +319,7 @@ const POPayment: React.FC<Props> = ({
           />
         </SectionLayout>
 
-        <SectionLayout>
+        <SectionLayout sx={{ p: 0, border: 'none' }}>
           <AuditInformation formikProps={formikProps} />
         </SectionLayout>
 

@@ -1,4 +1,4 @@
-import { MyProfile, PO_PAYMENT_TYPE, POPaymentResponse } from 'src/queries';
+import { MyProfile, POPaymentRemainingBalance, POPaymentResponse } from 'src/queries';
 import { DateFormat, getDate, getDateDisplay, localTimeToHawaii } from 'src/utils';
 import { isEmpty } from 'src/validations';
 import { UpdatePOPaymentFormValue } from '../types';
@@ -6,59 +6,61 @@ import { initialPaymentEquipmentInventory } from './constants';
 import { getPaymentLineItemFormValueByPaymentType } from './utils';
 
 export const getPOPaymentFormValueFromResponse = ({
-  response,
+  poPaymentResponse,
+  remainingBalanceResponse,
   profile,
 }: {
-  response: POPaymentResponse;
+  poPaymentResponse: POPaymentResponse;
+  remainingBalanceResponse: POPaymentRemainingBalance[];
   profile: MyProfile;
 }): UpdatePOPaymentFormValue => {
-  const responsePaymentType = response.paymentType || PO_PAYMENT_TYPE.PARTIAL_PAYMENT;
-
-  const transformedLineItems = response.lineItems.map((lineItem) => ({
+  const transformedLineItems = poPaymentResponse.lineItems.map((lineItem) => ({
     ...lineItem,
     unitPrice: lineItem.unitPrice ? Number(lineItem.unitPrice || 0) : null,
     ext: Number(lineItem.unitPrice || 0),
   }));
 
-  const transformedPaymentEquipmentInventories = !isEmpty(response.paymentEquipmentInventories)
-    ? response.paymentEquipmentInventories.map((equipmentInventory) => ({
+  const transformedPaymentEquipmentInventories = !isEmpty(
+    poPaymentResponse.paymentEquipmentInventories
+  )
+    ? poPaymentResponse.paymentEquipmentInventories.map((equipmentInventory) => ({
         ...equipmentInventory,
         receiveDate: getDate(equipmentInventory.receiveDate),
       }))
     : [initialPaymentEquipmentInventory];
 
   return {
-    ...response,
+    ...poPaymentResponse,
     action: null,
     placeholderFileAttachment: null,
 
-    paymentLoginName: response.paymentLoginName || profile.username,
-    paymentDate: response.paymentDate
-      ? getDateDisplay(response.paymentDate)
+    paymentLoginName: poPaymentResponse.paymentLoginName || profile.username,
+    paymentDate: poPaymentResponse.paymentDate
+      ? getDateDisplay(poPaymentResponse.paymentDate)
       : localTimeToHawaii(new Date(), DateFormat),
-    paymentRequestNumber: response.paymentRequestNumber || 'To be assigned',
-    paymentDirectInquiriesTo: response.paymentDirectInquiriesTo || '',
-    paymentPhoneNumber: response.paymentPhoneNumber || '',
-    paymentFaStaffReviewer: response.paymentFaStaffReviewer || '',
+    paymentRequestNumber: poPaymentResponse.paymentRequestNumber || 'To be assigned',
+    paymentDirectInquiriesTo: poPaymentResponse.paymentDirectInquiriesTo || '',
+    paymentPhoneNumber: poPaymentResponse.paymentPhoneNumber || '',
+    paymentFaStaffReviewer: poPaymentResponse.paymentFaStaffReviewer || '',
 
-    date: getDateDisplay(response.date),
-    taxTotal: Number(response.taxTotal || 0),
-    subtotal: Number(response.subtotal || 0),
-    taxRate: Number(response.taxRate || 0),
-    total: Number(response.total || 0),
-    shippingTotal: Number(response.shippingTotal || 0),
+    date: getDateDisplay(poPaymentResponse.date),
+    taxTotal: Number(poPaymentResponse.taxTotal || 0),
+    subtotal: Number(poPaymentResponse.subtotal || 0),
+    taxRate: Number(poPaymentResponse.taxRate || 0),
+    total: Number(poPaymentResponse.total || 0),
+    shippingTotal: Number(poPaymentResponse.shippingTotal || 0),
     lineItems: transformedLineItems,
 
-    paymentType: responsePaymentType,
-
     partialOrFinalPaymentLineItem: getPaymentLineItemFormValueByPaymentType({
-      response,
+      response: poPaymentResponse,
       isAdvancePayment: false,
     }),
     advancePaymentLineItem: getPaymentLineItemFormValueByPaymentType({
-      response,
+      response: poPaymentResponse,
       isAdvancePayment: true,
     }),
+    paymentTotal: Number(poPaymentResponse.paymentTotal || 0),
+    remainingBalance: 100, //TODO: Tuyen Tran replace with remainingBalanceResponse
 
     paymentEquipmentInventories: transformedPaymentEquipmentInventories,
   };

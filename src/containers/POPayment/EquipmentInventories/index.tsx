@@ -22,6 +22,7 @@ import {
   TabsBar,
   TextareaAutosize,
   Checkbox,
+  Element,
 } from 'src/components/common';
 import {
   UpdatePOPaymentFormValue,
@@ -33,12 +34,21 @@ import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { initialPaymentEquipmentInventory } from '../helpers';
 import { PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY } from '../enums';
 import { ownershipOptions } from './helpers';
+import { isEmpty } from 'src/validations';
+import { isArray } from 'lodash';
 
 const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }) => {
   const [currentTabIndex, setCurrentTabIndex] = React.useState<number>(0);
 
-  const { values, errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } =
-    formikProps;
+  const {
+    values,
+    errors,
+    touched,
+    submitCount,
+    getUncontrolledFieldProps,
+    getFieldProps,
+    setFieldValue,
+  } = formikProps;
 
   const equipmentInventoriesValue = React.useMemo(
     () => values.paymentEquipmentInventories || [],
@@ -49,6 +59,19 @@ const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }
 
   const allowRemoveItem = equipmentInventoriesValue.length > 1;
   const showNextPrevButtons = equipmentInventoriesValue.length > 1;
+
+  React.useEffect(() => {
+    if (
+      !isEmpty(errors.paymentEquipmentInventories) &&
+      isArray(errors.paymentEquipmentInventories)
+    ) {
+      const firstTabIndexHasErrors = errors.paymentEquipmentInventories.findIndex(
+        (inventory) => !!inventory
+      );
+      setCurrentTabIndex(firstTabIndexHasErrors);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [submitCount]);
 
   const _getErrorMessage = (fieldName) => {
     return getErrorMessage(fieldName, { touched, errors });
@@ -356,19 +379,24 @@ const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }
               </Typography>
             </Grid>
             <Grid item xs={12} md={6} px={2}>
-              <RadioButton
-                label={<b>Payment Type:</b>}
-                columns={1}
-                options={ownershipOptions}
-                {...getFieldProps(
-                  `${currentEquipmentInventoriesPrefix}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.OWNERSHIP}`
-                )}
+              <Element
                 errorMessage={_getErrorMessage(
                   `${currentEquipmentInventoriesPrefix}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.OWNERSHIP}`
                 )}
-                onChange={setFieldValue}
-                disabled={disabled}
-              />
+                showErrorBorder
+              >
+                <RadioButton
+                  label={<b>Payment Type:</b>}
+                  columns={1}
+                  options={ownershipOptions}
+                  {...getFieldProps(
+                    `${currentEquipmentInventoriesPrefix}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.OWNERSHIP}`
+                  )}
+                  onChange={setFieldValue}
+                  showClearButton
+                  disabled={disabled}
+                />
+              </Element>
             </Grid>
 
             <Grid item xs={12}>
@@ -543,6 +571,7 @@ export default React.memo(EquipmentInventories, (prevProps, nextProps) => {
   return (
     prevProps.disabled === nextProps.disabled &&
     prevProps.currentPOMode === nextProps.currentPOMode &&
+    prevFormikProps.submitCount === nextFormikProps.submitCount &&
     isEqualPrevAndNextFormikValues<UpdatePOPaymentFormValue>({
       prevFormikProps,
       nextFormikProps,

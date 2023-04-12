@@ -4,6 +4,7 @@ import CustomTable from 'src/components/CustomTable';
 import { BodyBasicRows, CellType } from 'src/components/CustomTable/types';
 import {
   DatePicker,
+  Element,
   EllipsisTooltipInput,
   EllipsisTooltipInputCurrency,
   Input,
@@ -40,6 +41,16 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
     [values.projectNumber]
   );
 
+  // update total payment when payment type change
+  React.useEffect(() => {
+    const updatedPaymentTotal = paymentLineItemsValue.reduce((total, currentLineItem) => {
+      return total + currentLineItem.amount;
+    }, 0);
+
+    setFieldValue(PO_FORM_KEY.PAYMENT_TOTAL, updatedPaymentTotal);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAdvancePayment]);
+
   const _getErrorMessage = (fieldName) => {
     return getErrorMessage(fieldName, { touched, errors });
   };
@@ -66,25 +77,27 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
     isVariousProjectNumber,
     paymentLineItemKey,
     paymentLineItemsValue,
-    setFieldValue,
     values.projectNumber,
+    setFieldValue,
   ]);
 
   const updatePaymentTotal = React.useCallback(
     ({ lineItemRow, index }: { lineItemRow: POPaymentLineItem; index: number }) => {
-      let updatedPaymentTotal = Number(values.paymentTotal || 0);
       const currentLineItemAmount = Number(lineItemRow.amount || 0);
 
       // calculate subtotal
-      updatedPaymentTotal = paymentLineItemsValue.reduce((total, currentLineItem, currentIndex) => {
-        if (index === currentIndex) return total + currentLineItemAmount;
+      const updatedPaymentTotal = paymentLineItemsValue.reduce(
+        (total, currentLineItem, currentIndex) => {
+          if (index === currentIndex) return total + currentLineItemAmount;
 
-        return total + currentLineItem.amount;
-      }, 0);
+          return total + currentLineItem.amount;
+        },
+        0
+      );
 
       setFieldValue(PO_FORM_KEY.PAYMENT_TOTAL, updatedPaymentTotal);
     },
-    [setFieldValue, paymentLineItemsValue, values]
+    [setFieldValue, paymentLineItemsValue]
   );
 
   const handleAmountChange = React.useCallback(
@@ -168,6 +181,7 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
       style: {
         verticalAlign: 'top',
       },
+      errorMessage: _getErrorMessage(`${prefixLineItem}.${PO_PAYMENT_LINE_ITEM_KEY.AMOUNT}`),
       columns: [
         {
           label: 'Line',
@@ -246,7 +260,7 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
         },
         {
           type: CellType.INPUT,
-          label: 'Budget Category',
+          label: 'Budget Category *',
           content: (
             <EllipsisTooltipInput
               {...getFieldProps(`${prefixLineItem}.${PO_PAYMENT_LINE_ITEM_KEY.BUDGET_CATEGORY}`)}
@@ -358,10 +372,10 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
               textAlign="right"
               lengthShowTooltip={8}
               disabled={disabled}
-              style={{ width: 115, padding: '6px' }}
+              style={{ width: 112, padding: '6px' }}
             />
           ),
-          width: 115,
+          width: 112,
           headerStyle: {
             paddingRight: 0,
             paddingLeft: '6px',
@@ -374,14 +388,25 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
     };
   });
 
+  // currently can't using partialOrFinalPaymentLineItem error because it return string or object => can't pass into jsx
+  // defined table error manually
+  const tableError =
+    !isAdvancePayment &&
+    touched.partialOrFinalPaymentLineItem &&
+    errors.partialOrFinalPaymentLineItem &&
+    paymentLineItemsValue.length === 1
+      ? 'Payment section cannot be left blank.'
+      : '';
+
   return (
     <Box>
       <Typography variant="h5" mb={1}>
         PAYMENT SUMMARY
       </Typography>
+
       {/* Hidden input for scroll to error purpose */}
       <input name={paymentLineItemKey} hidden />
-      <CustomTable.Basic bodyList={lineItemRows} />
+      <CustomTable.Basic bodyList={lineItemRows} errorMessage={tableError} />
 
       <Grid container mt={2}>
         <Grid item xs={8} className="justify-flex-start">
@@ -402,6 +427,10 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
             lengthShowTooltip={8}
           />
         </Grid>
+
+        {/* Hidden input for scroll to error purpose */}
+        <input name={PO_FORM_KEY.PAYMENT_TOTAL} hidden />
+        <Element errorMessage={_getErrorMessage(PO_FORM_KEY.PAYMENT_TOTAL)}>{null}</Element>
       </Grid>
     </Box>
   );
@@ -423,6 +452,7 @@ export default React.memo(TablePaymentLineItems, (prevProps, nextProps) => {
     PO_FORM_KEY.PROJECT_NUMBER,
     PO_FORM_KEY.PAYMENT_TOTAL,
     PO_FORM_KEY.PAYMENT_TYPE,
+    PO_FORM_KEY.REMAINING_BALANCE,
   ];
 
   return (

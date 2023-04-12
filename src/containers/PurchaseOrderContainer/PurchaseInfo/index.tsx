@@ -2,6 +2,7 @@ import { Box, Divider, Grid, Typography } from '@mui/material';
 import React from 'react';
 import {
   Checkbox,
+  Element,
   EllipsisTooltipInput,
   EllipsisTooltipInputCurrency,
   Input,
@@ -120,31 +121,32 @@ const PurchaseInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps
           />
         </Box>
         <Box mb={2}>
-          <RadioButton
-            columns={1}
-            options={[
-              ...fedAttachmentOptions,
-              {
-                label: FED_ATTACHMENT_VALUE.UH_SUBAWARD,
-                value: FED_ATTACHMENT_VALUE.UH_SUBAWARD,
-                subLabel: (
-                  <Box width={'30%'} ml={2}>
-                    <Input
-                      maxLength={10}
-                      {...getUncontrolledFieldProps(PO_FORM_KEY.UH_SUBAWARD_NUMBER)}
-                      errorMessage={_getErrorMessage(PO_FORM_KEY.UH_SUBAWARD_NUMBER)}
-                      disabled={disabled}
-                    />
-                  </Box>
-                ),
-              },
-            ]}
-            {...getFieldProps(PO_FORM_KEY.FED_ATTACHMENT)}
-            errorMessage={_getErrorMessage(PO_FORM_KEY.FED_ATTACHMENT)}
-            onChange={setFieldValue}
-            itemClassName="mb-except-last-8"
-            disabled={disabled}
-          />
+          <Element errorMessage={_getErrorMessage(PO_FORM_KEY.FED_ATTACHMENT)} showErrorBorder>
+            <RadioButton
+              columns={1}
+              options={[
+                ...fedAttachmentOptions,
+                {
+                  label: FED_ATTACHMENT_VALUE.UH_SUBAWARD,
+                  value: FED_ATTACHMENT_VALUE.UH_SUBAWARD,
+                  subLabel: (
+                    <Box width={'30%'} ml={2}>
+                      <Input
+                        maxLength={10}
+                        {...getUncontrolledFieldProps(PO_FORM_KEY.UH_SUBAWARD_NUMBER)}
+                        errorMessage={_getErrorMessage(PO_FORM_KEY.UH_SUBAWARD_NUMBER)}
+                        disabled={disabled}
+                      />
+                    </Box>
+                  ),
+                },
+              ]}
+              {...getFieldProps(PO_FORM_KEY.FED_ATTACHMENT)}
+              onChange={setFieldValue}
+              itemClassName="mb-except-last-8"
+              disabled={disabled}
+            />
+          </Element>
         </Box>
       </Grid>
       <Grid item xs={12} md={5}>

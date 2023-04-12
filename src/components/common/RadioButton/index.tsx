@@ -2,7 +2,7 @@ import cn from 'classnames';
 import React, { useRef } from 'react';
 import shortid from 'shortid';
 import { BOOLEAN } from 'src/appConfig/constants';
-import { View } from '..';
+import { Button, View } from '..';
 import Element from '../Element';
 import './styles.scss';
 
@@ -50,6 +50,7 @@ const Group: React.FC<RadioGroupProps> = ({
   isTrueFalseOptions = false,
   itemStyle,
   itemClassName,
+  showClearButton,
   onBlur,
   onChange = () => {},
   ...props
@@ -65,12 +66,32 @@ const Group: React.FC<RadioGroupProps> = ({
     onBlur && onBlur(name, true);
   };
 
+  const handleClear = () => {
+    onChange && onChange(name, null);
+  };
+
   return (
     <Element
       errorMessage={errorMessage}
       label={label}
       subLabel={subLabel}
       className={containerClassName}
+      subContentLabel={
+        showClearButton &&
+        !!value && (
+          <Button
+            variant="link"
+            style={{
+              padding: '0 4px',
+              height: 20,
+              fontSize: 12,
+            }}
+            onClick={handleClear}
+          >
+            Clear
+          </Button>
+        )
+      }
       required={required}
     >
       <View isRow align="center" className="pb-8">
@@ -112,6 +133,8 @@ type RadioGroupProps = {
   isTrueFalseOptions?: boolean;
   itemStyle?: React.CSSProperties;
   itemClassName?: string;
+  showClearButton?: boolean;
+  handleClear?: (name: string, value: any) => void;
   onChange?: (name: string, value: any) => void;
   onBlur?: (name: string, touched: boolean) => void;
 };

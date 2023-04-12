@@ -9,17 +9,29 @@ import { EllipsisTooltipInputCurrency, Input } from 'src/components/common';
 import { mokupDataRes } from './mokupDataRes';
 import TypographyLink from 'src/components/TypographyLink';
 import { useParams } from 'react-router-dom';
+import { PO_FORM_KEY } from 'src/containers/PurchaseOrderContainer/enums';
 
 const TablePaymentRemainingBalanceLineItems: React.FC<Props> = ({
   formikProps,
   disabled = false,
 }) => {
-  const { values } = formikProps;
   const { id } = useParams<{ id: string }>();
-  const { handleInvalidateRemainingBalance } = useGetPOPmtRemainingBalance({
-    onError: (error: Error) => handleShowErrorMsg(error),
+
+  const { values, setFieldValue } = formikProps;
+
+  const { handleInvalidateRemainingBalance, onGetRemainingBalance } = useGetPOPmtRemainingBalance({
     id: id,
   });
+
+  const handleRefreshRemainingBalance = async () => {
+    handleInvalidateRemainingBalance();
+    try {
+      const { data: remainingBalanceData } = await onGetRemainingBalance();
+      setFieldValue(PO_FORM_KEY.REMAINING_BALANCE, remainingBalanceData?.[0]?.amount || '200'); //TODO: Tuyen Tran remove hard code
+    } catch (error) {
+      handleShowErrorMsg(error);
+    }
+  };
 
   // TODO: Tuyen Tran replace mockup data
   const lineItemRows: BodyBasicRows = mokupDataRes?.map((lineItem, _) => {
@@ -142,11 +154,7 @@ const TablePaymentRemainingBalanceLineItems: React.FC<Props> = ({
 
       <Grid container mt={2}>
         <Grid item xs={8} className="justify-flex-start">
-          <TypographyLink
-            variant="body2"
-            fontWeight="bold"
-            onClick={() => handleInvalidateRemainingBalance()}
-          >
+          <TypographyLink variant="body2" fontWeight="bold" onClick={handleRefreshRemainingBalance}>
             Refresh Remaining Balance
           </TypographyLink>
         </Grid>
@@ -158,7 +166,7 @@ const TablePaymentRemainingBalanceLineItems: React.FC<Props> = ({
         <Grid item xs={2.5}>
           <EllipsisTooltipInputCurrency
             name=""
-            value="11111"
+            value={values.remainingBalance}
             textAlign="right"
             disabled
             lengthShowTooltip={8}

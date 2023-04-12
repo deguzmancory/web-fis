@@ -74,6 +74,8 @@ const CreateVendorRegistration: React.FC<Props> = ({
 
     updateVendorRegistration(payload, {
       onSuccess: async ({ data }) => {
+        Toastify.success('Vendor created successfully.');
+
         if (redirectSection === VENDOR_REGISTRATION_NAVIGATE_FROM.PO) {
           const vendorResponse = {
             name: data.line1,

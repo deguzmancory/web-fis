@@ -12,11 +12,15 @@ export interface UpdatePOPaymentFormValue
   extends POGeneralInfo,
     POPurchaseInfo,
     Omit<UpdatePOPaymentPayload, 'paymentLineItems'> {
+  // po line items
   lineItems: POLineItem[];
 
   //payment summary
   advancePaymentLineItem: POPaymentLineItem[];
   partialOrFinalPaymentLineItem: POPaymentLineItem[];
+
+  //po remaining balance
+  remainingBalance?: number;
 
   //attachments
   placeholderFileAttachment: POPlaceholderFileAttachment;

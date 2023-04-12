@@ -79,10 +79,14 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   );
   const disabledSection = isViewOnlyPOMode(currentPOMode) || isFinalPOMode(currentPOMode);
   const { profile } = useProfile();
+
   const { onGetPOById, handleInvalidatePODetail } = useGetPODetail({
     id: id,
     onSuccess: (data) => {
-      const formValue: UpsertPOFormValue = getPOFormValueFromResponse({ response: data, profile });
+      const formValue: UpsertPOFormValue = getPOFormValueFromResponse({
+        response: data,
+        profile,
+      });
 
       onSetFormData<UpsertPOFormValue>(formValue);
     },
@@ -378,7 +382,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
                   <AuthorizedBy formikProps={formikProps} disabled={disabledSection} />
                 </SectionLayout>
                 {isEditPOMode && (
-                  <SectionLayout>
+                  <SectionLayout sx={{ p: 0, border: 'none' }}>
                     <FileAttachments
                       formikProps={formikProps}
                       disabled={isViewOnlyPOMode(currentPOMode)}
@@ -387,7 +391,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
                   </SectionLayout>
                 )}
                 {isEditPOMode && (
-                  <SectionLayout>
+                  <SectionLayout sx={{ p: 0, border: 'none' }}>
                     <AuditInformation formikProps={formikProps} />
                   </SectionLayout>
                 )}

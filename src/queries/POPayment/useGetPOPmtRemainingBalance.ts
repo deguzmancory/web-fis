@@ -30,7 +30,7 @@ export function useGetPOPmtRemainingBalance(
         );
       },
       notifyOnChangeProps: ['data', 'isFetching'],
-      keepPreviousData: true,
+      enabled: false,
       ...options,
     }
   );

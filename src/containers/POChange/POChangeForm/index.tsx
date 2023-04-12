@@ -294,7 +294,7 @@ const POChangeForm: React.FC<Props> = ({
         </SectionLayout>
 
         {!isInChangeTotalCancellationForm && (
-          <SectionLayout>
+          <SectionLayout sx={{ p: 0, border: 'none' }}>
             <Accordion title="Original Order">
               <TableLineItemsPOChange
                 formikProps={formikProps}
@@ -354,7 +354,7 @@ const POChangeForm: React.FC<Props> = ({
           <AuthorizedBy formikProps={formikProps} disabled={disabledSection} />
         </SectionLayout>
 
-        <SectionLayout>
+        <SectionLayout sx={{ p: 0, border: 'none' }}>
           <FileAttachments
             formikProps={formikProps}
             disabled={isViewOnlyPOMode(currentPOMode)}
@@ -362,7 +362,7 @@ const POChangeForm: React.FC<Props> = ({
           />
         </SectionLayout>
 
-        <SectionLayout>
+        <SectionLayout sx={{ p: 0, border: 'none' }}>
           <AuditInformation formikProps={formikProps} />
         </SectionLayout>
 

@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import React from 'react';
-import { RadioButton, TextareaAutosize } from 'src/components/common';
+import { Element, RadioButton, TextareaAutosize } from 'src/components/common';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import {
   UpdatePOPaymentFormValue,
@@ -51,17 +51,18 @@ const ReceiptAndPaymentType: React.FC<Props> = ({ formikProps, disabled = false 
         minRows={2}
         className="mb-4"
       />
-      <RadioButton
-        label={<b>Payment Type:</b>}
-        columns={1}
-        required
-        options={paymentReceiptAcknowledgementOptions}
-        {...getFieldProps(PO_FORM_KEY.PAYMENT_TYPE)}
-        errorMessage={_getErrorMessage(PO_FORM_KEY.PAYMENT_TYPE)}
-        onChange={setFieldValue}
-        itemClassName="mb-except-last-8"
-        disabled={disabled}
-      />
+      <Element errorMessage={_getErrorMessage(PO_FORM_KEY.PAYMENT_TYPE)} showErrorBorder>
+        <RadioButton
+          label={<b>Payment Type:</b>}
+          columns={1}
+          required
+          options={paymentReceiptAcknowledgementOptions}
+          {...getFieldProps(PO_FORM_KEY.PAYMENT_TYPE)}
+          onChange={setFieldValue}
+          itemClassName="mb-except-last-8"
+          disabled={disabled}
+        />
+      </Element>
     </Box>
   );
 };

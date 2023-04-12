@@ -28,6 +28,7 @@ export const getPaymentLineItemFormValueByPaymentType = ({
       return paymentLineItems.map((lineItem) => ({
         ...lineItem,
         serviceDate: getDate(lineItem.serviceDate),
+        amount: Number(lineItem.amount || 0),
       }));
     } else {
       return [
@@ -52,6 +53,7 @@ export const getPaymentLineItemFormValueByPaymentType = ({
       .map((lineItem) => ({
         ...lineItem,
         serviceDate: getDate(lineItem.serviceDate),
+        amount: Number(lineItem.amount || 0),
       }))
       .concat(initialPaymentLineItem);
   }

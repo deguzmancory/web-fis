@@ -23,6 +23,7 @@ export type CommonFormikProps<T> = {
   ) => any;
   handleSubmit?: (e?: React.FormEvent<HTMLFormElement>) => void;
   validateForm?: (values?: T) => Promise<FormikErrors<T>>;
+  submitCount?: number;
 };
 
 export type CommonPlacement =

@@ -138,6 +138,9 @@ export enum PO_FORM_KEY {
   PARTIAL_OR_FINAL_PAYMENT_LINE_ITEMS = 'partialOrFinalPaymentLineItem',
   PAYMENT_TOTAL = 'paymentTotal',
 
+  // Payment Remaining Balance
+  REMAINING_BALANCE = 'remainingBalance',
+
   // Remittance Information
 
   // Equipment Inventory

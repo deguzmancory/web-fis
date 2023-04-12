@@ -22,6 +22,7 @@ const Element: React.FC<Props> = ({
   infoTooltipPlacement = 'right',
   infoToolTipWithArrow = true,
   showErrorBorder = false,
+  subContentLabel,
   ...props
 }) => {
   const hasError = !isEmpty(errorMessage);
@@ -47,6 +48,7 @@ const Element: React.FC<Props> = ({
           >
             {label} {required && <span className="has-text-danger fw-bold text-is-16">*</span>}
             {extraRequired && <span className="has-text-danger fw-bold text-is-16">**</span>}
+            {subContentLabel}
             {infoTooltipMessage && (
               <span>
                 <Tooltip
@@ -97,6 +99,7 @@ type Props = ViewProps & {
   required?: boolean;
   extraRequired?: boolean;
   infoTooltipMessage?: string;
+  subContentLabel?: React.ReactNode;
   infoTooltipPlacement?:
     | 'bottom-end'
     | 'bottom-start'
