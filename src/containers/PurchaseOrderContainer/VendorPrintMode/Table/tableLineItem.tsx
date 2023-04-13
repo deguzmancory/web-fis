@@ -136,8 +136,14 @@ const TableLineItem: React.FC<Props> = ({ formData }) => {
           ),
           subContent: (
             <>
+              {formData?.attachment31 === true && (
+                <Typography variant="body2">
+                  - Attachment 31, General Terms and Conditions Applicable to All Purchase Orders
+                </Typography>
+              )}
               <Typography variant="body2">- {formData?.fedAttachment}</Typography>
-              <Typography variant="body2">
+
+              <Typography variant="body2" mt={1}>
                 Acceptance of this Purchase Order by Vendor, whether by written confirmation,
                 shipping or otherwise initiating an action to provide goods or services ordered, is
                 an acknowledgement and acceptance by Vendor that the attached team and condition are
