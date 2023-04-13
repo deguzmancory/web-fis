@@ -25,3 +25,29 @@ export enum PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY {
   FABRICATED_B = 'fabricatedB',
   RECEIVE_DATE = 'receiveDate',
 }
+
+export enum PO_PAYMENT_REMITTANCE_LINE_ITEM {
+  REFERENCE_NUMBER = 'referenceNumber',
+  CUSTOMER_ACCOUNT_COMMENT = 'customerAccountComment',
+  AMOUNT = 'amount',
+}
+
+export enum PO_PAYMENT_REMITTANCE_KEY {
+  QUESTION_NAME = 'questionName',
+  QUESTION_PHONE_NUMBER = 'questionPhoneNumber',
+  REMITTANCE_ATTENTION = 'remittanceAttention',
+  REMITTANCE_CITY = 'remittanceCity',
+  REMITTANCE_STATE = 'remittanceState',
+  REMITTANCE_STREET = 'remittanceStreet',
+  REMITTANCE_TOTAL = 'remittanceTotal',
+  RETURN_REMITTANCE_FLAG = 'returnRemittanceFlag',
+  ZIP_CODE = 'zipCode',
+  ZIP_CODE_PLUS4 = 'zipCodePlus4',
+}
+
+export enum PO_PAYMENT_VENDOR_TYPE {
+  TBD = 'TBD',
+  CARD = 'Card',
+  CHECK = 'Check',
+  ACH = 'ACH',
+}

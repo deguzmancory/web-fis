@@ -124,6 +124,10 @@ export enum PO_FORM_KEY {
   PAYMENT_DIRECT_INQUIRIES_TO = 'paymentDirectInquiriesTo',
   PAYMENT_PHONE_NUMBER = 'paymentPhoneNumber',
   PAYMENT_FA_STAFF_REVIEWER = 'paymentFaStaffReviewer',
+  PAYMENT_REMITTANCE = 'remittance',
+
+  // Line items
+  REMITTANCE_LINE_ITEMS = 'remittanceLineItems',
 
   // Receipt Acknowledgment and Payment Authorization Exception
   PAYMENT_RECEIPT_ACKNOWLEDGEMENT = 'paymentReceiptAcknowledgement',

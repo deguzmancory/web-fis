@@ -2,7 +2,11 @@ import { MyProfile, POPaymentRemainingBalance, POPaymentResponse } from 'src/que
 import { DateFormat, getDate, getDateDisplay, localTimeToHawaii } from 'src/utils';
 import { isEmpty } from 'src/validations';
 import { UpdatePOPaymentFormValue } from '../types';
-import { initialPaymentEquipmentInventory } from './constants';
+import {
+  emptyUpdatePOPaymentFormValue,
+  initialPaymentEquipmentInventory,
+  initialPaymentRemittanceInfo,
+} from './constants';
 import { getPaymentLineItemFormValueByPaymentType } from './utils';
 
 export const getPOPaymentFormValueFromResponse = ({
@@ -63,5 +67,11 @@ export const getPOPaymentFormValueFromResponse = ({
     remainingBalance: 100, //TODO: Tuyen Tran replace with remainingBalanceResponse
 
     paymentEquipmentInventories: transformedPaymentEquipmentInventories,
+    remittanceLineItems: !isEmpty(poPaymentResponse.remittanceLineItems)
+      ? poPaymentResponse.remittanceLineItems
+      : [initialPaymentRemittanceInfo],
+    remittance: !isEmpty(poPaymentResponse.remittance)
+      ? poPaymentResponse.remittance
+      : emptyUpdatePOPaymentFormValue.remittance,
   };
 };

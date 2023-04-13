@@ -44,6 +44,7 @@ import PaymentAuthorizedBy from './PaymentAuthorizedBy';
 import TablePaymentRemainingBalanceLineItems from './PaymentBalanceLineItems';
 import PaymentGeneralInfo from './PaymentGeneralInfo';
 import PaymentLineItems from './PaymentLineItems';
+import PaymentRemittanceInfo from './PaymentRemittanceInfo';
 import ReceiptAndPaymentType from './ReceiptAndPaymentType';
 import BreadcrumbsPOPayment from './breadcrumbs';
 import {
@@ -304,6 +305,14 @@ const POPayment: React.FC<Props> = ({
         </Grid>
 
         <SectionLayout sx={{ p: 0, border: 'none' }}>
+          <PaymentRemittanceInfo
+            formikProps={formikProps}
+            disabled={disabledSection}
+            currentPOMode={currentPOMode}
+          />
+        </SectionLayout>
+
+        <SectionLayout>
           <EquipmentInventories
             formikProps={formikProps}
             disabled={disabledSection}

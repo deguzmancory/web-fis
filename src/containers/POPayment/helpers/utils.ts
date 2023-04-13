@@ -2,6 +2,7 @@ import { isVariousProject } from 'src/containers/PurchaseOrderContainer/GeneralI
 import { POPaymentLineItem, POPaymentResponse } from 'src/queries';
 import { isPartialPOPayment } from 'src/queries/POPayment/helpers';
 import { getDate } from 'src/utils';
+import { PO_PAYMENT_VENDOR_TYPE } from '../enums';
 import { UpdatePOPaymentFormValue } from '../types';
 import {
   ADVANCE_PAYMENT_BUDGET_CATEGORY,
@@ -68,4 +69,17 @@ export const getPaymentLineItemPayload = ({
   const isAdvancePayment = isPartialPOPayment(paymentType);
 
   return isAdvancePayment ? advancePaymentLineItem : partialOrFinalPaymentLineItem.slice(0, -1);
+};
+
+export const checkVendorPaymentType = (type: PO_PAYMENT_VENDOR_TYPE) => {
+  switch (type) {
+    case PO_PAYMENT_VENDOR_TYPE.ACH:
+    case PO_PAYMENT_VENDOR_TYPE.CARD:
+    case PO_PAYMENT_VENDOR_TYPE.CHECK:
+      return false;
+    case PO_PAYMENT_VENDOR_TYPE.TBD:
+      return true;
+    default:
+      return false;
+  }
 };

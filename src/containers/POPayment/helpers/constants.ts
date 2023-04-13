@@ -1,5 +1,5 @@
 import { initialLineItemValue } from 'src/containers/PurchaseOrderContainer/helpers';
-import { PO_PAYMENT_LINE_ITEM_KEY } from '../enums';
+import { PO_PAYMENT_LINE_ITEM_KEY, PO_PAYMENT_REMITTANCE_LINE_ITEM } from '../enums';
 import { UpdatePOPaymentFormValue } from './../types';
 
 export const ADVANCE_PAYMENT_ITEM_PROJECT_NUMBER = '0000005';
@@ -133,4 +133,10 @@ export const paymentLineItemsColumnNames = [
   PO_PAYMENT_LINE_ITEM_KEY.SUB_BUDGET_CATEGORY,
   PO_PAYMENT_LINE_ITEM_KEY.SERVICE_DATE,
   PO_PAYMENT_LINE_ITEM_KEY.AMOUNT,
+];
+
+export const paymentLineItemsRemittanceColumnsNames = [
+  PO_PAYMENT_REMITTANCE_LINE_ITEM.REFERENCE_NUMBER,
+  PO_PAYMENT_REMITTANCE_LINE_ITEM.CUSTOMER_ACCOUNT_COMMENT,
+  PO_PAYMENT_REMITTANCE_LINE_ITEM.AMOUNT,
 ];
