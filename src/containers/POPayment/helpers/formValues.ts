@@ -68,7 +68,7 @@ export const getPOPaymentFormValueFromResponse = ({
 
     paymentEquipmentInventories: transformedPaymentEquipmentInventories,
     remittanceLineItems: !isEmpty(poPaymentResponse.remittanceLineItems)
-      ? poPaymentResponse.remittanceLineItems
+      ? [...poPaymentResponse.remittanceLineItems, initialPaymentRemittanceInfo]
       : [initialPaymentRemittanceInfo],
     remittance: !isEmpty(poPaymentResponse.remittance)
       ? poPaymentResponse.remittance

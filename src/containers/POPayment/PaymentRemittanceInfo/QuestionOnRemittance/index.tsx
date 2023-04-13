@@ -19,19 +19,15 @@ import { checkVendorPaymentType } from '../../helpers/utils';
 import { UpdatePOPaymentFormikProps } from '../../types';
 
 const QuestionOnRemittance: React.FC<Props> = ({ formikProps, disabled }) => {
-  const [isShowRemittance, setIsShowRemittance] = React.useState(null);
   const { values, touched, errors, getFieldProps, setFieldTouched, setFieldValue } = formikProps;
   const prefixRemittance = PO_FORM_KEY.PAYMENT_REMITTANCE;
 
-  React.useEffect(() => {
-    if (values?.remittance?.returnRemittanceFlag === true) {
-      setIsShowRemittance(true);
-      return;
-    }
-    setIsShowRemittance(
-      checkVendorPaymentType(values?.preferredPaymentMethod as PO_PAYMENT_VENDOR_TYPE)
+  const isShowRemittance = React.useMemo(() => {
+    return (
+      values.remittance?.returnRemittanceFlag === true ||
+      checkVendorPaymentType(values.preferredPaymentMethod as PO_PAYMENT_VENDOR_TYPE)
     );
-  }, [values?.preferredPaymentMethod, values?.remittance?.returnRemittanceFlag]);
+  }, [values.preferredPaymentMethod, values.remittance?.returnRemittanceFlag]);
 
   const _getErrorMessage = (fieldName) => {
     return getErrorMessage(fieldName, { touched, errors });
@@ -54,7 +50,7 @@ const QuestionOnRemittance: React.FC<Props> = ({ formikProps, disabled }) => {
       setFieldTouched(`${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_CITY}`, false);
       setFieldTouched(`${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_STATE}`, false);
     },
-    onError(error, variables, context) {},
+    onError() {},
   });
 
   const handleChangeZipCode = (event) => {

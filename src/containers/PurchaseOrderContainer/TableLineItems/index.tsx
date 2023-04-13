@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { isBoolean, isNumber } from 'lodash';
+import { isNumber } from 'lodash';
 import React from 'react';
 import {
   EllipsisTooltipInput,
@@ -29,7 +29,6 @@ const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPro
   formikProps,
   disabled = false,
   currentPOMode,
-  filterOriginItemValue,
 }: Props<T>) => {
   const isFAReviewMode = isFAReviewPOMode(currentPOMode);
   const isCUReviewMode = isCUReviewPOMode(currentPOMode);
@@ -38,12 +37,8 @@ const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPro
   const { values, errors, touched, setFieldValue, getFieldProps, setFieldTouched } = formikProps;
 
   const lineItemsValue = React.useMemo(() => {
-    if (isBoolean(filterOriginItemValue)) {
-      return values.lineItems.filter((lineItem) => lineItem.isOriginal === filterOriginItemValue);
-    }
-
-    return values.lineItems;
-  }, [values.lineItems, filterOriginItemValue]);
+    return values.lineItems || [];
+  }, [values.lineItems]);
 
   const hideProjectNumberColumn = React.useMemo(
     () => !isVariousProject(values.projectNumber),
@@ -429,7 +424,6 @@ type Props<T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps> = {
   formikProps: T extends UpsertPOFormikProps ? UpsertPOFormikProps : UpdatePOPaymentFormikProps;
   disabled?: boolean;
   currentPOMode: PO_MODE;
-  filterOriginItemValue?: boolean;
 };
 
 export default React.memo(TableLineItems, (prevProps, nextProps) => {

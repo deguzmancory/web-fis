@@ -304,7 +304,7 @@ const POPayment: React.FC<Props> = ({
           </Grid>
         </Grid>
 
-        <SectionLayout sx={{ p: 0, border: 'none' }}>
+        <SectionLayout>
           <PaymentRemittanceInfo
             formikProps={formikProps}
             disabled={disabledSection}
@@ -312,7 +312,7 @@ const POPayment: React.FC<Props> = ({
           />
         </SectionLayout>
 
-        <SectionLayout>
+        <SectionLayout sx={{ p: 0, border: 'none' }}>
           <EquipmentInventories
             formikProps={formikProps}
             disabled={disabledSection}
