@@ -23,6 +23,7 @@ const MainMenu: React.FC<Props> = ({ userRole }) => {
         className={`${clsPrefix}-item`}
         sx={{
           cursor: 'pointer',
+          transform: 'translateY(4px)',
         }}
         my={'auto'}
         onClick={() => {
@@ -43,7 +44,7 @@ const MainMenu: React.FC<Props> = ({ userRole }) => {
           my={'auto'}
         >
           <Typography variant="body2" className={`${clsPrefix}-link`}>
-            {item.title}
+            {item.title} {item.arrowIcon}
           </Typography>
           <Box
             className={classNames(`${clsPrefix}-item__sub subItems`, {

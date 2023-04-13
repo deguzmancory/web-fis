@@ -1,4 +1,4 @@
-import { AirplanemodeActive, Extension, Help, PieChart } from '@mui/icons-material';
+import { AirplanemodeActive, ArrowDropDown, Extension, Help, PieChart } from '@mui/icons-material';
 import { IoServer, IoWallet } from 'react-icons/io5';
 import { PATHS } from 'src/appConfig/paths';
 import { PERMISSION_VALUE } from 'src/queries/Permissions';
@@ -7,6 +7,7 @@ import { PURCHASING_LIST_WORK_FLOW_STATUS_KEY } from '../POListing/enum';
 
 export type DashboardItem = {
   title: string;
+  arrowIcon: React.ReactNode;
   subTitle?: string;
   icon: React.ReactNode;
   isDisplayLeft?: boolean; //use for navbar
@@ -22,6 +23,7 @@ export type DashboardItem = {
 export const dashboardItems: DashboardItem[] = [
   {
     title: 'Purchasing',
+    arrowIcon: <ArrowDropDown sx={{ transform: 'translateY(5px)' }} />,
     subTitle: '(POs & PO Payments)',
     icon: <IoServer size={22} />,
     items: [
@@ -90,6 +92,7 @@ export const dashboardItems: DashboardItem[] = [
   },
   {
     title: 'Non- PO Payments',
+    arrowIcon: <ArrowDropDown sx={{ transform: 'translateY(5px)' }} />,
     subTitle: '',
     icon: <IoWallet size={22} />,
     items: [
@@ -134,6 +137,7 @@ export const dashboardItems: DashboardItem[] = [
   },
   {
     title: 'Travel',
+    arrowIcon: <ArrowDropDown sx={{ transform: 'translateY(5px)' }} />,
     subTitle: '',
     icon: (
       <AirplanemodeActive
@@ -202,6 +206,7 @@ export const dashboardItems: DashboardItem[] = [
   },
   {
     title: 'Reporting',
+    arrowIcon: <ArrowDropDown sx={{ transform: 'translateY(5px)' }} />,
     subTitle: '',
     icon: (
       <PieChart
@@ -234,6 +239,7 @@ export const dashboardItems: DashboardItem[] = [
   },
   {
     title: 'Miscellaneous',
+    arrowIcon: <ArrowDropDown sx={{ transform: 'translateY(5px)' }} />,
     subTitle: '',
     isDisplayLeft: true,
     icon: (
@@ -312,6 +318,7 @@ export const dashboardItems: DashboardItem[] = [
   },
   {
     title: 'Help',
+    arrowIcon: <ArrowDropDown sx={{ transform: 'translateY(5px)' }} />,
     subTitle: '',
     isDisplayLeft: true,
     icon: (
