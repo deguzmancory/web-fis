@@ -1,7 +1,7 @@
 /* eslint-disable security/detect-object-injection */
 import dayjs from 'dayjs';
 import { Location } from 'history';
-import _, { get, isEqual } from 'lodash';
+import _, { get, isDate as isDateLodash, isEqual } from 'lodash';
 import { parse } from 'qs';
 import shortid from 'shortid';
 import { MyProfile } from 'src/queries';
@@ -185,6 +185,10 @@ export const getRoleInfoOfProfile = ({ profile }: { profile: MyProfile }) => {
 
 export const isString = (value: any): value is String => {
   return typeof value === 'string';
+};
+
+export const isDate = (value: any): value is Date => {
+  return isDateLodash(value);
 };
 
 export const getOptionLabel = (options: { label: string; value: any }[], value) => {

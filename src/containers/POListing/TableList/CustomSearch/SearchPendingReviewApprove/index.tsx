@@ -1,7 +1,7 @@
 import { Search } from '@mui/icons-material';
 import { Grid } from '@mui/material';
 import { useFormik } from 'formik';
-import { isDate, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { COLOR_CODE } from 'src/appConfig/constants';
@@ -9,7 +9,7 @@ import CustomFilter from 'src/components/CustomFilter';
 import { Checkbox, DatePicker, Input } from 'src/components/common';
 import { PO_LIST_QUERY_KEY } from 'src/containers/POListing/enum';
 import { PO_DETAIL_STATUS, PO_DOCUMENT_TYPE } from 'src/queries';
-import { getDate, getDateDisplay } from 'src/utils';
+import { getDate, getDateDisplay, isDate } from 'src/utils';
 import {
   CustomFilterPOFormValue,
   CustomFilterPOQueryValue,
