@@ -27,6 +27,8 @@ const MESSAGES = {
   notTrimmable: 'Space character is not allowed at the beginning and end.',
   pleaseUseEnglishAlphabetForInput: 'Please use English alphabet for input.',
   inValidUsername: 'Please use only letters, numbers (0-9), underscore (_), dot (.), hyphen (-).',
+  requiredInvoiceRemittance:
+    'Invoice Number must be filled in if customer account comment or an amount is filled in',
 };
 
 const handler = (error: AuthError | Error) => {

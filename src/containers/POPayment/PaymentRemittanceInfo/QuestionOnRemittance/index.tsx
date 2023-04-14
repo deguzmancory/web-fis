@@ -13,10 +13,14 @@ import {
 import { PO_FORM_KEY } from 'src/containers/PurchaseOrderContainer/enums';
 import { PO_MODE, useZipCode } from 'src/queries';
 import { StateService } from 'src/services';
-import { getErrorMessage, getUncontrolledInputFieldProps } from 'src/utils';
+import {
+  getErrorMessage,
+  getUncontrolledInputFieldProps,
+  isEqualPrevAndNextFormikValues,
+} from 'src/utils';
 import { PO_PAYMENT_REMITTANCE_KEY, PO_PAYMENT_VENDOR_TYPE } from '../../enums';
 import { checkVendorPaymentType } from '../../helpers/utils';
-import { UpdatePOPaymentFormikProps } from '../../types';
+import { UpdatePOPaymentFormValue, UpdatePOPaymentFormikProps } from '../../types';
 
 const QuestionOnRemittance: React.FC<Props> = ({ formikProps, disabled }) => {
   const { values, touched, errors, getFieldProps, setFieldTouched, setFieldValue } = formikProps;
@@ -282,4 +286,29 @@ type Props = {
   currentPOMode?: PO_MODE;
 };
 
-export default QuestionOnRemittance;
+export default React.memo(QuestionOnRemittance, (prevProps, nextProps) => {
+  const prevFormikProps = prevProps.formikProps;
+  const nextFormikProps = nextProps.formikProps;
+
+  const formKeysNeedRender = [
+    `${PO_FORM_KEY.PAYMENT_REMITTANCE}.${PO_PAYMENT_REMITTANCE_KEY.RETURN_REMITTANCE_FLAG}`,
+    `${PO_FORM_KEY.PAYMENT_REMITTANCE}.${PO_PAYMENT_REMITTANCE_KEY.QUESTION_NAME}`,
+    `${PO_FORM_KEY.PAYMENT_REMITTANCE}.${PO_PAYMENT_REMITTANCE_KEY.QUESTION_PHONE_NUMBER}`,
+    `${PO_FORM_KEY.PAYMENT_REMITTANCE}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_ATTENTION}`,
+    `${PO_FORM_KEY.PAYMENT_REMITTANCE}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_STREET}`,
+    `${PO_FORM_KEY.PAYMENT_REMITTANCE}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_CITY}`,
+    `${PO_FORM_KEY.PAYMENT_REMITTANCE}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_STATE}`,
+    `${PO_FORM_KEY.PAYMENT_REMITTANCE}.${PO_PAYMENT_REMITTANCE_KEY.ZIP_CODE}`,
+    `${PO_FORM_KEY.PAYMENT_REMITTANCE}.${PO_PAYMENT_REMITTANCE_KEY.ZIP_CODE_PLUS4}`,
+  ];
+
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    prevProps.currentPOMode === nextProps.currentPOMode &&
+    isEqualPrevAndNextFormikValues<UpdatePOPaymentFormValue>({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender,
+    })
+  );
+});

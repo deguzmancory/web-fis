@@ -74,6 +74,38 @@ export const getPOPaymentFormValidationSchema = ({ action }: { action: PO_ACTION
         }
       ),
 
+      remittanceLineItems: Yup.array().of(
+        Yup.object().shape({
+          referenceNumber: Yup.string().when(
+            ['amount', 'customerAccountComment'],
+            ([amount, customerAccountComment], schema) => {
+              if (amount !== 0 && customerAccountComment)
+                return schema
+                  .required(ErrorService.MESSAGES.requiredInvoiceRemittance)
+                  .typeError(ErrorService.MESSAGES.requiredInvoiceRemittance);
+            }
+          ),
+        })
+      ),
+      remittance: Yup.lazy((remittanceValue, remittanceOptions) => {
+        return Yup.object().shape({
+          remittanceTotal: Yup.number()
+            .required('The remittance total does not match the payment total.')
+            .typeError('The remittance total does not match the payment total.')
+            .test(
+              'not-match-payment',
+              'The remittance total does not match the payment total.',
+              (value) => {
+                if (value !== remittanceOptions.parent?.paymentTotal) {
+                  return false;
+                } else {
+                  return true;
+                }
+              }
+            ),
+        });
+      }),
+
       paymentEquipmentInventories: Yup.array().when(
         ['paymentEquipmentInventoryManualFlag', 'paymentEquipmentInventories'],
         ([paymentEquipmentInventoryManualFlag, paymentEquipmentInventories], schema) => {

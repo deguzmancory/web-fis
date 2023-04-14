@@ -15,7 +15,7 @@ const PaymentRemittanceInfo: React.FC<Props> = ({
       <Typography variant="h5" fontWeight="bold" mb={3}>
         Remittance Information:
       </Typography>
-      <TableLineItems formikProps={formikProps} disable={disabled} />
+      <TableLineItems formikProps={formikProps} disabled={disabled} />
 
       <QuestionOnRemittance formikProps={formikProps} disabled={disabled} />
     </Box>

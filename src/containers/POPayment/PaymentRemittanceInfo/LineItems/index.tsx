@@ -5,22 +5,26 @@ import { BodyBasicRows, CellType } from 'src/components/CustomTable/types';
 import { EllipsisTooltipInput, EllipsisTooltipInputCurrency } from 'src/components/common';
 import { PO_FORM_KEY } from 'src/containers/PurchaseOrderContainer/enums';
 import { POPaymentRemittanceLineItem, PO_MODE } from 'src/queries';
-import { checkRowStateAndSetValue } from 'src/utils';
+import { checkRowStateAndSetValue, getErrorMessage } from 'src/utils';
 import { PO_PAYMENT_REMITTANCE_KEY, PO_PAYMENT_REMITTANCE_LINE_ITEM } from '../../enums';
 import {
   initialPaymentRemittanceInfo,
   paymentLineItemsRemittanceColumnsNames,
 } from '../../helpers';
-import { UpdatePOPaymentFormikProps } from '../../types';
+import { UpdatePOPaymentFormValue, UpdatePOPaymentFormikProps } from '../../types';
+import { isEqualPrevAndNextFormikValues } from 'src/utils';
 
-const TableLineItems: React.FC<Props> = ({ formikProps, disable }) => {
-  const { values, setFieldValue, getFieldProps } = formikProps;
-
+const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
+  const { errors, values, touched, setFieldValue, getFieldProps } = formikProps;
   const lineItemValue = React.useMemo(() => {
     return values.remittanceLineItems;
   }, [values.remittanceLineItems]);
 
   const paymentLineItemKey = PO_FORM_KEY.REMITTANCE_LINE_ITEMS;
+
+  const _getErrorMessage = (fieldName) => {
+    return getErrorMessage(fieldName, { touched, errors });
+  };
 
   const removeRow = React.useCallback(
     (index: number) => {
@@ -117,6 +121,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disable }) => {
       style: {
         verticalAlign: 'top',
       },
+      errorMessage: _getErrorMessage(`${prefixLineItem}.${PO_PAYMENT_REMITTANCE_LINE_ITEM.AMOUNT}`),
       columns: [
         {
           label: 'Line',
@@ -128,6 +133,9 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disable }) => {
           content: (
             <EllipsisTooltipInput
               {...getFieldProps(
+                `${prefixLineItem}.${PO_PAYMENT_REMITTANCE_LINE_ITEM.REFERENCE_NUMBER}`
+              )}
+              errorMessage={_getErrorMessage(
                 `${prefixLineItem}.${PO_PAYMENT_REMITTANCE_LINE_ITEM.REFERENCE_NUMBER}`
               )}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
@@ -147,6 +155,9 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disable }) => {
           content: (
             <EllipsisTooltipInput
               {...getFieldProps(
+                `${prefixLineItem}.${PO_PAYMENT_REMITTANCE_LINE_ITEM.CUSTOMER_ACCOUNT_COMMENT}`
+              )}
+              errorMessage={_getErrorMessage(
                 `${prefixLineItem}.${PO_PAYMENT_REMITTANCE_LINE_ITEM.CUSTOMER_ACCOUNT_COMMENT}`
               )}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
@@ -184,6 +195,8 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disable }) => {
 
   return (
     <Box>
+      {/* Hidden input for scroll to error purpose */}
+      <input name={paymentLineItemKey} hidden />
       <Typography variant="body2">Remittance Advice</Typography>
       <CustomTable.Basic bodyList={lineItemRows} />
 
@@ -198,6 +211,9 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disable }) => {
             {...getFieldProps(
               `${PO_FORM_KEY.PAYMENT_REMITTANCE}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_TOTAL}`
             )}
+            errorMessage={_getErrorMessage(
+              `${PO_FORM_KEY.PAYMENT_REMITTANCE}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_TOTAL}`
+            )}
             textAlign="right"
             disabled
             lengthShowTooltip={8}
@@ -210,8 +226,26 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disable }) => {
 
 type Props = {
   formikProps: UpdatePOPaymentFormikProps;
-  disable?: boolean;
+  disabled?: boolean;
   currentPOMode?: PO_MODE;
 };
 
-export default TableLineItems;
+export default React.memo(TableLineItems, (prevProps, nextProps) => {
+  const prevFormikProps = prevProps.formikProps;
+  const nextFormikProps = nextProps.formikProps;
+
+  const formKeysNeedRender = [
+    PO_FORM_KEY.REMITTANCE_LINE_ITEMS,
+    PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_TOTAL,
+  ];
+
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    prevProps.currentPOMode === nextProps.currentPOMode &&
+    isEqualPrevAndNextFormikValues<UpdatePOPaymentFormValue>({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender,
+    })
+  );
+});

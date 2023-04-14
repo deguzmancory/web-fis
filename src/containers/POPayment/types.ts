@@ -2,6 +2,7 @@ import {
   POGeneralInfo,
   POLineItem,
   POPaymentLineItem,
+  POPaymentRemittanceLineItem,
   POPurchaseInfo,
   UpdatePOPaymentPayload,
 } from 'src/queries';
@@ -18,7 +19,7 @@ export interface UpdatePOPaymentFormValue
   //payment summary
   advancePaymentLineItem: POPaymentLineItem[];
   partialOrFinalPaymentLineItem: POPaymentLineItem[];
-
+  remittanceLineItems: POPaymentRemittanceLineItem[];
   //po remaining balance
   remainingBalance?: number;
 
