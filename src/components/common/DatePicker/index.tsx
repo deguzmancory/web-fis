@@ -54,7 +54,6 @@ const DateSelector: React.FC<Props> = ({
         className={cn(
           'cmp-datepicker__input',
           { 'cmp-datepicker__input--error': hasError },
-
           classNames
         )}
         showPopperArrow={false}

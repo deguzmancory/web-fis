@@ -5,18 +5,21 @@ import { Button, View } from 'src/components/common';
 import './styles.scss';
 import { Callback } from 'src/redux/types';
 import cn from 'classnames';
-import { Popover } from '@mui/material';
+import { Popover, SxProps } from '@mui/material';
 
-const ContactFilter: React.FC<Props> = ({
+const MuiPopOverFilter: React.FC<Props> = ({
   label,
   body,
-  onShow,
   mini,
   isShow = true,
   labelClassName,
   anchorOrigin,
   transformOrigin,
   icon,
+  disabledTransformOrigin = false,
+  bodyStyle,
+  popoverSx,
+  onShow,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
 
@@ -55,19 +58,22 @@ const ContactFilter: React.FC<Props> = ({
           vertical: anchorOrigin?.vertical || 'bottom',
           horizontal: anchorOrigin?.horizontal || 'left',
         }}
-        transformOrigin={{
-          vertical: transformOrigin?.vertical || 'top',
-          horizontal: transformOrigin?.horizontal || 'right',
-        }}
+        {...(!disabledTransformOrigin && {
+          transformOrigin: {
+            vertical: transformOrigin?.vertical || 'top',
+            horizontal: transformOrigin?.horizontal || 'right',
+          },
+        })}
         classes={{
           paper: 'px-0',
         }}
         className={cn('cmp-popover', { 'is-mini': mini })}
         style={{ borderRadius: '8px !important' }}
+        sx={popoverSx}
       >
         <View
           className=""
-          style={{ maxWidth: 380 }}
+          style={{ maxWidth: 380, ...bodyStyle }}
           onClick={(event) => {
             event.stopPropagation();
             !onShow && handleClose(event);
@@ -83,7 +89,7 @@ const ContactFilter: React.FC<Props> = ({
 type PositionVerticalType = number | 'bottom' | 'top' | 'center';
 type PositionHorizontalType = number | 'center' | 'left' | 'right';
 
-type PopoverPosition = {
+export type PopoverPosition = {
   vertical: PositionVerticalType;
   horizontal: PositionHorizontalType;
 };
@@ -93,16 +99,19 @@ type Props = ReturnType<typeof mapStateToProps> &
     label: string | React.ReactNode;
     labelClassName?: string;
     body: React.ReactNode;
-    onShow?: Callback;
     mini?: boolean;
     isShow?: boolean;
     anchorOrigin?: PopoverPosition;
     transformOrigin?: PopoverPosition;
+    disabledTransformOrigin?: boolean;
     icon?: React.ReactElement;
+    popoverSx?: SxProps;
+    bodyStyle?: React.CSSProperties;
+    onShow?: Callback;
   };
 
 const mapStateToProps = (state: IRootState) => ({});
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactFilter);
+export default connect(mapStateToProps, mapDispatchToProps)(MuiPopOverFilter);

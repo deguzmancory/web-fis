@@ -12,7 +12,7 @@ import { useGetAllUsers } from 'src/queries/Users';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator } from 'src/services';
 import { handleShowErrorMsg } from 'src/utils';
-import { QUERY_KEY } from '../helpers';
+import { USERS_MANAGEMENT_QUERY_KEY } from '../helpers';
 import { allColumns } from './allColumns';
 import {
   FILTER_USERS_INDEX,
@@ -25,7 +25,7 @@ const TableList: React.FC<Props> = () => {
   const isTabletScreen = useMediaQuery(muiResponsive.TABLET);
   const location = useLocation();
   const query = new URLSearchParams(location.search);
-  const filter = query.getAll(QUERY_KEY.filter) as string[];
+  const filter = query.getAll(USERS_MANAGEMENT_QUERY_KEY.FILTER) as string[];
 
   const { users, totalRecords, setParams, isFetching, onGetAllUsers } = useGetAllUsers({
     onError: (error) => handleShowErrorMsg(error),

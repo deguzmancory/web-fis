@@ -6,7 +6,7 @@ import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { PermissionsService } from 'src/services';
 import { capitalizeWords } from 'src/utils';
 import { isEmpty } from 'src/validations';
-import { QUERY_KEY } from '../../helpers';
+import { USERS_MANAGEMENT_QUERY_KEY } from '../../helpers';
 import {
   CustomFilterUSersFormValue,
   CUSTOM_FILTER_USERS_KEY,
@@ -20,7 +20,7 @@ const CustomFilterUsersManagement = () => {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
 
-  const filter = query.getAll(QUERY_KEY.filter) as string[];
+  const filter = query.getAll(USERS_MANAGEMENT_QUERY_KEY.FILTER) as string[];
 
   const getUserTypes = (value: string) => {
     const prefixRemoved = value.replaceAll(PREFIX_FILTER_USERS.USER_TYPE, '');
@@ -39,8 +39,8 @@ const CustomFilterUsersManagement = () => {
   const initialFilter = Array.from({ length: FILTER_USERS_INDEX.length }, (v) => '');
 
   const applyFilterQuery = (filters: string[]) => {
-    query.delete(QUERY_KEY.filter);
-    filters.forEach((f) => query.append(QUERY_KEY.filter, f ? f : ''));
+    query.delete(USERS_MANAGEMENT_QUERY_KEY.FILTER);
+    filters.forEach((f) => query.append(USERS_MANAGEMENT_QUERY_KEY.FILTER, f ? f : ''));
   };
 
   const handleSubmitFilter = (values: CustomFilterUSersFormValue) => {
@@ -67,8 +67,8 @@ const CustomFilterUsersManagement = () => {
 
   const { errors, setFieldValue, handleSubmit, getFieldProps, touched } = useFormik({
     initialValues: initialFormValue,
-    onSubmit: handleSubmitFilter,
     enableReinitialize: true,
+    onSubmit: handleSubmitFilter,
   });
 
   const nonCuPermission = React.useMemo(() => {

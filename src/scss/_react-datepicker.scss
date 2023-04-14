@@ -19,6 +19,10 @@
   }
 }
 
+.react-datepicker-popper {
+  z-index: 2222;
+}
+
 .react-datepicker__header--time {
   border-top-left-radius: 0px;
   border-top-right-radius: 0;

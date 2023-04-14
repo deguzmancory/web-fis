@@ -19,6 +19,12 @@ export enum PURCHASING_LIST_WORK_FLOW_STATUS_KEY {
 
 export enum PO_LIST_QUERY_KEY {
   WORKFLOW_STATUS = 'workflowStatus',
+  PO_NUMBER = 'number',
+  VENDOR_NAME = 'vendorName',
+  PROJECT_NUMBER = 'projectNumber',
+  FA_REVIEWER = 'faReviewer',
+  PI_NAME = 'piName',
+  MODIFIED_DATE = 'modifiedDate',
   DOCUMENT_TYPE = 'documentType',
-  NUMBER = 'number',
+  STATUS = 'status',
 }

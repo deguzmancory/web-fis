@@ -15,9 +15,9 @@ import { getErrorMessage, getUncontrolledInputFieldProps } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import HeaderOfSection from '../headerSection';
 import { handleNavigateBackToMainForm } from '../helpers';
-import StandardsLayout from './StanDards';
 import WitnessethFormLayout from './Witnesseth';
 import { PO_SUBCONTRACT_AGREEMENT_KEY } from './enum';
+import StandardsLayout from './StandardsLayout';
 
 const SubcontractAgreementForm: React.FC<Props> = ({
   formRef,

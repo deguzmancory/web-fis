@@ -186,3 +186,7 @@ export const getRoleInfoOfProfile = ({ profile }: { profile: MyProfile }) => {
 export const isString = (value: any): value is String => {
   return typeof value === 'string';
 };
+
+export const getOptionLabel = (options: { label: string; value: any }[], value) => {
+  return options.find((option) => option.value === value)?.label || '';
+};

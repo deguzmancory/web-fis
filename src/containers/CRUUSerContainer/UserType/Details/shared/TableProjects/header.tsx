@@ -12,35 +12,33 @@ export enum SEARCH_PROJECT_KEY {
 const HeaderTableUserType = () => {
   const [isShowPopover, setIsShowPopover] = React.useState(false);
   return (
-    <>
-      <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} mb={1}>
-        <Typography variant="body2">User Project List</Typography>
+    <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} mb={1}>
+      <Typography variant="body2">User Project List</Typography>
 
-        <Stack direction={'row'} alignItems={'center'}>
-          <MuiPopOverFilter
-            isShow={isShowPopover}
-            onShow={setIsShowPopover}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'right',
-            }}
-            label={'User Project Search'}
-            icon={<Search />}
-            body={
-              <Box p={2}>
-                <CustomSearchTable
-                  label={null}
-                  placeholder="Search by Project Title"
-                  searchKey={SEARCH_PROJECT_KEY.SEARCH_NAME}
-                  enableAutoFocus
-                />
-              </Box>
-            }
-          />
-          <SwitchUnlinkedProject />
-        </Stack>
+      <Stack direction={'row'} alignItems={'center'}>
+        <MuiPopOverFilter
+          isShow={isShowPopover}
+          onShow={setIsShowPopover}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          label={'User Project Search'}
+          icon={<Search />}
+          body={
+            <Box p={2}>
+              <CustomSearchTable
+                label={null}
+                placeholder="Search by Project Title"
+                searchKey={SEARCH_PROJECT_KEY.SEARCH_NAME}
+                enableAutoFocus
+              />
+            </Box>
+          }
+        />
+        <SwitchUnlinkedProject />
       </Stack>
-    </>
+    </Stack>
   );
 };
 

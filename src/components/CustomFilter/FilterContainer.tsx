@@ -7,14 +7,26 @@ import { Callback } from 'src/redux/types';
 import { isEmpty } from 'src/validations';
 import { Button, Text, View } from '../common';
 import { ButtonVariant } from '../common/Button';
-import MuiPopOverFilter from '../MuiPopOverFilter';
 import './styles.scss';
+import MuiPopOverFilter, { PopoverPosition } from '../MuiPopOverFilter';
+import { SxProps } from '@mui/material';
 
 export const FilterContainer: React.FC<ContainerProps> = ({
   clearVariant = 'text',
+  title = 'Filter',
+  icon = <FaFilter className="cmp-filter-icon__icon" color={COLOR_CODE.INFO} />,
+  filterForm,
+  anchorOrigin = {
+    vertical: 'bottom',
+    horizontal: 'right',
+  },
+  transformOrigin,
+  disabledTransformOrigin = false,
+  formStyle,
+  popoverSx,
+  bodyStyle,
   onApply,
   onClear,
-  filterForm,
 }) => {
   const [isShow, setIsShow] = useState<boolean>(null);
 
@@ -39,10 +51,11 @@ export const FilterContainer: React.FC<ContainerProps> = ({
     <MuiPopOverFilter
       isShow={isShow}
       onShow={setIsShow}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'right',
-      }}
+      anchorOrigin={anchorOrigin}
+      transformOrigin={transformOrigin}
+      disabledTransformOrigin={disabledTransformOrigin}
+      popoverSx={popoverSx}
+      bodyStyle={bodyStyle}
       label={
         <View
           isRowWrap
@@ -53,14 +66,14 @@ export const FilterContainer: React.FC<ContainerProps> = ({
             { 'is-filter': isHasFilter }
           )}
         >
-          <FaFilter className="cmp-filter-icon__icon" color={COLOR_CODE.INFO} />
+          {icon}
           <Text size={14} className="has-text-link ml-8">
-            {'Filter'}
+            {title}
           </Text>
         </View>
       }
       body={
-        <View className="cmp-filter-container__form">
+        <View className="cmp-filter-container__form" style={formStyle}>
           {filterForm}
           <View isRowWrap justify="flex-end" className="pb-16">
             <Button label="Clear" variant={clearVariant} onClick={handleClear} className="px-12" />
@@ -73,8 +86,16 @@ export const FilterContainer: React.FC<ContainerProps> = ({
 };
 
 type ContainerProps = {
-  onApply: Callback;
-  onClear: Callback;
+  title?: string;
+  icon?: React.ReactNode;
   clearVariant?: ButtonVariant;
   filterForm: React.ReactNode;
+  anchorOrigin?: PopoverPosition;
+  transformOrigin?: PopoverPosition;
+  disabledTransformOrigin?: boolean;
+  formStyle?: React.CSSProperties;
+  popoverSx?: SxProps;
+  bodyStyle?: React.CSSProperties;
+  onApply: Callback;
+  onClear: Callback;
 };

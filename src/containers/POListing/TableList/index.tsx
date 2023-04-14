@@ -4,9 +4,13 @@ import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { muiResponsive } from 'src/appConfig/constants';
+import { PATHS } from 'src/appConfig/paths';
 import EmptyTable from 'src/components/EmptyTable';
 import { getFileName, handleParseAndDownloadFile } from 'src/components/FilePreview/helper';
 import { LoadingCommon, Table } from 'src/components/common';
+import LoadingContainer from 'src/containers/StartupContainers/LoadingContainer';
+import { useCreatePOPayment } from 'src/queries';
+import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import {
   PURCHASE_ORDER_KEY,
   PurchaseOrderItem,
@@ -16,9 +20,10 @@ import {
 import { useGetAllPurchasingList } from 'src/queries/PurchasingListing/useGetAllPurchasingListing';
 import { GetPropertiesParams } from 'src/queries/helpers';
 import { IRootState } from 'src/redux/rootReducer';
+import { Navigator, RoleService } from 'src/services';
 import { handleShowErrorMsg } from 'src/utils';
 import { isEmpty } from 'src/validations';
-import { PURCHASING_LIST_WORK_FLOW_STATUS_KEY, PO_LIST_QUERY_KEY } from '../enum';
+import { PO_LIST_QUERY_KEY, PURCHASING_LIST_WORK_FLOW_STATUS_KEY } from '../enum';
 import {
   allApprovedColumns,
   allColumnsPendingReviewApprove,
@@ -26,28 +31,74 @@ import {
   allOutstandingColumns,
 } from './allColumns';
 import HeaderTable from './header';
-import { Navigator, RoleService } from 'src/services';
-import { ROLE_NAME } from 'src/queries/Profile/helpers';
-import { useCreatePOPayment } from 'src/queries';
-import { PATHS } from 'src/appConfig/paths';
-import LoadingContainer from 'src/containers/StartupContainers/LoadingContainer';
 
 const PDFView = React.lazy(() => import('src/components/common/PDFView'));
 
 const TablePurchasingOrderList: React.FC<Props> = () => {
-  const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
-
   const isTabletScreen = useMediaQuery(muiResponsive.TABLET);
   const location = useLocation();
   const query = React.useMemo(() => new URLSearchParams(location.search), [location]);
+
+  const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
+
   const workFlowTypeStatus = React.useMemo(
     () => query.get(PO_LIST_QUERY_KEY.WORKFLOW_STATUS) || undefined,
     [query]
   );
   const poNumberSearch = React.useMemo(
-    () => query.get(PO_LIST_QUERY_KEY.NUMBER) || undefined,
+    () => query.get(PO_LIST_QUERY_KEY.PO_NUMBER) || undefined,
     [query]
   );
+  const projectNumberSearch = React.useMemo(
+    () => query.get(PO_LIST_QUERY_KEY.PROJECT_NUMBER) || undefined,
+    [query]
+  );
+  const vendorNameSearch = React.useMemo(
+    () => query.get(PO_LIST_QUERY_KEY.VENDOR_NAME) || undefined,
+    [query]
+  );
+  const faReviewerSearch = React.useMemo(
+    () => query.get(PO_LIST_QUERY_KEY.FA_REVIEWER) || undefined,
+    [query]
+  );
+  const piNameSearch = React.useMemo(
+    () => query.get(PO_LIST_QUERY_KEY.PI_NAME) || undefined,
+    [query]
+  );
+  const modifiedDateSearch = React.useMemo(
+    () => query.get(PO_LIST_QUERY_KEY.MODIFIED_DATE) || undefined,
+    [query]
+  );
+  const documentTypeFilter = React.useMemo(
+    () => query.get(PO_LIST_QUERY_KEY.DOCUMENT_TYPE) || undefined,
+    [query]
+  );
+  const statusFilter = React.useMemo(
+    () => query.get(PO_LIST_QUERY_KEY.STATUS) || undefined,
+    [query]
+  );
+
+  const searchValues = React.useMemo(() => {
+    return {
+      number: poNumberSearch,
+      projectNumber: projectNumberSearch,
+      vendorName: vendorNameSearch,
+      faReviewer: faReviewerSearch,
+      piName: piNameSearch,
+      modifiedDate: modifiedDateSearch,
+      documentType: documentTypeFilter,
+      status: statusFilter,
+    };
+  }, [
+    faReviewerSearch,
+    modifiedDateSearch,
+    piNameSearch,
+    poNumberSearch,
+    projectNumberSearch,
+    vendorNameSearch,
+    documentTypeFilter,
+    statusFilter,
+  ]);
 
   const [pdfUrl, setPdfUrl] = React.useState(null);
 
@@ -77,11 +128,6 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
     },
   });
 
-  const searchPurchasingDocument = React.useMemo(
-    () => query.get(PO_LIST_QUERY_KEY.DOCUMENT_TYPE) || undefined,
-    [query]
-  );
-
   const {
     purchases,
     totalRecords,
@@ -97,9 +143,8 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
     (params: GetPropertiesParams) => {
       let newParams = {
         ...params,
+        ...searchValues,
         workflowStatus: workFlowTypeStatus,
-        documentType: searchPurchasingDocument,
-        number: poNumberSearch,
       };
 
       const sort = params?.sort;
@@ -112,7 +157,7 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
       }
       setParams(newParams);
     },
-    [workFlowTypeStatus, searchPurchasingDocument, poNumberSearch, setParams]
+    [searchValues, workFlowTypeStatus, setParams]
   );
 
   React.useEffect(() => {
@@ -186,6 +231,7 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
 
   return (
     <Box>
+      {isCreatePOPaymentLoading && <LoadingContainer hideBackdropPageContent={false} />}
       <Suspense fallback={<LoadingCommon />}>
         {!isEmpty(pdfUrl) && (
           <PDFView
@@ -197,8 +243,7 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
           />
         )}
       </Suspense>
-      <HeaderTable />
-      {isCreatePOPaymentLoading && <LoadingContainer hideBackdropPageContent={false} />}
+      <HeaderTable searchValues={searchValues} />
       <Table
         title={''}
         onAction={handleGetPurchasing}
