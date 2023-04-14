@@ -5,6 +5,7 @@ import CustomTable from 'src/components/CustomTable';
 import { BodyRow, BodyRows, CellType } from 'src/components/CustomTable/types';
 import { EllipsisTooltipInputCurrency } from 'src/components/common';
 import { IRootState } from 'src/redux/rootReducer';
+import { VARIOUS_PROJECT_LABEL } from '../../GeneralInfo/helpers';
 
 const TableLineItem: React.FC<Props> = ({ formData }) => {
   const getRecordTableHeader = (): BodyRows => [
@@ -16,6 +17,11 @@ const TableLineItem: React.FC<Props> = ({ formData }) => {
         {
           content: 'Line',
           type: CellType.PRINT_CELL,
+        },
+        {
+          content: 'Proj #',
+          type: CellType.PRINT_CELL,
+          hide: formData?.projectTitle !== VARIOUS_PROJECT_LABEL,
         },
         {
           content: 'Sub Proj',
@@ -67,6 +73,11 @@ const TableLineItem: React.FC<Props> = ({ formData }) => {
           {
             content: index + 1,
             type: CellType.PRINT_CELL,
+          },
+          {
+            content: <Typography variant="body2">{reportRow?.itemProjectNumber}</Typography>,
+            type: CellType.PRINT_CELL,
+            hide: formData?.projectTitle !== VARIOUS_PROJECT_LABEL,
           },
           {
             content: <Typography variant="body2">{reportRow?.subProject}</Typography>,
@@ -156,7 +167,7 @@ const TableLineItem: React.FC<Props> = ({ formData }) => {
           ),
           type: CellType.PRINT_CELL,
           rowSpan: 6,
-          colSpan: 5,
+          colSpan: formData?.projectTitle === VARIOUS_PROJECT_LABEL ? 6 : 5,
         },
       ],
     },
