@@ -1,4 +1,6 @@
 import { initialLineItemValue } from 'src/containers/PurchaseOrderContainer/helpers';
+import { POPaymentEquipmentInventory } from 'src/queries';
+import { DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS } from '../EquipmentInventoriesV2/helpers';
 import { PO_PAYMENT_LINE_ITEM_KEY, PO_PAYMENT_REMITTANCE_LINE_ITEM } from '../enums';
 import { UpdatePOPaymentFormValue } from './../types';
 
@@ -25,7 +27,7 @@ export const initialPaymentEquipmentInventory = {
   description: '',
   brandName: '',
   serialNumber: '',
-  itemCost: 0,
+  itemCost: null,
   locationOfEquipment: '',
   ownership: '',
   preparerName: '',
@@ -35,6 +37,10 @@ export const initialPaymentEquipmentInventory = {
   fabricatedB: '',
   receiveDate: null,
 };
+
+export const getInitialPaymentEquipmentInventories = (
+  numberOfITems = DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS
+) => Array<POPaymentEquipmentInventory>(numberOfITems).fill(initialPaymentEquipmentInventory);
 
 export const emptyUpdatePOPaymentFormValue: UpdatePOPaymentFormValue = {
   action: null,
@@ -117,7 +123,10 @@ export const emptyUpdatePOPaymentFormValue: UpdatePOPaymentFormValue = {
   },
 
   // Equipment Inventory
-  paymentEquipmentInventories: [initialPaymentEquipmentInventory],
+  paymentEquipmentInventories: getInitialPaymentEquipmentInventories(
+    DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS
+  ),
+  paymentNumberOfEquipmentInventories: DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS,
 
   // file attachment
   fileAttachments: [],

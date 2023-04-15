@@ -149,6 +149,7 @@ export enum PO_FORM_KEY {
 
   // Equipment Inventory
   PAYMENT_EQUIPMENT_INVENTORIES = 'paymentEquipmentInventories',
+  PAYMENT_EQUIPMENT_INVENTORIES_NUMBER_OF_ITEMS = 'paymentNumberOfEquipmentInventories',
   PAYMENT_EQUIPMENT_INVENTORY_MANUAL_FLAG = 'paymentEquipmentInventoryManualFlag',
 }
 

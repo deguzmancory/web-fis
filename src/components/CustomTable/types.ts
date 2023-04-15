@@ -16,9 +16,9 @@ export enum CellType {
 
 export interface BaseTableCell {
   hide?: boolean;
-  content: string | React.ReactNode;
+  content: React.ReactNode;
   name?: string;
-  subContent?: string | React.ReactNode;
+  subContent?: React.ReactNode;
   rowSpan?: number;
   colSpan?: number;
   width?: number | string;

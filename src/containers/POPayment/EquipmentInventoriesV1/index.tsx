@@ -385,7 +385,7 @@ const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }
                 showErrorBorder
               >
                 <RadioButton
-                  label={<b>Payment Type:</b>}
+                  label={''}
                   columns={1}
                   options={ownershipOptions}
                   {...getFieldProps(

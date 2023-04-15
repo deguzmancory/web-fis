@@ -327,7 +327,7 @@ const POChangeForm: React.FC<Props> = ({
             formikProps={formikProps}
             disabled={disabledSection}
             currentPOMode={currentPOMode}
-            isOriginItems={false}
+            isOriginItems={isInChangeTotalCancellationForm ? true : false}
             allowUpdateInfoAndAmount={isAllowUpdateAmount}
             allowUpdateDescription={isAllowUpdateAmount || isAllowUpdateDescription}
           />

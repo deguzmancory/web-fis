@@ -114,30 +114,35 @@ export const getPOPaymentFormValidationSchema = ({ action }: { action: PO_ACTION
           // if any inventory has been fill at least one field or have more than 1 inventory item
           if (
             !isEmpty(paymentEquipmentInventories) &&
-            (paymentEquipmentInventories.length > 1 ||
-              paymentEquipmentInventories.some((inventory) =>
-                Object.values(inventory).some((value) => !!value)
-              ))
+            paymentEquipmentInventories.some((inventory) =>
+              Object.values(inventory).some((value) => !!value)
+            )
           ) {
             return schema.of(
-              Yup.object().shape({
-                description: Yup.string().required().typeError(ErrorService.MESSAGES.required),
-                brandName: Yup.string().required().typeError(ErrorService.MESSAGES.required),
-                serialNumber: Yup.string().required().typeError(ErrorService.MESSAGES.required),
-                itemCost: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
-                locationOfEquipment: Yup.string()
-                  .required()
-                  .typeError(ErrorService.MESSAGES.required),
-                ownership: Yup.string().required().typeError(ErrorService.MESSAGES.required),
-                preparerName: Yup.string().required().typeError(ErrorService.MESSAGES.required),
-                preparerPhone: Yup.string()
-                  .phone()
-                  .required()
-                  .typeError(ErrorService.MESSAGES.required),
-                component: Yup.string().required().typeError(ErrorService.MESSAGES.required),
-                fabricatedA: Yup.string().required().typeError(ErrorService.MESSAGES.required),
-                fabricatedB: Yup.string().required().typeError(ErrorService.MESSAGES.required),
-                receiveDate: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
+              Yup.lazy((inventory) => {
+                if (!inventory || !Object.values(inventory).some((value) => !!value)) {
+                  return Yup.object().optional().nullable();
+                }
+
+                return Yup.object().shape({
+                  description: Yup.string().required().typeError(ErrorService.MESSAGES.required),
+                  brandName: Yup.string().required().typeError(ErrorService.MESSAGES.required),
+                  serialNumber: Yup.string().required().typeError(ErrorService.MESSAGES.required),
+                  itemCost: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
+                  locationOfEquipment: Yup.string()
+                    .required()
+                    .typeError(ErrorService.MESSAGES.required),
+                  ownership: Yup.string().required().typeError(ErrorService.MESSAGES.required),
+                  preparerName: Yup.string().required().typeError(ErrorService.MESSAGES.required),
+                  preparerPhone: Yup.string()
+                    .phone()
+                    .required()
+                    .typeError(ErrorService.MESSAGES.required),
+                  component: Yup.string().required().typeError(ErrorService.MESSAGES.required),
+                  fabricatedA: Yup.string().required().typeError(ErrorService.MESSAGES.required),
+                  fabricatedB: Yup.string().required().typeError(ErrorService.MESSAGES.required),
+                  receiveDate: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
+                });
               })
             );
           }

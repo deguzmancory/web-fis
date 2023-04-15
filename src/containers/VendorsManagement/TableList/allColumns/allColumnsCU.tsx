@@ -31,7 +31,7 @@ export const allColumnsCU = (): MUIDataTableColumn[] => [
                 minWidth: 60,
                 maxWidth: 60,
               }}
-              className={cn({ 'marquee-left': _value.length > 10 })}
+              className={cn({ 'marquee-left': _value?.length > 10 })}
               onClick={(event) => {
                 event.stopPropagation();
                 event.preventDefault();
@@ -45,14 +45,14 @@ export const allColumnsCU = (): MUIDataTableColumn[] => [
               {isVendorRegistration ? (
                 <TypographyLink
                   variant="body2"
-                  className={_value.length > 10 ? 'marquee-left__text' : ''}
+                  className={_value?.length > 10 ? 'marquee-left__text' : ''}
                 >
                   {_value ?? '--'}
                 </TypographyLink>
               ) : (
                 <Typography
                   variant="body2"
-                  className={_value.length > 10 ? 'marquee-left__text' : ''}
+                  className={_value?.length > 10 ? 'marquee-left__text' : ''}
                 >
                   {_value ?? '--'}
                 </Typography>

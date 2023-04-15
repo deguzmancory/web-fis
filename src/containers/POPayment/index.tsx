@@ -39,7 +39,7 @@ import FileAttachments from '../PurchaseOrderContainer/FileAttachments';
 import InternalComments from '../PurchaseOrderContainer/InternalComments';
 import PurchaseInfo from '../PurchaseOrderContainer/PurchaseInfo';
 import TableLineItems from '../PurchaseOrderContainer/TableLineItems';
-import EquipmentInventories from './EquipmentInventories';
+import EquipmentInventoriesV2 from './EquipmentInventoriesV2';
 import PaymentAuthorizedBy from './PaymentAuthorizedBy';
 import TablePaymentRemainingBalanceLineItems from './PaymentBalanceLineItems';
 import PaymentGeneralInfo from './PaymentGeneralInfo';
@@ -51,6 +51,7 @@ import {
   emptyUpdatePOPaymentFormValue,
   getPOPaymentFormValidationSchema,
   getPOPaymentFormValueFromResponse,
+  getUpdatePOPaymentPayload,
 } from './helpers';
 import { UpdatePOPaymentFormValue, UpdatePOPaymentFormikProps } from './types';
 
@@ -95,7 +96,7 @@ const POPayment: React.FC<Props> = ({
     suspense: true,
   });
   const {
-    // updatePOPayment,
+    updatePOPayment,
     data: updatePOPaymentResponse,
     isLoading: updatePOPaymentLoading,
     isSuccess: isUpdatePOPaymentSuccess,
@@ -192,8 +193,8 @@ const POPayment: React.FC<Props> = ({
   );
 
   const handleFormSubmit = (values: UpdatePOPaymentFormValue) => {
-    // const editPOPayload = getUpsertPOPayload({ formValues: values, action: values.action });
-    // updatePOPayment(editPOPayload);
+    const editPOPayload = getUpdatePOPaymentPayload({ formValues: values, action: values.action });
+    updatePOPayment(editPOPayload);
   };
 
   const {
@@ -313,7 +314,7 @@ const POPayment: React.FC<Props> = ({
         </SectionLayout>
 
         <SectionLayout sx={{ p: 0, border: 'none' }}>
-          <EquipmentInventories
+          <EquipmentInventoriesV2
             formikProps={formikProps}
             disabled={disabledSection}
             currentPOMode={currentPOMode}

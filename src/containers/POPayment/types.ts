@@ -25,6 +25,9 @@ export interface UpdatePOPaymentFormValue
 
   //attachments
   placeholderFileAttachment: POPlaceholderFileAttachment;
+
+  //equipment inventories
+  paymentNumberOfEquipmentInventories: number;
 }
 
 export type UpdatePOPaymentFormikProps = CommonFormikProps<UpdatePOPaymentFormValue>;

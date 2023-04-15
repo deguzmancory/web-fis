@@ -159,7 +159,7 @@ export interface POPaymentEquipmentInventory {
   component: string;
   fabricatedA: string;
   fabricatedB: string;
-  receiveDate: string;
+  receiveDate: string | Date;
 
   externalId?: number;
   createdAt?: string;

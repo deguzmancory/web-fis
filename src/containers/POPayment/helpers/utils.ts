@@ -1,7 +1,12 @@
 import { isVariousProject } from 'src/containers/PurchaseOrderContainer/GeneralInfo/helpers';
-import { POPaymentLineItem, POPaymentResponse } from 'src/queries';
+import { POPaymentEquipmentInventory, POPaymentLineItem, POPaymentResponse } from 'src/queries';
 import { isPartialPOPayment } from 'src/queries/POPayment/helpers';
 import { getDate } from 'src/utils';
+import { isEmpty } from 'src/validations';
+import {
+  DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS,
+  NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS_VALUES,
+} from '../EquipmentInventoriesV2/helpers';
 import { PO_PAYMENT_VENDOR_TYPE } from '../enums';
 import { UpdatePOPaymentFormValue } from '../types';
 import {
@@ -82,4 +87,20 @@ export const checkVendorPaymentType = (type: PO_PAYMENT_VENDOR_TYPE) => {
     default:
       return false;
   }
+};
+
+export const getNumberOfEquipmentInventories = (data: POPaymentEquipmentInventory[]) => {
+  if (isEmpty(data)) return DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS;
+
+  //find first number match the condition
+  return NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS_VALUES.find((number) => number >= data.length);
+};
+
+export const getNumberOfTableEquipmentInventories = (numberOfItems: number) => {
+  if (!numberOfItems) return 1;
+
+  //find first number match the condition
+  return (
+    NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS_VALUES.findIndex((number) => number >= numberOfItems) + 1
+  );
 };

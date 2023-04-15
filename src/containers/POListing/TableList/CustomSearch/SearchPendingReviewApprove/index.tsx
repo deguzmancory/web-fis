@@ -19,7 +19,7 @@ import {
 } from './helpers';
 
 const SearchPendingReviewApprove = ({
-  searchValues = emptySearchPendingReviewApproveFormValue,
+  searchValues,
 }: {
   searchValues: Partial<CustomFilterPOQueryValue>;
 }) => {

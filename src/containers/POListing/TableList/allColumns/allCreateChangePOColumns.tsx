@@ -56,7 +56,7 @@ export const allCreateChangePOColumns = ({
                 minWidth: 100,
                 maxWidth: 100,
               }}
-              className={cn({ 'marquee-left': value.length > 10 })}
+              className={cn({ 'marquee-left': value?.length > 10 })}
             >
               <Typography>{value ?? '--'}</Typography>
             </Box>
@@ -101,7 +101,7 @@ export const allCreateChangePOColumns = ({
                 minWidth: 80,
                 maxWidth: 80,
               }}
-              className={cn({ 'marquee-left': value.length > 10 })}
+              className={cn({ 'marquee-left': value?.length > 10 })}
             >
               <Typography fontWeight="bold" variant="body2">
                 {value ?? '--'}

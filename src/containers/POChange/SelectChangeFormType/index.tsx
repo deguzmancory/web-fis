@@ -10,6 +10,7 @@ import { Navigator } from 'src/services';
 import { handleShowErrorMsg } from 'src/utils';
 import BreadcrumbsPOChangeForm from '../breadcrumbs';
 import { SELECT_CHANGE_FORM_TYPE_QUERY_KEY } from './enums';
+import { COLOR_CODE } from 'src/appConfig/constants';
 
 const buttons = [
   {
@@ -61,7 +62,7 @@ const SelectChangeFormType: React.FC<Props> = ({ disabled = false }) => {
   };
 
   return (
-    <Box py={4}>
+    <Box py={4} minHeight={'60vh'}>
       <Container maxWidth="lg">
         <BreadcrumbsPOChangeForm />
 
@@ -78,8 +79,9 @@ const SelectChangeFormType: React.FC<Props> = ({ disabled = false }) => {
                   textAlign: 'left',
                   display: 'block',
                   marginTop: '0px',
-                  height: '50px',
-                  borderBottom: index !== buttons.length - 1 && 'none',
+                  height: '32px',
+                  border: COLOR_CODE.DEFAULT_BORDER,
+                  borderBottom: index !== buttons.length - 1 ? 'none' : COLOR_CODE.DEFAULT_BORDER,
                 }}
                 fontWeightNormal
                 onClick={() => handleSelectChangeFormType(button.value)}

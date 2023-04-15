@@ -78,6 +78,7 @@ const Group: React.FC<RadioGroupProps> = ({
       className={containerClassName}
       subContentLabel={
         showClearButton &&
+        !!label &&
         !!value && (
           <Button
             variant="link"
@@ -111,6 +112,20 @@ const Group: React.FC<RadioGroupProps> = ({
           />
         ))}
       </View>
+      {showClearButton && !label && !!value && (
+        <Button
+          variant="link"
+          style={{
+            padding: '4px',
+            height: 20,
+            fontSize: 12,
+            maxWidth: '50px',
+          }}
+          onClick={handleClear}
+        >
+          Clear
+        </Button>
+      )}
     </Element>
   );
 };

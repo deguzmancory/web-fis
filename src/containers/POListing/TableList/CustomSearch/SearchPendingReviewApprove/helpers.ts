@@ -29,8 +29,8 @@ export const emptySearchPendingReviewApproveFormValue = {
   faReviewer: '',
   piName: '',
   modifiedDate: null,
-  documentType: null,
-  status: null,
+  documentType: [],
+  status: [],
 };
 
 export const documentTypePendingApproveReviewOptions = [

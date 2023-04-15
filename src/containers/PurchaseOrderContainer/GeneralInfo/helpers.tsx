@@ -46,8 +46,8 @@ export const isVariousProject = (projectNumber: string | FinancialProject) => {
   if (!projectNumber) return false;
 
   return typeof projectNumber === 'string'
-    ? projectNumber === VARIOUS_PROJECT_VALUE
-    : projectNumber.number === VARIOUS_PROJECT_VALUE;
+    ? projectNumber.toLowerCase() === VARIOUS_PROJECT_VALUE
+    : projectNumber.number?.toString()?.toLocaleLowerCase() === VARIOUS_PROJECT_VALUE;
 };
 
 export const getFinancialProjectOptions = ({

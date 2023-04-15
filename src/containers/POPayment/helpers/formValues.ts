@@ -1,13 +1,21 @@
-import { MyProfile, POPaymentRemainingBalance, POPaymentResponse } from 'src/queries';
+import {
+  MyProfile,
+  POPaymentRemainingBalance,
+  POPaymentResponse,
+  PO_ACTION,
+  UpdatePOPaymentPayload,
+} from 'src/queries';
+import { isPartialPOPayment } from 'src/queries/POPayment/helpers';
 import { DateFormat, getDate, getDateDisplay, localTimeToHawaii } from 'src/utils';
 import { isEmpty } from 'src/validations';
+import { DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS } from '../EquipmentInventoriesV2/helpers';
 import { UpdatePOPaymentFormValue } from '../types';
 import {
   emptyUpdatePOPaymentFormValue,
-  initialPaymentEquipmentInventory,
+  getInitialPaymentEquipmentInventories,
   initialPaymentRemittanceInfo,
 } from './constants';
-import { getPaymentLineItemFormValueByPaymentType } from './utils';
+import { getNumberOfEquipmentInventories, getPaymentLineItemFormValueByPaymentType } from './utils';
 
 export const getPOPaymentFormValueFromResponse = ({
   poPaymentResponse,
@@ -30,8 +38,8 @@ export const getPOPaymentFormValueFromResponse = ({
     ? poPaymentResponse.paymentEquipmentInventories.map((equipmentInventory) => ({
         ...equipmentInventory,
         receiveDate: getDate(equipmentInventory.receiveDate),
-      }))
-    : [initialPaymentEquipmentInventory];
+      })) || []
+    : getInitialPaymentEquipmentInventories(DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS);
 
   return {
     ...poPaymentResponse,
@@ -67,11 +75,47 @@ export const getPOPaymentFormValueFromResponse = ({
     remainingBalance: 100, //TODO: Tuyen Tran replace with remainingBalanceResponse
 
     paymentEquipmentInventories: transformedPaymentEquipmentInventories,
+    paymentNumberOfEquipmentInventories: getNumberOfEquipmentInventories(
+      transformedPaymentEquipmentInventories
+    ),
+
     remittanceLineItems: !isEmpty(poPaymentResponse.remittanceLineItems)
       ? [...poPaymentResponse.remittanceLineItems, initialPaymentRemittanceInfo]
       : [initialPaymentRemittanceInfo],
     remittance: !isEmpty(poPaymentResponse.remittance)
       ? poPaymentResponse.remittance
       : emptyUpdatePOPaymentFormValue.remittance,
+  };
+};
+
+export const getUpdatePOPaymentPayload = ({
+  formValues,
+  action,
+}: {
+  formValues: UpdatePOPaymentFormValue;
+  action: PO_ACTION;
+}): UpdatePOPaymentPayload => {
+  const isAdvancePaymentResponse = isPartialPOPayment(formValues.paymentType);
+
+  const {
+    advancePaymentLineItem,
+    partialOrFinalPaymentLineItem,
+    paymentNumberOfEquipmentInventories,
+    paymentEquipmentInventories,
+    placeholderFileAttachment,
+    remainingBalance,
+    ...payloadProps
+  } = formValues;
+
+  return {
+    ...payloadProps,
+    action,
+    paymentLineItems: isAdvancePaymentResponse
+      ? advancePaymentLineItem
+      : partialOrFinalPaymentLineItem.slice(0, -1),
+    paymentEquipmentInventories: paymentEquipmentInventories.slice(
+      0,
+      paymentNumberOfEquipmentInventories
+    ),
   };
 };

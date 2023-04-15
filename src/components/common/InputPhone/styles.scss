@@ -18,6 +18,7 @@
       border-color: $color-danger;
     }
   }
+
   &__input--disabled {
     .PhoneInputCountry,
     .PhoneInputCountry .PhoneInputCountryIcon,
@@ -34,6 +35,50 @@
     .PhoneInputCountry,
     input {
       border-color: $color-danger;
+    }
+  }
+}
+
+.cmp-phone-input-without-flags {
+  &__input {
+    height: $input-normal;
+    padding: $input-padding;
+    border: $default-border;
+    border-radius: $input-border-radius;
+    background-color: $color-white;
+    transition: $default-transition;
+    font-size: $body-size;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &__icon {
+      padding-right: 36px;
+
+      &.left {
+        padding-left: 36px;
+        padding-right: 16px;
+      }
+    }
+
+    &:focus {
+      // box-shadow: $focus-shadow;
+      border: $default-border-primary;
+    }
+
+    &--error {
+      border-color: $color-danger;
+
+      &:focus {
+        border-color: $color-danger;
+        // box-shadow: $error-shadow;
+      }
+    }
+
+    &:disabled {
+      color: $color-black-500;
+      background-color: #f5f5f5;
+      // border: none;
     }
   }
 }
