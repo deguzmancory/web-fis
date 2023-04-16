@@ -71,19 +71,32 @@ const VendorPrintMode: React.FC<Props> = ({ formData }) => {
               </Typography>
             </Typography>
 
-            <Typography variant="body2" fontWeight="bold" mt={3}>
-              {' '}
-              SEND INVOICE DUPLICATE TO
-            </Typography>
-
-            <Stack alignItems="flex-end" mt={9}>
-              <Grid item xs={7}>
-                <Divider />
+            <Grid container mt={2}>
+              <Grid item xs={9}>
                 <Typography variant="body2" fontWeight="bold">
+                  {' '}
+                  SEND INVOICE DUPLICATE TO
+                </Typography>
+
+                <Stack flexDirection="column">
+                  <Typography variant="body2">{formData?.sendInvoiceTo}</Typography>
+                  <Typography variant="body2">{formData?.invoiceDept}</Typography>
+                  <Typography variant="body2">{formData?.sendInvoiceToFaEmail}</Typography>
+                  <Typography variant="body2">{formData?.invoiceStreetAddress}</Typography>
+                  <Typography variant="body2">
+                    {formData?.invoiceCity} {formData?.invoiceState} {formData?.invoiceZip}{' '}
+                    {formData?.invoiceZip4 ? '-' : ''} {formData?.invoiceZip4}
+                  </Typography>
+                  <Typography variant="body2">{formData?.invoiceCountry}</Typography>
+                </Stack>
+              </Grid>
+
+              <Grid item xs={3} mt={14} textAlign="center">
+                <Typography variant="body2" fontWeight="bold" borderTop={1}>
                   FISCAL AUTHORIZED SIGNATURE
                 </Typography>
               </Grid>
-            </Stack>
+            </Grid>
 
             <Box>
               <Typography variant="body2" fontWeight="bold">

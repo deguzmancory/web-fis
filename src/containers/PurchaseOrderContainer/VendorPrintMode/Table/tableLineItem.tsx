@@ -141,8 +141,12 @@ const TableLineItem: React.FC<Props> = ({ formData }) => {
         {
           content: (
             <Typography variant="body2" sx={{ whiteSpace: 'pre-line' }}>
-              CONFIRMING (Vendor - Do not duplicate order) <br /> This order is subject to the terms
-              and conditions attached
+              {formData?.confirming === true && (
+                <Typography variant="body2">
+                  CONFIRMING (Vendor - Do not duplicate order) <br />
+                </Typography>
+              )}
+              This order is subject to the terms and conditions attached
             </Typography>
           ),
           subContent: (
@@ -153,6 +157,18 @@ const TableLineItem: React.FC<Props> = ({ formData }) => {
                 </Typography>
               )}
               <Typography variant="body2">- {formData?.fedAttachment}</Typography>
+              {formData?.getExempt === true && (
+                <>
+                  <Typography variant="body2" fontWeight="bold" style={{ display: 'content' }}>
+                    EXEMPTION OF PURCHASE FROM STATE OF HAWAII GENERAL EXCISE TAX{' '}
+                  </Typography>
+                  <Typography variant="body2" style={{ display: 'content' }}>
+                    The Research Corporation of the University of Hawaii considers this purchase to
+                    be exempt from the payment of the State of Hawaii general excise tax in
+                    accordance with Section 237-26, HRS, as amended.
+                  </Typography>
+                </>
+              )}
 
               <Typography variant="body2" mt={1}>
                 Acceptance of this Purchase Order by Vendor, whether by written confirmation,

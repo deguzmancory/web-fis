@@ -1,6 +1,7 @@
 import { Box, Divider, Grid, Stack, Typography } from '@mui/material';
 import { IRootState } from 'src/redux/rootReducer';
 import { FED_ATTACHMENT_VALUE } from '../../PurchaseInfo/helpers';
+import React from 'react';
 
 const Attachment32bTod: React.FC<Props> = ({ formData }) => {
   const renderAttachmentFil32 = () => {
@@ -13,6 +14,10 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
         return '32d';
     }
   };
+
+  const isAttachment32b = React.useMemo(() => {
+    return formData?.fedAttachment === FED_ATTACHMENT_VALUE.ATTACHMENT_32B;
+  }, [formData?.fedAttachment]);
 
   const contentAttachmentFAR32b = [
     {
@@ -33,7 +38,7 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
         'Defense Priority and Allocation Requirements (Applies to rated orders certified for national defense, emergency preparedness, and energy program use. In such event, Seller is required to follow all the provisions of the Defense Priorities and Allocations System regulation (15 CFR 700))',
     },
     {
-      leftContent: '52.211-15',
+      leftContent: '52.215-15',
       rightContent: 'Pension Adjustments and Asset Reversions',
     },
     {
@@ -181,9 +186,11 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
     },
     {
       leftContent: '52.227-13',
-      rightContent: 'Patent Rights--Ownership by the Government',
+      rightContent: isAttachment32b
+        ? 'Patent Rights--Ownership by the Government'
+        : 'Patent Rights--Ownership by the Government52.227-14 Rights in Data—General',
     },
-    {
+    isAttachment32b && {
       leftContent: '52.227-14',
       rightContent: 'Rights in Data—General',
     },
@@ -336,7 +343,7 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
       leftContent: '52.247-64',
       rightContent: 'Preference for Privately Owned U.S.-Flag Commercial Vessels',
     },
-    {
+    isAttachment32b && {
       leftContent: '52.249-1',
       rightContent: 'Termination for Convenience of the Government (Fixed-Price) (Short Form)',
     },
@@ -345,7 +352,7 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
       rightContent:
         'Termination for Convenience of the Government (Services) (Short Form) (NOT applicable to suppliers)',
     },
-    {
+    isAttachment32b && {
       leftContent: '52.249-5',
       rightContent:
         'Termination for Convenience of the Government (Educational and other Nonprofit Institutions)',
@@ -483,7 +490,7 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
       leftContent: '52.203-12',
       rightContent: 'Limitation on Payments to Influence Certain Federal Transactions',
     },
-    {
+    isAttachment32b && {
       leftContent: '52.203-17',
       rightContent:
         'Contractor Employee Whistleblower Rights and Requirement to Inform Employees of Whistleblower Rights',
@@ -509,7 +516,7 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
     { leftContent: '52.246-4', rightContent: 'Inspection of Services - Fixed-Price' },
     { leftContent: '52.246-12', rightContent: 'Inspection of Construction' },
     { leftContent: '52.248-1', rightContent: 'Value Engineering' },
-    {
+    isAttachment32b && {
       leftContent: '52.249-2',
       rightContent: 'Termination for Convenience of the Government (Fixed-Price)',
     },
@@ -518,7 +525,7 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
       rightContent:
         'Termination for Convenience of the Government (Dismantling, Demolition, or Removal of Improvements)',
     },
-    {
+    isAttachment32b && {
       leftContent: '52.249-9',
       rightContent: 'Default (Fixed-Price Research and Development) (NOT applicable to suppliers)',
     },
@@ -615,10 +622,10 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
                 return (
                   <>
                     <Grid item xs={2}>
-                      {item.leftContent}
+                      <Typography variant="body2">{item.leftContent}</Typography>
                     </Grid>
                     <Grid item xs={10}>
-                      {item.rightContent}
+                      <Typography variant="body2">{item.rightContent}</Typography>
                     </Grid>
                   </>
                 );
@@ -635,16 +642,41 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
                 return (
                   <>
                     <Grid item xs={2}>
-                      {item.leftContent}
+                      <Typography variant="body2">{item.leftContent}</Typography>
                     </Grid>
                     <Grid item xs={10}>
-                      {item.rightContent}
+                      <Typography variant="body2">
+                        <Typography variant="body2">{item.rightContent}</Typography>
+                      </Typography>
                     </Grid>
                   </>
                 );
               })}
             </Grid>
           </Stack>
+
+          {formData?.fedAttachment === FED_ATTACHMENT_VALUE.ATTACHMENT_32C && (
+            <Stack>
+              <Typography variant="body2" mt={2} mb={2}>
+                NFS:
+              </Typography>
+
+              <Grid container>
+                <Grid item xs={2}>
+                  <Typography variant="body2">1852.245-73</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography variant="body2">
+                    Financial Reporting of NASA Property in the Custody of Contractors
+                  </Typography>
+                  <Typography variant="body2">
+                    (Subcontractor reports due to the prime contractor no later than one week prior
+                    to the due date indicated in the above provision.)
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Stack>
+          )}
 
           <Typography variant="body2" mt={2} sx={{ borderBottom: 1, width: 190 }}>
             Applies if order is over $3,500
@@ -692,10 +724,10 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
                 return (
                   <>
                     <Grid item xs={2}>
-                      {item.leftContent}
+                      <Typography variant="body2">{item.leftContent}</Typography>
                     </Grid>
                     <Grid item xs={10}>
-                      {item.rightContent}
+                      <Typography variant="body2">{item.rightContent}</Typography>
                     </Grid>
                   </>
                 );
@@ -818,10 +850,10 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
                 return (
                   <>
                     <Grid item xs={2}>
-                      {item.leftContent}
+                      <Typography variant="body2">{item.leftContent}</Typography>
                     </Grid>
                     <Grid item xs={10}>
-                      {item.rightContent}
+                      <Typography variant="body2">{item.rightContent}</Typography>
                     </Grid>
                   </>
                 );
@@ -918,10 +950,10 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
                 return (
                   <>
                     <Grid item xs={2}>
-                      {item.leftContent}
+                      <Typography variant="body2">{item.leftContent}</Typography>
                     </Grid>
                     <Grid item xs={10}>
-                      {item.rightContent}
+                      <Typography variant="body2">{item.rightContent}</Typography>
                     </Grid>
                   </>
                 );
