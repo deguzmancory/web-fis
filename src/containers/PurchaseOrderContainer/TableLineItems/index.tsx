@@ -38,7 +38,7 @@ const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPro
 
   const lineItemsValue = React.useMemo(() => {
     if (disabled) {
-      return values.lineItems.slice(0, -1) || [];
+      return values.lineItems || [];
     }
 
     return values.lineItems || [];

@@ -25,7 +25,7 @@ export interface POPaymentReceiptAndPaymentType {
 
 export interface POPaymentSummary {
   paymentLineItems: POPaymentLineItem[];
-  paymentTotal: number;
+  totalAmount: number;
 }
 
 export interface POPaymentRemittanceInfo {

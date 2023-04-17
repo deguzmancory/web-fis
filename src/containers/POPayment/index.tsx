@@ -25,6 +25,7 @@ import {
 } from 'src/queries';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import {
+  isCUReviewPOMode,
   isFinalPOMode,
   isPOSaveAction,
   isViewOnlyPOMode,
@@ -70,7 +71,10 @@ const POPayment: React.FC<Props> = ({
     () => getCurrentPOEditMode({ id, poStatus, currentRole }),
     [id, poStatus, currentRole]
   );
-  const disabledSection = isViewOnlyPOMode(currentPOMode) || isFinalPOMode(currentPOMode);
+  const disabledSection =
+    isViewOnlyPOMode(currentPOMode) ||
+    isFinalPOMode(currentPOMode) ||
+    isCUReviewPOMode(currentPOMode);
 
   const { profile } = useProfile();
   const { onGetRemainingBalance } = useGetPOPmtRemainingBalance({
@@ -215,6 +219,7 @@ const POPayment: React.FC<Props> = ({
     onSubmit: handleFormSubmit,
   });
 
+  console.log('errors: ', errors);
   const formikProps: UpdatePOPaymentFormikProps = {
     values,
     errors,

@@ -140,6 +140,7 @@ export enum PO_FORM_KEY {
   // PAYMENT_LINE_ITEMS = 'paymentLineItems',
   ADVANCED_PAYMENT_LINE_ITEMS = 'advancePaymentLineItem',
   PARTIAL_OR_FINAL_PAYMENT_LINE_ITEMS = 'partialOrFinalPaymentLineItem',
+  TOTAL_AMOUNT = 'totalAmount',
   PAYMENT_TOTAL = 'paymentTotal',
 
   // Payment Remaining Balance

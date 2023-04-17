@@ -9,6 +9,7 @@ import {
 import { PO_FORM_KEY } from 'src/containers/PurchaseOrderContainer/enums';
 import { RadioGroupOptions } from 'src/components/common/RadioButton';
 import { PO_PAYMENT_TYPE, PO_MODE } from 'src/queries';
+import { isFAReviewPOMode } from 'src/queries/PurchaseOrders/helpers';
 
 export const paymentReceiptAcknowledgementOptions: RadioGroupOptions = [
   {
@@ -31,8 +32,14 @@ export const paymentReceiptAcknowledgementOptions: RadioGroupOptions = [
   },
 ];
 
-const ReceiptAndPaymentType: React.FC<Props> = ({ formikProps, disabled = false }) => {
+const ReceiptAndPaymentType: React.FC<Props> = ({
+  formikProps,
+  disabled = false,
+  currentPOMode,
+}) => {
   const { errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } = formikProps;
+
+  const isInReviewMode = isFAReviewPOMode(currentPOMode);
 
   const _getErrorMessage = (fieldName: PO_FORM_KEY) => {
     return getErrorMessage(fieldName, { touched, errors });
@@ -60,7 +67,7 @@ const ReceiptAndPaymentType: React.FC<Props> = ({ formikProps, disabled = false 
           {...getFieldProps(PO_FORM_KEY.PAYMENT_TYPE)}
           onChange={setFieldValue}
           itemClassName="mb-except-last-8"
-          disabled={disabled}
+          disabled={disabled || isInReviewMode}
         />
       </Element>
     </Box>

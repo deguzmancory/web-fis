@@ -7,12 +7,13 @@ import {
   DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS,
   NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS_VALUES,
 } from '../EquipmentInventoriesV2/helpers';
-import { PO_PAYMENT_VENDOR_TYPE } from '../enums';
+import { PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY, PO_PAYMENT_VENDOR_TYPE } from '../enums';
 import { UpdatePOPaymentFormValue } from '../types';
 import {
   ADVANCE_PAYMENT_BUDGET_CATEGORY,
   ADVANCE_PAYMENT_ITEM_PROJECT_NUMBER,
   initialPaymentLineItemValue,
+  paymentEquipmentInventoryKeys,
 } from './constants';
 
 export const getPaymentLineItemFormValueByPaymentType = ({
@@ -103,4 +104,15 @@ export const getNumberOfTableEquipmentInventories = (numberOfItems: number) => {
   return (
     NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS_VALUES.findIndex((number) => number >= numberOfItems) + 1
   );
+};
+
+export const isNotEmptyPaymentEquipmentInventory = (inventory: POPaymentEquipmentInventory) => {
+  if (!inventory) return false;
+
+  return Object.entries(inventory).some(([key, value]) => {
+    return (
+      paymentEquipmentInventoryKeys.includes(key as PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY) &&
+      !!value
+    );
+  });
 };

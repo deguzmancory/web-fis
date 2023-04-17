@@ -5,6 +5,7 @@ import { isPOSubmitAction } from 'src/queries/PurchaseOrders/helpers';
 import { ErrorService, Yup } from 'src/services';
 import { isEmpty } from 'src/validations';
 import { UpdatePOPaymentFormValue } from '../types';
+import { isNotEmptyPaymentEquipmentInventory } from './utils';
 
 export const getPOPaymentFormValidationSchema = ({ action }: { action: PO_ACTION }) => {
   const isSubmitAction = isPOSubmitAction(action);
@@ -60,7 +61,7 @@ export const getPOPaymentFormValidationSchema = ({ action }: { action: PO_ACTION
           })
         );
       }),
-      paymentTotal: Yup.mixed().test(
+      totalAmount: Yup.mixed().test(
         'invalid-partial-payment-total',
         'Partial payment total exceeds the open sum balance. A PO Change is needed before a partial payment can be made.',
         (value, context) => {
@@ -96,7 +97,7 @@ export const getPOPaymentFormValidationSchema = ({ action }: { action: PO_ACTION
               'not-match-payment',
               'The remittance total does not match the payment total.',
               (value) => {
-                if (value !== remittanceOptions.parent?.paymentTotal) {
+                if (value !== remittanceOptions.parent?.totalAmount) {
                   return false;
                 } else {
                   return true;
@@ -112,15 +113,10 @@ export const getPOPaymentFormValidationSchema = ({ action }: { action: PO_ACTION
           if (paymentEquipmentInventoryManualFlag) return schema.optional().nullable();
 
           // if any inventory has been fill at least one field or have more than 1 inventory item
-          if (
-            !isEmpty(paymentEquipmentInventories) &&
-            paymentEquipmentInventories.some((inventory) =>
-              Object.values(inventory).some((value) => !!value)
-            )
-          ) {
+          if (!isEmpty(paymentEquipmentInventories)) {
             return schema.of(
               Yup.lazy((inventory) => {
-                if (!inventory || !Object.values(inventory).some((value) => !!value)) {
+                if (!inventory || !isNotEmptyPaymentEquipmentInventory(inventory)) {
                   return Yup.object().optional().nullable();
                 }
 

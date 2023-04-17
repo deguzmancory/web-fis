@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import React from 'react';
+import { memo, useMemo } from 'react';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import CustomTable from 'src/components/CustomTable';
 import { BodyRow, BodyRows } from 'src/components/CustomTable/types';
@@ -25,6 +25,7 @@ import { PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY } from '../enums';
 import {
   getInitialPaymentEquipmentInventories,
   getNumberOfTableEquipmentInventories,
+  isNotEmptyPaymentEquipmentInventory,
 } from '../helpers';
 import {
   DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS,
@@ -99,9 +100,13 @@ const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }
   const { values, errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } =
     formikProps;
 
-  const equipmentInventoriesValue = React.useMemo(
+  const equipmentInventoriesValue = useMemo(
     () => values.paymentEquipmentInventories || [],
     [values.paymentEquipmentInventories]
+  );
+
+  const isExpanded = equipmentInventoriesValue.some((inventory) =>
+    isNotEmptyPaymentEquipmentInventory(inventory)
   );
 
   const _getErrorMessage = (fieldName) => {
@@ -591,7 +596,7 @@ const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }
   };
 
   return (
-    <Accordion title="Equipment Inventory:">
+    <Accordion title="Equipment Inventory:" isExpanded={isExpanded}>
       <Box width={'25%'} mb={2}>
         <Select
           options={numberOfItemsOptions}
@@ -635,7 +640,7 @@ type Props = {
   currentPOMode: PO_MODE;
 };
 
-export default React.memo(EquipmentInventories, (prevProps, nextProps) => {
+export default memo(EquipmentInventories, (prevProps, nextProps) => {
   const prevFormikProps = prevProps.formikProps;
   const nextFormikProps = nextProps.formikProps;
 

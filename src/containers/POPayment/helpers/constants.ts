@@ -1,7 +1,11 @@
 import { initialLineItemValue } from 'src/containers/PurchaseOrderContainer/helpers';
 import { POPaymentEquipmentInventory } from 'src/queries';
 import { DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS } from '../EquipmentInventoriesV2/helpers';
-import { PO_PAYMENT_LINE_ITEM_KEY, PO_PAYMENT_REMITTANCE_LINE_ITEM } from '../enums';
+import {
+  PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY,
+  PO_PAYMENT_LINE_ITEM_KEY,
+  PO_PAYMENT_REMITTANCE_LINE_ITEM,
+} from '../enums';
 import { UpdatePOPaymentFormValue } from './../types';
 
 export const ADVANCE_PAYMENT_ITEM_PROJECT_NUMBER = '0000005';
@@ -102,7 +106,7 @@ export const emptyUpdatePOPaymentFormValue: UpdatePOPaymentFormValue = {
   // paymentLineItems: [initialPaymentLineItemValue],
   advancePaymentLineItem: [initialPaymentLineItemValue],
   partialOrFinalPaymentLineItem: [initialPaymentLineItemValue],
-  paymentTotal: 0,
+  totalAmount: 0,
 
   // Remittance Information
   remittanceLineItems: [initialPaymentRemittanceInfo],
@@ -153,4 +157,19 @@ export const paymentLineItemsRemittanceColumnsNames = [
   PO_PAYMENT_REMITTANCE_LINE_ITEM.REFERENCE_NUMBER,
   PO_PAYMENT_REMITTANCE_LINE_ITEM.CUSTOMER_ACCOUNT_COMMENT,
   PO_PAYMENT_REMITTANCE_LINE_ITEM.AMOUNT,
+];
+
+export const paymentEquipmentInventoryKeys = [
+  PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.DESCRIPTION,
+  PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.BRAND_NAME,
+  PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.SERIAL_NUMBER,
+  PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.ITEM_COST,
+  PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.FABRICATED_A,
+  PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.FABRICATED_B,
+  PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.LOCATION_OF_EQUIPMENT,
+  PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.OWNERSHIP,
+  PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.PREPARER_NAME,
+  PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.PREPARER_PHONE,
+  PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.RECEIVE_DATE,
+  PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.SERIAL_NUMBER,
 ];
