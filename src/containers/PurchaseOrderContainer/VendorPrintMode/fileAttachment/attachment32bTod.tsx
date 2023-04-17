@@ -2,18 +2,39 @@ import { Box, Divider, Grid, Stack, Typography } from '@mui/material';
 import { IRootState } from 'src/redux/rootReducer';
 import { FED_ATTACHMENT_VALUE } from '../../PurchaseInfo/helpers';
 import React from 'react';
+import { Image } from 'src/components/common';
+import { IMAGES } from 'src/appConfig/images';
+
+const clsPrefix = 'ctn-navbar-desktop';
 
 const Attachment32bTod: React.FC<Props> = ({ formData }) => {
-  const renderAttachmentFil32 = () => {
+  const renderAttachmentFil32 = React.useMemo(() => {
     switch (formData?.fedAttachment) {
       case FED_ATTACHMENT_VALUE.ATTACHMENT_32B:
-        return '32b';
+        return {
+          name: '32b',
+          title: 'FEDERAL PROVISIONS',
+          label:
+            'GOVERNMENT SUBCONTRACT PROVISIONS INCORPORATED IN ALL SUBCONTRACTS/PURCHASE ORDERS (UNDER FEDERAL PRIME CONTRACTS)',
+        };
       case FED_ATTACHMENT_VALUE.ATTACHMENT_32C:
-        return '32c';
+        return {
+          name: '32c',
+          title: 'Federal Provisions Applicable When Subcontractor',
+          label:
+            '(Commercial Entity) is in Possession of Government Property Government Subcontract Provisions Incorporated in All Subcontracts/Purchase Orders (Under Cost-Type Prime Cost Reimbursable Contracts)',
+        };
       case FED_ATTACHMENT_VALUE.ATTACHMENT_32D:
-        return '32d';
+        return {
+          name: '32d',
+          title: 'FEDERAL PROVISIONS APPLICABLE WHEN SUBCONTRACTOR',
+          label:
+            '(EDUCATIONAL OR NONPROFIT ORGANIZATION) IS IN POSSESSION OF GOVERNMENT PROPERTY GOVERNMENT SUBCONTRACT PROVISIONS INCORPORATED IN ALL SUBCONTRACTS/PURCHASE ORDERS (UNDER COST-TYPE PRIME COST REIMBURSABLE CONTRACTS)',
+        };
+      default:
+        return null;
     }
-  };
+  }, [formData?.fedAttachment]);
 
   const isAttachment32b = React.useMemo(() => {
     return formData?.fedAttachment === FED_ATTACHMENT_VALUE.ATTACHMENT_32B;
@@ -573,17 +594,21 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
 
         <Stack alignItems="flex-end">
           <Typography variant="body2" fontWeight="bold">
-            ATTACHMENT {renderAttachmentFil32()}
+            ATTACHMENT {renderAttachmentFil32.name}
           </Typography>
         </Stack>
         <Stack alignItems="center" mb={2}>
-          {/* TODO: Tuyen Tran update logo */}
-          <Typography variant="h5" fontWeight="bold">
-            FEDERAL PROVISIONS
-          </Typography>
+          <Stack flexDirection="row" alignItems="center">
+            <Box sx={{ mr: 1 }}>
+              <Image src={IMAGES.logoGrey} className={`${clsPrefix}-logo`} />
+            </Box>
+            <Typography variant="h5" fontWeight="bold">
+              {renderAttachmentFil32.title}
+            </Typography>
+          </Stack>
+
           <Typography variant="h5" fontWeight="bold" textAlign="center">
-            GOVERNMENT SUBCONTRACT PROVISIONS INCORPORATED IN ALL SUBCONTRACTS/PURCHASE ORDERS
-            (UNDER FEDERAL PRIME CONTRACTS)
+            {renderAttachmentFil32.label}
           </Typography>
         </Stack>
 

@@ -1,4 +1,4 @@
-import { Box, Container, Divider, Grid, Stack, Typography } from '@mui/material';
+import { Box, Container, Stack } from '@mui/material';
 import React from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -9,16 +9,12 @@ import {
   PO_LIST_QUERY_KEY,
   PURCHASING_LIST_WORK_FLOW_STATUS_KEY,
 } from 'src/containers/POListing/enum';
+import { PO_DOCUMENT_TYPE } from 'src/queries';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator } from 'src/services';
-import { FED_ATTACHMENT_VALUE } from '../PurchaseInfo/helpers';
-import TableLineItem from './Table/tableLineItem';
-import TableMiddle from './Table/tableMiddle';
-import TableTop from './Table/tableTop';
-import Attachment31 from './fileAttachment/attachment31';
-import Attachment32a from './fileAttachment/attachment32a';
 import Title from './title';
-import Attachment32bTod from './fileAttachment/attachment32bTod';
+import VendorPrintModePO from './PO';
+import VendorPrintModePOChangeForm from './POChangeForm';
 
 const VendorPrintMode: React.FC<Props> = ({ formData }) => {
   const { id } = useParams<{ id: string }>();
@@ -37,94 +33,23 @@ const VendorPrintMode: React.FC<Props> = ({ formData }) => {
     );
   };
 
-  const haveAttachmentFile32 = React.useMemo(() => {
-    switch (formData?.fedAttachment) {
-      case FED_ATTACHMENT_VALUE.ATTACHMENT_32A:
-        return <Attachment32a />;
-      case FED_ATTACHMENT_VALUE.ATTACHMENT_32B:
-      case FED_ATTACHMENT_VALUE.ATTACHMENT_32C:
-      case FED_ATTACHMENT_VALUE.ATTACHMENT_32D:
-        return <Attachment32bTod formData={formData} />;
-      case FED_ATTACHMENT_VALUE.NON_FEDERAL:
-      case FED_ATTACHMENT_VALUE.UH_SUBAWARD:
-        return null;
+  const vendorPrintModeForm = React.useMemo(() => {
+    switch (formData?.documentType) {
+      case PO_DOCUMENT_TYPE.PURCHASE_ORDER:
+        return <VendorPrintModePO />;
+      case PO_DOCUMENT_TYPE.PO_CHANGE:
+        return <VendorPrintModePOChangeForm />;
       default:
         return null;
     }
-  }, [formData]);
+  }, [formData?.documentType]);
 
   return (
     <Box mb={4} mt={4}>
       <Container maxWidth="lg">
         <Title />
 
-        <>
-          <TableTop />
-          <TableMiddle />
-          <TableLineItem />
-
-          <Stack>
-            <Typography variant="body2" style={{ display: 'contents' }} fontWeight="bold">
-              SPECIAL INSTRUCTIONS:{' '}
-              <Typography variant="body2" style={{ display: 'contents' }}>
-                Refunds payable to RCUH and not traveler on any unused tickets
-              </Typography>
-            </Typography>
-
-            <Grid container mt={2}>
-              <Grid item xs={9}>
-                <Typography variant="body2" fontWeight="bold">
-                  {' '}
-                  SEND INVOICE DUPLICATE TO
-                </Typography>
-
-                <Stack flexDirection="column">
-                  <Typography variant="body2">{formData?.sendInvoiceTo}</Typography>
-                  <Typography variant="body2">{formData?.invoiceDept}</Typography>
-                  <Typography variant="body2">{formData?.sendInvoiceToFaEmail}</Typography>
-                  <Typography variant="body2">{formData?.invoiceStreetAddress}</Typography>
-                  <Typography variant="body2">
-                    {formData?.invoiceCity} {formData?.invoiceState} {formData?.invoiceZip}{' '}
-                    {formData?.invoiceZip4 ? '-' : ''} {formData?.invoiceZip4}
-                  </Typography>
-                  <Typography variant="body2">{formData?.invoiceCountry}</Typography>
-                </Stack>
-              </Grid>
-
-              <Grid item xs={3} mt={14} textAlign="center">
-                <Typography variant="body2" fontWeight="bold" borderTop={1}>
-                  FISCAL AUTHORIZED SIGNATURE
-                </Typography>
-              </Grid>
-            </Grid>
-
-            <Box>
-              <Typography variant="body2" fontWeight="bold">
-                TO AVOID LATE PAYMENT
-              </Typography>
-              <Typography variant="body2">
-                Indicate Purchase Order No. and your Federal TAX ID NO.
-              </Typography>
-              <Typography variant="body2">(SSN/EIN) on invoice.</Typography>
-              <Typography variant="body2">Project No.{formData?.projectNumber}</Typography>
-              <Typography variant="body2">P.O. Initiated by {formData?.loginName}</Typography>
-            </Box>
-          </Stack>
-
-          <Box sx={{ mt: 2 }}>
-            <Stack sx={{ textAlign: 'center' }} mb={2}>
-              <Typography variant="body2" fontWeight="bold">
-                PURCHASE ORDER
-              </Typography>
-              <Typography variant="body2" fontWeight="bold">
-                DUPLICATE COPY
-              </Typography>
-            </Stack>
-
-            {formData?.attachment31 && <Attachment31 />}
-            {haveAttachmentFile32}
-          </Box>
-        </>
+        <>{vendorPrintModeForm}</>
       </Container>
 
       <Stack my={4} flexDirection={'row'} justifyContent="center">

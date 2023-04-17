@@ -9,10 +9,12 @@ import documentView from 'src/assets/images/document-view.png';
 import iconComputer from 'src/assets/images/icons/ic_computer.png';
 import logoFull from 'src/assets/images/logos/logo-full.png';
 import logo from 'src/assets/images/logos/logo.png';
+import logoGrey from 'src/assets/images/logos/logo_grey.png';
 
 export const IMAGES = {
   logo,
   logoFull,
+  logoGrey,
   background,
   backgroundDiamond,
   backgroundDiamondSmall,

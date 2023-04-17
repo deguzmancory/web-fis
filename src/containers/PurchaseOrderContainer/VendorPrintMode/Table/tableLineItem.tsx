@@ -2,10 +2,17 @@ import { Typography } from '@mui/material';
 import React from 'react';
 import { connect } from 'react-redux';
 import CustomTable from 'src/components/CustomTable';
-import { BodyRow, BodyRows, CellType } from 'src/components/CustomTable/types';
+import { BodyRows, CellType } from 'src/components/CustomTable/types';
 import { EllipsisTooltipInputCurrency } from 'src/components/common';
 import { IRootState } from 'src/redux/rootReducer';
 import { VARIOUS_PROJECT_LABEL } from '../../GeneralInfo/helpers';
+import {
+  reportEstimatedShipping,
+  reportSubtotal,
+  reportTax,
+  reportTaxRate,
+  reportTotal,
+} from './helpers';
 
 const TableLineItem: React.FC<Props> = ({ formData }) => {
   const getRecordTableHeader = (): BodyRows => [
@@ -156,7 +163,10 @@ const TableLineItem: React.FC<Props> = ({ formData }) => {
                   - Attachment 31, General Terms and Conditions Applicable to All Purchase Orders
                 </Typography>
               )}
-              <Typography variant="body2">- {formData?.fedAttachment}</Typography>
+              <Typography variant="body2">
+                - {formData?.fedAttachment}{' '}
+                {formData?.uhSubawardNumber ? `: ${formData?.uhSubawardNumber}` : ''}
+              </Typography>
               {formData?.getExempt === true && (
                 <>
                   <Typography variant="body2" fontWeight="bold" style={{ display: 'content' }}>
@@ -189,159 +199,15 @@ const TableLineItem: React.FC<Props> = ({ formData }) => {
     },
   ];
 
-  const reportSubtotal: BodyRow = {
-    style: {
-      textAlign: 'end',
-    },
-    columns: [
-      {
-        content: (
-          <Typography variant="body2" fontWeight="bold">
-            Subtotal
-          </Typography>
-        ),
-        colSpan: 3,
-        type: CellType.PRINT_CELL,
-      },
-      {
-        content: <EllipsisTooltipInputCurrency value={formData?.subtotal} name="" disabled />,
-        colSpan: 1,
-        rowSpan: 1,
-        style: {
-          padding: 0,
-          maxWidth: '40px',
-          minWidth: '40px',
-        },
-        type: CellType.PRINT_CELL_RIGHT,
-      },
-    ],
-  };
-
-  const reportTaxRate: BodyRow = {
-    style: {
-      textAlign: 'end',
-    },
-    columns: [
-      {
-        content: (
-          <Typography variant="body2" fontWeight="bold">
-            Tax Rate
-          </Typography>
-        ),
-        colSpan: 3,
-        rowSpan: 1,
-        type: CellType.PRINT_CELL,
-      },
-      {
-        content: <EllipsisTooltipInputCurrency value={formData?.taxRate} name="" disabled />,
-        colSpan: 1,
-        rowSpan: 1,
-        style: {
-          padding: 0,
-          maxWidth: '40px',
-          minWidth: '40px',
-        },
-        type: CellType.PRINT_CELL,
-      },
-    ],
-  };
-
-  const reportTax: BodyRow = {
-    style: {
-      textAlign: 'end',
-    },
-    columns: [
-      {
-        content: (
-          <Typography variant="body2" fontWeight="bold">
-            Tax
-          </Typography>
-        ),
-        colSpan: 3,
-        rowSpan: 1,
-        type: CellType.PRINT_CELL,
-      },
-      {
-        content: <EllipsisTooltipInputCurrency value={formData?.taxTotal} name="" disabled />,
-        colSpan: 1,
-        rowSpan: 1,
-        style: {
-          padding: 0,
-          maxWidth: '40px',
-          minWidth: '40px',
-        },
-        type: CellType.PRINT_CELL,
-      },
-    ],
-  };
-
-  const reportEstimatedShipping: BodyRow = {
-    style: {
-      textAlign: 'end',
-    },
-    columns: [
-      {
-        content: (
-          <Typography variant="body2" fontWeight="bold">
-            Estimated Shipping
-          </Typography>
-        ),
-        colSpan: 3,
-        rowSpan: 1,
-        type: CellType.PRINT_CELL,
-      },
-      {
-        content: <EllipsisTooltipInputCurrency value={formData?.shippingTotal} name="" disabled />,
-        colSpan: 1,
-        rowSpan: 1,
-        style: {
-          padding: 0,
-          maxWidth: '40px',
-          minWidth: '40px',
-        },
-        type: CellType.PRINT_CELL,
-      },
-    ],
-  };
-
-  const reportTotal: BodyRow = {
-    style: {
-      textAlign: 'end',
-    },
-    columns: [
-      {
-        content: (
-          <Typography variant="body2" fontWeight="bold">
-            TOTAL
-          </Typography>
-        ),
-        colSpan: 3,
-        rowSpan: 1,
-        type: CellType.PRINT_CELL,
-      },
-      {
-        content: <EllipsisTooltipInputCurrency value={formData?.total} name="" disabled />,
-        colSpan: 1,
-        rowSpan: 1,
-        style: {
-          padding: 0,
-          maxWidth: '40px',
-          minWidth: '40px',
-        },
-        type: CellType.PRINT_CELL,
-      },
-    ],
-  };
-
   const bodyList: BodyRows = [
     ...getRecordTableHeader(),
     ...reportList,
     ...getConfirmationRow(),
-    reportSubtotal,
-    reportTaxRate,
-    reportTax,
-    reportEstimatedShipping,
-    reportTotal,
+    reportSubtotal(formData?.subtotal),
+    reportTaxRate(formData?.taxRate),
+    reportTax(formData?.taxTotal),
+    reportEstimatedShipping(formData?.shippingTotal),
+    reportTotal(formData?.total),
   ];
 
   return (
