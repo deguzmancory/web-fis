@@ -4,9 +4,9 @@ import { PO_MODE, useGetPOPmtRemainingBalance } from 'src/queries';
 import { Box, Grid, Typography } from '@mui/material';
 import CustomTable from 'src/components/CustomTable';
 import { BodyBasicRows, CellType } from 'src/components/CustomTable/types';
-import { handleShowErrorMsg, localTimeToHawaii } from 'src/utils';
+import { DateFormatDisplayMinute, getDateDisplay, localTimeToHawaii } from 'src/utils';
 import { EllipsisTooltipInputCurrency, Input } from 'src/components/common';
-import { mokupDataRes } from './mokupDataRes';
+import { mockupDataRes } from './mokupDataRes';
 import TypographyLink from 'src/components/TypographyLink';
 import { useParams } from 'react-router-dom';
 import { PO_FORM_KEY } from 'src/containers/PurchaseOrderContainer/enums';
@@ -19,6 +19,11 @@ const TablePaymentRemainingBalanceLineItems: React.FC<Props> = ({
 
   const { values, setFieldValue } = formikProps;
 
+  const remainingBalanceLineItems = React.useMemo(
+    () => values.remainingBalanceLineItems || [],
+    [values.remainingBalanceLineItems]
+  );
+
   const { handleInvalidateRemainingBalance, onGetRemainingBalance } = useGetPOPmtRemainingBalance({
     id: id,
   });
@@ -27,14 +32,25 @@ const TablePaymentRemainingBalanceLineItems: React.FC<Props> = ({
     handleInvalidateRemainingBalance();
     try {
       const { data: remainingBalanceData } = await onGetRemainingBalance();
-      setFieldValue(PO_FORM_KEY.REMAINING_BALANCE, remainingBalanceData?.[0]?.amount || '200'); //TODO: Tuyen Tran remove hard code
+      setFieldValue(
+        PO_FORM_KEY.REMAINING_BALANCE,
+        remainingBalanceData?.remainingBalance?.total || mockupDataRes.remainingBalance.total //TODO: Tuyen Tran: remove mock data after BE integrate
+      );
+      setFieldValue(
+        PO_FORM_KEY.REMAINING_BALANCE_LINE_ITEMS,
+        remainingBalanceData?.remainingBalance?.itemList || mockupDataRes.remainingBalance.itemList //TODO: Tuyen Tran: remove mock data after BE integrate
+      );
+      setFieldValue(
+        PO_FORM_KEY.REMAINING_BALANCE_AS_OF_DATE,
+        remainingBalanceData?.asOfDate || getDateDisplay(new Date(), DateFormatDisplayMinute) //TODO: Tuyen Tran: remove mock data after BE integrate
+      );
     } catch (error) {
-      handleShowErrorMsg(error);
+      // handleShowErrorMsg(error);  //TODO: Tuyen Tran: uncomment after BE integrate
     }
   };
 
   // TODO: Tuyen Tran replace mockup data
-  const lineItemRows: BodyBasicRows = mokupDataRes?.map((lineItem, _) => {
+  const lineItemRows: BodyBasicRows = remainingBalanceLineItems.map((lineItem, _) => {
     return {
       style: {
         verticalAlign: 'top',
@@ -123,7 +139,7 @@ const TablePaymentRemainingBalanceLineItems: React.FC<Props> = ({
           content: (
             <EllipsisTooltipInputCurrency
               name=""
-              value={lineItem.subBudgetCategory}
+              value={lineItem.amount}
               disabled
               style={{ width: 110, padding: '6px' }}
             />
@@ -145,8 +161,10 @@ const TablePaymentRemainingBalanceLineItems: React.FC<Props> = ({
     <Box>
       <Box mb={1}>
         <Typography variant="h5" fontWeight="bold" style={{ display: 'contents' }}>
-          PO Remaining Balance As of: {/* TODO: Tuyen Tran update real time when refresh data */}
-          <Typography style={{ display: 'contents' }}>{localTimeToHawaii(values.date)}</Typography>
+          PO Remaining Balance As of:{' '}
+          <Typography style={{ display: 'contents' }}>
+            {localTimeToHawaii(values.remainingBalanceAsOfDate)}
+          </Typography>
         </Typography>
       </Box>
 

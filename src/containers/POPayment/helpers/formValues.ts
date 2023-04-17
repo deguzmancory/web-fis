@@ -6,9 +6,16 @@ import {
   UpdatePOPaymentPayload,
 } from 'src/queries';
 import { isPartialPOPayment } from 'src/queries/POPayment/helpers';
-import { DateFormat, getDate, getDateDisplay, localTimeToHawaii } from 'src/utils';
+import {
+  DateFormat,
+  DateFormatDisplayMinute,
+  getDate,
+  getDateDisplay,
+  localTimeToHawaii,
+} from 'src/utils';
 import { isEmpty } from 'src/validations';
 import { DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS } from '../EquipmentInventoriesV2/helpers';
+import { mockupDataRes } from '../PaymentBalanceLineItems/mokupDataRes';
 import { UpdatePOPaymentFormValue } from '../types';
 import {
   emptyUpdatePOPaymentFormValue,
@@ -23,7 +30,7 @@ export const getPOPaymentFormValueFromResponse = ({
   profile,
 }: {
   poPaymentResponse: POPaymentResponse;
-  remainingBalanceResponse: POPaymentRemainingBalance[];
+  remainingBalanceResponse: POPaymentRemainingBalance;
   profile: MyProfile;
 }): UpdatePOPaymentFormValue => {
   const transformedLineItems = poPaymentResponse.lineItems.map((lineItem) => ({
@@ -40,6 +47,16 @@ export const getPOPaymentFormValueFromResponse = ({
         receiveDate: getDate(equipmentInventory.receiveDate),
       })) || []
     : getInitialPaymentEquipmentInventories(DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS);
+
+  const transformedRemainingBalanceLineItems = !isEmpty(remainingBalanceResponse?.remainingBalance)
+    ? remainingBalanceResponse.remainingBalance.itemList?.map((lineItem) => ({
+        ...lineItem,
+        amount: Number(lineItem.amount || 0),
+      })) || []
+    : mockupDataRes.remainingBalance.itemList.map((lineItem) => ({
+        ...lineItem,
+        amount: Number(lineItem.amount || 0),
+      })); //TODO: Tuyen Tran: remove mock data after BE integrate
 
   return {
     ...poPaymentResponse,
@@ -72,7 +89,12 @@ export const getPOPaymentFormValueFromResponse = ({
       isAdvancePayment: true,
     }),
     paymentTotal: Number(poPaymentResponse.paymentTotal || 0),
-    remainingBalance: 100, //TODO: Tuyen Tran replace with remainingBalanceResponse
+    remainingBalance:
+      remainingBalanceResponse?.remainingBalance?.total || mockupDataRes.remainingBalance.total, //TODO: Tuyen Tran replace with remainingBalanceResponse
+    remainingBalanceLineItems: transformedRemainingBalanceLineItems,
+    remainingBalanceAsOfDate:
+      getDateDisplay(remainingBalanceResponse?.asOfDate, DateFormatDisplayMinute) ||
+      getDateDisplay(mockupDataRes?.asOfDate, DateFormatDisplayMinute), //TODO: Tuyen Tran: remove mock data after BE integrate
 
     paymentEquipmentInventories: transformedPaymentEquipmentInventories,
     paymentNumberOfEquipmentInventories: getNumberOfEquipmentInventories(
@@ -97,6 +119,7 @@ export const getUpdatePOPaymentPayload = ({
 }): UpdatePOPaymentPayload => {
   const isAdvancePaymentResponse = isPartialPOPayment(formValues.paymentType);
 
+  //remove unused props from payload
   const {
     advancePaymentLineItem,
     partialOrFinalPaymentLineItem,
@@ -104,6 +127,8 @@ export const getUpdatePOPaymentPayload = ({
     paymentEquipmentInventories,
     placeholderFileAttachment,
     remainingBalance,
+    remainingBalanceLineItems,
+    remainingBalanceAsOfDate,
     ...payloadProps
   } = formValues;
 

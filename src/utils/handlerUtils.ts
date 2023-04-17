@@ -4,9 +4,7 @@ import { Location } from 'history';
 import _, { get, isDate as isDateLodash, isEqual } from 'lodash';
 import { parse } from 'qs';
 import shortid from 'shortid';
-import { MyProfile } from 'src/queries';
-import { ROLE_NAME } from 'src/queries/Profile/helpers';
-import { ErrorService, RoleService, Toastify } from 'src/services';
+import { ErrorService, Toastify } from 'src/services';
 import { isEmpty } from 'src/validations';
 
 export const emptyFunction = () => {};
@@ -165,22 +163,6 @@ export const getOptionsByEnum = (enumObject) => {
     label: enumObject[key],
     value: enumObject[key],
   }));
-};
-
-export const getRoleInfoOfProfile = ({ profile }: { profile: MyProfile }) => {
-  const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
-
-  switch (currentRole) {
-    case ROLE_NAME.PI:
-      return profile.fisPiInfo;
-    case ROLE_NAME.SU:
-      return profile.fisSuInfo;
-    case ROLE_NAME.FA:
-      return profile.fisFaInfo;
-
-    default:
-      return null;
-  }
 };
 
 export const isString = (value: any): value is String => {

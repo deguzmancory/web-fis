@@ -240,7 +240,7 @@ const CreateVendorRegistration: React.FC<Props> = ({
         <SectionLayout>
           <SelectVendor formikProps={formikProps} disabled={isViewOnly} />
         </SectionLayout>
-        <SectionLayout>
+        <SectionLayout sx={{ p: 0, border: 'none' }}>
           <FileAttachments
             formikProps={formikProps}
             vendorRegistrationId={vendorRegistrationId}

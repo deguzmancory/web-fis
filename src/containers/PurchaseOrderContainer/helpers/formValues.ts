@@ -1,7 +1,7 @@
 import { PATHS } from 'src/appConfig/paths';
 import { MyProfile } from 'src/queries';
 import { isPOChangeAmountForm, isPOChangeAmountTerminatedForm } from 'src/queries/POChange/helpers';
-import { ROLE_NAME } from 'src/queries/Profile/helpers';
+import { ROLE_NAME, getRoleInfoOfProfile } from 'src/queries/Profile/helpers';
 import {
   AdditionalPOForm,
   PODetailResponse,
@@ -15,7 +15,6 @@ import {
   DateFormat,
   getDate,
   getDateDisplay,
-  getRoleInfoOfProfile,
   isString,
   isoFormat,
   localTimeToHawaii,

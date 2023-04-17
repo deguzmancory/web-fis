@@ -1,3 +1,6 @@
+import { RoleService } from 'src/services';
+import { MyProfile } from './types';
+
 export enum ROLE_NAME {
   CU = 'CU',
   PI = 'PI',
@@ -43,4 +46,20 @@ export const isSU = (role: string) => {
 };
 export const isFA = (role: string) => {
   return role === ROLE_NAME.FA || role === getRoleName(ROLE_NAME.FA);
+};
+
+export const getRoleInfoOfProfile = ({ profile }: { profile: MyProfile }) => {
+  const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
+
+  switch (currentRole) {
+    case ROLE_NAME.PI:
+      return profile.fisPiInfo;
+    case ROLE_NAME.SU:
+      return profile.fisSuInfo;
+    case ROLE_NAME.FA:
+      return profile.fisFaInfo;
+
+    default:
+      return null;
+  }
 };

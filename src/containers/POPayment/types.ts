@@ -2,6 +2,7 @@ import {
   POGeneralInfo,
   POLineItem,
   POPaymentLineItem,
+  POPaymentRemainingBalanceItemList,
   POPaymentRemittanceLineItem,
   POPurchaseInfo,
   UpdatePOPaymentPayload,
@@ -20,8 +21,11 @@ export interface UpdatePOPaymentFormValue
   advancePaymentLineItem: POPaymentLineItem[];
   partialOrFinalPaymentLineItem: POPaymentLineItem[];
   remittanceLineItems: POPaymentRemittanceLineItem[];
+
   //po remaining balance
-  remainingBalance?: number;
+  remainingBalance: number;
+  remainingBalanceLineItems: POPaymentRemainingBalanceItemList[];
+  remainingBalanceAsOfDate: string;
 
   //attachments
   placeholderFileAttachment: POPlaceholderFileAttachment;

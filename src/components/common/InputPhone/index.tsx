@@ -56,7 +56,6 @@ const InputPhone: React.FC<Props> = ({
           countryOptionsOrder={['US']}
           countries={onlyUS ? ['US'] : countries}
           disabled={disabled}
-          c
           {...props}
         />
 

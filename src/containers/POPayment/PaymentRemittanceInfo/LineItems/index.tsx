@@ -17,7 +17,7 @@ import { isEqualPrevAndNextFormikValues } from 'src/utils';
 const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
   const { errors, values, touched, setFieldValue, getFieldProps } = formikProps;
   const lineItemValue = React.useMemo(() => {
-    return values.remittanceLineItems;
+    return values.remittanceLineItems || [];
   }, [values.remittanceLineItems]);
 
   const paymentLineItemKey = PO_FORM_KEY.REMITTANCE_LINE_ITEMS;
@@ -47,7 +47,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
 
   const updatePaymentAmountTotal = React.useCallback(
     ({ lineItemRow, index }: { lineItemRow: POPaymentRemittanceLineItem; index: number }) => {
-      let updatedPaymentTotal = Number(values.remittance.remittanceTotal || 0);
+      let updatedPaymentTotal = Number(values.remittance?.remittanceTotal || 0);
       const currentLineItemAmount = Number(lineItemRow.amount || 0);
 
       updatedPaymentTotal = lineItemValue.reduce((total, currentLineItem, currentIndex) => {
@@ -61,7 +61,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
       );
     },
 
-    [lineItemValue, setFieldValue, values.remittance.remittanceTotal]
+    [lineItemValue, setFieldValue, values.remittance?.remittanceTotal]
   );
 
   const handleAmountChange = React.useCallback(
@@ -236,7 +236,7 @@ export default React.memo(TableLineItems, (prevProps, nextProps) => {
 
   const formKeysNeedRender = [
     PO_FORM_KEY.REMITTANCE_LINE_ITEMS,
-    PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_TOTAL,
+    `${PO_FORM_KEY.PAYMENT_REMITTANCE}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_TOTAL}`,
   ];
 
   return (

@@ -128,6 +128,11 @@ export const emptyUpdatePOPaymentFormValue: UpdatePOPaymentFormValue = {
   ),
   paymentNumberOfEquipmentInventories: DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS,
 
+  //remaining balance
+  remainingBalance: null,
+  remainingBalanceAsOfDate: '',
+  remainingBalanceLineItems: [],
+
   // file attachment
   fileAttachments: [],
   placeholderFileAttachment: null,

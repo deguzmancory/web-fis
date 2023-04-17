@@ -34,7 +34,7 @@ export const formatDateWithTimeZone = (value: string, format: string = 'MM/DD/YY
   var customDayjs = require('dayjs');
   var timezone = require('dayjs/plugin/timezone');
   customDayjs.extend(timezone);
-  return customDayjs().tz('US/Hawaii').format(format);
+  return customDayjs(value).tz('US/Hawaii').format(format);
 };
 
 export const formatShowSSN = (value: string, from: number = 6) => {

@@ -12,9 +12,9 @@ import {
 import { PO_DOCUMENT_TYPE } from 'src/queries';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator } from 'src/services';
-import Title from './title';
 import VendorPrintModePO from './PO';
 import VendorPrintModePOChangeForm from './POChangeForm';
+import Title from './title';
 
 const VendorPrintMode: React.FC<Props> = ({ formData }) => {
   const { id } = useParams<{ id: string }>();

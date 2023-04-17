@@ -6,9 +6,9 @@ import { POPaymentRemainingBalance } from './types';
 
 export function useGetPOPmtRemainingBalance(
   options?: UseQueryOptions<
-    ApiResponseType<POPaymentRemainingBalance[]>,
+    ApiResponseType<POPaymentRemainingBalance>,
     Error,
-    POPaymentRemainingBalance[]
+    POPaymentRemainingBalance
   > & {
     id: string;
   }
@@ -18,13 +18,13 @@ export function useGetPOPmtRemainingBalance(
     error,
     isFetching: isLoading,
     refetch: onGetRemainingBalance,
-  } = useQuery<ApiResponseType<POPaymentRemainingBalance[]>, Error, POPaymentRemainingBalance[]>(
+  } = useQuery<ApiResponseType<POPaymentRemainingBalance>, Error, POPaymentRemainingBalance>(
     [API_QUERIES.PO_PAYMENT_REMAINING_BALANCE, { id: options.id }],
     {
       queryFn: (query) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [_, ...params] = query.queryKey;
-        return responseWrapper<ApiResponseType<POPaymentRemainingBalance[]>>(
+        return responseWrapper<ApiResponseType<POPaymentRemainingBalance>>(
           apiClient.getPOPaymentRemainingBalance,
           params
         );

@@ -144,6 +144,8 @@ export enum PO_FORM_KEY {
 
   // Payment Remaining Balance
   REMAINING_BALANCE = 'remainingBalance',
+  REMAINING_BALANCE_LINE_ITEMS = 'remainingBalanceLineItems',
+  REMAINING_BALANCE_AS_OF_DATE = 'remainingBalanceAsOfDate',
 
   // Remittance Information
 

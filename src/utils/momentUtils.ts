@@ -24,10 +24,10 @@ export const isoFormat = 'YYYY-MM-DDTHH:mm:ss.sssZ';
  * @param {string|date|Dayjs} value
  * @param {string} languageCode
  */
-export const getDateDisplay = (value: string | Date) => {
+export const getDateDisplay = (value: string | Date, format = DateFormat) => {
   if (!value) return '';
 
-  return dayjs(value).format(DateFormat);
+  return dayjs(value).format(format);
 };
 
 /**

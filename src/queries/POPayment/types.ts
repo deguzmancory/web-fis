@@ -196,11 +196,19 @@ export interface POPaymentRemittance {
 }
 
 export interface POPaymentRemainingBalance {
+  asOfDate: string;
+  remainingBalance: {
+    itemList: POPaymentRemainingBalanceItemList[];
+    total: number;
+  };
+}
+
+export interface POPaymentRemainingBalanceItemList {
   projectNumber: string;
   subProject: string;
   budgetCategory: string;
   subBudgetCategory: string;
-  amount: string;
+  amount: number;
 }
 
 export interface POPaymentCommonResponse {}

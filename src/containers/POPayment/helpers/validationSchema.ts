@@ -87,7 +87,7 @@ export const getPOPaymentFormValidationSchema = ({ action }: { action: PO_ACTION
           ),
         })
       ),
-      remittance: Yup.lazy((remittanceValue, remittanceOptions) => {
+      remittance: Yup.lazy((_remittanceValue, remittanceOptions) => {
         return Yup.object().shape({
           remittanceTotal: Yup.number()
             .required('The remittance total does not match the payment total.')

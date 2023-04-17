@@ -74,7 +74,7 @@ const POPayment: React.FC<Props> = ({
 
   const { profile } = useProfile();
   const { onGetRemainingBalance } = useGetPOPmtRemainingBalance({
-    onError: (error: Error) => handleShowErrorMsg(error),
+    // onError: (error: Error) => handleShowErrorMsg(error), //TODO: Tuyen Tran: uncomment after BE integrate
     id: id,
   });
   const { onGetPOPaymentById, handleInvalidatePOPaymentDetail } = useGetPOPaymentDetail({

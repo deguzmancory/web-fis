@@ -37,8 +37,12 @@ const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPro
   const { values, errors, touched, setFieldValue, getFieldProps, setFieldTouched } = formikProps;
 
   const lineItemsValue = React.useMemo(() => {
+    if (disabled) {
+      return values.lineItems.slice(0, -1) || [];
+    }
+
     return values.lineItems || [];
-  }, [values.lineItems]);
+  }, [disabled, values.lineItems]);
 
   const hideProjectNumberColumn = React.useMemo(
     () => !isVariousProject(values.projectNumber),
