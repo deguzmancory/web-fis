@@ -6,10 +6,10 @@ import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import CustomFilter from 'src/components/CustomFilter';
-import { Checkbox, DatePicker, Input } from 'src/components/common';
+import { Checkbox, DateRangePicker, Input } from 'src/components/common';
 import { PO_LIST_QUERY_KEY } from 'src/containers/POListing/enum';
 import { PO_DETAIL_STATUS, PO_DOCUMENT_TYPE } from 'src/queries';
-import { getDate, getDateDisplay, isDate } from 'src/utils';
+import { getDate, getDateDisplay } from 'src/utils';
 import {
   CustomFilterPOFormValue,
   CustomFilterPOQueryValue,
@@ -41,7 +41,26 @@ const SearchPendingReviewApprove = ({
 
     Object.entries(searchInputValues).forEach(([key, value]) => {
       if (!!value) {
-        query.set(key, isDate(value) ? getDateDisplay(value) : value);
+        if (Array.isArray(value)) {
+          switch (key) {
+            case PO_LIST_QUERY_KEY.MODIFIED_DATE: {
+              if (value.length < 2 || !value[0] || !value[1]) {
+                query.delete(PO_LIST_QUERY_KEY.MODIFIED_START_DATE);
+                query.delete(PO_LIST_QUERY_KEY.MODIFIED_END_DATE);
+                return;
+              }
+
+              query.set(PO_LIST_QUERY_KEY.MODIFIED_START_DATE, getDateDisplay(value[0]));
+              query.set(PO_LIST_QUERY_KEY.MODIFIED_END_DATE, getDateDisplay(value[1]));
+              return;
+            }
+
+            default:
+              return;
+          }
+        }
+
+        query.set(key, value);
       } else {
         query.delete(key);
       }
@@ -57,7 +76,10 @@ const SearchPendingReviewApprove = ({
       vendorName: searchValues.vendorName || '',
       faReviewer: searchValues.faReviewer || '',
       piName: searchValues.piName || '',
-      modifiedDate: getDate(searchValues.modifiedDate),
+      modifiedDate:
+        searchValues.modifiedStartDate && searchValues.modifiedEndDate
+          ? [getDate(searchValues.modifiedStartDate), getDate(searchValues.modifiedEndDate)]
+          : null,
 
       documentType: searchValues.documentType
         ? (searchValues.documentType.split(',') as PO_DOCUMENT_TYPE[])
@@ -139,12 +161,13 @@ const SearchPendingReviewApprove = ({
             />
           </Grid>
           <Grid item xs={4}>
-            <DatePicker
+            <DateRangePicker
               label={'Modified Date'}
               placeholder="Search"
               {...getFieldProps(PO_LIST_QUERY_KEY.MODIFIED_DATE)}
-              selected={getDate(values.modifiedDate)}
               onChange={setFieldValue}
+              selecteds={values.modifiedDate}
+              monthsShown={2}
             />
           </Grid>
           <Grid item xs={2}>

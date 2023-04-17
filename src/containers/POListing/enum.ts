@@ -24,7 +24,13 @@ export enum PO_LIST_QUERY_KEY {
   PROJECT_NUMBER = 'projectNumber',
   FA_REVIEWER = 'faReviewer',
   PI_NAME = 'piName',
-  MODIFIED_DATE = 'modifiedDate',
   DOCUMENT_TYPE = 'documentType',
   STATUS = 'status',
+
+  // --- date range
+  //for form
+  MODIFIED_DATE = 'modifiedDate',
+  //for params
+  MODIFIED_START_DATE = 'modifiedStartDate',
+  MODIFIED_END_DATE = 'modifiedEndDate',
 }

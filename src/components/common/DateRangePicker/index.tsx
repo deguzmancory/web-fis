@@ -12,13 +12,15 @@ export type DateRange = [Date, Date];
 
 const DateRangePicker: React.FC<Props> = ({
   label,
-  onChange,
+  name,
   errorMessage,
   containerClassName,
   classNames,
   placeholder = 'MM/DD/YYYY - MM/DD/YYYY',
   dateFormat = 'MM/DD/YYYY',
   selecteds,
+  positionFixed = true,
+  onChange,
   ...props
 }) => {
   const id = useRef<string>(`datepicker-${getRandomId()}`);
@@ -30,11 +32,11 @@ const DateRangePicker: React.FC<Props> = ({
 
     if (!!dates[0] && !!dates[1]) {
       setIsOpen(false);
-      onChange(dates);
+      onChange(name, dates);
     }
   };
 
-  const fomartDates = (): string => {
+  const formatDates = (): string => {
     if (isEmpty(selecteds)) return '';
 
     return selecteds?.map((x) => dayjs(x).format(dateFormat as string)).join(' - ') || '';
@@ -50,6 +52,7 @@ const DateRangePicker: React.FC<Props> = ({
   const hasError = !isEmpty(errorMessage);
   const startDate = dates?.[0];
   const endDate = dates?.[1];
+
   return (
     <Element
       id={id.current}
@@ -68,13 +71,17 @@ const DateRangePicker: React.FC<Props> = ({
         )}
         showPopperArrow={false}
         {...props}
-        value={fomartDates()}
+        value={formatDates()}
         selectsRange
         startDate={startDate}
         endDate={endDate}
         open={isOpen}
         onInputClick={() => setIsOpen(true)}
         onClickOutside={handleClickOutside}
+        popperProps={{
+          positionFixed: positionFixed,
+        }}
+        portalId="root"
       />
     </Element>
   );
@@ -86,8 +93,9 @@ type Props = Omit<ReactDatePickerProps, 'onChange'> & {
   classNames?: string;
   placeholder?: string;
   label?: string;
-  onChange?: (value: DateRange) => void;
   selecteds?: [Date, Date];
+  positionFixed?: boolean;
+  onChange?: (name: string, value: DateRange) => void;
 };
 
 export default DateRangePicker;

@@ -65,8 +65,12 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
     () => query.get(PO_LIST_QUERY_KEY.PI_NAME) || undefined,
     [query]
   );
-  const modifiedDateSearch = React.useMemo(
-    () => query.get(PO_LIST_QUERY_KEY.MODIFIED_DATE) || undefined,
+  const modifiedStartDateSearch = React.useMemo(
+    () => query.get(PO_LIST_QUERY_KEY.MODIFIED_START_DATE) || undefined,
+    [query]
+  );
+  const modifiedEndDateSearch = React.useMemo(
+    () => query.get(PO_LIST_QUERY_KEY.MODIFIED_END_DATE) || undefined,
     [query]
   );
   const documentTypeFilter = React.useMemo(
@@ -85,17 +89,19 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
       vendorName: vendorNameSearch,
       faReviewer: faReviewerSearch,
       piName: piNameSearch,
-      modifiedDate: modifiedDateSearch,
+      modifiedStartDate: modifiedStartDateSearch,
+      modifiedEndDate: modifiedEndDateSearch,
       documentType: documentTypeFilter,
       status: statusFilter,
     };
   }, [
-    faReviewerSearch,
-    modifiedDateSearch,
-    piNameSearch,
     poNumberSearch,
     projectNumberSearch,
     vendorNameSearch,
+    faReviewerSearch,
+    piNameSearch,
+    modifiedStartDateSearch,
+    modifiedEndDateSearch,
     documentTypeFilter,
     statusFilter,
   ]);

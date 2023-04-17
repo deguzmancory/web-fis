@@ -6,7 +6,8 @@ export type CustomFilterPOQueryValue = {
   vendorName: string;
   faReviewer: string;
   piName: string;
-  modifiedDate: string;
+  modifiedStartDate: string;
+  modifiedEndDate: string;
   documentType: string;
   status: string;
 };
@@ -17,7 +18,7 @@ export type CustomFilterPOFormValue = {
   vendorName: string;
   faReviewer: string;
   piName: string;
-  modifiedDate: string | Date;
+  modifiedDate: [Date, Date];
   documentType: PO_DOCUMENT_TYPE[];
   status: PO_DETAIL_STATUS[];
 };

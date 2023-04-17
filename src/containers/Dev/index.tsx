@@ -37,6 +37,8 @@ import { Toastify } from 'src/services';
 import { emptyFunction } from 'src/utils';
 import CustomTableContainer from './customTable';
 import VerticalTabs from './verticalTabs';
+import POHeaderTable from '../POListing/TableList/header';
+import { PO_LIST_QUERY_KEY } from '../POListing/enum';
 
 const Dev: React.FC<Props> = ({ location, onShowDialog, onHideDialog, onHideAllDialog }) => {
   const currentLocation = useLocation();
@@ -68,7 +70,7 @@ const Dev: React.FC<Props> = ({ location, onShowDialog, onHideDialog, onHideAllD
     setDatePicked(value);
   };
 
-  const handleDateRangePickerChage = (value: DateRange) => {
+  const handleDateRangePickerChage = (name, value: DateRange) => {
     console.log(`handleDateRangePickerChage`, value);
     setDateRange(value);
   };
@@ -185,6 +187,24 @@ const Dev: React.FC<Props> = ({ location, onShowDialog, onHideDialog, onHideAllD
 
   return (
     <Container maxWidth="lg">
+      <View className="mt-32">
+        <h2>Filter Chips</h2>
+        <POHeaderTable
+          searchValues={{
+            number: query.get(PO_LIST_QUERY_KEY.PO_NUMBER),
+            projectNumber: query.get(PO_LIST_QUERY_KEY.PROJECT_NUMBER),
+            vendorName: query.get(PO_LIST_QUERY_KEY.VENDOR_NAME),
+            faReviewer: query.get(PO_LIST_QUERY_KEY.FA_REVIEWER),
+            piName: query.get(PO_LIST_QUERY_KEY.PI_NAME),
+            modifiedStartDate: query.get(PO_LIST_QUERY_KEY.MODIFIED_START_DATE),
+            modifiedEndDate: query.get(PO_LIST_QUERY_KEY.MODIFIED_END_DATE),
+            documentType: query.get(PO_LIST_QUERY_KEY.DOCUMENT_TYPE),
+            status: query.get(PO_LIST_QUERY_KEY.STATUS),
+          }}
+          allowSelectWorkflow={false}
+        />
+      </View>
+
       <View className="mt-32">
         <h2>Vertical Tabs</h2>
         <VerticalTabs />
@@ -347,6 +367,7 @@ const Dev: React.FC<Props> = ({ location, onShowDialog, onHideDialog, onHideAllD
               selecteds={dateRange}
               label="date range 1"
               onChange={handleDateRangePickerChage}
+              monthsShown={2}
             />
           </div>
           <div className="column">
