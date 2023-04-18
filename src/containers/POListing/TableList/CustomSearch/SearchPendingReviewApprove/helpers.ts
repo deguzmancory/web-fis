@@ -8,8 +8,15 @@ export type CustomFilterPOQueryValue = {
   piName: string;
   modifiedStartDate: string;
   modifiedEndDate: string;
+  checkStartDate: string;
+  checkEndDate: string;
+  finalApprovedStartDate: string;
+  finalApprovedEndDate: string;
+  printedStartDate: string;
+  printedEndDate: string;
   documentType: string;
   status: string;
+  paymentType: string;
 };
 
 export type CustomFilterPOFormValue = {

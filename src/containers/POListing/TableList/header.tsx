@@ -5,15 +5,20 @@ import { useHistory, useLocation } from 'react-router-dom';
 import SearchChips, { ChipsData } from 'src/components/SearchChips';
 import { Select } from 'src/components/common';
 import { IRootState } from 'src/redux/store';
-import { PO_LIST_QUERY_KEY } from '../enum';
+import { getOptionLabel } from 'src/utils';
+import { PO_LIST_QUERY_KEY, PURCHASING_LIST_WORK_FLOW_STATUS_KEY } from '../enum';
+import SearchApproved from './CustomSearch/SearchApproved';
+import {
+  documentTypeApprovedOptions,
+  paymentTypeOptions,
+} from './CustomSearch/SearchApproved/helpers';
 import SearchPendingReviewApprove from './CustomSearch/SearchPendingReviewApprove';
 import {
   CustomFilterPOQueryValue,
-  documentTypePendingApproveReviewOptions,
   poStatusOptions,
 } from './CustomSearch/SearchPendingReviewApprove/helpers';
 import { purchasingListType } from './helpers';
-import { getOptionLabel } from 'src/utils';
+import SearchPOChangePayment from './CustomSearch/SearchPOChangePayment';
 
 export interface SearchChip {
   id: string;
@@ -69,11 +74,32 @@ const POHeaderTable: FC<Props> = ({ searchValues, currentRole, allowSelectWorkfl
         type: 'dateRange',
       },
       {
+        name: 'checkStartDate;checkEndDate',
+        nameSplitter: ';',
+        label: 'Check Date',
+        value: [searchValues.checkStartDate, searchValues.checkEndDate],
+        type: 'dateRange',
+      },
+      {
+        name: 'finalApprovedStartDate;finalApprovedEndDate',
+        nameSplitter: ';',
+        label: 'Approved Date',
+        value: [searchValues.finalApprovedStartDate, searchValues.finalApprovedEndDate],
+        type: 'dateRange',
+      },
+      {
+        name: 'printedStartDate;printedEndDate',
+        nameSplitter: ';',
+        label: 'Printed Date',
+        value: [searchValues.printedStartDate, searchValues.printedEndDate],
+        type: 'dateRange',
+      },
+      {
         name: 'documentType',
         label: 'Document Type',
         value: searchValues.documentType || [],
         type: 'filter',
-        customRenderFn: (value) => getOptionLabel(documentTypePendingApproveReviewOptions, value),
+        customRenderFn: (value) => getOptionLabel(documentTypeApprovedOptions, value),
       },
       {
         name: 'status',
@@ -82,12 +108,26 @@ const POHeaderTable: FC<Props> = ({ searchValues, currentRole, allowSelectWorkfl
         type: 'filter',
         customRenderFn: (value) => getOptionLabel(poStatusOptions, value),
       },
+      {
+        name: 'paymentType',
+        label: 'Payment Type',
+        value: searchValues.paymentType || [],
+        type: 'filter',
+        customRenderFn: (value) => getOptionLabel(paymentTypeOptions, value),
+      },
     ],
     [searchValues]
   );
 
   const onSearch = (_, value) => {
     if (!value) return;
+    for (const searchValue in searchValues) {
+      // eslint-disable-next-line security/detect-object-injection
+      if (searchValues[searchValue] !== undefined) {
+        query.delete(searchValue);
+      }
+    }
+
     query.set(PO_LIST_QUERY_KEY.WORKFLOW_STATUS, value);
     history.push({ search: query.toString() });
   };
@@ -96,6 +136,25 @@ const POHeaderTable: FC<Props> = ({ searchValues, currentRole, allowSelectWorkfl
     () => purchasingListType.filter((item) => item.roles.some((role) => role === currentRole)),
     [currentRole]
   );
+
+  const changeFormFilterValue = useMemo(() => {
+    switch (searchStatusText) {
+      case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.PENDING_PO_DOCUMENTS:
+      case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.REVIEW_APPROVE_PO_DOCUMENTS:
+      case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.ALL_PO_DOCUMENTS:
+        return <SearchPendingReviewApprove searchValues={searchValues} />;
+      case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.APPROVED_PO_DOCUMENTS:
+        return <SearchApproved searchValues={searchValues} />;
+      case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.PO_CHANGE:
+      case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.PO_PAYMENT:
+      case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.OUTSTANDING_PO_DOCUMENTS:
+        return (
+          <SearchPOChangePayment searchValues={searchValues} searchStatusText={searchStatusText} />
+        );
+      default:
+        return null;
+    }
+  }, [searchStatusText, searchValues]);
 
   return (
     <Box sx={{ mb: 1 }}>
@@ -112,9 +171,7 @@ const POHeaderTable: FC<Props> = ({ searchValues, currentRole, allowSelectWorkfl
         </Box>
       )}
 
-      <Box mt={1}>
-        <SearchPendingReviewApprove searchValues={searchValues} />
-      </Box>
+      <Box mt={1}>{changeFormFilterValue}</Box>
 
       <Box>
         <SearchChips data={tableColumnsForChips} />

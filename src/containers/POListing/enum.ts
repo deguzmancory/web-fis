@@ -33,4 +33,24 @@ export enum PO_LIST_QUERY_KEY {
   //for params
   MODIFIED_START_DATE = 'modifiedStartDate',
   MODIFIED_END_DATE = 'modifiedEndDate',
+  PAYMENT_REQUEST_NUMBER = 'paymentRequestNumber',
+  CHECK_NUMBER = 'checkNumber',
+  // for form
+  CHECK_DATE = 'checkDate',
+  //  for params
+  CHECK_START_DATE = 'checkStartDate',
+  CHECK_END_DATE = 'checkEndDate',
+
+  // for form
+  FINAL_APPROVED_DATE = 'finalApprovedDate',
+  // for parmas
+  FINAL_APPROVED_START_DATE = 'finalApprovedStartDate',
+  FINAL_APPROVED_END_DATE = 'finalApprovedEndDate',
+  // for form
+  PRINTED_DATE = 'printedDate',
+  // for params
+  PRINTED_START_DATE = 'printedStartDate',
+  PRINTED_END_DATE = 'printedEndDate',
+
+  PAYMENT_TYPE = 'paymentType',
 }

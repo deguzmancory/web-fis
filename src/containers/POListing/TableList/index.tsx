@@ -73,12 +73,57 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
     () => query.get(PO_LIST_QUERY_KEY.MODIFIED_END_DATE) || undefined,
     [query]
   );
+
+  const paymentRequestNumberSearch = React.useMemo(
+    () => query.get(PO_LIST_QUERY_KEY.PAYMENT_REQUEST_NUMBER) || undefined,
+    [query]
+  );
+
+  const checkNumberSearch = React.useMemo(
+    () => query.get(PO_LIST_QUERY_KEY.PAYMENT_REQUEST_NUMBER) || undefined,
+    [query]
+  );
+
+  const checkStartDateSearch = React.useMemo(
+    () => query.get(PO_LIST_QUERY_KEY.CHECK_START_DATE) || undefined,
+    [query]
+  );
+
+  const checkEndDateSearch = React.useMemo(
+    () => query.get(PO_LIST_QUERY_KEY.CHECK_END_DATE) || undefined,
+    [query]
+  );
+
+  const finalApprovedStartDateSearch = React.useMemo(
+    () => query.get(PO_LIST_QUERY_KEY.FINAL_APPROVED_START_DATE) || undefined,
+    [query]
+  );
+
+  const finalApprovedEndDateSearch = React.useMemo(
+    () => query.get(PO_LIST_QUERY_KEY.FINAL_APPROVED_END_DATE) || undefined,
+    [query]
+  );
+
+  const printedStartDateSearch = React.useMemo(
+    () => query.get(PO_LIST_QUERY_KEY.PRINTED_START_DATE) || undefined,
+    [query]
+  );
+  const printedEndDateSearch = React.useMemo(
+    () => query.get(PO_LIST_QUERY_KEY.PRINTED_END_DATE) || undefined,
+    [query]
+  );
+
   const documentTypeFilter = React.useMemo(
     () => query.get(PO_LIST_QUERY_KEY.DOCUMENT_TYPE) || undefined,
     [query]
   );
   const statusFilter = React.useMemo(
     () => query.get(PO_LIST_QUERY_KEY.STATUS) || undefined,
+    [query]
+  );
+
+  const paymentTypeFilter = React.useMemo(
+    () => query.get(PO_LIST_QUERY_KEY.PAYMENT_TYPE) || undefined,
     [query]
   );
 
@@ -91,8 +136,17 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
       piName: piNameSearch,
       modifiedStartDate: modifiedStartDateSearch,
       modifiedEndDate: modifiedEndDateSearch,
+      paymentRequestNumber: paymentRequestNumberSearch,
+      checkNumber: checkNumberSearch,
+      checkStartDate: checkStartDateSearch,
+      checkEndDate: checkEndDateSearch,
+      finalApprovedStartDate: finalApprovedStartDateSearch,
+      finalApprovedEndDate: finalApprovedEndDateSearch,
+      printedStartDate: printedStartDateSearch,
+      printedEndDate: printedEndDateSearch,
       documentType: documentTypeFilter,
       status: statusFilter,
+      paymentType: paymentTypeFilter,
     };
   }, [
     poNumberSearch,
@@ -102,8 +156,17 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
     piNameSearch,
     modifiedStartDateSearch,
     modifiedEndDateSearch,
+    paymentRequestNumberSearch,
+    checkNumberSearch,
+    checkStartDateSearch,
+    checkEndDateSearch,
+    finalApprovedStartDateSearch,
+    finalApprovedEndDateSearch,
+    printedStartDateSearch,
+    printedEndDateSearch,
     documentTypeFilter,
     statusFilter,
+    paymentTypeFilter,
   ]);
 
   const [pdfUrl, setPdfUrl] = React.useState(null);
