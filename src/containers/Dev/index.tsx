@@ -15,6 +15,7 @@ import {
   Text,
   TimePicker,
   View,
+  InputUSPhone,
   WeekPicker,
 } from 'src/components/common';
 import AccountBadge from 'src/components/common/Badge';
@@ -29,16 +30,17 @@ import { Location } from 'history';
 import { connect } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { DateRange } from 'src/components/common/DateRangePicker';
+import { InputPhoneWithoutFlags } from 'src/components/common/InputPhone';
 import TabsBar from 'src/components/common/TabsBar';
 import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { IRootState } from 'src/redux/store';
 import { Toastify } from 'src/services';
 import { emptyFunction } from 'src/utils';
+import { PO_LIST_QUERY_KEY } from '../POListing/enum';
+import POHeaderTable from '../POListing/TableList/header';
 import CustomTableContainer from './customTable';
 import VerticalTabs from './verticalTabs';
-import POHeaderTable from '../POListing/TableList/header';
-import { PO_LIST_QUERY_KEY } from '../POListing/enum';
 
 const Dev: React.FC<Props> = ({ location, onShowDialog, onHideDialog, onHideAllDialog }) => {
   const currentLocation = useLocation();
@@ -56,6 +58,8 @@ const Dev: React.FC<Props> = ({ location, onShowDialog, onHideDialog, onHideAllD
   const [source, setSource] = useState<string>(null);
   const [currencyInput, setCurrencyInput] = useState<number>(0);
   const [tab, setTab] = useState(null);
+  const [phoneValue, setPhoneValue] = useState('');
+  const [usPhoneValue, setUSPhoneValue] = useState('');
 
   const handleCodeFieldChange = (value: string) => {
     console.log('value', value);
@@ -187,6 +191,26 @@ const Dev: React.FC<Props> = ({ location, onShowDialog, onHideDialog, onHideAllD
 
   return (
     <Container maxWidth="lg">
+      <View className="mt-32">
+        <h2>US Phone Without Flag</h2>
+        <InputPhoneWithoutFlags
+          label={'Phone ignore US calling code'}
+          name={''}
+          onChange={(_, value) => setPhoneValue(value)}
+          {...{ value: phoneValue }}
+        />
+        <View className="mt-2 has-text-danger">Value: {phoneValue}</View>
+      </View>
+      <View className="mt-32">
+        <InputUSPhone
+          label={'US Phone Vanilla Mask'}
+          name={''}
+          onChange={(_, value) => setUSPhoneValue(value)}
+          {...{ value: usPhoneValue }}
+        />
+        <View className="mt-2 has-text-danger">Value: {usPhoneValue}</View>
+      </View>
+
       <View className="mt-32">
         <h2>Filter Chips</h2>
         <POHeaderTable

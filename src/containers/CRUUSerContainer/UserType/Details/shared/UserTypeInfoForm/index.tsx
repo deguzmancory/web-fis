@@ -5,9 +5,9 @@ import {
   Accordion,
   Input,
   InputMask,
-  InputPhone,
   LoadingCommon,
   Select,
+  InputUSPhone,
 } from 'src/components/common';
 import { CRUUSER_USER_TYPE_KEY } from 'src/containers/CRUUSerContainer/enums';
 import { CRUUserFormikProps } from 'src/containers/CRUUSerContainer/helper';
@@ -83,7 +83,7 @@ const UserTypeInfoForm: React.FC<Props> = ({
               />
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
-              <InputPhone
+              <InputUSPhone
                 label={'Phone Number'}
                 errorMessage={_getErrorMessage(`${prefix}.${CRUUSER_USER_TYPE_KEY.PHONE_NUMBER}`)}
                 {...getFieldProps(`${prefix}.${CRUUSER_USER_TYPE_KEY.PHONE_NUMBER}`)}
@@ -246,7 +246,7 @@ const UserTypeInfoForm: React.FC<Props> = ({
               />
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
-              <InputPhone
+              <InputUSPhone
                 label={'Remittance Advice Phone Number'}
                 errorMessage={_getErrorMessage(
                   `${prefix}.${CRUUSER_USER_TYPE_KEY.REMITTANCE_PHONE_NUMBER}`

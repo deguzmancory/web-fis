@@ -131,7 +131,7 @@ export const getPOPaymentFormValidationSchema = ({ action }: { action: PO_ACTION
                   ownership: Yup.string().required().typeError(ErrorService.MESSAGES.required),
                   preparerName: Yup.string().required().typeError(ErrorService.MESSAGES.required),
                   preparerPhone: Yup.string()
-                    .phone()
+                    .usPhone()
                     .required()
                     .typeError(ErrorService.MESSAGES.required),
                   component: Yup.string().required().typeError(ErrorService.MESSAGES.required),

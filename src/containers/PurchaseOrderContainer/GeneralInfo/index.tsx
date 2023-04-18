@@ -5,7 +5,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
-import { Input, InputPhone, Link, Select, TextareaAutosize } from 'src/components/common';
+import { Input, Link, Select, TextareaAutosize, InputUSPhone } from 'src/components/common';
 import { SelectOption } from 'src/components/common/Select';
 import {
   UpdatePOPaymentFormValue,
@@ -70,6 +70,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
     setFieldValue,
     setFieldTouched,
   } = formikProps;
+  console.log('values: ', values);
 
   const isBlankDocument = isCreatePOMode(currentPOMode);
   const isPODocument = isPODocumentType(documentType);
@@ -590,7 +591,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
-          <InputPhone
+          <InputUSPhone
             label={'Phone Number'}
             errorMessage={_getErrorMessage(PO_FORM_KEY.PHONE_NUMBER)}
             {...getFieldProps(PO_FORM_KEY.PHONE_NUMBER)}

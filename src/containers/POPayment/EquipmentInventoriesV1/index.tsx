@@ -19,10 +19,10 @@ import {
   DatePicker,
   Element,
   Input,
-  InputPhone,
   RadioButton,
   TabsBar,
   TextareaAutosize,
+  InputUSPhone,
 } from 'src/components/common';
 import {
   UpdatePOPaymentFormValue,
@@ -429,7 +429,7 @@ const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }
               </Typography>
             </Grid>
             <Grid item xs={12} md={6} px={2}>
-              <InputPhone
+              <InputUSPhone
                 {...getFieldProps(
                   `${currentEquipmentInventoriesPrefix}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.PREPARER_PHONE}`
                 )}
@@ -438,7 +438,6 @@ const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }
                   `${currentEquipmentInventoriesPrefix}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.PREPARER_PHONE}`
                 )}
                 onChange={setFieldValue}
-                onlyUS
               />
             </Grid>
 

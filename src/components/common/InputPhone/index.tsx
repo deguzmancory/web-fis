@@ -74,14 +74,14 @@ const InputPhoneWithoutFlags: React.FC<Props> = ({
   required = false,
   disabled,
   international = true,
-  country = 'US',
+  defaultCountryCode = 'US',
   onlyUS,
   onChange,
   ...props
 }) => {
   const id = useRef(`input-${getRandomId()}`);
 
-  const handleChange = (value) => {
+  const handleChange = (value: string) => {
     onChange(name, value ? value : '');
   };
 
@@ -97,15 +97,15 @@ const InputPhoneWithoutFlags: React.FC<Props> = ({
     >
       <View className="cmp-phone-input-without-flags" isRow align="center">
         <PhoneInputWithoutFlags
-          international={international}
           className={cn('cmp-phone-input-without-flags__input', {
             'cmp-phone-input-without-flags__input--error': !isEmpty(errorMessage),
             'cmp-phone-input-without-flags__input--disabled': disabled,
           })}
-          onChange={handleChange}
+          onChange={(value) => handleChange(value)}
           name={name}
-          country={country}
+          defaultCountry={defaultCountryCode}
           disabled={disabled}
+          international={international}
           {...props}
         />
 
@@ -138,9 +138,6 @@ type Props = {
   countries?: Country[];
   onlyUS?: boolean;
   onChange?: Callback;
-
-  //InputPhoneWithoutFlags
-  country?: Country;
 };
 
 export default InputPhone;

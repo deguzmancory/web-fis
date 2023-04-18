@@ -1,6 +1,6 @@
 import { Box, Grid } from '@mui/material';
 import React from 'react';
-import { Input, InputPhone } from 'src/components/common';
+import { Input, InputUSPhone } from 'src/components/common';
 import { PO_FORM_KEY } from 'src/containers/PurchaseOrderContainer/enums';
 import { PO_MODE } from 'src/queries';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
@@ -55,7 +55,7 @@ const PaymentGeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, cu
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
-          <InputPhone
+          <InputUSPhone
             label={'Phone Number'}
             errorMessage={_getErrorMessage(PO_FORM_KEY.PAYMENT_PHONE_NUMBER)}
             {...getFieldProps(PO_FORM_KEY.PAYMENT_PHONE_NUMBER)}

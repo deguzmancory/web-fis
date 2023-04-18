@@ -6,9 +6,9 @@ import {
   Checkbox,
   Input,
   InputMask,
-  InputPhone,
   LoadingCommon,
   Select,
+  InputUSPhone,
 } from 'src/components/common';
 import { PO_FORM_KEY } from 'src/containers/PurchaseOrderContainer/enums';
 import { PO_MODE, useZipCode } from 'src/queries';
@@ -129,7 +129,7 @@ const QuestionOnRemittance: React.FC<Props> = ({ formikProps, disabled }) => {
             />
           </Grid>
           <Grid item xs={3.5}>
-            <InputPhone
+            <InputUSPhone
               label={'Phone Number'}
               errorMessage={_getErrorMessage(
                 `${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.QUESTION_PHONE_NUMBER}`

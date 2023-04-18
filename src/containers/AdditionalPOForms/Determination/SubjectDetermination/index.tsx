@@ -6,15 +6,15 @@ import {
   EllipsisTooltipInput,
   Input,
   InputCurrency,
-  InputPhone,
+  InputUSPhone,
 } from 'src/components/common';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
 import { PODetermination } from 'src/queries/PurchaseOrders';
 import { IRootState } from 'src/redux/rootReducer';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
-import { PO_DETERMINATION_KEY } from '../enum';
 import { PO_CERTIFICATE_KEY } from '../../shared/Certification/enum';
+import { PO_DETERMINATION_KEY } from '../enum';
 
 const SubjectDetermination: React.FC<Props> = ({ formikProps, formData, disabled = false }) => {
   const {
@@ -80,7 +80,7 @@ const SubjectDetermination: React.FC<Props> = ({ formikProps, formData, disabled
           />
         </Grid>
         <Grid item xs={4}>
-          <InputPhone
+          <InputUSPhone
             label={'Phone Number'}
             errorMessage={_getErrorMessage(PO_DETERMINATION_KEY.PHONE)}
             {...getFieldProps(PO_DETERMINATION_KEY.PHONE)}

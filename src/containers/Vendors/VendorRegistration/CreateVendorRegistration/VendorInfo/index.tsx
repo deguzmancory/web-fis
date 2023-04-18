@@ -6,9 +6,9 @@ import {
   EllipsisTooltipInput,
   Input,
   InputMask,
-  InputPhone,
   LoadingCommon,
   Select,
+  InputUSPhone,
 } from 'src/components/common';
 import RequiredSign from 'src/containers/shared/RequiredSign';
 import { useZipCode } from 'src/queries';
@@ -241,7 +241,7 @@ const VendorInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
           </Grid>
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
-          <InputPhone
+          <InputUSPhone
             label={'Phone Number'}
             errorMessage={_getErrorMessage(
               VENDOR_REGISTRATION_FORM_KEY.VENDOR_ADDRESS_PHONE_NUMBER
@@ -249,7 +249,7 @@ const VendorInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
             {...getFieldProps(VENDOR_REGISTRATION_FORM_KEY.VENDOR_ADDRESS_PHONE_NUMBER)}
             onChange={setFieldValue}
             disabled={disabled}
-            onlyUS
+            // onlyUS
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4}>

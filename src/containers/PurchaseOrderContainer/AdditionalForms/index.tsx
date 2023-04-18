@@ -26,7 +26,7 @@ const AdditionalForms: React.FC<Props> = ({ formikProps, disabled = false }) => 
 
   const availableFormOptions: SelectOption[] = React.useMemo(
     () =>
-      values.availableForms.map((form) => ({
+      values.availableForms?.map((form) => ({
         label: form.name,
         value: form,
       })),

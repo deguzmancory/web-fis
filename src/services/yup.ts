@@ -36,6 +36,7 @@ yup.setLocale({
 declare module 'yup' {
   interface StringSchema {
     phone(message?: string): StringSchema;
+    usPhone(message?: string): StringSchema;
     password(message?: string): StringSchema;
     letterOnly(message?: string): StringSchema;
     numberOnly(message?: string): StringSchema;
@@ -51,6 +52,23 @@ yup.addMethod<yup.StringSchema>(yup.string, 'phone', function (message) {
     if (!value) return true;
 
     if (!isValidPhoneNumber(value)) {
+      return createError({
+        path,
+        message: message ?? ErrorService.MESSAGES.invalidPhone,
+      });
+    }
+
+    return true;
+  });
+});
+
+yup.addMethod<yup.StringSchema>(yup.string, 'usPhone', function (message) {
+  return this.test('isValidPhone', message, function (value) {
+    const { path, createError } = this;
+
+    if (!value) return true;
+
+    if (!isValidPhoneNumber(value, 'US')) {
       return createError({
         path,
         message: message ?? ErrorService.MESSAGES.invalidPhone,

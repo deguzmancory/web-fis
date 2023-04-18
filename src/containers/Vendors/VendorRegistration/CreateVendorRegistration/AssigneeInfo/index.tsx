@@ -1,6 +1,12 @@
 import { Box, Grid, Typography } from '@mui/material';
 import React from 'react';
-import { Element, EllipsisTooltipInput, Input, InputMask, InputPhone } from 'src/components/common';
+import {
+  Element,
+  EllipsisTooltipInput,
+  Input,
+  InputMask,
+  InputUSPhone,
+} from 'src/components/common';
 import RequiredSign from 'src/containers/shared/RequiredSign';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { VENDOR_REGISTRATION_FORM_KEY } from '../enums';
@@ -123,13 +129,12 @@ const AssigneeInfo: React.FC<Props> = ({ formikProps, disabled = false }) => {
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
-          <InputPhone
+          <InputUSPhone
             label="Phone Number"
             errorMessage={_getErrorMessage(VENDOR_REGISTRATION_FORM_KEY.PHONE_NUMBER)}
             {...getFieldProps(VENDOR_REGISTRATION_FORM_KEY.PHONE_NUMBER)}
             onChange={setFieldValue}
             disabled={disabled}
-            onlyUS
             required
           />
         </Grid>

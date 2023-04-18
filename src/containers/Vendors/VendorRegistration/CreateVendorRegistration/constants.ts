@@ -104,7 +104,7 @@ export const vendorRegistrationValidationSchema = Yup.object().shape<
     addressState: Yup.string().required().typeError(ErrorService.MESSAGES.required),
     addressZip: Yup.string().required().typeError(ErrorService.MESSAGES.required),
     vendorAddressEmail: Yup.string().notTrimmable().email().nullable().optional(),
-    vendorAddressPhoneNumber: Yup.string().phone().nullable().optional(),
+    vendorAddressPhoneNumber: Yup.string().usPhone().nullable().optional(),
     //additional for vendor info
     hasIndividualOrBusinessName: Yup.boolean().when(
       ['firstName', 'lastName', 'middleName', 'suffix', 'company'],
@@ -191,7 +191,7 @@ export const vendorRegistrationValidationSchema = Yup.object().shape<
     ),
     preparedBy: Yup.string().required().typeError(ErrorService.MESSAGES.required),
     email: Yup.string().notTrimmable().email().required(),
-    phoneNumber: Yup.string().phone().required(),
+    phoneNumber: Yup.string().usPhone().required(),
     faName: Yup.string().required().typeError(ErrorService.MESSAGES.required),
     faEmail: Yup.string().notTrimmable().email().required(),
   },
