@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import TypographyLink from 'src/components/TypographyLink';
-import { SELECT_CHANGE_FORM_TYPE_QUERY_KEY } from 'src/containers/POChange/SelectChangeFormType/enums';
+import { SELECT_CHANGE_FORM_TYPE_QUERY_KEY } from 'src/containers/PurchaseOrderContainer/POChange/SelectChangeFormType/enums';
 import { PO_DETAIL_STATUS, PO_DOCUMENT_TYPE } from 'src/queries';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { PurchaseOrderItem } from 'src/queries/PurchasingListing';

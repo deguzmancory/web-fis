@@ -2,7 +2,7 @@ import { PATHS } from 'src/appConfig/paths';
 import { PO_DOCUMENT_TYPE } from 'src/queries';
 import { Navigator } from 'src/services';
 import urljoin from 'url-join';
-import { PO_FORM_ELEMENT_ID, PO_FORM_PARAMS } from '../PurchaseOrderContainer/enums';
+import { PO_FORM_ELEMENT_ID, PO_FORM_PARAMS } from '../PurchaseOrderContainer/PO/enums';
 
 export const handleNavigateBackToMainForm = ({
   documentId,

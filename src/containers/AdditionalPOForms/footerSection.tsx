@@ -8,11 +8,11 @@ import { hideAllDialog, hideDialog, showDialog } from 'src/redux/dialog/dialogSl
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { setHrefNavigateAdditionalForm, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { Navigator, Toastify } from 'src/services';
-import { AdditionalPOFormValue } from '../PurchaseOrderContainer/types';
 import SectionLayout from '../shared/SectionLayout';
 import { useLocation } from 'react-router-dom';
 import { handleNavigateBackToMainForm } from './helpers';
 import { PO_DOCUMENT_TYPE } from 'src/queries';
+import { AdditionalPOFormValue } from '../PurchaseOrderContainer/PO/types';
 
 const FooterSection: React.FC<Props> = ({
   formCode,

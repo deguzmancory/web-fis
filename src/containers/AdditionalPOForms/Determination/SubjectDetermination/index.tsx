@@ -8,7 +8,7 @@ import {
   InputCurrency,
   InputUSPhone,
 } from 'src/components/common';
-import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
+import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/PO/types';
 import { PODetermination } from 'src/queries/PurchaseOrders';
 import { IRootState } from 'src/redux/rootReducer';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';

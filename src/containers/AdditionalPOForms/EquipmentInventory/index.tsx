@@ -4,11 +4,11 @@ import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Checkbox, EllipsisTooltipInput, Input, TextareaAutosize } from 'src/components/common';
-import { initialEquipmentInventoryValue } from 'src/containers/PurchaseOrderContainer/helpers';
+import { initialEquipmentInventoryValue } from 'src/containers/PurchaseOrderContainer/PO/helpers';
 import {
   POEquipmentInventoryFormValue,
   UpsertPOFormValue,
-} from 'src/containers/PurchaseOrderContainer/types';
+} from 'src/containers/PurchaseOrderContainer/PO/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';

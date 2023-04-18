@@ -32,17 +32,19 @@ const SwitchUser = React.lazy(() => import('./SwitchUser'));
 const GlobalSettings = React.lazy(() => import('./GlobalSettings'));
 const EditProfile = React.lazy(() => import('./EditProfile'));
 const EmptyScreen = React.lazy(() => import('./UAMContainer/ChangePasswordExpired/emptyScreen'));
-const PurchaseOrderContainer = React.lazy(() => import('./PurchaseOrderContainer'));
+const PurchaseOrder = React.lazy(() => import('./PurchaseOrderContainer/PO'));
 const AdditionalPOFormsContainer = React.lazy(() => import('./AdditionalPOForms'));
 const VendorsManagement = React.lazy(() => import('./VendorsManagement'));
 const EditVendorsMaster = React.lazy(() => import('./Vendors/VendorMaster'));
 const VendorRegistration = React.lazy(() => import('./Vendors/VendorRegistration'));
-const SubmittedPurchaseOrder = React.lazy(() => import('./PurchaseOrderContainer/SubmittedPO'));
+const SubmittedPurchaseOrder = React.lazy(() => import('./PurchaseOrderContainer/PO/SubmittedPO'));
 const PurchasingOrders = React.lazy(() => import('./POListing'));
-const SelectChangeFormType = React.lazy(() => import('./POChange/SelectChangeFormType'));
-const POChangeForm = React.lazy(() => import('./POChange/POChangeForm'));
-const POPayment = React.lazy(() => import('./POPayment'));
-const VendorPrintMode = React.lazy(() => import('./PurchaseOrderContainer/VendorPrintMode'));
+const SelectChangeFormType = React.lazy(
+  () => import('./PurchaseOrderContainer/POChange/SelectChangeFormType')
+);
+const POChangeForm = React.lazy(() => import('./PurchaseOrderContainer/POChange/POChangeForm'));
+const POPayment = React.lazy(() => import('./PurchaseOrderContainer/POPayment'));
+const VendorPrintMode = React.lazy(() => import('./PurchaseOrderContainer/PO/VendorPrintMode'));
 
 const Routing: React.FC<{ location: Location }> = (props) => {
   Navigator.setTopHistory(useHistory());
@@ -80,7 +82,7 @@ const Routing: React.FC<{ location: Location }> = (props) => {
             <CustomRoute
               pageRequiredAuth
               path={`${PATHS.purchaseOrderDetail}/:id`}
-              component={PurchaseOrderContainer}
+              component={PurchaseOrder}
             />
             <CustomRoute
               pageRequiredAuth
@@ -95,7 +97,7 @@ const Routing: React.FC<{ location: Location }> = (props) => {
             <CustomRoute
               pageRequiredAuth
               path={PATHS.createPurchaseOrders}
-              component={PurchaseOrderContainer}
+              component={PurchaseOrder}
             />
 
             {/* PO Change */}

@@ -2,7 +2,7 @@ import { Grid, Typography } from '@mui/material';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Input } from 'src/components/common';
-import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/types';
+import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/PO/types';
 import { POAuthToPurchase } from 'src/queries/PurchaseOrders';
 import { IRootState } from 'src/redux/rootReducer';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';

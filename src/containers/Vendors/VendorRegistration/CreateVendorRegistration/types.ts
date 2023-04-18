@@ -1,4 +1,4 @@
-import { POPlaceholderFileAttachment } from 'src/containers/PurchaseOrderContainer/types';
+import { POPlaceholderFileAttachment } from 'src/containers/PurchaseOrderContainer/PO/types';
 import { VendorRegistrationPayload } from 'src/queries';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 
