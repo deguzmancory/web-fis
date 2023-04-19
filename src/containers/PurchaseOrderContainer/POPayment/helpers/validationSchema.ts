@@ -1,6 +1,6 @@
 import { PO_ACTION } from 'src/queries';
 import { isAdvancePOPayment, isPartialPOPayment } from 'src/queries/POPayment/helpers';
-import { isPOSubmitAction } from 'src/queries/PurchaseOrders/helpers';
+import { isSubmitAction } from 'src/queries/PurchaseOrders/helpers';
 import { ErrorService, Yup } from 'src/services';
 import { isEmpty } from 'src/validations';
 import { isVariousProject } from '../../PO/GeneralInfo/helpers';
@@ -8,17 +8,17 @@ import { UpdatePOPaymentFormValue } from '../types';
 import { isNotEmptyPaymentEquipmentInventory } from './utils';
 
 export const getPOPaymentFormValidationSchema = ({ action }: { action: PO_ACTION }) => {
-  const isSubmitAction = isPOSubmitAction(action);
+  const isSubmitPOAction = isSubmitAction(action);
 
   return Yup.object().shape(
     {
-      paymentDirectInquiriesTo: isSubmitAction
+      paymentDirectInquiriesTo: isSubmitPOAction
         ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
         : Yup.string().nullable(),
-      paymentFaStaffReviewer: isSubmitAction
+      paymentFaStaffReviewer: isSubmitPOAction
         ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
         : Yup.string().nullable(),
-      paymentType: isSubmitAction
+      paymentType: isSubmitPOAction
         ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
         : Yup.string().nullable(),
       partialOrFinalPaymentLineItem: Yup.array().when(
@@ -29,7 +29,7 @@ export const getPOPaymentFormValidationSchema = ({ action }: { action: PO_ACTION
           return schema
             .min(
               // currently min error will not work cause lineItems will return string or object => can't pass into jsx
-              isSubmitAction ? 1 : 0,
+              isSubmitPOAction ? 1 : 0,
               'Payment section cannot be left blank.'
             )
             .transform((fields: any[]) => fields.slice(0, -1))

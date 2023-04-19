@@ -45,6 +45,21 @@ const SelectChangeFormType = React.lazy(
 const POChangeForm = React.lazy(() => import('./PurchaseOrderContainer/POChange/POChangeForm'));
 const POPayment = React.lazy(() => import('./PurchaseOrderContainer/POPayment'));
 const VendorPrintMode = React.lazy(() => import('./PurchaseOrderContainer/PO/VendorPrintMode'));
+const SelectNonPOPaymentType = React.lazy(
+  () => import('./NonPOPaymentContainer/SelectNonPOPaymentType')
+);
+const AuthorizationForPayment = React.lazy(
+  () => import('./NonPOPaymentContainer/AuthorizationForPayment')
+);
+const NonEmployeeExpensePayment = React.lazy(
+  () => import('./NonPOPaymentContainer/NonEmployeeExpensePayment')
+);
+const PersonalAutomobileMileageVoucher = React.lazy(
+  () => import('./NonPOPaymentContainer/PersonalAutomobileMileageVoucher')
+);
+const PettyCashSummarySheet = React.lazy(
+  () => import('./NonPOPaymentContainer/PettyCashSummarySheet')
+);
 
 const Routing: React.FC<{ location: Location }> = (props) => {
   Navigator.setTopHistory(useHistory());
@@ -112,11 +127,58 @@ const Routing: React.FC<{ location: Location }> = (props) => {
               component={POChangeForm}
             />
 
-            {/* PO Change */}
+            {/* PO Payment */}
             <CustomRoute
               pageRequiredAuth
               path={`${PATHS.poPaymentForm}/:id`}
               component={POPayment}
+            />
+
+            {/* Non PO Payment */}
+            <CustomRoute
+              pageRequiredAuth
+              path={PATHS.nonPOPaymentOptions}
+              component={SelectNonPOPaymentType}
+            />
+            <CustomRoute
+              pageRequiredAuth
+              path={`${PATHS.authorizationForPayment}`}
+              component={AuthorizationForPayment}
+            />
+            <CustomRoute
+              pageRequiredAuth
+              path={`${PATHS.authorizationForPayment}/:id`}
+              component={AuthorizationForPayment}
+            />
+            <CustomRoute
+              pageRequiredAuth
+              path={`${PATHS.nonEmployeeTravelPayment}`}
+              component={NonEmployeeExpensePayment}
+            />
+            <CustomRoute
+              pageRequiredAuth
+              path={`${PATHS.nonEmployeeTravelPayment}/:id`}
+              component={NonEmployeeExpensePayment}
+            />
+            <CustomRoute
+              pageRequiredAuth
+              path={`${PATHS.personalAutoPayment}`}
+              component={PersonalAutomobileMileageVoucher}
+            />
+            <CustomRoute
+              pageRequiredAuth
+              path={`${PATHS.personalAutoPayment}/:id`}
+              component={PersonalAutomobileMileageVoucher}
+            />
+            <CustomRoute
+              pageRequiredAuth
+              path={`${PATHS.pettyCashPayment}`}
+              component={PettyCashSummarySheet}
+            />
+            <CustomRoute
+              pageRequiredAuth
+              path={`${PATHS.pettyCashPayment}/:id`}
+              component={PettyCashSummarySheet}
             />
 
             {/* Purchasing List*/}

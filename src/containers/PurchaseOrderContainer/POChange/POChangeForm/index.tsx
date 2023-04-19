@@ -25,7 +25,7 @@ import {
 import HeaderOfSection from 'src/containers/PurchaseOrderContainer/PO/headerOfSection';
 import {
   emptyUpsertPOFormValue,
-  getCurrentPOEditMode,
+  getCurrentEditMode,
   getPOFormValidationSchema,
   getPOFormValueFromResponse,
   getUpsertPOPayload,
@@ -45,12 +45,12 @@ import {
 } from 'src/queries/POChange/helpers';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import {
-  isFAReviewPOMode,
-  isFinalPOMode,
+  isFAReviewMode,
+  isFinalMode,
   isPOChangeDocumentType,
-  isPOSaveAction,
-  isPiSuEditPOMode,
-  isViewOnlyPOMode,
+  isPiSuEditMode,
+  isSaveAction,
+  isViewOnlyMode,
 } from 'src/queries/PurchaseOrders/helpers';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
@@ -95,11 +95,11 @@ const POChangeForm: React.FC<Props> = ({
   const poStatus = React.useMemo(() => formData?.status, [formData?.status]);
   const poChangeFormNumber = React.useMemo(() => formData?.formNumber, [formData?.formNumber]);
   const currentPOMode = React.useMemo(
-    () => getCurrentPOEditMode({ id, poStatus, currentRole }),
+    () => getCurrentEditMode({ id, status: poStatus, currentRole }),
     [id, poStatus, currentRole]
   );
-  const isPiSuEditMode = isPiSuEditPOMode(currentPOMode);
-  const isFAReviewMode = isFAReviewPOMode(currentPOMode);
+  const isInPiSuEditMode = isPiSuEditMode(currentPOMode);
+  const isInFAReviewMode = isFAReviewMode(currentPOMode);
 
   const isInChangeTotalCancellationForm = isPOChangeTotalCancellationForm(poChangeFormNumber);
   const isInChangeDescriptionForm = isPOChangeDescriptionForm(poChangeFormNumber);
@@ -107,7 +107,7 @@ const POChangeForm: React.FC<Props> = ({
   const isInChangeAmountTerminatedForm = isPOChangeAmountTerminatedForm(poChangeFormNumber);
 
   // all sections
-  const disabledSection = isViewOnlyPOMode(currentPOMode) || isFinalPOMode(currentPOMode);
+  const disabledSection = isViewOnlyMode(currentPOMode) || isFinalMode(currentPOMode);
 
   // general info section
   const disabledGeneralInfoSection =
@@ -115,8 +115,10 @@ const POChangeForm: React.FC<Props> = ({
 
   // line items and purchase info sections
   const isAllowUpdateAmount =
-    (isInChangeAmountForm || isInChangeAmountTerminatedForm) && (isPiSuEditMode || isFAReviewMode);
-  const isAllowUpdateDescription = isInChangeDescriptionForm && (isPiSuEditMode || isFAReviewMode);
+    (isInChangeAmountForm || isInChangeAmountTerminatedForm) &&
+    (isInPiSuEditMode || isInFAReviewMode);
+  const isAllowUpdateDescription =
+    isInChangeDescriptionForm && (isInPiSuEditMode || isInFAReviewMode);
   const showAmountChangeSection = isInChangeAmountForm || isInChangeAmountTerminatedForm;
 
   // additional form sections
@@ -144,7 +146,7 @@ const POChangeForm: React.FC<Props> = ({
     isSuccess: isUpdatePOSuccess,
   } = useUpdatePO({
     onSuccess: () => {
-      if (!isPOSaveAction(formAction)) {
+      if (!isSaveAction(formAction)) {
         onSetFormData(null);
       }
 
@@ -357,8 +359,8 @@ const POChangeForm: React.FC<Props> = ({
         <SectionLayout sx={{ p: 0, border: 'none' }}>
           <FileAttachments
             formikProps={formikProps}
-            disabled={isViewOnlyPOMode(currentPOMode)}
-            allowActionAfterFinalApproveOnly={isFinalPOMode(currentPOMode)}
+            disabled={isViewOnlyMode(currentPOMode)}
+            allowActionAfterFinalApproveOnly={isFinalMode(currentPOMode)}
           />
         </SectionLayout>
 

@@ -12,6 +12,7 @@ import {
   UpdateProfilePayload,
 } from 'src/queries';
 import { GetPresignedPayload, UploadFilePayload } from 'src/queries/File/types';
+import { UpsertNonEmployeeTravelPayload } from 'src/queries/NonPOPayment/NonEmployeeTravel/types';
 import { GetProfileProjectsParams } from 'src/queries/Projects/useGetProfileProjects';
 import {
   AddPoAttachmentPayload,
@@ -464,6 +465,87 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.delete(`/financial-svc/v1/po-payments/${params.id}`, {}, newCancelToken());
   };
 
+  // ====================== Non Employee Travel ======================
+  const getNonEmployeeTravelDetail = (params: { id: string }) => {
+    return api.get(
+      `/financial-svc/v1/non-employee-travel-payments/${params.id}`,
+      {},
+      newCancelToken()
+    );
+  };
+
+  const createNonEmployeeTravel = (payload: UpsertNonEmployeeTravelPayload) => {
+    return api.post(
+      `/financial-svc/v1/non-employee-travel-payments?action=${payload.action}`,
+      {
+        ...payload,
+      },
+      newCancelToken()
+    );
+  };
+
+  const updateNonEmployeeTravel = (payload: UpsertNonEmployeeTravelPayload) => {
+    return api.put(
+      `/financial-svc/v1/non-employee-travel-payments/${payload.id}?action=${payload.action}`,
+      {
+        ...payload,
+      },
+      newCancelToken()
+    );
+  };
+
+  const deleteNonEmployeeTravel = (params: { id: string }) => {
+    return api.delete(
+      `/financial-svc/v1/non-employee-travel-payments/${params.id}`,
+      {},
+      newCancelToken()
+    );
+  };
+
+  const getNonEmployeeTravelFileAttachmentPresignedUrl = (params: GetPresignedPOPayload) => {
+    return api.get(
+      `/financial-svc/v1/non-employee-travel-payments/${params.id}/attachments/presigned-url`,
+      params,
+      newCancelToken()
+    );
+  };
+
+  const getNonEmployeeTravelFileAttachmentPresignedDownloadUrl = (
+    params: GetPresignedPoAttachmentDownloadUrl
+  ) => {
+    return api.get(
+      `/financial-svc/v1/non-employee-travel-payments/${params.id}/attachments/${params.attachmentId}/read`,
+      params,
+      newCancelToken()
+    );
+  };
+
+  const addNonEmployeeTravelAttachment = (payload: AddPoAttachmentPayload) => {
+    return api.put(
+      `/financial-svc/v1/non-employee-travel-payments/${payload.id}/attachments`,
+      {
+        ...payload,
+      },
+      newCancelToken()
+    );
+  };
+
+  const deleteNonEmployeeTravelAttachment = (params: DeletePoAttachmentPayload) => {
+    return api.delete(
+      `/financial-svc/v1/non-employee-travel-payments/${params.id}/attachments/${params.attachmentId}`,
+      {},
+      newCancelToken()
+    );
+  };
+
+  const postNonEmployeeTravelCloneDocument = (params: any) => {
+    return api.post(
+      `/financial-svc/v1/non-employee-travel-payments/${params.id}/clone`,
+      {},
+      newCancelToken()
+    );
+  };
+
   // ====================== Global Settings ======================
   const getAllGlobalSettings = () => {
     return api.get('/financial-svc/v1/global-settings', {}, newCancelToken());
@@ -568,7 +650,7 @@ const create = (baseURL = appConfig.API_URL) => {
     searchSuperQuotes,
 
     // ====================== PO ======================
-    getPO: getPODetail,
+    getPODetail,
     createPO,
     updatePO,
     deletePO,
@@ -587,6 +669,18 @@ const create = (baseURL = appConfig.API_URL) => {
     updatePOPayment,
     deletePOPayment,
     getPOPaymentRemainingBalance,
+
+    // ====================== Non PO Payment ======================
+    // ====================== Non Employee Travel ======================
+    getNonEmployeeTravelDetail,
+    createNonEmployeeTravel,
+    updateNonEmployeeTravel,
+    deleteNonEmployeeTravel,
+    getNonEmployeeTravelFileAttachmentPresignedUrl,
+    getNonEmployeeTravelFileAttachmentPresignedDownloadUrl,
+    addNonEmployeeTravelAttachment,
+    deleteNonEmployeeTravelAttachment,
+    postNonEmployeeTravelCloneDocument,
 
     // ================== Purchasing List ===============
     getAppPurchasingList,

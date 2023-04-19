@@ -17,11 +17,7 @@ import {
   useUpdatePO,
 } from 'src/queries';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
-import {
-  isFinalPOMode,
-  isPOSaveAction,
-  isViewOnlyPOMode,
-} from 'src/queries/PurchaseOrders/helpers';
+import { isFinalMode, isSaveAction, isViewOnlyMode } from 'src/queries/PurchaseOrders/helpers';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, RoleService, Toastify } from 'src/services';
@@ -43,7 +39,7 @@ import { emptyUpsertPOFormValue } from './helpers/constants';
 import { PO_FORM_ELEMENT_ID, PO_FORM_PARAMS, SUBMITTED_PO_QUERY } from './enums';
 import HeaderOfSection from './headerOfSection';
 import {
-  getCurrentPOEditMode,
+  getCurrentEditMode,
   getInitialPOFormValue,
   getPOFormValidationSchema,
   getPOFormValueFromResponse,
@@ -74,10 +70,10 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
   const poStatus = React.useMemo(() => formData?.status, [formData?.status]);
   const currentPOMode = React.useMemo(
-    () => getCurrentPOEditMode({ id, poStatus, currentRole }),
+    () => getCurrentEditMode({ id, status: poStatus, currentRole }),
     [id, poStatus, currentRole]
   );
-  const disabledSection = isViewOnlyPOMode(currentPOMode) || isFinalPOMode(currentPOMode);
+  const disabledSection = isViewOnlyMode(currentPOMode) || isFinalMode(currentPOMode);
   const { profile } = useProfile();
 
   const { onGetPOById, handleInvalidatePODetail } = useGetPODetail({
@@ -117,7 +113,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
     isSuccess: isUpdatePOSuccess,
   } = useUpdatePO({
     onSuccess: () => {
-      if (!isPOSaveAction(formAction)) {
+      if (!isSaveAction(formAction)) {
         onSetFormData(null);
       }
 
@@ -385,8 +381,8 @@ const PurchaseOrderContainer: React.FC<Props> = ({
                   <SectionLayout sx={{ p: 0, border: 'none' }}>
                     <FileAttachments
                       formikProps={formikProps}
-                      disabled={isViewOnlyPOMode(currentPOMode)}
-                      allowActionAfterFinalApproveOnly={isFinalPOMode(currentPOMode)}
+                      disabled={isViewOnlyMode(currentPOMode)}
+                      allowActionAfterFinalApproveOnly={isFinalMode(currentPOMode)}
                     />
                   </SectionLayout>
                 )}

@@ -2,13 +2,13 @@ import { PARAMS_SPLITTER } from 'src/appConfig/constants';
 import { MyProfile, PO_DETAIL_STATUS, PO_MODE } from 'src/queries';
 import { ROLE_NAME, isCU, isFA, isPI, isSU } from 'src/queries/Profile/helpers';
 import {
-  isFAAdditionalInfoRequestedPOStatus,
-  isFAPendingApprovalPOStatus,
-  isFinalPOStatus,
-  isPIAdditionalInfoRequestedPOStatus,
-  isPIDisapprovedPOStatus,
-  isPIPendingSubmittalPOStatus,
-  isRCUHPendingRCUHApprovalPOStatus,
+  isFAAdditionalInfoRequestedStatus,
+  isFAPendingApprovalStatus,
+  isFinalStatus,
+  isPIAdditionalInfoRequestedStatus,
+  isPIDisapprovedStatus,
+  isPIPendingSubmittalStatus,
+  isRCUHPendingRCUHApprovalStatus,
 } from 'src/queries/PurchaseOrders/helpers';
 
 export const checkIsPiOrSuEditMode = ({
@@ -25,9 +25,9 @@ export const checkIsPiOrSuEditMode = ({
   if (!isAccessableRole) return false;
 
   return (
-    isPIPendingSubmittalPOStatus(poStatus) ||
-    isPIDisapprovedPOStatus(poStatus) ||
-    isPIAdditionalInfoRequestedPOStatus(poStatus)
+    isPIPendingSubmittalStatus(poStatus) ||
+    isPIDisapprovedStatus(poStatus) ||
+    isPIAdditionalInfoRequestedStatus(poStatus)
   );
 };
 
@@ -43,21 +43,21 @@ export const checkIsViewOnlyMode = ({
   switch (currentRole) {
     case ROLE_NAME.SU:
     case ROLE_NAME.PI:
-      return isFAPendingApprovalPOStatus(poStatus) || isRCUHPendingRCUHApprovalPOStatus(poStatus);
+      return isFAPendingApprovalStatus(poStatus) || isRCUHPendingRCUHApprovalStatus(poStatus);
     case ROLE_NAME.FA:
       return (
-        isPIPendingSubmittalPOStatus(poStatus) ||
-        isRCUHPendingRCUHApprovalPOStatus(poStatus) ||
-        isFAAdditionalInfoRequestedPOStatus(poStatus) ||
-        isPIAdditionalInfoRequestedPOStatus(poStatus) ||
-        isPIDisapprovedPOStatus(poStatus)
+        isPIPendingSubmittalStatus(poStatus) ||
+        isRCUHPendingRCUHApprovalStatus(poStatus) ||
+        isFAAdditionalInfoRequestedStatus(poStatus) ||
+        isPIAdditionalInfoRequestedStatus(poStatus) ||
+        isPIDisapprovedStatus(poStatus)
       );
     case ROLE_NAME.CU:
       return (
-        isPIPendingSubmittalPOStatus(poStatus) ||
-        isFAPendingApprovalPOStatus(poStatus) ||
-        isFAAdditionalInfoRequestedPOStatus(poStatus) ||
-        isPIDisapprovedPOStatus(poStatus)
+        isPIPendingSubmittalStatus(poStatus) ||
+        isFAPendingApprovalStatus(poStatus) ||
+        isFAAdditionalInfoRequestedStatus(poStatus) ||
+        isPIDisapprovedStatus(poStatus)
       );
 
     default:
@@ -66,7 +66,7 @@ export const checkIsViewOnlyMode = ({
 };
 
 export const checkIsFinalMode = ({ poStatus }: { poStatus: PO_DETAIL_STATUS }) => {
-  return isFinalPOStatus(poStatus);
+  return isFinalStatus(poStatus);
 };
 
 export const checkIsFAReviewMode = ({
@@ -78,7 +78,7 @@ export const checkIsFAReviewMode = ({
 }) => {
   return (
     isFA(currentRole) &&
-    (isFAPendingApprovalPOStatus(poStatus) || isFAAdditionalInfoRequestedPOStatus(poStatus))
+    (isFAPendingApprovalStatus(poStatus) || isFAAdditionalInfoRequestedStatus(poStatus))
   );
 };
 
@@ -89,16 +89,16 @@ export const checkIsCUReviewMode = ({
   poStatus: PO_DETAIL_STATUS;
   currentRole: ROLE_NAME;
 }) => {
-  return isCU(currentRole) && isRCUHPendingRCUHApprovalPOStatus(poStatus);
+  return isCU(currentRole) && isRCUHPendingRCUHApprovalStatus(poStatus);
 };
 
-export const getCurrentPOEditMode = ({
+export const getCurrentEditMode = ({
   id,
-  poStatus,
+  status: poStatus,
   currentRole,
 }: {
   id: string;
-  poStatus: PO_DETAIL_STATUS;
+  status: PO_DETAIL_STATUS;
   currentRole: ROLE_NAME;
 }) => {
   if (!id) {

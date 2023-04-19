@@ -18,7 +18,7 @@ import { initialLineItemValue, lineItemsColumnNames } from '../helpers/constants
 import { PO_FORM_KEY, PO_LINE_ITEM_KEY } from '../enums';
 import { isVariousProject } from '../GeneralInfo/helpers';
 import { POLineItemFormValue, UpsertPOFormikProps, UpsertPOFormValue } from '../types';
-import { isCUReviewPOMode, isFAReviewPOMode } from 'src/queries/PurchaseOrders/helpers';
+import { isCUReviewMode, isFAReviewMode } from 'src/queries/PurchaseOrders/helpers';
 import { PO_MODE } from 'src/queries';
 import {
   UpdatePOPaymentFormValue,
@@ -30,9 +30,9 @@ const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPro
   disabled = false,
   currentPOMode,
 }: Props<T>) => {
-  const isFAReviewMode = isFAReviewPOMode(currentPOMode);
-  const isCUReviewMode = isCUReviewPOMode(currentPOMode);
-  const isReviewMode = isFAReviewMode || isCUReviewMode;
+  const isInFAReviewMode = isFAReviewMode(currentPOMode);
+  const isInCUReviewMode = isCUReviewMode(currentPOMode);
+  const isReviewMode = isInFAReviewMode || isInCUReviewMode;
 
   const { values, errors, touched, setFieldValue, getFieldProps, setFieldTouched } = formikProps;
 
@@ -213,7 +213,7 @@ const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPro
               setFieldTouched={setFieldTouched}
               setFieldValue={setFieldValue}
               sx={{ width: 155 }}
-              disabled={disabled || isCUReviewMode}
+              disabled={disabled || isInCUReviewMode}
               onChange={(name, value) => {
                 handleInputChange({
                   index,
@@ -242,7 +242,7 @@ const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPro
               style={{ width: hideProjectNumberColumn ? 90 : 85 }}
               hideEllipsisTooltip
               maxLength={5}
-              disabled={disabled || isCUReviewMode}
+              disabled={disabled || isInCUReviewMode}
             />
           ),
           width: hideProjectNumberColumn ? 90 : 85,
@@ -266,7 +266,7 @@ const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPro
               style={{ width: hideProjectNumberColumn ? 90 : 85 }}
               hideEllipsisTooltip
               maxLength={4}
-              disabled={disabled || isCUReviewMode}
+              disabled={disabled || isInCUReviewMode}
               required
             />
           ),
@@ -288,7 +288,7 @@ const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPro
               style={{ width: hideProjectNumberColumn ? 90 : 85 }}
               hideEllipsisTooltip
               maxLength={3}
-              disabled={disabled || isCUReviewMode}
+              disabled={disabled || isInCUReviewMode}
             />
           ),
           width: hideProjectNumberColumn ? 90 : 85,
@@ -313,7 +313,7 @@ const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPro
                 paddingTop: '4px',
                 paddingBottom: 0,
               }}
-              disabled={disabled || isCUReviewMode}
+              disabled={disabled || isInCUReviewMode}
             />
           ),
         },

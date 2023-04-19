@@ -1,16 +1,16 @@
 import { PO_ACTION } from 'src/queries';
 import {
-  isPOApprovedAction,
+  isApprovedAction,
   isPODocumentType,
-  isPOSubmitAction,
+  isSubmitAction,
 } from 'src/queries/PurchaseOrders/helpers';
 import { ErrorService, Yup } from 'src/services';
 import { SHIP_VIA_VALUE, isVariousProject } from '../GeneralInfo/helpers';
 import { FED_ATTACHMENT_VALUE } from '../PurchaseInfo/helpers';
 
 export const getPOFormValidationSchema = ({ action }: { action: PO_ACTION }) => {
-  const isSubmitAction = isPOSubmitAction(action);
-  const isApproveAction = isPOApprovedAction(action);
+  const isSubmitPOAction = isSubmitAction(action);
+  const isApproveAction = isApprovedAction(action);
 
   return Yup.object().shape({
     projectTitle: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
@@ -22,23 +22,23 @@ export const getPOFormValidationSchema = ({ action }: { action: PO_ACTION }) => 
       then: (schema) => schema.required().typeError(ErrorService.MESSAGES.required),
       otherwise: (schema) => schema.nullable(),
     }),
-    vendorAddress: isSubmitAction
+    vendorAddress: isSubmitPOAction
       ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
       : Yup.string().nullable(),
-    shipTo: isSubmitAction
+    shipTo: isSubmitPOAction
       ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
       : Yup.string().nullable(),
-    directInquiriesTo: isSubmitAction
+    directInquiriesTo: isSubmitPOAction
       ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
       : Yup.string().nullable(),
-    faStaffReviewer: isSubmitAction
+    faStaffReviewer: isSubmitPOAction
       ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
       : Yup.string().nullable(),
     lineItems: Yup.array().when(['projectNumber'], ([projectNumber], schema) => {
       return schema
         .min(
           // currently min error will not work cause lineItems will return string or object => can't pass into jsx
-          isSubmitAction ? 1 : 0,
+          isSubmitPOAction ? 1 : 0,
           isVariousProject(projectNumber)
             ? 'At least one Project # is Required'
             : 'Budget Category is required. Description is required.'

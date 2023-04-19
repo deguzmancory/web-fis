@@ -19,13 +19,13 @@ import { PO_DOCUMENT_TYPE, PO_MODE } from 'src/queries';
 import { isPOChangeAmountForm, isPOChangeDescriptionForm } from 'src/queries/POChange/helpers';
 import { FinancialProject } from 'src/queries/Projects/types';
 import {
-  isCUReviewPOMode,
-  isCreatePOMode,
-  isFAReviewPOMode,
+  isCUReviewMode,
+  isCreateMode,
+  isFAReviewMode,
   isPOChangeDocumentType,
   isPODocumentType,
   isPOPaymentDocumentType,
-  isPiSuEditPOMode,
+  isPiSuEditMode,
 } from 'src/queries/PurchaseOrders/helpers';
 import { Vendor } from 'src/queries/Vendors';
 import { showDialog } from 'src/redux/dialog/dialogSlice';
@@ -72,26 +72,26 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
   } = formikProps;
   console.log('values: ', values);
 
-  const isBlankDocument = isCreatePOMode(currentPOMode);
+  const isBlankDocument = isCreateMode(currentPOMode);
   const isPODocument = isPODocumentType(documentType);
   const isPOChangeDocument = isPOChangeDocumentType(documentType);
   const isPOPaymentDocument = isPOPaymentDocumentType(documentType);
 
   // show action link only on create PO and PI SU edit mode of PO document
-  const showActionLink = isBlankDocument || (isPODocument && isPiSuEditPOMode(currentPOMode));
+  const showActionLink = isBlankDocument || (isPODocument && isPiSuEditMode(currentPOMode));
 
   //PO logic
   const inPOReviewMode =
-    isPODocument && (isFAReviewPOMode(currentPOMode) || isCUReviewPOMode(currentPOMode));
+    isPODocument && (isFAReviewMode(currentPOMode) || isCUReviewMode(currentPOMode));
 
   //PO CHANGE logic
   const isPOChangeEditMode =
     isPOChangeDocument &&
-    isPiSuEditPOMode(currentPOMode) &&
+    isPiSuEditMode(currentPOMode) &&
     (isPOChangeDescriptionForm(values.formNumber) || isPOChangeAmountForm(values.formNumber));
   const isPOChangeReviewMode =
     isPOChangeDocument &&
-    (isFAReviewPOMode(currentPOMode) || isCUReviewPOMode(currentPOMode)) &&
+    (isFAReviewMode(currentPOMode) || isCUReviewMode(currentPOMode)) &&
     (isPOChangeDescriptionForm(values.formNumber) || isPOChangeAmountForm(values.formNumber));
 
   const currentProjectTitle = React.useMemo(() => values.projectTitle, [values.projectTitle]);
@@ -626,7 +626,7 @@ export default React.memo(GeneralInfo, (prevProps, nextProps) => {
 
   // always update formikValues for jump to create new vendor registration purpose
   const showActionLink =
-    isCreatePOMode(nextProps.currentPOMode) || isPiSuEditPOMode(nextProps.currentPOMode);
+    isCreateMode(nextProps.currentPOMode) || isPiSuEditMode(nextProps.currentPOMode);
   if (showActionLink) return false;
 
   const formKeysNeedRender = [

@@ -2,8 +2,8 @@ import { ROLE_NAME } from 'src/queries/Profile/helpers';
 
 const LOCAL_STORAGE_ROLE = 'current-role';
 
-const getCurrentRole = () => {
-  return localStorage.getItem(LOCAL_STORAGE_ROLE);
+const getCurrentRole = (): ROLE_NAME | null | undefined => {
+  return localStorage.getItem(LOCAL_STORAGE_ROLE) as ROLE_NAME;
 };
 
 const setCurrentRole = (value: ROLE_NAME) => {

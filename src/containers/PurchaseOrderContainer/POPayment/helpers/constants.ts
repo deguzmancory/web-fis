@@ -27,7 +27,7 @@ export const initialPaymentRemittanceInfo = {
 };
 
 export const initialPaymentEquipmentInventory = {
-  lineNumber: 0,
+  lineNumber: null,
   description: '',
   brandName: '',
   serialNumber: '',

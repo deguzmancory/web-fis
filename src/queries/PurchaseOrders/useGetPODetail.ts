@@ -21,7 +21,7 @@ export function useGetPODetail(
       queryFn: (query) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [_, ...params] = query.queryKey;
-        return responseWrapper<ApiResponseType<PODetailResponse>>(apiClient.getPO, params);
+        return responseWrapper<ApiResponseType<PODetailResponse>>(apiClient.getPODetail, params);
       },
       select: getResponseData,
       enabled: false,

@@ -13,7 +13,7 @@ import ErrorWrapperPO from 'src/containers/PurchaseOrderContainer/PO/ErrorWrappe
 import GeneralInfo from 'src/containers/PurchaseOrderContainer/PO/GeneralInfo';
 import { SUBMITTED_PO_QUERY } from 'src/containers/PurchaseOrderContainer/PO/enums';
 import HeaderOfSection from 'src/containers/PurchaseOrderContainer/PO/headerOfSection';
-import { getCurrentPOEditMode } from 'src/containers/PurchaseOrderContainer/PO/helpers';
+import { getCurrentEditMode } from 'src/containers/PurchaseOrderContainer/PO/helpers';
 import SectionLayout from 'src/containers/shared/SectionLayout';
 import {
   PO_ACTION,
@@ -25,10 +25,10 @@ import {
 } from 'src/queries';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import {
-  isCUReviewPOMode,
-  isFinalPOMode,
-  isPOSaveAction,
-  isViewOnlyPOMode,
+  isCUReviewMode,
+  isFinalMode,
+  isSaveAction,
+  isViewOnlyMode,
 } from 'src/queries/PurchaseOrders/helpers';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
@@ -68,13 +68,11 @@ const POPayment: FC<Props> = ({
   const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
   const poStatus = useMemo(() => formData?.status, [formData?.status]);
   const currentPOMode = useMemo(
-    () => getCurrentPOEditMode({ id, poStatus, currentRole }),
+    () => getCurrentEditMode({ id, status: poStatus, currentRole }),
     [id, poStatus, currentRole]
   );
   const disabledSection =
-    isViewOnlyPOMode(currentPOMode) ||
-    isFinalPOMode(currentPOMode) ||
-    isCUReviewPOMode(currentPOMode);
+    isViewOnlyMode(currentPOMode) || isFinalMode(currentPOMode) || isCUReviewMode(currentPOMode);
 
   const { profile } = useProfile();
   const { onGetRemainingBalance } = useGetPOPmtRemainingBalance({
@@ -106,7 +104,7 @@ const POPayment: FC<Props> = ({
     isSuccess: isUpdatePOPaymentSuccess,
   } = useUpdatePOPayment({
     onSuccess: () => {
-      if (!isPOSaveAction(formAction)) {
+      if (!isSaveAction(formAction)) {
         onSetFormData(null);
       }
 
@@ -326,8 +324,8 @@ const POPayment: FC<Props> = ({
         <SectionLayout sx={{ p: 0, border: 'none' }}>
           <FileAttachments
             formikProps={formikProps}
-            disabled={isViewOnlyPOMode(currentPOMode)}
-            allowActionAfterFinalApproveOnly={isFinalPOMode(currentPOMode)}
+            disabled={isViewOnlyMode(currentPOMode)}
+            allowActionAfterFinalApproveOnly={isFinalMode(currentPOMode)}
           />
         </SectionLayout>
 

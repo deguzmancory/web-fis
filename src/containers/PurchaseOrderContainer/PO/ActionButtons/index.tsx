@@ -8,17 +8,17 @@ import { Button } from 'src/components/common';
 import { PO_ACTION, PO_DOCUMENT_TYPE, PO_MODE, usePostPOCloneDocument } from 'src/queries';
 import { ROLE_NAME, isPI, isSU } from 'src/queries/Profile/helpers';
 import {
-  isCUReviewPOMode,
-  isFAReviewPOMode,
-  isFinalPOMode,
-  isPOAdditionalInfoAction,
-  isPOApprovedAction,
-  isPODisapproveAction,
+  isCUReviewMode,
+  isFAReviewMode,
+  isFinalMode,
+  isAdditionalInfoAction,
+  isApprovedAction,
+  isDisapproveAction,
   isPOPaymentDocumentType,
-  isPOSaveAction,
-  isPOSubmitAction,
-  isPiSuEditPOMode,
-  isViewOnlyPOMode,
+  isSaveAction,
+  isSubmitAction,
+  isPiSuEditMode,
+  isViewOnlyMode,
 } from 'src/queries/PurchaseOrders/helpers';
 import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
@@ -60,16 +60,15 @@ const ActionButtons = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProp
     validateForm,
   } = formikProps;
   const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
-  const showDeleteButton = isPiSuEditPOMode(currentPOMode);
-  const showApproveButton = isFAReviewPOMode(currentPOMode) || isCUReviewPOMode(currentPOMode);
-  const showDisapproveButton = isFAReviewPOMode(currentPOMode);
-  const showRequestMoreInfoButton =
-    isFAReviewPOMode(currentPOMode) || isCUReviewPOMode(currentPOMode);
-  const showSaveButton = !isViewOnlyPOMode(currentPOMode);
-  const showSubmitToFAButton = !isEditPOMode || isPiSuEditPOMode(currentPOMode);
-  const showViewVendorPrintModeButton = isFinalPOMode(currentPOMode);
+  const showDeleteButton = isPiSuEditMode(currentPOMode);
+  const showApproveButton = isFAReviewMode(currentPOMode) || isCUReviewMode(currentPOMode);
+  const showDisapproveButton = isFAReviewMode(currentPOMode);
+  const showRequestMoreInfoButton = isFAReviewMode(currentPOMode) || isCUReviewMode(currentPOMode);
+  const showSaveButton = !isViewOnlyMode(currentPOMode);
+  const showSubmitToFAButton = !isEditPOMode || isPiSuEditMode(currentPOMode);
+  const showViewVendorPrintModeButton = isFinalMode(currentPOMode);
   const showCloneDocumentButton =
-    isFinalPOMode(currentPOMode) && (isPI(currentRole) || isSU(currentRole));
+    isFinalMode(currentPOMode) && (isPI(currentRole) || isSU(currentRole));
 
   const _handleScrollToTopError = React.useCallback(() => {
     handleScrollToTopError(errors);
@@ -185,7 +184,7 @@ const ActionButtons = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProp
       {showApproveButton && (
         <Button
           onClick={() => handleSubmitClick({ action: PO_ACTION.APPROVE })}
-          isLoading={loading && isPOApprovedAction(formAction)}
+          isLoading={loading && isApprovedAction(formAction)}
           disabled={disabled}
           className="mr-8"
         >
@@ -195,7 +194,7 @@ const ActionButtons = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProp
       {showDisapproveButton && (
         <Button
           onClick={() => handleSubmitClick({ action: PO_ACTION.DISAPPROVE })}
-          isLoading={loading && isPODisapproveAction(formAction)}
+          isLoading={loading && isDisapproveAction(formAction)}
           disabled={disabled}
           className="mr-8"
         >
@@ -205,7 +204,7 @@ const ActionButtons = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProp
       {showRequestMoreInfoButton && (
         <Button
           onClick={() => handleSubmitClick({ action: PO_ACTION.ADDITIONAL_INFO })}
-          isLoading={loading && isPOAdditionalInfoAction(formAction)}
+          isLoading={loading && isAdditionalInfoAction(formAction)}
           disabled={disabled}
           className="mr-8"
         >
@@ -215,7 +214,7 @@ const ActionButtons = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProp
       {showSaveButton && (
         <Button
           onClick={() => handleSubmitClick({ action: PO_ACTION.SAVE })}
-          isLoading={loading && isPOSaveAction(formAction)}
+          isLoading={loading && isSaveAction(formAction)}
           disabled={disabled}
           className="mr-8"
         >
@@ -225,7 +224,7 @@ const ActionButtons = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProp
       {showSubmitToFAButton && (
         <Button
           onClick={() => handleSubmitClick({ action: PO_ACTION.SUBMIT })}
-          isLoading={loading && isPOSubmitAction(formAction)}
+          isLoading={loading && isSubmitAction(formAction)}
           disabled={disabled}
         >
           Submit to FA

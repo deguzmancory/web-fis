@@ -1,6 +1,7 @@
 import { Box, ButtonGroup, Container, Typography } from '@mui/material';
-import React from 'react';
+import { FC, memo, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
+import { COLOR_CODE } from 'src/appConfig/constants';
 import { PATHS } from 'src/appConfig/paths';
 import { Button } from 'src/components/common';
 import SectionLayout from 'src/containers/shared/SectionLayout';
@@ -10,7 +11,6 @@ import { Navigator } from 'src/services';
 import { handleShowErrorMsg } from 'src/utils';
 import BreadcrumbsPOChangeForm from '../breadcrumbs';
 import { SELECT_CHANGE_FORM_TYPE_QUERY_KEY } from './enums';
-import { COLOR_CODE } from 'src/appConfig/constants';
 
 const buttons = [
   {
@@ -33,10 +33,10 @@ const buttons = [
   },
 ];
 
-const SelectChangeFormType: React.FC<Props> = ({ disabled = false }) => {
+const SelectChangeFormType: FC<Props> = ({ disabled = false }) => {
   const location = useLocation();
-  const query = React.useMemo(() => new URLSearchParams(location.search), [location]);
-  const documentId = React.useMemo(
+  const query = useMemo(() => new URLSearchParams(location.search), [location]);
+  const documentId = useMemo(
     () => query.get(SELECT_CHANGE_FORM_TYPE_QUERY_KEY.DOCUMENT_ID) || null,
     [query]
   );
@@ -100,4 +100,4 @@ type Props = {
   disabled?: boolean;
 };
 
-export default React.memo(SelectChangeFormType);
+export default memo(SelectChangeFormType);

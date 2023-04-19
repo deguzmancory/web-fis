@@ -105,7 +105,7 @@ export const dashboardItems: DashboardItem[] = [
       },
       {
         title: 'Create Non-PO Payment',
-        url: '#',
+        url: PATHS.nonPOPaymentOptions,
         isExternalUrl: false,
         roles: [ROLE_NAME.PI, ROLE_NAME.SU],
       },

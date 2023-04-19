@@ -58,6 +58,13 @@ export const getPOPaymentFormValueFromResponse = ({
         amount: Number(lineItem.amount || 0),
       })); //TODO: Tuyen Tran: remove mock data after BE integrate
 
+  const transformRemittanceLineItems = poPaymentResponse.remittanceLineItems?.map(
+    (remittanceLineItem) => ({
+      ...remittanceLineItem,
+      amount: Number(remittanceLineItem.amount || 0),
+    })
+  );
+
   return {
     ...poPaymentResponse,
     action: null,
@@ -101,9 +108,7 @@ export const getPOPaymentFormValueFromResponse = ({
       transformedPaymentEquipmentInventories
     ),
 
-    remittanceLineItems: !isEmpty(poPaymentResponse.remittanceLineItems)
-      ? [...poPaymentResponse.remittanceLineItems, initialPaymentRemittanceInfo]
-      : [initialPaymentRemittanceInfo],
+    remittanceLineItems: [...transformRemittanceLineItems, initialPaymentRemittanceInfo],
     remittance: !isEmpty(poPaymentResponse.remittance)
       ? poPaymentResponse.remittance
       : emptyUpdatePOPaymentFormValue.remittance,
@@ -129,6 +134,7 @@ export const getUpdatePOPaymentPayload = ({
     remainingBalance,
     remainingBalanceLineItems,
     remainingBalanceAsOfDate,
+    remittanceLineItems,
     ...payloadProps
   } = formValues;
 
@@ -138,9 +144,12 @@ export const getUpdatePOPaymentPayload = ({
     paymentLineItems: isAdvancePaymentResponse
       ? advancePaymentLineItem
       : partialOrFinalPaymentLineItem.slice(0, -1),
-    paymentEquipmentInventories: paymentEquipmentInventories.slice(
-      0,
-      paymentNumberOfEquipmentInventories
-    ),
+    paymentEquipmentInventories: paymentEquipmentInventories
+      .slice(0, paymentNumberOfEquipmentInventories)
+      .map((inventory, index) => ({
+        ...inventory,
+        lineNumber: index + 1,
+      })),
+    remittanceLineItems: remittanceLineItems.slice(0, -1),
   };
 };

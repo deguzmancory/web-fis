@@ -176,3 +176,9 @@ export const isDate = (value: any): value is Date => {
 export const getOptionLabel = (options: { label: string; value: any }[], value) => {
   return options.find((option) => option.value === value)?.label || '';
 };
+
+export const convertNumberOrNull = (value: string | number) => {
+  if (isString(value) && !value) return null;
+
+  return Number(value || 0);
+};

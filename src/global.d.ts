@@ -28,3 +28,6 @@ declare interface DeepReadonlyArray<T> extends ReadonlyArray<DeepReadonly<T>> {}
 declare type DeepReadonlyObject = {
   readonly [P in keyof T]: DeepReadonly<T[P]>;
 };
+
+declare type ArrayElement<ArrayType extends readonly unknown[]> =
+  ArrayType extends readonly (infer ElementType)[] ? ElementType : never;

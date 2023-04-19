@@ -35,6 +35,14 @@ export const PATHS = {
   // PO Payment
   poPaymentForm: '/po-payment',
 
+  // Non PO Payment
+  nonPOPaymentOptions: '/direct-payment-options',
+  authorizationForPayment: '/authorization-for-payment',
+  nonEmployeeTravelPayment: '/non-employee-travel-payment',
+  personalAutoPayment: '/personal-auto-payment',
+  pettyCashPayment: '/petty-cash-payment',
+  submittedNonPOPayment: '/submitted-direct-payments',
+
   // Vendor Print Mode
   vendorPrintMode: '/vendor-print-mode',
 

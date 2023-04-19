@@ -8,12 +8,12 @@ import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
 import { resetAllField } from './helpers';
-import { isFAReviewPOMode } from 'src/queries/PurchaseOrders/helpers';
+import { isFAReviewMode } from 'src/queries/PurchaseOrders/helpers';
 import InfoTooltip from 'src/containers/shared/InfoTooltip';
 
 const SendInvoiceInfo: React.FC<Props> = ({ formikProps, disabled = false, currentPOMode }) => {
-  const isFAReviewMode = isFAReviewPOMode(currentPOMode);
-  const allowEdit = isFAReviewMode;
+  const isInFAReviewMode = isFAReviewMode(currentPOMode);
+  const allowEdit = isInFAReviewMode;
   const {
     values,
     errors,

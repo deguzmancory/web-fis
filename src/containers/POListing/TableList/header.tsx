@@ -129,6 +129,7 @@ const POHeaderTable: FC<Props> = ({ searchValues, currentRole, allowSelectWorkfl
     }
 
     query.set(PO_LIST_QUERY_KEY.WORKFLOW_STATUS, value);
+
     history.push({ search: query.toString() });
   };
 
