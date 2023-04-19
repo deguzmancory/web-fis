@@ -19,7 +19,11 @@ const DateRangePicker: React.FC<Props> = ({
   placeholder = 'MM/DD/YYYY - MM/DD/YYYY',
   dateFormat = 'MM/DD/YYYY',
   selecteds,
+  monthsShown = 2,
   positionFixed = true,
+  showYearDropdown = true,
+  showMonthDropdown = true,
+  scrollableYearDropdown = true,
   onChange,
   ...props
 }) => {
@@ -81,6 +85,13 @@ const DateRangePicker: React.FC<Props> = ({
         popperProps={{
           positionFixed: positionFixed,
         }}
+        disabledKeyboardNavigation
+        monthsShown={monthsShown}
+        showYearDropdown={showYearDropdown}
+        showMonthDropdown={showMonthDropdown}
+        scrollableYearDropdown={scrollableYearDropdown}
+        dropdownMode="select"
+        yearDropdownItemNumber={15}
         portalId="root"
       />
     </Element>
@@ -95,6 +106,10 @@ type Props = Omit<ReactDatePickerProps, 'onChange'> & {
   label?: string;
   selecteds?: [Date, Date];
   positionFixed?: boolean;
+  monthsShown?: number;
+  showYearDropdown?: boolean;
+  showMonthDropdown?: boolean;
+  scrollableYearDropdown?: boolean;
   onChange?: (name: string, value: DateRange) => void;
 };
 

@@ -215,7 +215,6 @@ const SearchApproved = ({
               {...getFieldProps(PO_LIST_QUERY_KEY.CHECK_DATE)}
               onChange={setFieldValue}
               selecteds={values.checkDate}
-              monthsShown={2}
             />
           </Grid>
           <Grid item xs={3.5}>
@@ -225,7 +224,6 @@ const SearchApproved = ({
               {...getFieldProps(PO_LIST_QUERY_KEY.FINAL_APPROVED_DATE)}
               selecteds={values.finalApprovedDate}
               onChange={setFieldValue}
-              monthsShown={2}
             />
           </Grid>
           <Grid item xs={3.5}>
@@ -235,7 +233,6 @@ const SearchApproved = ({
               {...getFieldProps(PO_LIST_QUERY_KEY.PRINTED_DATE)}
               selecteds={values.printedDate}
               onChange={setFieldValue}
-              monthsShown={2}
             />
           </Grid>
           <Grid item xs={2}>

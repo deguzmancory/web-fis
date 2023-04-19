@@ -167,7 +167,6 @@ const SearchPendingReviewApprove = ({
               {...getFieldProps(PO_LIST_QUERY_KEY.MODIFIED_DATE)}
               onChange={setFieldValue}
               selecteds={values.modifiedDate}
-              monthsShown={2}
             />
           </Grid>
           <Grid item xs={2}>
