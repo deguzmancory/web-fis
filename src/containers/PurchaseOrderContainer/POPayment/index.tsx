@@ -139,7 +139,7 @@ const POPayment: FC<Props> = ({
         }
 
         case PO_ACTION.APPROVE: {
-          Toastify.success(`Approve successfully.`);
+          Toastify.success(`Approved successfully.`);
           handleInvalidatePOPaymentDetail();
           onGetPOPaymentById();
           return;
