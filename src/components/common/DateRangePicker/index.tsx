@@ -24,6 +24,7 @@ const DateRangePicker: React.FC<Props> = ({
   showYearDropdown = true,
   showMonthDropdown = true,
   scrollableYearDropdown = true,
+  yearDropdownItemNumber = 15,
   onChange,
   ...props
 }) => {
@@ -91,7 +92,7 @@ const DateRangePicker: React.FC<Props> = ({
         showMonthDropdown={showMonthDropdown}
         scrollableYearDropdown={scrollableYearDropdown}
         dropdownMode="select"
-        yearDropdownItemNumber={15}
+        yearDropdownItemNumber={yearDropdownItemNumber}
         portalId="root"
       />
     </Element>
@@ -110,6 +111,7 @@ type Props = Omit<ReactDatePickerProps, 'onChange'> & {
   showYearDropdown?: boolean;
   showMonthDropdown?: boolean;
   scrollableYearDropdown?: boolean;
+  yearDropdownItemNumber?: number;
   onChange?: (name: string, value: DateRange) => void;
 };
 

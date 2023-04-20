@@ -40,6 +40,10 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
     return formData?.fedAttachment === FED_ATTACHMENT_VALUE.ATTACHMENT_32B;
   }, [formData?.fedAttachment]);
 
+  const isAttachment32d = React.useMemo(() => {
+    return formData?.fedAttachment === FED_ATTACHMENT_VALUE.ATTACHMENT_32D;
+  }, [formData?.fedAttachment]);
+
   const contentAttachmentFAR32b = [
     {
       leftContent: '52.202-1',
@@ -207,11 +211,12 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
     },
     {
       leftContent: '52.227-13',
-      rightContent: isAttachment32b
-        ? 'Patent Rights--Ownership by the Government'
-        : 'Patent Rights--Ownership by the Government52.227-14 Rights in Data—General',
+      rightContent:
+        isAttachment32b || isAttachment32d
+          ? 'Patent Rights--Ownership by the Government'
+          : 'Patent Rights--Ownership by the Government52.227-14 Rights in Data—General',
     },
-    isAttachment32b && {
+    (isAttachment32b || isAttachment32d) && {
       leftContent: '52.227-14',
       rightContent: 'Rights in Data—General',
     },
@@ -368,21 +373,21 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
       leftContent: '52.249-1',
       rightContent: 'Termination for Convenience of the Government (Fixed-Price) (Short Form)',
     },
-    {
+    !isAttachment32d && {
       leftContent: '52.249-4',
       rightContent:
         'Termination for Convenience of the Government (Services) (Short Form) (NOT applicable to suppliers)',
     },
-    isAttachment32b && {
+    (isAttachment32b || isAttachment32d) && {
       leftContent: '52.249-5',
       rightContent:
         'Termination for Convenience of the Government (Educational and other Nonprofit Institutions)',
     },
-    {
+    !isAttachment32d && {
       leftContent: '52.249-6',
       rightContent: 'Termination (Cost-Reimbursement)',
     },
-    {
+    !isAttachment32d && {
       leftContent: '52.249-8',
       rightContent: 'Default (Fixed-Price Supply and Service) (NOT applicable to suppliers)',
     },
@@ -680,7 +685,7 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
             </Grid>
           </Stack>
 
-          {formData?.fedAttachment === FED_ATTACHMENT_VALUE.ATTACHMENT_32C && (
+          {(formData?.fedAttachment === FED_ATTACHMENT_VALUE.ATTACHMENT_32C || isAttachment32d) && (
             <Stack>
               <Typography variant="body2" mt={2} mb={2}>
                 NFS:

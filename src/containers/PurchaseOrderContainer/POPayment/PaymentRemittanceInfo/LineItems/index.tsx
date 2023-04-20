@@ -121,7 +121,9 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
       style: {
         verticalAlign: 'top',
       },
-      errorMessage: _getErrorMessage(`${prefixLineItem}.${PO_PAYMENT_REMITTANCE_LINE_ITEM.AMOUNT}`),
+      errorMessage: _getErrorMessage(
+        `${prefixLineItem}.${PO_PAYMENT_REMITTANCE_LINE_ITEM.REFERENCE_NUMBER}`
+      ),
       columns: [
         {
           label: 'Line',
@@ -135,9 +137,6 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
               {...getFieldProps(
                 `${prefixLineItem}.${PO_PAYMENT_REMITTANCE_LINE_ITEM.REFERENCE_NUMBER}`
               )}
-              errorMessage={_getErrorMessage(
-                `${prefixLineItem}.${PO_PAYMENT_REMITTANCE_LINE_ITEM.REFERENCE_NUMBER}`
-              )}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                 handleInputChange({
                   index,
@@ -146,6 +145,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
                 })
               }
               maxLength={29}
+              disabled={disabled}
             />
           ),
         },
@@ -157,9 +157,6 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
               {...getFieldProps(
                 `${prefixLineItem}.${PO_PAYMENT_REMITTANCE_LINE_ITEM.CUSTOMER_ACCOUNT_COMMENT}`
               )}
-              errorMessage={_getErrorMessage(
-                `${prefixLineItem}.${PO_PAYMENT_REMITTANCE_LINE_ITEM.CUSTOMER_ACCOUNT_COMMENT}`
-              )}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                 handleInputChange({
                   index,
@@ -168,6 +165,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
                 })
               }
               maxLength={29}
+              disabled={disabled}
             />
           ),
         },
@@ -186,6 +184,7 @@ const TableLineItems: React.FC<Props> = ({ formikProps, disabled }) => {
                   key: PO_PAYMENT_REMITTANCE_LINE_ITEM.AMOUNT,
                 })
               }
+              disabled={disabled}
             />
           ),
         },
