@@ -40,7 +40,15 @@ export const getNonEmployeeTravelFormValueFromResponse = ({
   response: NonEmployeeTravelDetailResponse;
   profile: MyProfile;
 }): UpsertNonEmployeeTravelFormValue => {
-  const { projectItems, remittanceLineItems, date, itineraries, ...formValue } = response;
+  const {
+    projectItems,
+    remittanceLineItems,
+    date,
+    itineraries,
+    fromServiceDate,
+    toServiceDate,
+    ...formValue
+  } = response;
 
   const transformedProjectItems =
     projectItems?.map((lineItem) => ({
@@ -79,6 +87,9 @@ export const getNonEmployeeTravelFormValueFromResponse = ({
     placeholderFileAttachment: null,
 
     date: getDateDisplay(date),
+    fromServiceDate: getDate(fromServiceDate),
+    toServiceDate: getDate(toServiceDate),
+
     projectItems: [...transformedProjectItems, initialNonEmployeeTravelProjectItem],
     remittanceLineItems: [
       ...transformedRemittanceLineItems,
@@ -104,6 +115,8 @@ export const getUpsertNonEmployeeTravelPayload = ({
     remittanceLineItems,
     projectItems,
     itineraries,
+    fromServiceDate,
+    toServiceDate,
     ...payloadProps
   } = formValues;
 
@@ -128,10 +141,15 @@ export const getUpsertNonEmployeeTravelPayload = ({
   return {
     ...payloadProps,
     action: action,
+
     date: isEdit ? date : localTimeToHawaii(new Date(), isoFormat),
-    projectItems: projectItemsPayload,
+
     vendorName: isString(vendorName) ? vendorName : vendorName.name,
     vendorCode: isString(vendorCode) ? vendorCode : vendorCode.code,
+    fromServiceDate: getDateDisplay(fromServiceDate),
+    toServiceDate: getDateDisplay(toServiceDate),
+
+    projectItems: projectItemsPayload,
     remittanceLineItems: remittanceLineItemsPayload,
     itineraries: itinerariesPayload,
   };

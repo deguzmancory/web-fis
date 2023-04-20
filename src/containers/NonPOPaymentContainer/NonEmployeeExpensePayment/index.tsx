@@ -13,9 +13,9 @@ import { Navigator, RoleService, Toastify } from 'src/services';
 import ErrorNonPOWrapper from '../shared/ErrorWrapper/index.';
 import { UpsertNonEmployeeTravelFormValue, UpsertNonEmployeeTravelFormikProps } from './types';
 import { getUncontrolledInputFieldProps, handleShowErrorMsg } from 'src/utils';
-import { useGetNonEmployeeTravelDetail } from 'src/queries/NonPOPayment/NonEmployeeTravel/useGetPODetail';
-import { useCreateNonEmployeeTravel } from 'src/queries/NonPOPayment/NonEmployeeTravel/useCreatePO';
-import { useUpdateNonEmployeeTravel } from 'src/queries/NonPOPayment/NonEmployeeTravel/useUpdatePO';
+import { useGetNonEmployeeTravelDetail } from 'src/queries/NonPOPayment/NonEmployeeTravel/useGetNonEmployeeTravelDetail';
+import { useCreateNonEmployeeTravel } from 'src/queries/NonPOPayment/NonEmployeeTravel/useCreateNonEmployeeTravel';
+import { useUpdateNonEmployeeTravel } from 'src/queries/NonPOPayment/NonEmployeeTravel/useUpdateNonEmployeeTravel';
 import {
   getInitialNonEmployeeTravelFormValue,
   getNonEmployeeTravelFormValueFromResponse,
@@ -30,6 +30,12 @@ import { getNonEmployeeTravelFormValidationSchema } from './helpers/validationSc
 import { NON_PO_PAYMENT_DOCUMENT_TYPE } from 'src/queries/NonPOPayment';
 import Prompt from 'src/services/Prompt';
 import BreadcrumbsNonPOForm from '../shared/Breadcrumb';
+import Header from './Header';
+import SectionLayout from 'src/containers/shared/SectionLayout';
+import NoPermission from 'src/components/NoPermission';
+import HeaderOfSection from '../shared/HeaderOfSection';
+import SelectPayeeCategory from './SelectPayeeCategory';
+import GeneralInfo from './GeneralInfo';
 
 const AuthorizationForPayment: FC<Props> = ({
   formData,
@@ -41,6 +47,7 @@ const AuthorizationForPayment: FC<Props> = ({
   const { id } = useParams<{ id: string }>();
 
   const isEditMode = !!id;
+  const hasPermission = true; //TODO: enhancement: check logic to be granted tp access the this resource
   const currentRole = RoleService.getCurrentRole();
   const poStatus = useMemo(() => formData?.status, [formData?.status]);
   const currentNonEmployeeTravelMode = useMemo(
@@ -114,7 +121,7 @@ const AuthorizationForPayment: FC<Props> = ({
       switch (formAction) {
         case PO_ACTION.SAVE: {
           Toastify.success(`Saved form successfully.`);
-          Navigator.navigate(`${PATHS.nonEmployeeTravelPayment}/${responseData.data.id}`);
+          Navigator.navigate(`${PATHS.nonEmployeeTravelPaymentDetail}/${responseData.data.id}`);
           return;
         }
         case PO_ACTION.SUBMIT: {
@@ -125,7 +132,7 @@ const AuthorizationForPayment: FC<Props> = ({
         }
 
         case PO_ACTION.APPROVE: {
-          Toastify.success(`Approve successfully.`);
+          Toastify.success(`Approved successfully.`);
           handleInvalidateNonEmployeeTravelDetail();
           onGetNonEmployeeTravelById();
           return;
@@ -296,6 +303,27 @@ const AuthorizationForPayment: FC<Props> = ({
       <Box py={4}>
         <Container maxWidth="lg">
           <BreadcrumbsNonPOForm />
+          <Header />
+          <Suspense fallback={<LoadingCommon />}>
+            {!hasPermission ? (
+              <SectionLayout>
+                <NoPermission />
+              </SectionLayout>
+            ) : (
+              <>
+                <SectionLayout header={<HeaderOfSection />}>
+                  <SelectPayeeCategory formikProps={formikProps} disabled={disabledSection} />
+                </SectionLayout>
+                <SectionLayout>
+                  <GeneralInfo
+                    formikProps={formikProps}
+                    disabled={disabledSection}
+                    currentMode={currentNonEmployeeTravelMode}
+                  />
+                </SectionLayout>
+              </>
+            )}
+          </Suspense>
         </Container>
       </Box>
     </Prompt>

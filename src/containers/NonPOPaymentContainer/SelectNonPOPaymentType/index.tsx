@@ -10,19 +10,19 @@ import { Navigator } from 'src/services';
 const buttons = [
   {
     title: 'Authorization for Payment Form',
-    path: PATHS.authorizationForPayment,
+    path: PATHS.createAuthorizationForPayment,
   },
   {
     title: 'Non-Employee Expense Payment Form',
-    path: PATHS.nonEmployeeTravelPayment,
+    path: PATHS.createNonEmployeeTravelPayment,
   },
   {
     title: 'Personal Automobile Mileage Voucher',
-    path: PATHS.personalAutoPayment,
+    path: PATHS.createPersonalAutoPayment,
   },
   {
     title: 'Petty Cash Summary Sheet',
-    path: PATHS.pettyCashPayment,
+    path: PATHS.createPettyCashPayment,
   },
 ];
 

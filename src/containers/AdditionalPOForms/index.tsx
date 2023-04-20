@@ -1,7 +1,7 @@
 import { Box, Container, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { FormikProps } from 'formik';
-import React, { Suspense } from 'react';
+import { Suspense, useLayoutEffect, useRef, lazy, useCallback, FC } from 'react';
 import { connect } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
@@ -25,14 +25,14 @@ import { PO_ADDITIONAL_FORM_PARAMS } from './enum';
 import FooterSection from './footerSection';
 import { handleNavigateBackToMainForm } from './helpers';
 
-const SoleSource = React.lazy(() => import('./SoleSource'));
-const AuthToPurchase = React.lazy(() => import('./AuthToPurchase'));
-const Determination = React.lazy(() => import('./Determination'));
-const SubcontractAgreement = React.lazy(() => import('./SubcontractAgreement'));
-const EquipmentInventory = React.lazy(() => import('./EquipmentInventory'));
-const FfataDataCollection = React.lazy(() => import('./FfataDataCollection'));
+const SoleSource = lazy(() => import('./SoleSource'));
+const AuthToPurchase = lazy(() => import('./AuthToPurchase'));
+const Determination = lazy(() => import('./Determination'));
+const SubcontractAgreement = lazy(() => import('./SubcontractAgreement'));
+const EquipmentInventory = lazy(() => import('./EquipmentInventory'));
+const FfataDataCollection = lazy(() => import('./FfataDataCollection'));
 
-const PurchaseOrderContainer: React.FC<Props> = ({
+const PurchaseOrderContainer: FC<Props> = ({
   formData,
   onSetFormData,
   onShowDialog,
@@ -42,7 +42,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   onSetHrefNavigationForm,
 }) => {
   const { formCode } = useParams<{ formCode: string }>();
-  const formRef = React.useRef<FormikProps<any>>(null);
+  const formRef = useRef<FormikProps<any>>(null);
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const documentId = query.get(PO_ADDITIONAL_FORM_PARAMS.DOCUMENT_ID) || null;
@@ -50,7 +50,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
 
   const hasPermission = true; //TODO: update when enhancement needed
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     if (!formData) {
       if (documentId) {
         Navigator.navigate(urljoin(PATHS.purchaseOrderDetail, documentId));
@@ -60,7 +60,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
     }
   }, [formData, documentId]);
 
-  const renderForm = React.useCallback((code: PO_ADDITIONAL_FORM_CODE) => {
+  const renderForm = useCallback((code: PO_ADDITIONAL_FORM_CODE) => {
     if (!formData) return null;
 
     switch (code) {
@@ -90,7 +90,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getFormTitle = React.useCallback((code: PO_ADDITIONAL_FORM_CODE) => {
+  const getFormTitle = useCallback((code: PO_ADDITIONAL_FORM_CODE) => {
     switch (code) {
       case PO_ADDITIONAL_FORM_CODE.SOLE_SOURCE:
         return 'SOLE SOURCE JUSTIFICATION';
@@ -111,7 +111,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
     }
   }, []);
 
-  const handleCancelButton = React.useCallback(() => {
+  const handleCancelButton = useCallback(() => {
     if (formRef.current.dirty) {
       onShowDialog({
         type: DIALOG_TYPES.YESNO_DIALOG,

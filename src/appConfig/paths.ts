@@ -37,10 +37,18 @@ export const PATHS = {
 
   // Non PO Payment
   nonPOPaymentOptions: '/direct-payment-options',
-  authorizationForPayment: '/authorization-for-payment',
-  nonEmployeeTravelPayment: '/non-employee-travel-payment',
-  personalAutoPayment: '/personal-auto-payment',
-  pettyCashPayment: '/petty-cash-payment',
+  createAuthorizationForPayment: '/authorization-for-payment/create',
+  authorizationForPaymentDetail: '/authorization-for-payment/detail',
+
+  createNonEmployeeTravelPayment: '/non-employee-travel-payment/create',
+  nonEmployeeTravelPaymentDetail: '/non-employee-travel-payment/detail',
+
+  createPersonalAutoPayment: '/personal-auto-payment/create',
+  personalAutoPaymentDetail: '/personal-auto-payment/detail',
+
+  createPettyCashPayment: '/petty-cash-payment/create',
+  pettyCashPaymentDetail: '/petty-cash-payment/detail',
+
   submittedNonPOPayment: '/submitted-direct-payments',
 
   // Vendor Print Mode

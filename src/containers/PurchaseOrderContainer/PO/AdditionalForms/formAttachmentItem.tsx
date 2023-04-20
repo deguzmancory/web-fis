@@ -6,7 +6,7 @@ import TypographyLink from 'src/components/TypographyLink';
 import { AdditionalPOFormValue } from '../types';
 
 const FormAttachmentItem: React.FC<Props> = ({
-  formAttachments,
+  formAttachments = [],
   allowEdit,
   onViewClick,
   onEditClick,

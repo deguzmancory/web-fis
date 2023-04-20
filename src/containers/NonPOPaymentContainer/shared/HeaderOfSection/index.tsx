@@ -1,7 +1,5 @@
 import { Stack, Typography } from '@mui/material';
 import { FC, memo } from 'react';
-import { NO_OPENER } from 'src/appConfig/constants';
-import { Link } from 'src/components/common';
 
 const HeaderOfSection: FC<Props> = () => {
   return (
@@ -10,12 +8,8 @@ const HeaderOfSection: FC<Props> = () => {
         <span className="has-text-danger fw-bold text-is-16">**</span> = required to Save
       </Typography>
       <Typography mx={1}>
-        <span className="has-text-danger fw-bold text-is-16">*</span> = required to Submit/Approve
-        RCUH
+        <span className="has-text-danger fw-bold text-is-16">*</span> = required to Submit
       </Typography>
-      <Link href="https://www.rcuh.com/2-000/2-200/2-201/" target={'_blank'} rel={NO_OPENER}>
-        RCUH Policy 2.201
-      </Link>
     </Stack>
   );
 };

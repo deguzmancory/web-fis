@@ -2,23 +2,35 @@ import { POAuditTrails } from 'src/queries/PurchaseOrders';
 import { PO_ACTION, PO_DETAIL_STATUS } from '../../PurchaseOrders/enums';
 import { NON_PO_PAYMENT_DOCUMENT_TYPE } from '../enums';
 
-export interface SharedNonEmployeeTravelDetail {
+export interface SelectPayeeCategory {
   loginName: string;
   date: string;
   requestNumber: string;
+  payeeCategory: string;
+}
 
-  acceptedDate: string;
+export interface GeneralInfo {
+  vendorName: string;
+  vendorCode: string;
   positionTitle: string;
-  organization: string;
+  employer: string; //todo: check
+  vendorAddress: string;
+  documentNumber: string;
+  faStaffReviewer: string;
   projectContact: string;
   projectContactPhone: string;
+  toServiceDate: string;
+  fromServiceDate: string;
+}
+
+export interface SharedNonEmployeeTravelDetail extends SelectPayeeCategory, GeneralInfo {
+  acceptedDate: string;
+  organization: string;
   homeAddress: string;
   purposeForTravel: string;
-  faStaffReviewer: string;
   phoneNumber: string;
   directInquiriesTo: string;
   internalComments: string;
-  payeeCategory: string;
   travelDetails: string;
   total: number;
   expenditureTotal: number;
@@ -32,10 +44,6 @@ export interface SharedNonEmployeeTravelDetail {
   faSignature: string;
   completedBy: string;
   username: string;
-  documentNumber: string;
-  vendorAddress: string;
-  vendorName: string;
-  vendorCode: string;
   faCode: string;
   faName: string;
   faEmail: string;
@@ -63,8 +71,7 @@ export interface SharedNonEmployeeTravelDetail {
   piName: string;
   advancedDocumentNumber: string;
   amountAdvanced: number;
-  toServiceDate: string;
-  fromServiceDate: string;
+
   updateVersionNumber: number;
   noReceiptSmallCorrectFlag: boolean;
   noReceiptAmount: number;

@@ -1,7 +1,7 @@
 import { Box, Container, Typography } from '@mui/material';
 import { FormikProps, useFormik } from 'formik';
 import { Location } from 'history';
-import React, { Suspense } from 'react';
+import { Suspense, lazy, FC, useRef, useMemo, useEffect, useLayoutEffect } from 'react';
 import { connect } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
@@ -48,10 +48,10 @@ import {
 import { UpsertPOFormValue, UpsertPOFormikProps } from './types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
 
-const AuditInformation = React.lazy(() => import('./AuditInformation'));
-const FileAttachments = React.lazy(() => import('./FileAttachments'));
+const AuditInformation = lazy(() => import('./AuditInformation'));
+const FileAttachments = lazy(() => import('./FileAttachments'));
 
-const PurchaseOrderContainer: React.FC<Props> = ({
+const PurchaseOrderContainer: FC<Props> = ({
   formData,
   isImmutableFormData,
   onSetFormData,
@@ -62,14 +62,14 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   const location = useLocation();
   const query = new URLSearchParams(location.search);
 
-  const formRef = React.useRef<FormikProps<UpsertPOFormValue>>(null);
+  const formRef = useRef<FormikProps<UpsertPOFormValue>>(null);
   const scrollToParam = query.get(PO_FORM_PARAMS.SCROLL_TO) || null;
 
   const isEditPOMode = !!id;
-  const hasPermission = true; //TODO: huy_dang enhancement: check logic to be granted tp access the PO resource
+  const hasPermission = true; //TODO: enhancement: check logic to be granted tp access the PO resource
   const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
-  const poStatus = React.useMemo(() => formData?.status, [formData?.status]);
-  const currentPOMode = React.useMemo(
+  const poStatus = useMemo(() => formData?.status, [formData?.status]);
+  const currentPOMode = useMemo(
     () => getCurrentEditMode({ id, status: poStatus, currentRole }),
     [id, poStatus, currentRole]
   );
@@ -128,7 +128,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   const isLoading = createPOLoading || updatePOLoading;
 
   // Navigate to submitted PO success page
-  React.useEffect(() => {
+  useEffect(() => {
     if ((isCreatePOSuccess || isUpdatePOSuccess) && !isLoading) {
       const responseData = isEditPOMode ? updatePOResponse : createPOResponse;
 
@@ -180,7 +180,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
 
   // create mode
   // using useLayoutEffect to avoid flash at first time render
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     const isInitialEmptyForm = !isEditPOMode && !isImmutableFormData;
 
     if (isInitialEmptyForm) {
@@ -193,7 +193,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
 
   // edit mode
   // using useEffect for fetch data from api
-  React.useEffect(() => {
+  useEffect(() => {
     if (isEditPOMode && !isImmutableFormData) {
       onGetPOById();
     }
@@ -205,7 +205,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   /* END INIT DATA */
 
   // Auto scroll to additional form section base on scrollToParam
-  React.useEffect(() => {
+  useEffect(() => {
     if (scrollToParam && scrollToParam === PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS) {
       const additionalFormId = document.getElementById(PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS);
 
@@ -221,7 +221,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   // The next time component did mount:
   //  * if isImmutableFormData is true => it will reset to initial empty form
   //  * if isImmutableFormData is false => it will get the formData from Redux to initial form
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       onSetIsImmutableFormData(false);
     };
@@ -237,9 +237,9 @@ const PurchaseOrderContainer: React.FC<Props> = ({
     }
   };
 
-  const initialFormValue = React.useMemo(() => formData || emptyUpsertPOFormValue, [formData]);
+  const initialFormValue = useMemo(() => formData || emptyUpsertPOFormValue, [formData]);
 
-  const validationSchema = React.useMemo(
+  const validationSchema = useMemo(
     () => getPOFormValidationSchema({ action: formAction }),
     [formAction]
   );
@@ -411,7 +411,7 @@ const PurchaseOrderContainer: React.FC<Props> = ({
   );
 };
 
-const PurchaseOrderContainerWrapper: React.FC<Props> = ({ ...props }) => {
+const PurchaseOrderContainerWrapper: FC<Props> = ({ ...props }) => {
   return (
     <CustomErrorBoundary FallbackComponent={(props) => <ErrorWrapperPO {...props} />}>
       <Suspense

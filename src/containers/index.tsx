@@ -142,42 +142,42 @@ const Routing: React.FC<{ location: Location }> = (props) => {
             />
             <CustomRoute
               pageRequiredAuth
-              path={`${PATHS.authorizationForPayment}`}
+              path={`${PATHS.createAuthorizationForPayment}`}
               component={AuthorizationForPayment}
             />
             <CustomRoute
               pageRequiredAuth
-              path={`${PATHS.authorizationForPayment}/:id`}
+              path={`${PATHS.authorizationForPaymentDetail}/:id`}
               component={AuthorizationForPayment}
             />
             <CustomRoute
               pageRequiredAuth
-              path={`${PATHS.nonEmployeeTravelPayment}`}
+              path={`${PATHS.createNonEmployeeTravelPayment}`}
               component={NonEmployeeExpensePayment}
             />
             <CustomRoute
               pageRequiredAuth
-              path={`${PATHS.nonEmployeeTravelPayment}/:id`}
+              path={`${PATHS.nonEmployeeTravelPaymentDetail}/:id`}
               component={NonEmployeeExpensePayment}
             />
             <CustomRoute
               pageRequiredAuth
-              path={`${PATHS.personalAutoPayment}`}
+              path={`${PATHS.createPersonalAutoPayment}`}
               component={PersonalAutomobileMileageVoucher}
             />
             <CustomRoute
               pageRequiredAuth
-              path={`${PATHS.personalAutoPayment}/:id`}
+              path={`${PATHS.personalAutoPaymentDetail}/:id`}
               component={PersonalAutomobileMileageVoucher}
             />
             <CustomRoute
               pageRequiredAuth
-              path={`${PATHS.pettyCashPayment}`}
+              path={`${PATHS.createPettyCashPayment}`}
               component={PettyCashSummarySheet}
             />
             <CustomRoute
               pageRequiredAuth
-              path={`${PATHS.pettyCashPayment}/:id`}
+              path={`${PATHS.pettyCashPaymentDetail}/:id`}
               component={PettyCashSummarySheet}
             />
 

@@ -58,25 +58,37 @@ export const initialNonEmployeeTravelRemittance = {
 };
 
 export const emptyUpsertNonEmployeeTravelFormValue: UpsertNonEmployeeTravelFormValue = {
+  // form only
   action: null,
   placeholderFileAttachment: null,
 
+  // SelectPayeeCategory
   loginName: '',
   date: '',
-  requestNumber: '',
+  requestNumber: 'To be assigned',
+  payeeCategory: '',
 
-  acceptedDate: '',
+  //general info
+  vendorName: null,
+  vendorCode: null,
   positionTitle: '',
-  organization: '',
+  employer: '', //todo: check
+  vendorAddress: '',
+  documentNumber: '',
+  faStaffReviewer: '',
   projectContact: '',
   projectContactPhone: '',
+  toServiceDate: null,
+  fromServiceDate: null,
+
+  acceptedDate: '',
+  organization: '',
+
   homeAddress: '',
   purposeForTravel: '',
-  faStaffReviewer: '',
   phoneNumber: '',
   directInquiriesTo: '',
   internalComments: '',
-  payeeCategory: '',
   travelDetails: '',
   total: null,
   expenditureTotal: null,
@@ -90,10 +102,6 @@ export const emptyUpsertNonEmployeeTravelFormValue: UpsertNonEmployeeTravelFormV
   faSignature: '',
   completedBy: '',
   username: '',
-  documentNumber: '',
-  vendorAddress: '',
-  vendorName: '',
-  vendorCode: '',
   faCode: '',
   faName: '',
   faEmail: '',
@@ -121,8 +129,6 @@ export const emptyUpsertNonEmployeeTravelFormValue: UpsertNonEmployeeTravelFormV
   piName: '',
   advancedDocumentNumber: '',
   amountAdvanced: null,
-  toServiceDate: '',
-  fromServiceDate: '',
   updateVersionNumber: null,
   noReceiptSmallCorrectFlag: null,
   noReceiptAmount: null,

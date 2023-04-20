@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import { SelectOption } from 'src/components/common/Select';
 import { FinancialProject } from 'src/queries/Projects/types';
 import { Vendor } from 'src/queries/Vendors';
-import { getDateDisplay, getOptionsByEnum } from 'src/utils';
+import { getDateDisplay, getOptionsByEnum, isString } from 'src/utils';
 import { isEmpty } from 'src/validations';
 
 export const VARIOUS_PROJECT_LABEL = 'Various';
@@ -103,4 +103,27 @@ export const getVendorAddress = (vendor: Partial<Vendor>) => {
   }${address3}`;
 
   return formattedAddress;
+};
+
+export const getVendorNameOrVendorCodeOptions = ({
+  currentVendorNameOrCode,
+  searchedVendorNameOrCodeOptions,
+  isLoadingSearchVendors,
+}: {
+  currentVendorNameOrCode: string | Vendor;
+  searchedVendorNameOrCodeOptions: SelectOption[];
+  isLoadingSearchVendors: boolean;
+}) => {
+  const hasVendorNameValueButOptions =
+    !!currentVendorNameOrCode &&
+    isEmpty(searchedVendorNameOrCodeOptions) &&
+    !isLoadingSearchVendors;
+
+  if (hasVendorNameValueButOptions) {
+    return isString(currentVendorNameOrCode)
+      ? [{ label: currentVendorNameOrCode, value: currentVendorNameOrCode, isDisabled: true }]
+      : getVendorOptions({ vendors: [currentVendorNameOrCode] });
+  }
+
+  return searchedVendorNameOrCodeOptions;
 };

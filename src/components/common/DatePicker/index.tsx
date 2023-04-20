@@ -65,6 +65,7 @@ const DateSelector: React.FC<Props> = ({
           positionFixed: positionFixed,
         }}
         portalId="root"
+        disabledKeyboardNavigation
         {...props}
       />
     </Element>

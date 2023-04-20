@@ -1,7 +1,7 @@
 import { Add } from '@mui/icons-material';
 import { Box, Grid, Typography } from '@mui/material';
 import { debounce } from 'lodash';
-import React from 'react';
+import { useMemo, useCallback, memo } from 'react';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
@@ -70,7 +70,6 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
     setFieldValue,
     setFieldTouched,
   } = formikProps;
-  console.log('values: ', values);
 
   const isBlankDocument = isCreateMode(currentPOMode);
   const isPODocument = isPODocumentType(documentType);
@@ -94,10 +93,10 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
     (isFAReviewMode(currentPOMode) || isCUReviewMode(currentPOMode)) &&
     (isPOChangeDescriptionForm(values.formNumber) || isPOChangeAmountForm(values.formNumber));
 
-  const currentProjectTitle = React.useMemo(() => values.projectTitle, [values.projectTitle]);
-  const currentProjectNumber = React.useMemo(() => values.projectNumber, [values.projectNumber]);
-  const currentVendorName = React.useMemo(() => values.vendorName, [values.vendorName]);
-  const currentVendorCode = React.useMemo(() => values.vendorCode, [values.vendorCode]);
+  const currentProjectTitle = useMemo(() => values.projectTitle, [values.projectTitle]);
+  const currentProjectNumber = useMemo(() => values.projectNumber, [values.projectNumber]);
+  const currentVendorName = useMemo(() => values.vendorName, [values.vendorName]);
+  const currentVendorCode = useMemo(() => values.vendorCode, [values.vendorCode]);
 
   const {
     setSearchProjects,
@@ -121,7 +120,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
   const hasVendorCodeValueButOptions =
     !!currentVendorCode && isEmpty(searchedVendorCodeOptions) && !isLoadingSearchVendors;
 
-  const vendorNameOptions = React.useMemo(() => {
+  const vendorNameOptions = useMemo(() => {
     if (hasVendorNameValueButOptions) {
       return isString(currentVendorName)
         ? [{ label: currentVendorName, value: currentVendorName, isDisabled: true }]
@@ -131,7 +130,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
     return searchedVendorNameOptions;
   }, [currentVendorName, hasVendorNameValueButOptions, searchedVendorNameOptions]);
 
-  const vendorCodeOptions = React.useMemo(() => {
+  const vendorCodeOptions = useMemo(() => {
     if (hasVendorCodeValueButOptions) {
       return isString(currentVendorCode)
         ? [{ label: currentVendorCode, value: currentVendorCode, isDisabled: true }]
@@ -201,7 +200,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
 
   // Debouncing search projects inputs
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debounceSearchProjectsInput = React.useCallback(
+  const debounceSearchProjectsInput = useCallback(
     debounce((key: keyof SearchProjectsType, value: string) => {
       if (!value) return;
 
@@ -215,7 +214,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
 
   // Debouncing search vendors inputs
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debounceSearchVendorsInput = React.useCallback(
+  const debounceSearchVendorsInput = useCallback(
     debounce((key: keyof SearchVendorsType, value: string) => {
       if (!value) return;
 
@@ -523,7 +522,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
             errorMessage={_getErrorMessage(PO_FORM_KEY.VENDOR_ADDRESS)}
             {...getUncontrolledFieldProps(PO_FORM_KEY.VENDOR_ADDRESS)}
             disabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
-            style={{ minHeight: '100px' }}
+            minRows={3}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -533,7 +532,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
             errorMessage={_getErrorMessage(PO_FORM_KEY.SHIP_TO)}
             {...getUncontrolledFieldProps(PO_FORM_KEY.SHIP_TO)}
             disabled={disabled || inPOReviewMode || isPOChangeEditMode || isPOChangeReviewMode}
-            style={{ minHeight: '100px' }}
+            minRows={3}
           />
         </Grid>
         <Grid item xs={12} sm={4}>
@@ -620,7 +619,7 @@ type Props<T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps> = {
   documentType: PO_DOCUMENT_TYPE;
 };
 
-export default React.memo(GeneralInfo, (prevProps, nextProps) => {
+export default memo(GeneralInfo, (prevProps, nextProps) => {
   const prevFormikProps = prevProps.formikProps;
   const nextFormikProps = nextProps.formikProps;
 

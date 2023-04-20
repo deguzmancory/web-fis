@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { FormikProps, useFormik } from 'formik';
 import { Location } from 'history';
-import React from 'react';
+import { FC, useMemo, useCallback, useRef } from 'react';
 import { connect } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
@@ -34,8 +34,11 @@ import { isEmpty } from 'src/validations';
 import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { VENDOR_REGISTRATION_FORM_KEY } from './enums';
+import { UpsertNonEmployeeTravelFormValue } from 'src/containers/NonPOPaymentContainer/NonEmployeeExpensePayment/types';
+import { useGetNonEmployeeTravelDetail } from 'src/queries/NonPOPayment/NonEmployeeTravel';
+import { getNonEmployeeTravelFormValueFromResponse } from 'src/containers/NonPOPaymentContainer/NonEmployeeExpensePayment/helpers/formValues';
 
-const CreateVendorRegistration: React.FC<Props> = ({
+const CreateVendorRegistration: FC<Props> = ({
   formData,
   isViewOnly = false,
   onSetFormData,
@@ -43,12 +46,12 @@ const CreateVendorRegistration: React.FC<Props> = ({
   onShowDialog,
   onHideDialog,
 }) => {
-  const formRef = React.useRef<FormikProps<VendorRegistrationFormValue>>(null);
+  const formRef = useRef<FormikProps<VendorRegistrationFormValue>>(null);
 
   // using params here to redirect to previous section instead of using state of location
   // => increase more certain redirect
   const location = useLocation();
-  const query = React.useMemo(() => new URLSearchParams(location.search), [location]);
+  const query = useMemo(() => new URLSearchParams(location.search), [location]);
   const redirectSection = query.get(
     VENDOR_REGISTRATION_PARAMS.CALLING_FROM
   ) as VENDOR_REGISTRATION_NAVIGATE_FROM;
@@ -68,6 +71,12 @@ const CreateVendorRegistration: React.FC<Props> = ({
       Toastify.error(error.message);
     },
   });
+  const { onGetNonEmployeeTravelById } = useGetNonEmployeeTravelDetail({
+    id: documentId,
+    onError: (error) => {
+      Toastify.error(error.message);
+    },
+  });
 
   const handleConfirmSubmit = (values) => {
     const payload = getVendorRegistrationPayload({ values, vendorRegistrationId });
@@ -76,26 +85,27 @@ const CreateVendorRegistration: React.FC<Props> = ({
       onSuccess: async ({ data }) => {
         Toastify.success('Vendor created successfully.');
 
+        const vendorResponse = {
+          name: data.line1,
+          name2: data.line2,
+          code: data.code,
+          w9: data.w9,
+          address1: data.line3,
+          address2: data.line4,
+          address3: data.line5,
+        };
+
+        const newVendorData = {
+          vendorName: vendorResponse,
+          vendorCode: vendorResponse,
+          vendorAddress: getVendorAddress(vendorResponse),
+          address1: vendorResponse.address1,
+          address2: vendorResponse.address2,
+          address3: vendorResponse.address3,
+        };
+
+        // PO
         if (redirectSection === VENDOR_REGISTRATION_NAVIGATE_FROM.PO) {
-          const vendorResponse = {
-            name: data.line1,
-            name2: data.line2,
-            code: data.code,
-            w9: data.w9,
-            address1: data.line3,
-            address2: data.line4,
-            address3: data.line5,
-          };
-
-          const newVendorData = {
-            vendorName: vendorResponse,
-            vendorCode: vendorResponse,
-            vendorAddress: getVendorAddress(vendorResponse),
-            address1: vendorResponse.address1,
-            address2: vendorResponse.address2,
-            address3: vendorResponse.address3,
-          };
-
           //if there's no formData => redirect page have no data => fetch data to prepari
           if (!formData) {
             const { data: poDataResponse } = await onGetPOById();
@@ -122,6 +132,41 @@ const CreateVendorRegistration: React.FC<Props> = ({
               Navigator.navigate(PATHS.createPurchaseOrders);
             }
           });
+
+          return;
+        }
+
+        // Non PO Payment
+        if (redirectSection === VENDOR_REGISTRATION_NAVIGATE_FROM.NON_EMPLOYEE_TRAVEL_PAYMENT) {
+          //if there's no formData => redirect page have no data => fetch data to prepari
+          if (!formData) {
+            const { data: nonEmployeeTravelDataResponse } = await onGetNonEmployeeTravelById();
+
+            const formValue: UpsertNonEmployeeTravelFormValue =
+              getNonEmployeeTravelFormValueFromResponse({
+                response: nonEmployeeTravelDataResponse,
+                profile,
+              });
+
+            onSetFormData<UpsertNonEmployeeTravelFormValue>({ ...formValue, ...newVendorData });
+          } else {
+            onSetFormData<UpsertNonEmployeeTravelFormValue>({
+              ...formData,
+              ...newVendorData,
+            });
+          }
+
+          onSetIsImmutableFormData(true);
+
+          setTimeout(() => {
+            if (documentId) {
+              Navigator.navigate(urljoin(PATHS.nonEmployeeTravelPaymentDetail, documentId));
+            } else {
+              Navigator.navigate(PATHS.createNonEmployeeTravelPayment);
+            }
+          });
+
+          return;
         }
       },
       onError: (error) => {
@@ -170,7 +215,7 @@ const CreateVendorRegistration: React.FC<Props> = ({
     onSubmit: handleSubmitForm,
   });
 
-  const _handleScrollToTopError = React.useCallback((errors) => {
+  const _handleScrollToTopError = useCallback((errors) => {
     handleScrollToTopError(errors);
   }, []);
 
@@ -213,7 +258,7 @@ const CreateVendorRegistration: React.FC<Props> = ({
     return isFormDirty;
   };
 
-  const Header = React.useMemo(() => {
+  const Header = useMemo(() => {
     return (
       <Stack direction={'row'} alignItems={'center'} justifyContent="end">
         <Typography>
