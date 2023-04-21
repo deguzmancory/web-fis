@@ -17,4 +17,34 @@ export enum NON_EMPLOYEE_TRAVEL_FORM_KEY {
   PROJECT_CONTACT_PHONE = 'projectContactPhone',
   TO_SERVICE_DATE = 'toServiceDate',
   FROM_SERVICE_DATE = 'fromServiceDate',
+
+  // trip itinerary
+  START_DESTINATION = 'startDestination',
+  START_DEPARTURE_DATE = 'startDepartureDate',
+  ITINERARIES = 'itineraries',
+  END_DESTINATION = 'endDestination',
+  END_ARRIVAL_DATE = 'endArrivalDate',
+  TRIP_TOTAL = 'tripTotal',
+}
+
+export enum ITINERARY_ITEM_FORM_KEY {
+  NON_EMPLOYEE_TRAVEL_ID = 'nonEmployeeTravelId',
+  DESTINATION = 'destination',
+  DEPARTURE_DATE = 'departureDate',
+  ARRIVAL_DATE = 'arrivalDate',
+  CALC_DAYS = 'calcDays',
+  BUSINESS_DAYS = 'businessDays',
+  MINUS_DAYS = 'minusDays',
+  LODGING_FAR = 'lodgingFar',
+  LODGING_RATE = 'lodgingRate',
+  LODGING_EXCESS = 'lodgingExcess',
+  LODGING_ESTIMATED = 'lodgingEstimated',
+  LODGING_DAYS_CLAIM = 'lodgingDaysClaim',
+  LODGING_COST = 'lodgingCost',
+  MISC_FAR = 'miscFar',
+  MISC_RATE = 'miscRate',
+  MISC_EXCESS = 'miscExcess',
+  MISC_DAYS_CLAIM = 'miscDaysClaim',
+  MISC_COST = 'miscCost',
+  MISC_ESTIMATED = 'miscEstimated',
 }

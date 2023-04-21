@@ -17,7 +17,7 @@ import {
 import { ErrorService, Yup } from 'src/services';
 import { getTitleCase } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
-import { DateFormatWithYear } from 'src/utils/momentUtils';
+import { DateFormatWithYear } from 'src/utils/dayjsUtils';
 import { isEmpty } from 'src/validations';
 import { USER_MODE } from './enums';
 

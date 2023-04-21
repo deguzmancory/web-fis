@@ -29,9 +29,13 @@ import { PO_MODE, Vendor } from 'src/queries';
 import { isCreateMode, isPiSuEditMode } from 'src/queries/PurchaseOrders/helpers';
 import { setFormData } from 'src/redux/form/formSlice';
 import { Navigator } from 'src/services';
-import { getErrorMessage, isEqualPrevAndNextFormikValues, isString } from 'src/utils';
+import { getErrorMessage, isString } from 'src/utils';
 import { NON_EMPLOYEE_TRAVEL_FORM_KEY } from '../enums';
 import { UpsertNonEmployeeTravelFormikProps } from '../types';
+import {
+  isInGroup1Payee,
+  isServiceProviderPayeeCategory,
+} from 'src/queries/NonPOPayment/NonEmployeeTravel/helpers';
 
 const GeneralInfo: FC<Props> = ({ formikProps, disabled = false, currentMode }) => {
   const { id } = useParams<{ id: string }>();
@@ -49,6 +53,8 @@ const GeneralInfo: FC<Props> = ({ formikProps, disabled = false, currentMode }) 
 
   // show action link only on create PO and PI SU edit mode of PO document
   const showActionLink = isCreateMode(currentMode) || isPiSuEditMode(currentMode);
+
+  const isPayee1Group = isInGroup1Payee(values.payeeCategory);
 
   const currentVendorName = useMemo(() => values.vendorName, [values.vendorName]);
   const currentVendorCode = useMemo(() => values.vendorCode, [values.vendorCode]);
@@ -211,33 +217,39 @@ const GeneralInfo: FC<Props> = ({ formikProps, disabled = false, currentMode }) 
             isDisabled={disabled}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <Input
-            label={'Position Title'}
-            errorMessage={_getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.POSITION_TITLE)}
-            {...getUncontrolledFieldProps(NON_EMPLOYEE_TRAVEL_FORM_KEY.POSITION_TITLE)}
-            disabled={disabled}
-            footer={
-              <Typography variant="subtitle1">
-                (Job title with employing organization, Not RCUH, UH, or Project.) (if any)
-              </Typography>
-            }
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Input
-            label={'Employer'}
-            errorMessage={_getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.EMPLOYER)}
-            {...getUncontrolledFieldProps(NON_EMPLOYEE_TRAVEL_FORM_KEY.EMPLOYER)}
-            disabled={disabled}
-            footer={
-              <Typography variant="subtitle1">
-                (Name of research institute/university/college or employer, Not RCUH, UH, or
-                Project.) (if any)
-              </Typography>
-            }
-          />
-        </Grid>
+        {isPayee1Group && (
+          <Grid item xs={12} sm={6}>
+            <Input
+              label={'Position Title'}
+              errorMessage={_getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.POSITION_TITLE)}
+              {...getUncontrolledFieldProps(NON_EMPLOYEE_TRAVEL_FORM_KEY.POSITION_TITLE)}
+              disabled={disabled}
+              required={isServiceProviderPayeeCategory(values.payeeCategory)}
+              footer={
+                <Typography variant="subtitle1">
+                  (Job title with employing organization, Not RCUH, UH, or Project.) (if any)
+                </Typography>
+              }
+            />
+          </Grid>
+        )}
+        {isPayee1Group && (
+          <Grid item xs={12} sm={6}>
+            <Input
+              label={'Employer'}
+              errorMessage={_getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.EMPLOYER)}
+              {...getUncontrolledFieldProps(NON_EMPLOYEE_TRAVEL_FORM_KEY.EMPLOYER)}
+              disabled={disabled}
+              required={isServiceProviderPayeeCategory(values.payeeCategory)}
+              footer={
+                <Typography variant="subtitle1">
+                  (Name of research institute/university/college or employer, Not RCUH, UH, or
+                  Project.) (if any)
+                </Typography>
+              }
+            />
+          </Grid>
+        )}
         <Grid item xs={12} sm={6}>
           <TextareaAutosize
             label={"Payee's Permanent Address, Street/PO Box, City, State, Zip"}
@@ -281,35 +293,40 @@ const GeneralInfo: FC<Props> = ({ formikProps, disabled = false, currentMode }) 
             label={'Phone Number'}
             errorMessage={_getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.PROJECT_CONTACT_PHONE)}
             {...getFieldProps(NON_EMPLOYEE_TRAVEL_FORM_KEY.PROJECT_CONTACT_PHONE)}
-            disabled={disabled}
-            required
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h6">Dates of Service: </Typography>
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <DatePicker
-            label={'Start Date'}
-            errorMessage={_getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.FROM_SERVICE_DATE)}
-            {...getFieldProps(NON_EMPLOYEE_TRAVEL_FORM_KEY.FROM_SERVICE_DATE)}
             onChange={setFieldValue}
-            selected={values.fromServiceDate}
             disabled={disabled}
             required
           />
         </Grid>
-        <Grid item xs={12} sm={4}>
-          <DatePicker
-            label={'End Date'}
-            errorMessage={_getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.TO_SERVICE_DATE)}
-            {...getFieldProps(NON_EMPLOYEE_TRAVEL_FORM_KEY.TO_SERVICE_DATE)}
-            onChange={setFieldValue}
-            selected={values.toServiceDate}
-            disabled={disabled}
-            required
-          />
-        </Grid>
+        {isPayee1Group && (
+          <>
+            <Grid item xs={12}>
+              <Typography variant="h6">Dates of Service: </Typography>
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <DatePicker
+                label={'Start Date'}
+                errorMessage={_getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.FROM_SERVICE_DATE)}
+                {...getFieldProps(NON_EMPLOYEE_TRAVEL_FORM_KEY.FROM_SERVICE_DATE)}
+                onChange={setFieldValue}
+                selected={values.fromServiceDate}
+                disabled={disabled}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <DatePicker
+                label={'End Date'}
+                errorMessage={_getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.TO_SERVICE_DATE)}
+                {...getFieldProps(NON_EMPLOYEE_TRAVEL_FORM_KEY.TO_SERVICE_DATE)}
+                onChange={setFieldValue}
+                selected={values.toServiceDate}
+                disabled={disabled}
+                required
+              />
+            </Grid>
+          </>
+        )}
       </Grid>
     </Box>
   );
@@ -321,31 +338,5 @@ type Props = {
   currentMode: PO_MODE;
 };
 
-export default memo(GeneralInfo, (prevProps, nextProps) => {
-  const prevFormikProps = prevProps.formikProps;
-  const nextFormikProps = nextProps.formikProps;
-
-  const formKeysNeedRender = [
-    NON_EMPLOYEE_TRAVEL_FORM_KEY.VENDOR_NAME,
-    NON_EMPLOYEE_TRAVEL_FORM_KEY.VENDOR_CODE,
-    NON_EMPLOYEE_TRAVEL_FORM_KEY.POSITION_TITLE,
-    NON_EMPLOYEE_TRAVEL_FORM_KEY.EMPLOYER,
-    NON_EMPLOYEE_TRAVEL_FORM_KEY.VENDOR_ADDRESS,
-    NON_EMPLOYEE_TRAVEL_FORM_KEY.DOCUMENT_NUMBER,
-    NON_EMPLOYEE_TRAVEL_FORM_KEY.FA_STAFF_REVIEWER,
-    NON_EMPLOYEE_TRAVEL_FORM_KEY.PROJECT_CONTACT,
-    NON_EMPLOYEE_TRAVEL_FORM_KEY.PROJECT_CONTACT_PHONE,
-    NON_EMPLOYEE_TRAVEL_FORM_KEY.TO_SERVICE_DATE,
-    NON_EMPLOYEE_TRAVEL_FORM_KEY.FROM_SERVICE_DATE,
-  ];
-
-  return (
-    prevProps.disabled === nextProps.disabled &&
-    prevProps.currentMode === nextProps.currentMode &&
-    isEqualPrevAndNextFormikValues({
-      prevFormikProps,
-      nextFormikProps,
-      formKeysNeedRender,
-    })
-  );
-});
+// Always need the latest formikProps to jump to vendor page without losing data
+export default memo(GeneralInfo);

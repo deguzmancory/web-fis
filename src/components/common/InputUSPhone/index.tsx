@@ -7,7 +7,6 @@ import EllipsisTooltipBaseInput, {
   EllipsisTooltipBaseInputProps,
 } from '../EllipsisTooltipBaseInput';
 import View from '../View';
-import './styles.scss';
 
 const InputUSPhone: React.FC<Props> = ({
   label = '',
@@ -30,19 +29,17 @@ const InputUSPhone: React.FC<Props> = ({
   // For change style of phone input, follow:
   // https://catamphetamine.gitlab.io/react-phone-number-input/
   return (
-    <Element
-      id={id.current}
-      errorMessage={errorMessage}
-      label={label}
-      className={containerClassName}
-      required={required}
-    >
+    <Element id={id.current}>
       <View className="cmp-phoneinput">
         <InputMask
           name={name}
           mask="999 999 9999"
           onChange={handleChange}
           disabled={disabled}
+          errorMessage={errorMessage}
+          label={label}
+          className={containerClassName}
+          required={required}
           {...props}
         />
       </View>

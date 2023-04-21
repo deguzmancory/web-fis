@@ -1,34 +1,41 @@
-import { Stack } from '@mui/material';
+import { Stack, SxProps } from '@mui/material';
 import cn from 'classnames';
-import React from 'react';
+import { AnchorHTMLAttributes, DetailedHTMLProps, FC, ReactNode, useMemo } from 'react';
 import TypographyLink from 'src/components/TypographyLink';
 
 import './styles.scss';
 
-const Link: React.FC<Props> = ({
+const Link: FC<Props> = ({
   children,
   className,
   textVariant,
   type = 'default',
   icon,
+  textSx,
   ...props
 }) => {
-  const linkContent = React.useMemo(() => {
+  const linkContent = useMemo(() => {
     if (type === 'icon-link') {
       return (
         <Stack direction={'row'} alignItems="center">
           {icon}
-          <TypographyLink variant={textVariant}>{children}</TypographyLink>
+          <TypographyLink variant={textVariant} sx={textSx}>
+            {children}
+          </TypographyLink>
         </Stack>
       );
     }
 
     if (typeof children === 'string') {
-      return <TypographyLink variant={textVariant}>{children}</TypographyLink>;
+      return (
+        <TypographyLink variant={textVariant} sx={textSx}>
+          {children}
+        </TypographyLink>
+      );
     }
 
     return children;
-  }, [children, icon, textVariant, type]);
+  }, [children, icon, textVariant, type, textSx]);
 
   return (
     <a className={cn('cmp-link', className)} {...props}>
@@ -37,8 +44,8 @@ const Link: React.FC<Props> = ({
   );
 };
 
-export type Props = React.DetailedHTMLProps<
-  React.AnchorHTMLAttributes<HTMLAnchorElement>,
+export type Props = DetailedHTMLProps<
+  AnchorHTMLAttributes<HTMLAnchorElement>,
   HTMLAnchorElement
 > & {
   textVariant?:
@@ -57,7 +64,8 @@ export type Props = React.DetailedHTMLProps<
     | 'overline'
     | 'inherit';
   type?: 'icon-link' | 'default';
-  icon?: React.ReactNode;
+  icon?: ReactNode;
+  textSx?: SxProps;
 };
 
 export default Link;

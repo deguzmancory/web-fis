@@ -50,7 +50,12 @@ const VendorRegistrationContainer: React.FC<Props> = ({ location }) => {
   React.useEffect(() => {
     return history.listen(() => {
       if (history.action === 'POP') {
-        if (isFromForm === VENDOR_REGISTRATION_NAVIGATE_FROM.PO)
+        if (
+          [
+            VENDOR_REGISTRATION_NAVIGATE_FROM.PO,
+            VENDOR_REGISTRATION_NAVIGATE_FROM.NON_EMPLOYEE_TRAVEL_PAYMENT,
+          ].includes(isFromForm)
+        )
           dispatch(setIsImmutableFormData(true));
       }
     });

@@ -15,11 +15,13 @@ export const initialNonEmployeeTravelProjectItem = {
 export const initialNonEmployeeTravelItinerary = {
   nonEmployeeTravelId: '',
   destination: '',
-  departureDate: '',
-  arrivalDate: '',
+  departureDate: null,
+  arrivalDate: null,
+
   calcDays: null,
-  businessDays: null,
   minusDays: null,
+  businessDays: null,
+
   lodgingFar: null,
   lodgingRate: null,
   lodgingExcess: null,
@@ -66,7 +68,7 @@ export const emptyUpsertNonEmployeeTravelFormValue: UpsertNonEmployeeTravelFormV
   loginName: '',
   date: '',
   requestNumber: 'To be assigned',
-  payeeCategory: '',
+  payeeCategory: null,
 
   //general info
   vendorName: null,
@@ -81,6 +83,14 @@ export const emptyUpsertNonEmployeeTravelFormValue: UpsertNonEmployeeTravelFormV
   toServiceDate: null,
   fromServiceDate: null,
 
+  // trip itinerary
+  startDestination: 'Honolulu, HI',
+  startDepartureDate: null,
+  itineraries: [initialNonEmployeeTravelItinerary],
+  endDestination: 'Honolulu, HI',
+  endArrivalDate: null,
+  tripTotal: 0,
+
   acceptedDate: '',
   organization: '',
 
@@ -92,11 +102,6 @@ export const emptyUpsertNonEmployeeTravelFormValue: UpsertNonEmployeeTravelFormV
   travelDetails: '',
   total: null,
   expenditureTotal: null,
-  startDestination: '',
-  startDepartureDate: '',
-  endDestination: '',
-  endArrivalDate: '',
-  tripTotal: null,
   claimantSignature: '',
   piSignature: '',
   faSignature: '',
@@ -144,7 +149,6 @@ export const emptyUpsertNonEmployeeTravelFormValue: UpsertNonEmployeeTravelFormV
   faOriginalUserId: '',
   cuOriginalUserId: '',
   projectItems: [initialNonEmployeeTravelProjectItem],
-  itineraries: [initialNonEmployeeTravelItinerary],
   expenditures: [initialNonEmployeeTravelExpenditure],
   remittanceLineItems: [initialNonEmployeeTravelRemittanceLineItem],
   remittance: initialNonEmployeeTravelRemittance,

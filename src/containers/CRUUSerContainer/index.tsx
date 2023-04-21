@@ -21,7 +21,7 @@ import {
   handleShowErrorMsg,
   scrollToTopError,
 } from 'src/utils';
-import { localTimeToHawaii } from 'src/utils/momentUtils';
+import { localTimeToHawaii } from 'src/utils/dayjsUtils';
 import { isEmpty } from 'src/validations';
 import SectionLayout from '../shared/SectionLayout';
 import BreadcrumbsUserDetail from './breadcrumbs';

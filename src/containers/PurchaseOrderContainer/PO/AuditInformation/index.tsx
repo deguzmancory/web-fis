@@ -2,7 +2,7 @@ import { Box, Table, TableBody, TableContainer, TableHead, TableRow } from '@mui
 import React from 'react';
 import { StyledTableCell, StyledTableRow } from 'src/components/CustomTable';
 import { isEqualPrevAndNextFormikValues } from 'src/utils';
-import { localTimeToHawaii } from 'src/utils/momentUtils';
+import { localTimeToHawaii } from 'src/utils/dayjsUtils';
 import { isEmpty } from 'src/validations';
 import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormValue, UpsertPOFormikProps } from '../types';

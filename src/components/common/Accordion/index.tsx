@@ -11,9 +11,9 @@ const Accordion: React.FC<Props> = ({
   children,
   isExpanded = false,
   subTitle,
-  onToggle,
   disabled,
   id,
+  onToggle,
   ...props
 }) => {
   const [expanded, setExpanded] = useState<boolean>(isExpanded);

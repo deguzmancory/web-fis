@@ -1,11 +1,11 @@
 import { Error } from '@mui/icons-material';
 import { Stack } from '@mui/material';
-import React from 'react';
+import { useEffect, useState, memo, useCallback, ReactElement } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import { Button } from 'src/components/common';
-import { PO_ACTION, PO_DOCUMENT_TYPE, PO_MODE, usePostPOCloneDocument } from 'src/queries';
+import { PO_ACTION, PO_MODE, usePostPOCloneDocument } from 'src/queries';
 import { ROLE_NAME, isPI, isSU } from 'src/queries/Profile/helpers';
 import {
   isCUReviewMode,
@@ -14,7 +14,6 @@ import {
   isAdditionalInfoAction,
   isApprovedAction,
   isDisapproveAction,
-  isPOPaymentDocumentType,
   isSaveAction,
   isSubmitAction,
   isPiSuEditMode,
@@ -28,19 +27,20 @@ import { Navigator, RoleService, Toastify } from 'src/services';
 import { handleScrollToTopError } from 'src/utils';
 import { isEmpty } from 'src/validations';
 import urljoin from 'url-join';
-import DeletePOWarning from '../DeletePOWarning';
 import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormValue, UpsertPOFormikProps } from '../types';
-import DeletePOPaymentWarning from '../../POPayment/DeletePOPaymentWarning';
 import { UpdatePOPaymentFormikProps } from '../../POPayment/types';
+import { UpsertNonEmployeeTravelFormikProps } from 'src/containers/NonPOPaymentContainer/NonEmployeeExpensePayment/types';
 
-const ActionButtons = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>({
+const ActionButtons = <
+  T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps | UpsertNonEmployeeTravelFormikProps
+>({
   formikProps,
-  currentPOMode,
+  currentFormMode,
   disabled = false,
   loading = false,
   formAction,
-  documentType = PO_DOCUMENT_TYPE.PURCHASE_ORDER,
+  warningDeleteContainer,
   onSetFormData,
   onSetIsImmutableFormData,
   onSetPoFormAction,
@@ -49,7 +49,7 @@ const ActionButtons = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProp
 }: Props<T>) => {
   const { id } = useParams<{ id: string }>();
   const isEditPOMode = !!id;
-  const [isTriedSubmit, setIsTriedSubmit] = React.useState<boolean>(false);
+  const [isTriedSubmit, setIsTriedSubmit] = useState<boolean>(false);
 
   const {
     values,
@@ -60,21 +60,22 @@ const ActionButtons = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProp
     validateForm,
   } = formikProps;
   const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
-  const showDeleteButton = isPiSuEditMode(currentPOMode);
-  const showApproveButton = isFAReviewMode(currentPOMode) || isCUReviewMode(currentPOMode);
-  const showDisapproveButton = isFAReviewMode(currentPOMode);
-  const showRequestMoreInfoButton = isFAReviewMode(currentPOMode) || isCUReviewMode(currentPOMode);
-  const showSaveButton = !isViewOnlyMode(currentPOMode);
-  const showSubmitToFAButton = !isEditPOMode || isPiSuEditMode(currentPOMode);
-  const showViewVendorPrintModeButton = isFinalMode(currentPOMode);
+  const showDeleteButton = isPiSuEditMode(currentFormMode);
+  const showApproveButton = isFAReviewMode(currentFormMode) || isCUReviewMode(currentFormMode);
+  const showDisapproveButton = isFAReviewMode(currentFormMode);
+  const showRequestMoreInfoButton =
+    isFAReviewMode(currentFormMode) || isCUReviewMode(currentFormMode);
+  const showSaveButton = !isViewOnlyMode(currentFormMode);
+  const showSubmitToFAButton = !isEditPOMode || isPiSuEditMode(currentFormMode);
+  const showViewVendorPrintModeButton = isFinalMode(currentFormMode);
   const showCloneDocumentButton =
-    isFinalMode(currentPOMode) && (isPI(currentRole) || isSU(currentRole));
+    isFinalMode(currentFormMode) && (isPI(currentRole) || isSU(currentRole));
 
-  const _handleScrollToTopError = React.useCallback(() => {
+  const _handleScrollToTopError = useCallback(() => {
     handleScrollToTopError(errors);
   }, [errors]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (formAction && isTriedSubmit) {
       _handleScrollToTopError();
       handleSubmit();
@@ -133,11 +134,7 @@ const ActionButtons = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProp
         title: 'Delete',
         iconTitle: <Error color="error" sx={{ mt: '2px' }} />,
         hideFooter: true,
-        content: isPOPaymentDocumentType(documentType) ? (
-          <DeletePOPaymentWarning id={id} />
-        ) : (
-          <DeletePOWarning id={id} />
-        ),
+        content: warningDeleteContainer,
       },
     });
   };
@@ -234,15 +231,21 @@ const ActionButtons = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProp
   );
 };
 
-type Props<T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps> = ReturnType<
-  typeof mapStateToProps
-> &
+type Props<
+  T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps | UpsertNonEmployeeTravelFormikProps
+> = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps & {
-    formikProps: T extends UpsertPOFormikProps ? UpsertPOFormikProps : UpdatePOPaymentFormikProps;
+    formikProps: T extends UpsertPOFormikProps
+      ? UpsertPOFormikProps
+      : T extends UpdatePOPaymentFormikProps
+      ? UpdatePOPaymentFormikProps
+      : T extends UpsertNonEmployeeTravelFormikProps
+      ? UpsertNonEmployeeTravelFormikProps
+      : unknown;
     disabled?: boolean;
     loading?: boolean;
-    currentPOMode?: PO_MODE;
-    documentType: PO_DOCUMENT_TYPE;
+    currentFormMode?: PO_MODE;
+    warningDeleteContainer: ReactElement;
   };
 
 const mapStateToProps = (state: IRootState<UpsertPOFormValue>) => ({
@@ -259,4 +262,4 @@ const mapDispatchToProps = {
   onHideDialog: hideDialog,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(React.memo(ActionButtons));
+export default connect(mapStateToProps, mapDispatchToProps)(memo(ActionButtons));

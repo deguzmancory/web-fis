@@ -1,5 +1,5 @@
 export * from './formUtils';
-export * from './momentUtils';
+export * from './dayjsUtils';
 export * from './formUtils';
 export * from './formatUtils';
 export * from './apiUtils';

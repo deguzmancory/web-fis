@@ -1,6 +1,5 @@
 import { Box } from '@mui/material';
 import { isNumber } from 'lodash';
-import React from 'react';
 import {
   EllipsisTooltipInput,
   EllipsisTooltipInputCurrency,
@@ -24,6 +23,7 @@ import {
   UpdatePOPaymentFormValue,
   UpdatePOPaymentFormikProps,
 } from 'src/containers/PurchaseOrderContainer/POPayment/types';
+import { ChangeEvent, memo, useCallback, useMemo } from 'react';
 
 const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>({
   formikProps,
@@ -36,7 +36,7 @@ const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPro
 
   const { values, errors, touched, setFieldValue, getFieldProps, setFieldTouched } = formikProps;
 
-  const lineItemsValue = React.useMemo(() => {
+  const lineItemsValue = useMemo(() => {
     if (disabled) {
       return values.lineItems || [];
     }
@@ -44,7 +44,7 @@ const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPro
     return values.lineItems || [];
   }, [disabled, values.lineItems]);
 
-  const hideProjectNumberColumn = React.useMemo(
+  const hideProjectNumberColumn = useMemo(
     () => !isVariousProject(values.projectNumber),
     [values.projectNumber]
   );
@@ -53,7 +53,7 @@ const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPro
     return getErrorMessage(fieldName, { touched, errors });
   };
 
-  const removeRow = React.useCallback(
+  const removeRow = useCallback(
     (index: number) => {
       setFieldValue(
         `${PO_FORM_KEY.LINE_ITEMS}`,
@@ -63,11 +63,11 @@ const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPro
     [lineItemsValue, setFieldValue]
   );
 
-  const addNewRow = React.useCallback(() => {
+  const addNewRow = useCallback(() => {
     setFieldValue(`${PO_FORM_KEY.LINE_ITEMS}`, [...lineItemsValue, initialLineItemValue]);
   }, [lineItemsValue, setFieldValue]);
 
-  const updateExtItem = React.useCallback(
+  const updateExtItem = useCallback(
     ({
       lineItemRow,
       prefixLineItem,
@@ -115,7 +115,7 @@ const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPro
     [setFieldValue, lineItemsValue, values]
   );
 
-  const columnNamesByProjectNumber = React.useMemo(
+  const columnNamesByProjectNumber = useMemo(
     () =>
       hideProjectNumberColumn
         ? lineItemsColumnNames
@@ -123,7 +123,7 @@ const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPro
     [hideProjectNumberColumn]
   );
 
-  const handleQuantityOrPriceChange = React.useCallback(
+  const handleQuantityOrPriceChange = useCallback(
     ({
       name,
       value,
@@ -232,7 +232,7 @@ const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPro
           content: (
             <EllipsisTooltipInput
               {...getFieldProps(`${prefixLineItem}.${PO_LINE_ITEM_KEY.SUB_PROJECT}`)}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
                 handleInputChange({
                   index,
                   name: `${prefixLineItem}.${PO_LINE_ITEM_KEY.SUB_PROJECT}`,
@@ -256,7 +256,7 @@ const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPro
               errorMessage={_getErrorMessage(
                 `${prefixLineItem}.${PO_LINE_ITEM_KEY.BUDGET_CATEGORY}`
               )}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
                 handleInputChange({
                   index,
                   name: `${prefixLineItem}.${PO_LINE_ITEM_KEY.BUDGET_CATEGORY}`,
@@ -278,7 +278,7 @@ const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPro
           content: (
             <EllipsisTooltipInput
               {...getFieldProps(`${prefixLineItem}.${PO_LINE_ITEM_KEY.SUB_BUDGET_CATEGORY}`)}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
                 handleInputChange({
                   index,
                   name: `${prefixLineItem}.${PO_LINE_ITEM_KEY.SUB_BUDGET_CATEGORY}`,
@@ -300,7 +300,7 @@ const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPro
             <TextareaAutosize
               {...getFieldProps(`${prefixLineItem}.${PO_LINE_ITEM_KEY.DESCRIPTION}`)}
               errorMessage={_getErrorMessage(`${prefixLineItem}.${PO_LINE_ITEM_KEY.DESCRIPTION}`)}
-              onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
+              onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
                 handleInputChange({
                   index,
                   name: `${prefixLineItem}.${PO_LINE_ITEM_KEY.DESCRIPTION}`,
@@ -349,7 +349,7 @@ const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPro
           content: (
             <EllipsisTooltipInput
               {...getFieldProps(`${prefixLineItem}.${PO_LINE_ITEM_KEY.UNIT}`)}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
                 handleInputChange({
                   index,
                   name: `${prefixLineItem}.${PO_LINE_ITEM_KEY.UNIT}`,
@@ -430,7 +430,7 @@ type Props<T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps> = {
   currentPOMode: PO_MODE;
 };
 
-export default React.memo(TableLineItems, (prevProps, nextProps) => {
+export default memo(TableLineItems, (prevProps, nextProps) => {
   const prevFormikProps = prevProps.formikProps;
   const nextFormikProps = nextProps.formikProps;
 

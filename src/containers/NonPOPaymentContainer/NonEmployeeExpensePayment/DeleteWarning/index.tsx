@@ -1,32 +1,36 @@
 import { Box, Stack, Typography } from '@mui/material';
-import React from 'react';
+import { FC } from 'react';
 import { connect } from 'react-redux';
 import { PATHS } from 'src/appConfig/paths';
 import { Button } from 'src/components/common';
-import { useDeletePO } from 'src/queries/PurchaseOrders/useDeletePO';
+import { useDeleteNonEmployeeTravel } from 'src/queries/NonPOPayment/NonEmployeeTravel';
 import { hideDialog } from 'src/redux/dialog/dialogSlice';
 import { setFormData } from 'src/redux/form/formSlice';
 import { Callback } from 'src/redux/types';
 import { Navigator, Toastify } from 'src/services';
 import { handleShowErrorMsg } from 'src/utils';
 
-const DeletePOWarning: React.FC<Props> = ({ id, onDelete, onHideDialog, onSetFormData }) => {
-  const { deletePO, isLoading: isLoadingDeletePO } = useDeletePO({
-    onSuccess() {
-      Toastify.success(`PO record Deleted.`);
-      onHideDialog();
-      onSetFormData(null);
-      setTimeout(() => {
+const DeleteNonEmployeeTravelWarning: FC<Props> = ({
+  id,
+  onHideDialog,
+  onSetFormData,
+  onDelete,
+}) => {
+  const { deleteNonEmployeeTravel, isLoading: isLoadingDeleteNonEmployeeTravel } =
+    useDeleteNonEmployeeTravel({
+      onSuccess() {
+        Toastify.success(`Non Employee Expense Payment record Deleted.`);
+        onHideDialog();
+        onSetFormData(null);
         Navigator.navigate(PATHS.dashboard);
-      });
-    },
-    onError(error, _variables, _context) {
-      handleShowErrorMsg(error, 'Error when delete PO');
-    },
-  });
+      },
+      onError(error, _variables, _context) {
+        handleShowErrorMsg(error, 'Error when delete Non Employee Expense Payment');
+      },
+    });
 
-  const handleDeletePO = () => {
-    deletePO({ id: id });
+  const handleDelete = () => {
+    deleteNonEmployeeTravel({ id: id });
     if (onDelete) {
       onDelete();
     }
@@ -43,11 +47,15 @@ const DeletePOWarning: React.FC<Props> = ({ id, onDelete, onHideDialog, onSetFor
           variant="outline"
           className="mr-16"
           onClick={() => onHideDialog()}
-          disabled={isLoadingDeletePO}
+          disabled={isLoadingDeleteNonEmployeeTravel}
         >
           Cancel
         </Button>
-        <Button isLoading={isLoadingDeletePO} disabled={isLoadingDeletePO} onClick={handleDeletePO}>
+        <Button
+          isLoading={isLoadingDeleteNonEmployeeTravel}
+          disabled={isLoadingDeleteNonEmployeeTravel}
+          onClick={handleDelete}
+        >
           Yes, delete it
         </Button>
       </Stack>
@@ -68,4 +76,4 @@ const mapDispatchToProps = {
   onHideDialog: hideDialog,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DeletePOWarning);
+export default connect(mapStateToProps, mapDispatchToProps)(DeleteNonEmployeeTravelWarning);

@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material';
 import { MUIDataTableColumn, MUIDataTableMeta } from 'mui-datatables';
 import TypographyLink from 'src/components/TypographyLink';
 import { User, USER_KEY } from 'src/queries/Users/types';
-import { localTimeToHawaii } from 'src/utils/momentUtils';
+import { localTimeToHawaii } from 'src/utils/dayjsUtils';
 import { isEmpty } from 'src/validations';
 import ActionsButton from './actionsButton';
 import cn from 'classnames';

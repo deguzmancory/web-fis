@@ -5,11 +5,11 @@ import { getRandomId } from 'src/utils';
 import { CommonPlacement } from 'src/utils/commonTypes';
 import { isEmpty } from 'src/validations';
 import Element from '../Element';
-import Icon from '../Icon';
-import View from '../View';
 import EllipsisTooltipBaseInput, {
   EllipsisTooltipBaseInputProps,
 } from '../EllipsisTooltipBaseInput';
+import Icon from '../Icon';
+import View from '../View';
 
 import './styles.scss';
 

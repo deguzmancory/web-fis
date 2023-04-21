@@ -47,6 +47,9 @@ export const getNonEmployeeTravelFormValueFromResponse = ({
     itineraries,
     fromServiceDate,
     toServiceDate,
+    tripTotal,
+    startDepartureDate,
+    endArrivalDate,
     ...formValue
   } = response;
 
@@ -87,15 +90,20 @@ export const getNonEmployeeTravelFormValueFromResponse = ({
     placeholderFileAttachment: null,
 
     date: getDateDisplay(date),
+
     fromServiceDate: getDate(fromServiceDate),
     toServiceDate: getDate(toServiceDate),
+
+    startDepartureDate: getDate(startDepartureDate),
+    endArrivalDate: getDate(endArrivalDate),
+    itineraries: [...transformedItineraries, initialNonEmployeeTravelItinerary],
+    tripTotal: Number(tripTotal || 0),
 
     projectItems: [...transformedProjectItems, initialNonEmployeeTravelProjectItem],
     remittanceLineItems: [
       ...transformedRemittanceLineItems,
       initialNonEmployeeTravelRemittanceLineItem,
     ],
-    itineraries: [...transformedItineraries, initialNonEmployeeTravelItinerary],
   };
 };
 
@@ -117,6 +125,8 @@ export const getUpsertNonEmployeeTravelPayload = ({
     itineraries,
     fromServiceDate,
     toServiceDate,
+    startDepartureDate,
+    endArrivalDate,
     ...payloadProps
   } = formValues;
 
@@ -148,6 +158,9 @@ export const getUpsertNonEmployeeTravelPayload = ({
     vendorCode: isString(vendorCode) ? vendorCode : vendorCode.code,
     fromServiceDate: getDateDisplay(fromServiceDate),
     toServiceDate: getDateDisplay(toServiceDate),
+
+    startDepartureDate: getDateDisplay(startDepartureDate, isoFormat),
+    endArrivalDate: getDateDisplay(endArrivalDate, isoFormat),
 
     projectItems: projectItemsPayload,
     remittanceLineItems: remittanceLineItemsPayload,

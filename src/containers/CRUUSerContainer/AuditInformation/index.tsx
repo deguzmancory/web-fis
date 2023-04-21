@@ -2,7 +2,7 @@ import { Box, Table, TableBody, TableContainer, TableHead, TableRow } from '@mui
 import React from 'react';
 import { StyledTableCell, StyledTableRow } from 'src/components/CustomTable';
 import { UserDetail } from 'src/queries/Users/types';
-import { localTimeToHawaii } from 'src/utils/momentUtils';
+import { localTimeToHawaii } from 'src/utils/dayjsUtils';
 import { isEmpty } from 'src/validations';
 import { CRUUserFormikProps } from '../helper';
 

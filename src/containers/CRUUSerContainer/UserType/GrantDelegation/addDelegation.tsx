@@ -8,7 +8,7 @@ import { getRoleNamePayload, ROLE_NAME } from 'src/queries/Profile/helpers';
 import { useSearchUsers } from 'src/queries/Users';
 import { useGetFinancialProjects } from 'src/queries/Projects/useGetFinancialProjects';
 import { getErrorMessage, isEqualPrevAndNextObjByPath } from 'src/utils';
-import { formatDateUtc } from 'src/utils/momentUtils';
+import { formatDateUtc } from 'src/utils/dayjsUtils';
 import { isEmpty } from 'src/validations';
 import { CRUUSER_KEY, CRUUSER_USER_TYPE_KEY } from '../../enums';
 import { CRUUserFormikProps } from '../../helper';

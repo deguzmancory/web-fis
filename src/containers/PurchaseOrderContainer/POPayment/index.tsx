@@ -1,7 +1,7 @@
 import { Box, Container, Grid, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { Location } from 'history';
-import { FC, Suspense, useEffect, useMemo } from 'react';
+import { FC, Suspense, useEffect, useMemo, useState } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
@@ -55,6 +55,7 @@ import {
   getUpdatePOPaymentPayload,
 } from './helpers';
 import { UpdatePOPaymentFormValue, UpdatePOPaymentFormikProps } from './types';
+import DeletePOPaymentWarning from './DeletePOPaymentWarning';
 
 const POPayment: FC<Props> = ({
   formData,
@@ -64,6 +65,7 @@ const POPayment: FC<Props> = ({
   formAction,
 }) => {
   const { id } = useParams<{ id: string }>();
+  const [allowRedirectWithoutWarning, setAllowRedirectWithoutWarning] = useState<boolean>(false);
 
   const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
   const poStatus = useMemo(() => formData?.status, [formData?.status]);
@@ -214,7 +216,6 @@ const POPayment: FC<Props> = ({
     onSubmit: handleFormSubmit,
   });
 
-  console.log('errors: ', errors);
   const formikProps: UpdatePOPaymentFormikProps = {
     values,
     errors,
@@ -345,6 +346,8 @@ const POPayment: FC<Props> = ({
   };
 
   const blockCondition = (location: Location<string>) => {
+    if (allowRedirectWithoutWarning) return false;
+
     if (location.pathname.includes(PATHS.createPurchaseOrders)) {
       onSetIsImmutableFormData(false);
       return true;
@@ -390,11 +393,16 @@ const POPayment: FC<Props> = ({
               <>
                 {renderForm()}
                 <ActionButtons
-                  currentPOMode={currentPOMode}
+                  currentFormMode={currentPOMode}
                   formikProps={formikProps}
                   loading={isLoading}
                   disabled={isLoading}
-                  documentType={PO_DOCUMENT_TYPE.PO_PAYMENT}
+                  warningDeleteContainer={
+                    <DeletePOPaymentWarning
+                      id={id}
+                      onDelete={() => setAllowRedirectWithoutWarning(true)}
+                    />
+                  }
                 />
               </>
             )}

@@ -23,13 +23,21 @@ export interface UpsertNonEmployeeTravelFormValue
   extends Omit<
     UpsertNonEmployeeTravelPayload,
     //override
-    'vendorName' | 'vendorCode' | 'projectItems' | 'fromServiceDate' | 'toServiceDate'
+    | 'vendorName'
+    | 'vendorCode'
+    | 'projectItems'
+    | 'fromServiceDate'
+    | 'toServiceDate'
+    | 'startDepartureDate'
+    | 'endArrivalDate'
   > {
-  vendorName: string | Vendor;
-  vendorCode: string | Vendor;
+  vendorName: Vendor | string;
+  vendorCode: Vendor | string;
   projectItems: NonEmployeeTravelProjectItemFormValue[];
   fromServiceDate: Date;
   toServiceDate: Date;
+  startDepartureDate: Date;
+  endArrivalDate: Date;
 
   //form only
   placeholderFileAttachment: POPlaceholderFileAttachment;

@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import React from 'react';
 import { StyledTableCell, StyledTableRow } from 'src/components/CustomTable';
-import { DateFormat, localTimeToHawaii } from 'src/utils/momentUtils';
+import { DateFormat, localTimeToHawaii } from 'src/utils/dayjsUtils';
 import { isEmpty } from 'src/validations';
 import { CRUUserFormikProps } from '../../helper';
 import { EmptyTableDelegation } from '../helpers';

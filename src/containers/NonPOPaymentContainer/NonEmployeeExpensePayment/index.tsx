@@ -1,5 +1,5 @@
 import { Box, Container } from '@mui/material';
-import { FC, useMemo, Suspense, useEffect, useLayoutEffect } from 'react';
+import { FC, useMemo, Suspense, useEffect, useLayoutEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundary';
@@ -36,6 +36,10 @@ import NoPermission from 'src/components/NoPermission';
 import HeaderOfSection from '../shared/HeaderOfSection';
 import SelectPayeeCategory from './SelectPayeeCategory';
 import GeneralInfo from './GeneralInfo';
+import ActionButtons from 'src/containers/PurchaseOrderContainer/PO/ActionButtons';
+import DeleteWarning from './DeleteWarning';
+import TripItinerary from './TripItinerary';
+import PartialDayTable from './PartialDayTable';
 
 const AuthorizationForPayment: FC<Props> = ({
   formData,
@@ -45,6 +49,7 @@ const AuthorizationForPayment: FC<Props> = ({
   formAction,
 }) => {
   const { id } = useParams<{ id: string }>();
+  const [allowRedirectWithoutWarning, setAllowRedirectWithoutWarning] = useState<boolean>(false);
 
   const isEditMode = !!id;
   const hasPermission = true; //TODO: enhancement: check logic to be granted tp access the this resource
@@ -265,6 +270,8 @@ const AuthorizationForPayment: FC<Props> = ({
   };
 
   const blockCondition = (location: Location<string>) => {
+    if (allowRedirectWithoutWarning) return false;
+
     if (isEditMode && location.pathname.includes(PATHS.createPurchaseOrders)) {
       onSetIsImmutableFormData(false);
       return true;
@@ -312,7 +319,11 @@ const AuthorizationForPayment: FC<Props> = ({
             ) : (
               <>
                 <SectionLayout header={<HeaderOfSection />}>
-                  <SelectPayeeCategory formikProps={formikProps} disabled={disabledSection} />
+                  <SelectPayeeCategory
+                    formikProps={formikProps}
+                    disabled={disabledSection}
+                    currentMode={currentNonEmployeeTravelMode}
+                  />
                 </SectionLayout>
                 <SectionLayout>
                   <GeneralInfo
@@ -321,6 +332,25 @@ const AuthorizationForPayment: FC<Props> = ({
                     currentMode={currentNonEmployeeTravelMode}
                   />
                 </SectionLayout>
+                <SectionLayout sx={{ p: 0 }}>
+                  <TripItinerary
+                    formikProps={formikProps}
+                    disabled={disabledSection}
+                    currentMode={currentNonEmployeeTravelMode}
+                  />
+                </SectionLayout>
+                <SectionLayout sx={{ p: 0, border: 'none' }}>
+                  <PartialDayTable />
+                </SectionLayout>
+                <ActionButtons
+                  currentFormMode={currentNonEmployeeTravelMode}
+                  formikProps={formikProps}
+                  loading={isLoading}
+                  disabled={isLoading}
+                  warningDeleteContainer={
+                    <DeleteWarning id={id} onDelete={() => setAllowRedirectWithoutWarning(true)} />
+                  }
+                />
               </>
             )}
           </Suspense>

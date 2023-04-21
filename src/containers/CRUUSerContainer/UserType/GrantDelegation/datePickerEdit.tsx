@@ -2,7 +2,7 @@ import { Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import React from 'react';
 import { DatePicker } from 'src/components/common';
-import { DateFormat } from 'src/utils/momentUtils';
+import { DateFormat } from 'src/utils/dayjsUtils';
 import { CRUUSER_KEY } from '../../enums';
 import { CRUUserFormikProps } from '../../helper';
 

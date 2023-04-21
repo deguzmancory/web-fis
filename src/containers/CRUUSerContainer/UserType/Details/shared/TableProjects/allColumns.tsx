@@ -9,7 +9,7 @@ import { isFA, ROLE_NAME } from 'src/queries/Profile/helpers';
 import { FinancialProject } from 'src/queries/Projects/types';
 import { FINANCIAL_PROJECT_KEY } from 'src/queries/Users/types';
 import { Callback } from 'src/redux/types';
-import { getDateDisplay } from 'src/utils/momentUtils';
+import { getDateDisplay } from 'src/utils/dayjsUtils';
 
 export const allColumns = ({
   onRowDelete,

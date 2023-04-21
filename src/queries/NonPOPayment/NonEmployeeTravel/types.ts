@@ -1,12 +1,13 @@
 import { POAuditTrails } from 'src/queries/PurchaseOrders';
 import { PO_ACTION, PO_DETAIL_STATUS } from '../../PurchaseOrders/enums';
 import { NON_PO_PAYMENT_DOCUMENT_TYPE } from '../enums';
+import { NON_EMPLOYEE_TRAVEL_PAYEE_CATEGORY } from './enums';
 
 export interface SelectPayeeCategory {
   loginName: string;
   date: string;
   requestNumber: string;
-  payeeCategory: string;
+  payeeCategory: NON_EMPLOYEE_TRAVEL_PAYEE_CATEGORY;
 }
 
 export interface GeneralInfo {
@@ -23,7 +24,19 @@ export interface GeneralInfo {
   fromServiceDate: string;
 }
 
-export interface SharedNonEmployeeTravelDetail extends SelectPayeeCategory, GeneralInfo {
+export interface TripItinerary {
+  startDestination: string;
+  startDepartureDate: string;
+  itineraries: NonEmployeeTravelItinerary[];
+  endDestination: string;
+  endArrivalDate: string;
+  tripTotal: number;
+}
+
+export interface SharedNonEmployeeTravelDetail
+  extends SelectPayeeCategory,
+    GeneralInfo,
+    TripItinerary {
   acceptedDate: string;
   organization: string;
   homeAddress: string;
@@ -34,11 +47,7 @@ export interface SharedNonEmployeeTravelDetail extends SelectPayeeCategory, Gene
   travelDetails: string;
   total: number;
   expenditureTotal: number;
-  startDestination: string;
-  startDepartureDate: string;
-  endDestination: string;
-  endArrivalDate: string;
-  tripTotal: number;
+
   claimantSignature: string;
   piSignature: string;
   faSignature: string;
@@ -87,7 +96,6 @@ export interface SharedNonEmployeeTravelDetail extends SelectPayeeCategory, Gene
   faOriginalUserId: string;
   cuOriginalUserId: string;
   projectItems: NonEmployeeTravelProjectItem[];
-  itineraries: NonEmployeeTravelItinerary[];
   expenditures: NonEmployeeTravelExpenditure[];
   remittanceLineItems: NonEmployeeTravelRemittanceLineItem[];
   remittance: NonEmployeeTravelRemittance;
@@ -125,6 +133,7 @@ export interface NonEmployeeTravelItinerary {
   lodgingExcess: number;
   lodgingDaysClaim: number;
   lodgingCost: number;
+  lodgingEstimated?: number;
   miscFar: number;
   miscRate: number;
   miscExcess: number;

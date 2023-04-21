@@ -1,5 +1,5 @@
 import { Box, Divider, Grid, Typography } from '@mui/material';
-import React from 'react';
+import { ChangeEvent, memo, useEffect } from 'react';
 import {
   Checkbox,
   Element,
@@ -8,15 +8,15 @@ import {
   Input,
   RadioButton,
 } from 'src/components/common';
-import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
-import { PO_FORM_KEY } from '../enums';
-import { UpsertPOFormikProps, UpsertPOFormValue } from '../types';
-import { fedAttachmentOptions, FED_ATTACHMENT_VALUE, MAX_TAX_NUMBER } from './helpers';
-import { PO_MODE } from 'src/queries';
 import {
   UpdatePOPaymentFormValue,
   UpdatePOPaymentFormikProps,
 } from 'src/containers/PurchaseOrderContainer/POPayment/types';
+import { PO_MODE } from 'src/queries';
+import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
+import { PO_FORM_KEY } from '../enums';
+import { UpsertPOFormValue, UpsertPOFormikProps } from '../types';
+import { FED_ATTACHMENT_VALUE, MAX_TAX_NUMBER, fedAttachmentOptions } from './helpers';
 
 const PurchaseInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>({
   formikProps,
@@ -40,7 +40,7 @@ const PurchaseInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps
     setFieldValue(PO_FORM_KEY.TAX_RATE, '');
   };
 
-  const handleTaxRateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTaxRateChange = (event: ChangeEvent<HTMLInputElement>) => {
     const subTotalValue = values.subtotal || 0;
     const taxRateValue = Number(event.target.value);
     const taxTotalValue = (Number(subTotalValue) * taxRateValue) / 100;
@@ -50,7 +50,7 @@ const PurchaseInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps
   };
 
   // update taxTotal when subTotal change
-  React.useEffect(() => {
+  useEffect(() => {
     const subTotalValue = values.subtotal || 0;
     const taxRateValue = values.taxRate || 0;
     const taxTotalValue = (Number(subTotalValue) * Number(taxRateValue)) / 100;
@@ -60,7 +60,7 @@ const PurchaseInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps
   }, [setFieldValue, values.subtotal]);
 
   // update totalValue when subTotal or taxTotal or shippingTotal change
-  React.useEffect(() => {
+  useEffect(() => {
     const subTotalValue = values.subtotal || 0;
     let taxTotalValue = 0;
 
@@ -230,7 +230,7 @@ type Props<T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps> = {
   currentPOMode: PO_MODE;
 };
 
-export default React.memo(PurchaseInfo, (prevProps, nextProps) => {
+export default memo(PurchaseInfo, (prevProps, nextProps) => {
   const prevFormikProps = prevProps.formikProps;
   const nextFormikProps = nextProps.formikProps;
 

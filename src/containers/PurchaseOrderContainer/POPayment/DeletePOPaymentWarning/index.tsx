@@ -19,7 +19,7 @@ const DeletePOPaymentWarning: React.FC<Props> = ({ id, onDelete, onHideDialog, o
       Navigator.navigate(PATHS.dashboard);
     },
     onError(error, _variables, _context) {
-      handleShowErrorMsg(error, 'Error when delete PO');
+      handleShowErrorMsg(error, 'Error when delete PO payment');
     },
   });
 

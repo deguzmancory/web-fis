@@ -1,7 +1,7 @@
 import { Box, Container, Typography } from '@mui/material';
 import { FormikProps, useFormik } from 'formik';
 import { Location } from 'history';
-import { Suspense, lazy, FC, useRef, useMemo, useEffect, useLayoutEffect } from 'react';
+import { Suspense, lazy, FC, useRef, useMemo, useEffect, useLayoutEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
@@ -47,6 +47,7 @@ import {
 } from './helpers';
 import { UpsertPOFormValue, UpsertPOFormikProps } from './types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
+import DeletePOWarning from './DeletePOWarning';
 
 const AuditInformation = lazy(() => import('./AuditInformation'));
 const FileAttachments = lazy(() => import('./FileAttachments'));
@@ -62,6 +63,7 @@ const PurchaseOrderContainer: FC<Props> = ({
   const location = useLocation();
   const query = new URLSearchParams(location.search);
 
+  const [allowRedirectWithoutWarning, setAllowRedirectWithoutWarning] = useState<boolean>(false);
   const formRef = useRef<FormikProps<UpsertPOFormValue>>(null);
   const scrollToParam = query.get(PO_FORM_PARAMS.SCROLL_TO) || null;
 
@@ -284,6 +286,8 @@ const PurchaseOrderContainer: FC<Props> = ({
   };
 
   const blockCondition = (location: Location<string>) => {
+    if (allowRedirectWithoutWarning) return false;
+
     if (isEditPOMode && location.pathname.includes(PATHS.createPurchaseOrders)) {
       onSetIsImmutableFormData(false);
       return true;
@@ -396,11 +400,16 @@ const PurchaseOrderContainer: FC<Props> = ({
                 </SectionLayout>
 
                 <ActionButtons
-                  currentPOMode={currentPOMode}
+                  currentFormMode={currentPOMode}
                   formikProps={formikProps}
                   loading={isLoading}
                   disabled={isLoading}
-                  documentType={PO_DOCUMENT_TYPE.PURCHASE_ORDER}
+                  warningDeleteContainer={
+                    <DeletePOWarning
+                      id={id}
+                      onDelete={() => setAllowRedirectWithoutWarning(true)}
+                    />
+                  }
                 />
               </>
             )}

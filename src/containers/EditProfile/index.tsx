@@ -18,7 +18,7 @@ import {
   handleShowErrorMsg,
   scrollToTopError,
 } from 'src/utils';
-import { localTimeToHawaii } from 'src/utils/momentUtils';
+import { localTimeToHawaii } from 'src/utils/dayjsUtils';
 import AuditInformation from '../CRUUSerContainer/AuditInformation';
 import GeneralInfo from '../CRUUSerContainer/GeneralInfo';
 import InternalComments from '../CRUUSerContainer/InternalComments';

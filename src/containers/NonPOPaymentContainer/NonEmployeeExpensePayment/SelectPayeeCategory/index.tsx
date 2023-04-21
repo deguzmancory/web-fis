@@ -5,6 +5,7 @@ import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { NON_EMPLOYEE_TRAVEL_FORM_KEY } from '../enums';
 import { UpsertNonEmployeeTravelFormikProps } from '../types';
 import { payeeCategoryOptions1, payeeCategoryOptions2 } from './helpers';
+import { PO_MODE } from 'src/queries';
 
 const SelectPayeeCategory: FC<Props> = ({ formikProps, disabled = false }) => {
   const { errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } = formikProps;
@@ -44,7 +45,6 @@ const SelectPayeeCategory: FC<Props> = ({ formikProps, disabled = false }) => {
           <RadioButton
             label={<b>Payee Category</b>}
             options={payeeCategoryOptions1}
-            errorMessage={_getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.PAYEE_CATEGORY)}
             {...getFieldProps(NON_EMPLOYEE_TRAVEL_FORM_KEY.PAYEE_CATEGORY)}
             disabled={disabled}
             required
@@ -87,6 +87,7 @@ const SelectPayeeCategory: FC<Props> = ({ formikProps, disabled = false }) => {
 type Props = {
   formikProps: UpsertNonEmployeeTravelFormikProps;
   disabled?: boolean;
+  currentMode: PO_MODE;
 };
 
 export default memo(SelectPayeeCategory, (prevProps, nextProps) => {
@@ -102,6 +103,7 @@ export default memo(SelectPayeeCategory, (prevProps, nextProps) => {
 
   return (
     prevProps.disabled === nextProps.disabled &&
+    prevProps.currentMode === nextProps.currentMode &&
     isEqualPrevAndNextFormikValues({
       prevFormikProps,
       nextFormikProps,

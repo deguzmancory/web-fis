@@ -1,11 +1,11 @@
-import React, { useRef } from 'react';
 import cn from 'classnames';
+import React, { useRef } from 'react';
 import DatePicker, { ReactDatePickerProps } from 'react-datepicker';
-import './styles.scss';
-import Element from '../Element';
+import { Callback } from 'src/redux/types';
 import { getRandomId } from 'src/utils';
 import { isEmpty } from 'src/validations';
-import { Callback } from 'src/redux/types';
+import Element from '../Element';
+import './styles.scss';
 
 const DateSelector: React.FC<Props> = ({
   label,

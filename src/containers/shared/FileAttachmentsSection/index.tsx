@@ -16,7 +16,7 @@ import { Accordion, Button, FileUpload, TextareaAutosize } from 'src/components/
 import { StyledTableCell, StyledTableRow } from 'src/components/CustomTable';
 import FilePreview from 'src/components/FilePreview';
 import { DateFormatDisplayMinute } from 'src/utils';
-import { localTimeToHawaii } from 'src/utils/momentUtils';
+import { localTimeToHawaii } from 'src/utils/dayjsUtils';
 import { isEmpty } from 'src/validations';
 import { CommonFileAttachment } from './types';
 

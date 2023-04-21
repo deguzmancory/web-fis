@@ -63,6 +63,7 @@ import OriginalPurchaseInfo from './OriginalPurchaseInfo';
 import PurchaseInfoChange from './PurchaseInfoChange';
 import TableLineItemsPOChange from './TableLineItemsChange';
 import { getPoChangeFormTitle } from './helpers';
+import DeletePOWarning from '../../PO/DeletePOWarning';
 
 const POChangeForm: React.FC<Props> = ({
   formData,
@@ -424,11 +425,11 @@ const POChangeForm: React.FC<Props> = ({
               <>
                 {renderForm()}
                 <ActionButtons
-                  currentPOMode={currentPOMode}
+                  currentFormMode={currentPOMode}
                   formikProps={formikProps}
                   loading={isLoading}
                   disabled={isLoading}
-                  documentType={PO_DOCUMENT_TYPE.PO_CHANGE}
+                  warningDeleteContainer={<DeletePOWarning id={id} />}
                 />
               </>
             )}
