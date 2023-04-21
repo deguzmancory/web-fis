@@ -28,6 +28,8 @@ export enum API_QUERIES {
   PO_PAYMENT_REMAINING_BALANCE = 'po-payment/:id/remaining-balance',
 
   // Non PO Payment
+  // Authorization
+  AUTHORIZATION_DETAIL = '/authorization-payments/:id',
   // Non Employee Travel
   NON_EMPLOYEE_TRAVEL_DETAIL = '/non-employee-travel-payments/:id',
 

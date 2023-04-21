@@ -1,37 +1,31 @@
+import { getErrorMessage, getUncontrolledInputFieldProps } from 'src/utils';
+import { AUTHORIZATION_FOR_PAYMENT_KEY, AUTHORIZATION_REMITTANCE_KEY } from '../../enum';
+import { UpsertAuthorizationPaymentFormikProps } from '../../types';
 import { Box, Grid, Link, Typography } from '@mui/material';
-import React from 'react';
-import { US_ZIP_CODE_LENGTH } from 'src/appConfig/constants';
-import TypographyLink from 'src/components/TypographyLink';
 import {
   Checkbox,
+  InputUSPhone,
   Input,
   InputMask,
   LoadingCommon,
   Select,
-  InputUSPhone,
 } from 'src/components/common';
-import { PO_FORM_KEY } from 'src/containers/PurchaseOrderContainer/PO/enums';
-import { PO_MODE, useZipCode } from 'src/queries';
+import TypographyLink from 'src/components/TypographyLink';
+import React from 'react';
+import { PO_PAYMENT_VENDOR_TYPE } from 'src/containers/PurchaseOrderContainer/POPayment/enums';
+import { checkVendorPaymentType } from 'src/containers/PurchaseOrderContainer/POPayment/helpers';
 import { StateService } from 'src/services';
-import {
-  getErrorMessage,
-  getUncontrolledInputFieldProps,
-  isEqualPrevAndNextFormikValues,
-} from 'src/utils';
-import { PO_PAYMENT_REMITTANCE_KEY, PO_PAYMENT_VENDOR_TYPE } from '../../enums';
-import { checkVendorPaymentType } from '../../helpers/utils';
-import { UpdatePOPaymentFormValue, UpdatePOPaymentFormikProps } from '../../types';
+import { useZipCode } from 'src/queries';
+import { US_ZIP_CODE_LENGTH } from 'src/appConfig/constants';
 
-const QuestionOnRemittance: React.FC<Props> = ({ formikProps, disabled }) => {
+const prefixRemittance = AUTHORIZATION_FOR_PAYMENT_KEY.REMITTANCE;
+
+const Question: React.FC<Props> = ({ formikProps, disabled }) => {
   const { values, touched, errors, getFieldProps, setFieldTouched, setFieldValue } = formikProps;
-  const prefixRemittance = PO_FORM_KEY.PAYMENT_REMITTANCE;
 
-  const isShowRemittance = React.useMemo(() => {
-    return (
-      values.remittance?.returnRemittanceFlag === true ||
-      checkVendorPaymentType(values.preferredPaymentMethod as PO_PAYMENT_VENDOR_TYPE)
-    );
-  }, [values.preferredPaymentMethod, values.remittance?.returnRemittanceFlag]);
+  const statesOptions = React.useMemo(() => {
+    return StateService.getStates();
+  }, []);
 
   const _getErrorMessage = (fieldName) => {
     return getErrorMessage(fieldName, { touched, errors });
@@ -46,16 +40,33 @@ const QuestionOnRemittance: React.FC<Props> = ({ formikProps, disabled }) => {
   // Zip Code
   const { checkZipCode, isLoading: isLoadingZipCode } = useZipCode({
     onSuccess(data) {
-      setFieldValue(`${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_CITY}`, data.city);
       setFieldValue(
-        `${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_STATE}`,
+        `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.REMITTANCE_CITY}`,
+        data.city
+      );
+      setFieldValue(
+        `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.REMITTANCE_STATE}`,
         data.state
       );
-      setFieldTouched(`${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_CITY}`, false);
-      setFieldTouched(`${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_STATE}`, false);
+      setFieldTouched(`${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.REMITTANCE_CITY}`, false);
+      setFieldTouched(
+        `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.REMITTANCE_STATE}`,
+        false
+      );
     },
     onError() {},
   });
+
+  const isShowRemittance = React.useMemo(() => {
+    return (
+      values.remittance?.returnRemittanceFlag === true ||
+      checkVendorPaymentType(values.preferredPaymentMethod as PO_PAYMENT_VENDOR_TYPE)
+    );
+  }, [values.preferredPaymentMethod, values.remittance?.returnRemittanceFlag]);
+
+  const isCheckStatus = React.useMemo(() => {
+    return values?.preferredPaymentMethod === PO_PAYMENT_VENDOR_TYPE.CHECK;
+  }, [values?.preferredPaymentMethod]);
 
   const handleChangeZipCode = (event) => {
     const field = event.target.name;
@@ -64,15 +75,11 @@ const QuestionOnRemittance: React.FC<Props> = ({ formikProps, disabled }) => {
     if (value?.length === US_ZIP_CODE_LENGTH) {
       checkZipCode(value);
     } else {
-      setFieldValue(`${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_CITY}`, '');
-      setFieldValue(`${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_STATE}`, '');
+      setFieldValue(`${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.REMITTANCE_CITY}`, '');
+      setFieldValue(`${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.REMITTANCE_STATE}`, '');
     }
     setFieldValue(field, value);
   };
-
-  const statesOptions = React.useMemo(() => {
-    return StateService.getStates();
-  }, []);
 
   return (
     <Box>
@@ -87,27 +94,50 @@ const QuestionOnRemittance: React.FC<Props> = ({ formikProps, disabled }) => {
         </div>
       </div>
 
-      <Checkbox.Item
-        label={
-          <Typography variant="body2" style={{ display: 'contents' }}>
-            Override vendor preferred payment type and return this check and remittance advice to
-            fiscal office instead.
-            <TypographyLink variant="body2" style={{ display: 'contents' }}>
-              <Link href="https://awsnode.test.rcuh.com/" target="_blank" ml={0.5}>
-                What's This?
-              </Link>
-            </TypographyLink>
-          </Typography>
-        }
-        {...getFieldProps(
-          `${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.RETURN_REMITTANCE_FLAG}`
-        )}
-        errorMessage={_getErrorMessage(
-          `${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.RETURN_REMITTANCE_FLAG}`
-        )}
-        disabled={disabled}
-        style={{ margin: '8px 0' }}
-      />
+      {isCheckStatus ? (
+        <Checkbox.Item
+          label={
+            <Typography variant="body2" style={{ display: 'contents' }}>
+              Return this check and remittance advice to fiscal office.
+              <TypographyLink variant="body2" style={{ display: 'contents' }}>
+                <Link href="https://awsnode.test.rcuh.com/" target="_blank" ml={0.5}>
+                  What's This?
+                </Link>
+              </TypographyLink>
+            </Typography>
+          }
+          {...getFieldProps(
+            `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.RETURN_REMITTANCE_FLAG}`
+          )}
+          errorMessage={_getErrorMessage(
+            `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.RETURN_REMITTANCE_FLAG}`
+          )}
+          disabled={disabled}
+          style={{ margin: '8px 0' }}
+        />
+      ) : (
+        <Checkbox.Item
+          label={
+            <Typography variant="body2" style={{ display: 'contents' }}>
+              Override vendor preferred payment type and return this check and remittance advice to
+              fiscal office instead.
+              <TypographyLink variant="body2" style={{ display: 'contents' }}>
+                <Link href="https://awsnode.test.rcuh.com/" target="_blank" ml={0.5}>
+                  What's This?
+                </Link>
+              </TypographyLink>
+            </Typography>
+          }
+          {...getFieldProps(
+            `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.RETURN_REMITTANCE_FLAG}`
+          )}
+          errorMessage={_getErrorMessage(
+            `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.RETURN_REMITTANCE_FLAG}`
+          )}
+          disabled={disabled}
+          style={{ margin: '8px 0' }}
+        />
+      )}
 
       <Typography variant="h5" my={2}>
         Questions on Remittance? - Contact
@@ -119,10 +149,10 @@ const QuestionOnRemittance: React.FC<Props> = ({ formikProps, disabled }) => {
             <Input
               label="Name"
               errorMessage={_getErrorMessage(
-                `${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.QUESTION_NAME}`
+                `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.QUESTION_NAME}`
               )}
               {..._getUncontrolledFieldProps(
-                `${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.QUESTION_NAME}`
+                `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.QUESTION_NAME}`
               )}
               disabled={disabled}
               maxLength={30}
@@ -132,10 +162,10 @@ const QuestionOnRemittance: React.FC<Props> = ({ formikProps, disabled }) => {
             <InputUSPhone
               label={'Phone Number'}
               errorMessage={_getErrorMessage(
-                `${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.QUESTION_PHONE_NUMBER}`
+                `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.QUESTION_PHONE_NUMBER}`
               )}
               {...getFieldProps(
-                `${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.QUESTION_PHONE_NUMBER}`
+                `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.QUESTION_PHONE_NUMBER}`
               )}
               disabled={disabled}
               onChange={setFieldValue}
@@ -151,7 +181,7 @@ const QuestionOnRemittance: React.FC<Props> = ({ formikProps, disabled }) => {
 
             <Grid item container spacing={2}>
               <Grid item xs={4}>
-                <Input label="Name" value={values?.vendorName} disabled maxLength={30} />
+                <Input label="Name" value={values?.vendorName as string} disabled maxLength={30} />
               </Grid>
 
               <Grid item xs={8}>
@@ -165,16 +195,16 @@ const QuestionOnRemittance: React.FC<Props> = ({ formikProps, disabled }) => {
 
             <Grid item container spacing={2} my={2}>
               <Grid item xs={4}>
-                <Input label="Name" value={values?.vendorName} disabled maxLength={30} />
+                <Input label="Name" value={values?.vendorName as string} disabled maxLength={30} />
               </Grid>
               <Grid item xs={4}>
                 <Input
                   label={'Attn.'}
                   errorMessage={_getErrorMessage(
-                    `${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_ATTENTION}`
+                    `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.REMITTANCE_ATTENTION}`
                   )}
                   {..._getUncontrolledFieldProps(
-                    `${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_ATTENTION}`
+                    `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.REMITTANCE_ATTENTION}`
                   )}
                   maxLength={39}
                   disabled={disabled}
@@ -184,10 +214,10 @@ const QuestionOnRemittance: React.FC<Props> = ({ formikProps, disabled }) => {
                 <Input
                   label={'Street'}
                   errorMessage={_getErrorMessage(
-                    `${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_STREET}`
+                    `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.REMITTANCE_STREET}`
                   )}
                   {..._getUncontrolledFieldProps(
-                    `${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_STREET}`
+                    `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.REMITTANCE_STREET}`
                   )}
                   disabled={disabled}
                   maxLength={35}
@@ -200,10 +230,10 @@ const QuestionOnRemittance: React.FC<Props> = ({ formikProps, disabled }) => {
                 <Input
                   label="City"
                   errorMessage={_getErrorMessage(
-                    `${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_CITY}`
+                    `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.REMITTANCE_CITY}`
                   )}
                   {..._getUncontrolledFieldProps(
-                    `${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_CITY}`
+                    `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.REMITTANCE_CITY}`
                   )}
                   disabled={disabled}
                   maxLength={30}
@@ -214,10 +244,10 @@ const QuestionOnRemittance: React.FC<Props> = ({ formikProps, disabled }) => {
                   options={statesOptions}
                   label={'State'}
                   errorMessage={_getErrorMessage(
-                    `${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_STATE}`
+                    `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.REMITTANCE_STATE}`
                   )}
                   {...getFieldProps(
-                    `${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_STATE}`
+                    `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.REMITTANCE_STATE}`
                   )}
                   onChange={setFieldValue}
                   isDisabled={disabled}
@@ -229,12 +259,12 @@ const QuestionOnRemittance: React.FC<Props> = ({ formikProps, disabled }) => {
                     <InputMask
                       label={'Zipcode'}
                       errorMessage={_getErrorMessage(
-                        `${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.ZIP_CODE}`
+                        `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.ZIP_CODE}`
                       )}
                       placeholder={'Zip Code'}
                       mask={'99999'}
                       {...getFieldProps(
-                        `${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.ZIP_CODE}`
+                        `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.ZIP_CODE}`
                       )}
                       onChange={handleChangeZipCode}
                       autoComplete="zip-code"
@@ -260,10 +290,10 @@ const QuestionOnRemittance: React.FC<Props> = ({ formikProps, disabled }) => {
                     <InputMask
                       label={'  '}
                       errorMessage={_getErrorMessage(
-                        `${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.ZIP_CODE_PLUS4}`
+                        `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.ZIP_CODE_PLUS4}`
                       )}
                       {...getFieldProps(
-                        `${prefixRemittance}.${PO_PAYMENT_REMITTANCE_KEY.ZIP_CODE_PLUS4}`
+                        `${prefixRemittance}.${AUTHORIZATION_REMITTANCE_KEY.ZIP_CODE_PLUS4}`
                       )}
                       min={1}
                       mask={'9999'}
@@ -281,24 +311,8 @@ const QuestionOnRemittance: React.FC<Props> = ({ formikProps, disabled }) => {
 };
 
 type Props = {
-  formikProps: UpdatePOPaymentFormikProps;
+  formikProps: UpsertAuthorizationPaymentFormikProps;
   disabled?: boolean;
-  currentPOMode?: PO_MODE;
 };
 
-export default React.memo(QuestionOnRemittance, (prevProps, nextProps) => {
-  const prevFormikProps = prevProps.formikProps;
-  const nextFormikProps = nextProps.formikProps;
-
-  const formKeysNeedRender = [PO_FORM_KEY.PAYMENT_REMITTANCE];
-
-  return (
-    prevProps.disabled === nextProps.disabled &&
-    prevProps.currentPOMode === nextProps.currentPOMode &&
-    isEqualPrevAndNextFormikValues<UpdatePOPaymentFormValue>({
-      prevFormikProps,
-      nextFormikProps,
-      formKeysNeedRender,
-    })
-  );
-});
+export default Question;

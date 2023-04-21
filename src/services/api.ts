@@ -12,6 +12,7 @@ import {
   UpdateProfilePayload,
 } from 'src/queries';
 import { GetPresignedPayload, UploadFilePayload } from 'src/queries/File/types';
+import { UpsertAuthorizationPayload } from 'src/queries/NonPOPayment/AuthorizationForPayment/types';
 import { UpsertNonEmployeeTravelPayload } from 'src/queries/NonPOPayment/NonEmployeeTravel/types';
 import { GetProfileProjectsParams } from 'src/queries/Projects/useGetProfileProjects';
 import {
@@ -465,6 +466,85 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.delete(`/financial-svc/v1/po-payments/${params.id}`, {}, newCancelToken());
   };
 
+  // ====================== Authorization for Payment ======================
+  const postAuthorizationPaymentCloneDocument = (params: any) => {
+    return api.post(
+      `/financial-svc/v1/authorization-payments/${params.id}/clone`,
+      {},
+      newCancelToken()
+    );
+  };
+
+  const createAuthorizationPayment = (payload: UpsertAuthorizationPayload) => {
+    return api.post(
+      `/financial-svc/v1/authorization-payments?action=${payload.action}`,
+      { ...payload },
+      newCancelToken()
+    );
+  };
+
+  const deleteAuthorizationPaymentsAttachment = (params: DeletePoAttachmentPayload) => {
+    return api.delete(
+      `/financial-svc/v1/authorization-payments/${params.id}/attachments/${params.attachmentId}`,
+      {},
+      newCancelToken()
+    );
+  };
+
+  const deleteAuthorizationPayment = (params: { id: string }) => {
+    return api.delete(
+      `/financial-svc/v1/authorization-payments/${params.id}`,
+      {},
+      newCancelToken()
+    );
+  };
+
+  const getAuthorizationPaymentDetail = (params: { id: string }) => {
+    return api.get(`/financial-svc/v1/authorization-payments/${params.id}`, {}, newCancelToken());
+  };
+
+  const updateAuthorizationPayment = (payload: UpsertAuthorizationPayload) => {
+    return api.put(
+      `/financial-svc/v1/authorization-payments/${payload.id}?action=${payload.action}`,
+      {
+        ...payload,
+      },
+      newCancelToken()
+    );
+  };
+
+  const getAuthorizationPaymentFileAttachmentPresignedUrl = (params: GetPresignedPOPayload) => {
+    return api.get(
+      `/financial-svc/v1/authorization-payments/${params.id}/attachments/presigned-url`,
+      params,
+      newCancelToken()
+    );
+  };
+
+  const getAuthorizationPaymentFileAttachmentPresignedDownloadUrl = (
+    params: GetPresignedPoAttachmentDownloadUrl
+  ) => {
+    return api.get(
+      `/financial-svc/v1/authorization-payments/${params.id}/attachments/${params.attachmentId}/read`,
+      params,
+      newCancelToken()
+    );
+  };
+
+  const getAuthorizationPaymentFinalPdf = (params: GetPropertiesParams) => {
+    return api.get(`/financial-svc/v1/AuthorizationPayment/${params.id}/final-pdf`);
+  };
+
+  const addAuthorizationPaymentAttachment = (payload: AddPoAttachmentPayload) => {
+    return api.put(
+      `/financial-svc/v1/authorization-payments/${payload.id}/attachments`,
+      {
+        ...payload,
+      },
+      newCancelToken()
+    );
+  };
+
   // ====================== Non Employee Travel ======================
   const getNonEmployeeTravelDetail = (params: { id: string }) => {
     return api.get(
@@ -671,6 +751,17 @@ const create = (baseURL = appConfig.API_URL) => {
     getPOPaymentRemainingBalance,
 
     // ====================== Non PO Payment ======================
+    // ====================== Authorization Payment ======================
+    postAuthorizationPaymentCloneDocument,
+    createAuthorizationPayment,
+    deleteAuthorizationPaymentsAttachment,
+    deleteAuthorizationPayment,
+    getAuthorizationPaymentDetail,
+    updateAuthorizationPayment,
+    getAuthorizationPaymentFileAttachmentPresignedUrl,
+    getAuthorizationPaymentFileAttachmentPresignedDownloadUrl,
+    getAuthorizationPaymentFinalPdf,
+    addAuthorizationPaymentAttachment,
     // ====================== Non Employee Travel ======================
     getNonEmployeeTravelDetail,
     createNonEmployeeTravel,

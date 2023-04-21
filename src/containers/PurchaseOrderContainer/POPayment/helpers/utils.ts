@@ -77,16 +77,17 @@ export const getPaymentLineItemPayload = ({
   return isAdvancePayment ? advancePaymentLineItem : partialOrFinalPaymentLineItem.slice(0, -1);
 };
 
+// TODO: Tuyen Tran check logic display with status is Check
 export const checkVendorPaymentType = (type: PO_PAYMENT_VENDOR_TYPE) => {
   switch (type) {
     case PO_PAYMENT_VENDOR_TYPE.ACH:
     case PO_PAYMENT_VENDOR_TYPE.CARD:
-    case PO_PAYMENT_VENDOR_TYPE.CHECK:
       return false;
+    case PO_PAYMENT_VENDOR_TYPE.CHECK:
     case PO_PAYMENT_VENDOR_TYPE.TBD:
       return true;
     default:
-      return false;
+      return true;
   }
 };
 
