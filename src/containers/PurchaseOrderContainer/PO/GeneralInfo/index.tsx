@@ -270,7 +270,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
         {isPOChangeDocument && (
           <Grid item xs={12} sm={6} md={4}>
             <Input
-              label={'Purchase Order No. (Origin)'}
+              label={'Purchase Order No. (Original)'}
               errorMessage={_getErrorMessage(PO_FORM_KEY.PREVIOUS_PO_NUMBER)}
               {...getUncontrolledFieldProps(PO_FORM_KEY.PREVIOUS_PO_NUMBER)}
               placeholder={'To be assigned'}
