@@ -38,8 +38,9 @@ import SelectPayeeCategory from './SelectPayeeCategory';
 import GeneralInfo from './GeneralInfo';
 import ActionButtons from 'src/containers/PurchaseOrderContainer/PO/ActionButtons';
 import DeleteWarning from './DeleteWarning';
-import TripItinerary from './TripItinerary';
+import TripItinerary from './TripItineraries';
 import PartialDayTable from './PartialDayTable';
+import TravelExpenditures from './TravelExpenditures';
 
 const AuthorizationForPayment: FC<Props> = ({
   formData,
@@ -341,6 +342,13 @@ const AuthorizationForPayment: FC<Props> = ({
                 </SectionLayout>
                 <SectionLayout sx={{ p: 0, border: 'none' }}>
                   <PartialDayTable />
+                </SectionLayout>
+                <SectionLayout>
+                  <TravelExpenditures
+                    formikProps={formikProps}
+                    disabled={disabledSection}
+                    currentMode={currentNonEmployeeTravelMode}
+                  />
                 </SectionLayout>
                 <ActionButtons
                   currentFormMode={currentNonEmployeeTravelMode}

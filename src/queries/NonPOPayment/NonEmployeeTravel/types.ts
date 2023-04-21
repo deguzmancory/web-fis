@@ -33,10 +33,24 @@ export interface TripItinerary {
   tripTotal: number;
 }
 
+export interface TravelExpenditure {
+  expenditures: NonEmployeeTravelExpenditure[];
+  advancedDocumentNumber: string;
+  expenditureTotal: number;
+  amountAdvanced: number;
+  miscCostTotal: number;
+  lodgingCostTotal: number;
+  miscDescription: string;
+  lodgingDescription: string;
+  miscDaysClaimTotal: number;
+  lodgingDaysClaimTotal: number;
+}
+
 export interface SharedNonEmployeeTravelDetail
   extends SelectPayeeCategory,
     GeneralInfo,
-    TripItinerary {
+    TripItinerary,
+    TravelExpenditure {
   acceptedDate: string;
   organization: string;
   homeAddress: string;
@@ -46,7 +60,6 @@ export interface SharedNonEmployeeTravelDetail
   internalComments: string;
   travelDetails: string;
   total: number;
-  expenditureTotal: number;
 
   claimantSignature: string;
   piSignature: string;
@@ -72,14 +85,9 @@ export interface SharedNonEmployeeTravelDetail
   checkDate: string;
   miscPaymentMethod: string;
   lodgingPaymentMethod: string;
-  miscDescription: string;
-  lodgingDescription: string;
-  miscCostTotal: number;
-  lodgingCostTotal: number;
-  daysClaimTotal: string;
+
+  // daysClaimTotal: string;
   piName: string;
-  advancedDocumentNumber: string;
-  amountAdvanced: number;
 
   updateVersionNumber: number;
   noReceiptSmallCorrectFlag: boolean;
@@ -96,7 +104,6 @@ export interface SharedNonEmployeeTravelDetail
   faOriginalUserId: string;
   cuOriginalUserId: string;
   projectItems: NonEmployeeTravelProjectItem[];
-  expenditures: NonEmployeeTravelExpenditure[];
   remittanceLineItems: NonEmployeeTravelRemittanceLineItem[];
   remittance: NonEmployeeTravelRemittance;
 
@@ -108,7 +115,7 @@ export interface SharedNonEmployeeTravelDetail
 
 export interface NonEmployeeTravelProjectItem {
   id?: string;
-  nonEmployeeTravelId: string;
+  nonEmployeeTravelId?: string;
   lineNumber: number;
   projectNumber: string;
   subProject: string;
@@ -121,7 +128,7 @@ export interface NonEmployeeTravelProjectItem {
 
 export interface NonEmployeeTravelItinerary {
   id?: string;
-  nonEmployeeTravelId: string;
+  nonEmployeeTravelId?: string;
   destination: string;
   departureDate: string;
   arrivalDate: string;
@@ -144,7 +151,7 @@ export interface NonEmployeeTravelItinerary {
 
 export interface NonEmployeeTravelExpenditure {
   id?: string;
-  nonEmployeeTravelId: string;
+  nonEmployeeTravelId?: string;
   item: string;
   leg: string;
   paymentMethod: string;
@@ -154,7 +161,7 @@ export interface NonEmployeeTravelExpenditure {
 
 export interface NonEmployeeTravelRemittanceLineItem {
   id?: string;
-  nonEmployeeTravelId: string;
+  nonEmployeeTravelId?: string;
   number: string;
   amount: number;
   lineNumber: number;

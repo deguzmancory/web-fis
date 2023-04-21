@@ -49,7 +49,7 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
       return total + currentLineItem.amount;
     }, 0);
 
-    setFieldValue(PO_FORM_KEY.TOTAL_AMOUNT, updatedPaymentTotal);
+    setFieldValue(PO_FORM_KEY.PAYMENT_TOTAL, updatedPaymentTotal);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAdvancePayment]);
 
@@ -97,7 +97,7 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
         0
       );
 
-      setFieldValue(PO_FORM_KEY.TOTAL_AMOUNT, updatedPaymentTotal);
+      setFieldValue(PO_FORM_KEY.PAYMENT_TOTAL, updatedPaymentTotal);
     },
     [setFieldValue, paymentLineItemsValue]
   );
@@ -423,7 +423,7 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
         </Grid>
         <Grid item xs={2.5}>
           <EllipsisTooltipInputCurrency
-            {...getFieldProps(PO_FORM_KEY.TOTAL_AMOUNT)}
+            {...getFieldProps(PO_FORM_KEY.PAYMENT_TOTAL)}
             textAlign="right"
             disabled
             lengthShowTooltip={8}
@@ -431,8 +431,8 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
         </Grid>
 
         {/* Hidden input for scroll to error purpose */}
-        <input name={PO_FORM_KEY.TOTAL_AMOUNT} hidden />
-        <Element errorMessage={_getErrorMessage(PO_FORM_KEY.TOTAL_AMOUNT)}>{null}</Element>
+        <input name={PO_FORM_KEY.PAYMENT_TOTAL} hidden />
+        <Element errorMessage={_getErrorMessage(PO_FORM_KEY.PAYMENT_TOTAL)}>{null}</Element>
       </Grid>
     </Box>
   );
@@ -452,7 +452,7 @@ export default React.memo(TablePaymentLineItems, (prevProps, nextProps) => {
     PO_FORM_KEY.PARTIAL_OR_FINAL_PAYMENT_LINE_ITEMS,
     PO_FORM_KEY.ADVANCED_PAYMENT_LINE_ITEMS,
     PO_FORM_KEY.PROJECT_NUMBER,
-    PO_FORM_KEY.TOTAL_AMOUNT,
+    PO_FORM_KEY.PAYMENT_TOTAL,
     PO_FORM_KEY.PAYMENT_TYPE,
     PO_FORM_KEY.REMAINING_BALANCE,
   ];

@@ -1,6 +1,7 @@
 export * from './Contents';
 export * from './File';
 export * from './GlobalSettings';
+export * from './NonPOPayment';
 export * from './POChange';
 export * from './POPayment';
 export * from './Permissions';

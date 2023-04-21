@@ -18,12 +18,8 @@ import {
 import { ITINERARY_ITEM_FORM_KEY, NON_EMPLOYEE_TRAVEL_FORM_KEY } from '../enums';
 import { initialNonEmployeeTravelItinerary } from '../helpers/constants';
 import { UpsertNonEmployeeTravelFormikProps } from '../types';
-import {
-  calculateDataOfItineraries,
-  commonInputItineraryColumnStyles,
-  commonItineraryColumnStyles,
-  headerRow,
-} from './helpers';
+import { calculateDataOfItineraries, calculateItinerariesTotal, headerRow } from './helpers';
+import { commonInputColumnStyles, commonColumnStyles } from '../../shared/constants';
 
 const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
   const { values, errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } =
@@ -42,12 +38,23 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
       endArrivalDate: values.endArrivalDate,
       itineraries: itinerariesValue,
     });
-    const itinerariesTotal = updatedItineraries.reduce((total, itinerary) => {
-      return total + Number(itinerary.miscCost || 0) + Number(itinerary.lodgingCost || 0);
-    }, 0);
+    const {
+      lodgingCostTotal,
+      lodgingDaysClaimTotal,
+      miscCostTotal,
+      miscDaysClaimTotal,
+      itinerariesTotal,
+    } = calculateItinerariesTotal(updatedItineraries);
 
     setFieldValue(`${NON_EMPLOYEE_TRAVEL_FORM_KEY.ITINERARIES}`, updatedItineraries);
     setFieldValue(`${NON_EMPLOYEE_TRAVEL_FORM_KEY.TRIP_TOTAL}`, itinerariesTotal);
+    setFieldValue(`${NON_EMPLOYEE_TRAVEL_FORM_KEY.LODGING_COST_TOTAL}`, lodgingCostTotal);
+    setFieldValue(
+      `${NON_EMPLOYEE_TRAVEL_FORM_KEY.LODGING_DAYS_CLAIM_TOTAL}`,
+      lodgingDaysClaimTotal
+    );
+    setFieldValue(`${NON_EMPLOYEE_TRAVEL_FORM_KEY.MISC_COST_TOTAL}`, miscCostTotal);
+    setFieldValue(`${NON_EMPLOYEE_TRAVEL_FORM_KEY.MISC_DAYS_CLAIM_TOTAL}`, miscDaysClaimTotal);
   }, [
     itinerariesValue.length,
     itinerariesValue,
@@ -83,7 +90,7 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
     columns: [
       {
         content: 'Start',
-        style: { ...commonItineraryColumnStyles },
+        style: { ...commonColumnStyles },
       },
       {
         content: (
@@ -91,16 +98,16 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
             errorMessage={_getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.START_DESTINATION)}
             {...getUncontrolledFieldProps(NON_EMPLOYEE_TRAVEL_FORM_KEY.START_DESTINATION)}
             disabled={disabled}
-            style={{ ...commonInputItineraryColumnStyles, maxWidth: 115, minWidth: 115 }}
+            style={{ ...commonInputColumnStyles, maxWidth: 115, minWidth: 115 }}
             placeholder="City, State"
             lengthShowTooltip={10}
           />
         ),
-        style: { ...commonItineraryColumnStyles },
+        style: { ...commonColumnStyles },
       },
       {
         content: 'Dep',
-        style: { ...commonItineraryColumnStyles },
+        style: { ...commonColumnStyles },
       },
       {
         content: (
@@ -121,17 +128,17 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
             />
           </Box>
         ),
-        style: { ...commonItineraryColumnStyles },
+        style: { ...commonColumnStyles },
       },
       ...Array(9).fill({
         content: '',
-        style: { ...commonItineraryColumnStyles },
+        style: { ...commonColumnStyles },
       }),
     ],
   };
 
   const itinerariesRows: BodyRow[] = itinerariesValue.reduce(
-    (prevRows, currentItinerary, index) => {
+    (prevRows, _currentItinerary, index) => {
       const prefixItinerary = `${NON_EMPLOYEE_TRAVEL_FORM_KEY.ITINERARIES}.${index}`;
 
       // an itinerary will take 2 row
@@ -140,7 +147,7 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
           columns: [
             {
               content: `${index + 1}`,
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
             {
               content: (
@@ -152,16 +159,16 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                     `${prefixItinerary}.${ITINERARY_ITEM_FORM_KEY.DESTINATION}`
                   )}
                   disabled={disabled}
-                  style={{ ...commonInputItineraryColumnStyles, maxWidth: 115, minWidth: 115 }}
+                  style={{ ...commonInputColumnStyles, maxWidth: 115, minWidth: 115 }}
                   placeholder="City, State"
                   lengthShowTooltip={10}
                 />
               ),
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
             {
               content: 'Arr',
-              style: { ...commonItineraryColumnStyles, maxWidth: 20 },
+              style: { ...commonColumnStyles, maxWidth: 20 },
             },
             {
               content: (
@@ -187,7 +194,7 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                   />
                 </Box>
               ),
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
             {
               content: (
@@ -200,10 +207,10 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                   disabled
                   hideArrowTypeNumber
                   lengthShowTooltip={5}
-                  style={{ ...commonInputItineraryColumnStyles, width: 60 }}
+                  style={{ ...commonInputColumnStyles, width: 60 }}
                 />
               ),
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
             {
               content: (
@@ -216,10 +223,10 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                   disabled={disabled}
                   hideArrowTypeNumber
                   lengthShowTooltip={5}
-                  style={{ ...commonInputItineraryColumnStyles, width: 60 }}
+                  style={{ ...commonInputColumnStyles, width: 60 }}
                 />
               ),
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
             {
               content: (
@@ -232,14 +239,14 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                   disabled
                   hideArrowTypeNumber
                   lengthShowTooltip={5}
-                  style={{ ...commonInputItineraryColumnStyles, width: 60 }}
+                  style={{ ...commonInputColumnStyles, width: 60 }}
                 />
               ),
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
             {
               content: 'M&IE',
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
             {
               content: (
@@ -252,10 +259,10 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                   textAlign="right"
                   lengthShowTooltip={7}
                   disabled={disabled}
-                  style={{ ...commonInputItineraryColumnStyles, width: 110 }}
+                  style={{ ...commonInputColumnStyles, width: 110 }}
                 />
               ),
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
             {
               content: (
@@ -268,10 +275,10 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                   textAlign="right"
                   lengthShowTooltip={7}
                   disabled={disabled}
-                  style={{ ...commonInputItineraryColumnStyles, width: 110 }}
+                  style={{ ...commonInputColumnStyles, width: 110 }}
                 />
               ),
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
             {
               content: (
@@ -284,10 +291,10 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                   textAlign="right"
                   lengthShowTooltip={7}
                   disabled
-                  style={{ ...commonInputItineraryColumnStyles, width: 110 }}
+                  style={{ ...commonInputColumnStyles, width: 110 }}
                 />
               ),
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
             {
               content: (
@@ -302,10 +309,10 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                   disabled={disabled}
                   hideArrowTypeNumber
                   lengthShowTooltip={5}
-                  style={{ ...commonInputItineraryColumnStyles, width: 60 }}
+                  style={{ ...commonInputColumnStyles, width: 60 }}
                 />
               ),
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
             {
               content: (
@@ -318,10 +325,10 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                   textAlign="right"
                   lengthShowTooltip={7}
                   disabled
-                  style={{ ...commonInputItineraryColumnStyles, width: 110 }}
+                  style={{ ...commonInputColumnStyles, width: 110 }}
                 />
               ),
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
           ],
         },
@@ -329,7 +336,7 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
           columns: [
             {
               content: '',
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
             {
               content: (
@@ -341,6 +348,7 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                       marginRight: '2px',
                     }}
                     onClick={() => handleAddItineraryRow(index)}
+                    disabled={disabled}
                   >
                     <Stack direction={'row'}>
                       <Add fontSize={'small'} sx={{ p: 0, m: 0 }} />
@@ -353,7 +361,7 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                       minWidth: '56px',
                     }}
                     onClick={() => handleRemoveItineraryRow(index)}
-                    disabled={itinerariesValue.length < 2}
+                    disabled={disabled || itinerariesValue.length < 2}
                   >
                     <Stack direction={'row'}>
                       <Delete fontSize={'small'} sx={{ p: 0, m: 0 }} />
@@ -362,11 +370,11 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                   </Button>
                 </Stack>
               ),
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
             {
               content: 'Dep',
-              style: { ...commonItineraryColumnStyles, maxWidth: 20 },
+              style: { ...commonColumnStyles, maxWidth: 20 },
             },
             {
               content: (
@@ -394,23 +402,23 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                   />
                 </Box>
               ),
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
             {
               content: '',
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
             {
               content: '',
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
             {
               content: '',
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
             {
               content: 'Lodging',
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
             {
               content: (
@@ -423,10 +431,10 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                   textAlign="right"
                   lengthShowTooltip={7}
                   disabled={disabled}
-                  style={{ ...commonInputItineraryColumnStyles, width: 110 }}
+                  style={{ ...commonInputColumnStyles, width: 110 }}
                 />
               ),
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
             {
               content: (
@@ -439,10 +447,10 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                   textAlign="right"
                   lengthShowTooltip={7}
                   disabled
-                  style={{ ...commonInputItineraryColumnStyles, width: 110 }}
+                  style={{ ...commonInputColumnStyles, width: 110 }}
                 />
               ),
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
             {
               content: (
@@ -455,10 +463,10 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                   textAlign="right"
                   lengthShowTooltip={7}
                   disabled
-                  style={{ ...commonInputItineraryColumnStyles, width: 110 }}
+                  style={{ ...commonInputColumnStyles, width: 110 }}
                 />
               ),
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
             {
               content: (
@@ -473,10 +481,10 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                   disabled={disabled}
                   hideArrowTypeNumber
                   lengthShowTooltip={5}
-                  style={{ ...commonInputItineraryColumnStyles, width: 60 }}
+                  style={{ ...commonInputColumnStyles, width: 60 }}
                 />
               ),
-              style: { ...commonItineraryColumnStyles },
+              style: { ...commonColumnStyles },
             },
             {
               content: (
@@ -489,10 +497,10 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                   textAlign="right"
                   lengthShowTooltip={7}
                   disabled={disabled}
-                  style={{ ...commonInputItineraryColumnStyles, width: 110 }}
+                  style={{ ...commonInputColumnStyles, width: 110 }}
                 />
               ),
-              style: { ...commonItineraryColumnStyles, paddingRight: '4px' },
+              style: { ...commonColumnStyles, paddingRight: '4px' },
             },
           ],
         },
@@ -507,7 +515,7 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
     columns: [
       {
         content: 'End',
-        style: { ...commonItineraryColumnStyles },
+        style: { ...commonColumnStyles },
       },
       {
         content: (
@@ -515,16 +523,16 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
             errorMessage={_getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.END_DESTINATION)}
             {...getUncontrolledFieldProps(NON_EMPLOYEE_TRAVEL_FORM_KEY.END_DESTINATION)}
             disabled={disabled}
-            style={{ ...commonInputItineraryColumnStyles, maxWidth: 115, minWidth: 115 }}
+            style={{ ...commonInputColumnStyles, maxWidth: 115, minWidth: 115 }}
             placeholder="City, State"
             lengthShowTooltip={10}
           />
         ),
-        style: { ...commonItineraryColumnStyles },
+        style: { ...commonColumnStyles },
       },
       {
         content: 'Arr',
-        style: { ...commonItineraryColumnStyles },
+        style: { ...commonColumnStyles },
       },
       {
         content: (
@@ -545,11 +553,11 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
             />
           </Box>
         ),
-        style: { ...commonItineraryColumnStyles },
+        style: { ...commonColumnStyles },
       },
       ...Array(6).fill({
         content: '',
-        style: { ...commonItineraryColumnStyles },
+        style: { ...commonColumnStyles },
       }),
       {
         content: <b>TOTALS</b>,
@@ -567,17 +575,17 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
             textAlign="right"
             lengthShowTooltip={7}
             disabled
-            style={{ ...commonInputItineraryColumnStyles, width: 110 }}
+            style={{ ...commonInputColumnStyles, width: 110 }}
           />
         ),
-        style: { ...commonItineraryColumnStyles, paddingRight: '4px' },
+        style: { ...commonColumnStyles, paddingRight: '4px' },
       },
     ],
   };
 
   return (
     <Box>
-      <Typography variant="h5" textAlign={'center'} p={1}>
+      <Typography variant="h5" textAlign={'center'} p={2}>
         TRIP ITINERARY
       </Typography>
 

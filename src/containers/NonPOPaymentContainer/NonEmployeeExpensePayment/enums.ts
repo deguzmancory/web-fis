@@ -25,6 +25,18 @@ export enum NON_EMPLOYEE_TRAVEL_FORM_KEY {
   END_DESTINATION = 'endDestination',
   END_ARRIVAL_DATE = 'endArrivalDate',
   TRIP_TOTAL = 'tripTotal',
+
+  // travel expenditure
+  EXPENDITURES = 'expenditures',
+  ADVANCED_DOCUMENT_NUMBER = 'advancedDocumentNumber',
+  EXPENDITURE_TOTAL = 'expenditureTotal',
+  AMOUNT_ADVANCED = 'amountAdvanced',
+  MISC_COST_TOTAL = 'miscCostTotal',
+  LODGING_COST_TOTAL = 'lodgingCostTotal',
+  MISC_DESCRIPTION = 'miscDescription',
+  LODGING_DESCRIPTION = 'lodgingDescription',
+  MISC_DAYS_CLAIM_TOTAL = 'miscDaysClaimTotal',
+  LODGING_DAYS_CLAIM_TOTAL = 'lodgingDaysClaimTotal',
 }
 
 export enum ITINERARY_ITEM_FORM_KEY {
@@ -47,4 +59,12 @@ export enum ITINERARY_ITEM_FORM_KEY {
   MISC_DAYS_CLAIM = 'miscDaysClaim',
   MISC_COST = 'miscCost',
   MISC_ESTIMATED = 'miscEstimated',
+}
+
+export enum EXPENDITURE_ITEM_FORM_KEY {
+  ITEM = 'item',
+  LEG = 'leg',
+  PAYMENT_METHOD = 'paymentMethod',
+  DESCRIPTION = 'description',
+  AMOUNT = 'amount',
 }

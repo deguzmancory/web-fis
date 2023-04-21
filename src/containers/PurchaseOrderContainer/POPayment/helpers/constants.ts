@@ -106,7 +106,7 @@ export const emptyUpdatePOPaymentFormValue: UpdatePOPaymentFormValue = {
   // paymentLineItems: [initialPaymentLineItemValue],
   advancePaymentLineItem: [initialPaymentLineItemValue],
   partialOrFinalPaymentLineItem: [initialPaymentLineItemValue],
-  totalAmount: 0,
+  paymentTotal: 0,
 
   // Remittance Information
   remittanceLineItems: [initialPaymentRemittanceInfo],

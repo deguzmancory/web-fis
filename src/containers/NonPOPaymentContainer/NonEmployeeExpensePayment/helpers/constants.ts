@@ -1,7 +1,7 @@
+import { EXPENDITURE_ITEM_FORM_KEY } from '../enums';
 import { UpsertNonEmployeeTravelFormValue } from '../types';
 
 export const initialNonEmployeeTravelProjectItem = {
-  nonEmployeeTravelId: '',
   lineNumber: null,
   projectNumber: '',
   subProject: '',
@@ -13,7 +13,6 @@ export const initialNonEmployeeTravelProjectItem = {
 };
 
 export const initialNonEmployeeTravelItinerary = {
-  nonEmployeeTravelId: '',
   destination: '',
   departureDate: null,
   arrivalDate: null,
@@ -36,7 +35,6 @@ export const initialNonEmployeeTravelItinerary = {
 };
 
 export const initialNonEmployeeTravelExpenditure = {
-  nonEmployeeTravelId: '',
   item: '',
   leg: '',
   paymentMethod: '',
@@ -45,7 +43,6 @@ export const initialNonEmployeeTravelExpenditure = {
 };
 
 export const initialNonEmployeeTravelRemittanceLineItem = {
-  nonEmployeeTravelId: '',
   number: '',
   amount: 0,
   lineNumber: null,
@@ -91,9 +88,18 @@ export const emptyUpsertNonEmployeeTravelFormValue: UpsertNonEmployeeTravelFormV
   endArrivalDate: null,
   tripTotal: 0,
 
+  // travel expenditure
+  expenditures: [initialNonEmployeeTravelExpenditure],
+  advancedDocumentNumber: '',
+  expenditureTotal: 0,
+  amountAdvanced: 0,
+  miscCostTotal: null,
+  lodgingCostTotal: null,
+  lodgingDaysClaimTotal: null,
+  miscDaysClaimTotal: null,
+
   acceptedDate: '',
   organization: '',
-
   homeAddress: '',
   purposeForTravel: '',
   phoneNumber: '',
@@ -101,7 +107,6 @@ export const emptyUpsertNonEmployeeTravelFormValue: UpsertNonEmployeeTravelFormV
   internalComments: '',
   travelDetails: '',
   total: null,
-  expenditureTotal: null,
   claimantSignature: '',
   piSignature: '',
   faSignature: '',
@@ -128,12 +133,9 @@ export const emptyUpsertNonEmployeeTravelFormValue: UpsertNonEmployeeTravelFormV
   lodgingPaymentMethod: '',
   miscDescription: '',
   lodgingDescription: '',
-  miscCostTotal: null,
-  lodgingCostTotal: null,
-  daysClaimTotal: '',
+
+  // daysClaimTotal: '',
   piName: '',
-  advancedDocumentNumber: '',
-  amountAdvanced: null,
   updateVersionNumber: null,
   noReceiptSmallCorrectFlag: null,
   noReceiptAmount: null,
@@ -149,7 +151,14 @@ export const emptyUpsertNonEmployeeTravelFormValue: UpsertNonEmployeeTravelFormV
   faOriginalUserId: '',
   cuOriginalUserId: '',
   projectItems: [initialNonEmployeeTravelProjectItem],
-  expenditures: [initialNonEmployeeTravelExpenditure],
   remittanceLineItems: [initialNonEmployeeTravelRemittanceLineItem],
   remittance: initialNonEmployeeTravelRemittance,
 };
+
+export const travelExpenditureColumnNames = [
+  EXPENDITURE_ITEM_FORM_KEY.ITEM,
+  EXPENDITURE_ITEM_FORM_KEY.LEG,
+  EXPENDITURE_ITEM_FORM_KEY.PAYMENT_METHOD,
+  EXPENDITURE_ITEM_FORM_KEY.DESCRIPTION,
+  EXPENDITURE_ITEM_FORM_KEY.AMOUNT,
+];

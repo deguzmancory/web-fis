@@ -61,7 +61,7 @@ export const getPOPaymentFormValidationSchema = ({ action }: { action: PO_ACTION
           })
         );
       }),
-      totalAmount: Yup.mixed().test(
+      paymentTotal: Yup.mixed().test(
         'invalid-partial-payment-total',
         'Partial payment total exceeds the open sum balance. A PO Change is needed before a partial payment can be made.',
         (value, context) => {
@@ -97,7 +97,7 @@ export const getPOPaymentFormValidationSchema = ({ action }: { action: PO_ACTION
               'not-match-payment',
               'The remittance total does not match the payment total.',
               (value) => {
-                if (value !== remittanceOptions.parent?.totalAmount) {
+                if (value !== remittanceOptions.parent?.paymentTotal) {
                   return false;
                 } else {
                   return true;

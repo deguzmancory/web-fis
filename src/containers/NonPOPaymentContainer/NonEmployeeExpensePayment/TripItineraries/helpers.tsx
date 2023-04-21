@@ -4,21 +4,14 @@ import { COLOR_CODE, NO_OPENER } from 'src/appConfig/constants';
 import { BodyRow } from 'src/components/CustomTable/types';
 import { Link } from 'src/components/common';
 import { NonEmployeeTravelItinerary } from 'src/queries/NonPOPayment/NonEmployeeTravel';
-import { getFullDayDifference } from 'src/utils';
+import { calculateTotals, getFullDayDifference } from 'src/utils';
 import {
   getPartialDaysFromHours,
   getRateUsingCostAndMetric,
   getTotalNumberMinusNumber,
 } from 'src/utils/rcuhUtils';
-
-export const commonItineraryColumnStyles = {
-  padding: '4px',
-  paddingRight: 0,
-};
-
-export const commonInputItineraryColumnStyles = {
-  padding: '4px',
-};
+import { commonColumnStyles } from '../../shared/constants';
+import { ITINERARY_ITEM_FORM_KEY } from '../enums';
 
 export const headerRow: BodyRow = {
   isHeaderRow: true,
@@ -36,14 +29,14 @@ export const headerRow: BodyRow = {
     {
       content: 'Destination *',
       style: {
-        ...commonItineraryColumnStyles,
+        ...commonColumnStyles,
         width: 125,
       },
     },
     {
       content: '',
       style: {
-        ...commonItineraryColumnStyles,
+        ...commonColumnStyles,
         width: 20,
       },
     },
@@ -55,35 +48,35 @@ export const headerRow: BodyRow = {
         </Box>
       ),
       style: {
-        ...commonItineraryColumnStyles,
+        ...commonColumnStyles,
         width: 200,
       },
     },
     {
       content: 'Calc Days',
       style: {
-        ...commonItineraryColumnStyles,
+        ...commonColumnStyles,
         width: 60,
       },
     },
     {
       content: 'Minus Days',
       style: {
-        ...commonItineraryColumnStyles,
+        ...commonColumnStyles,
         width: 60,
       },
     },
     {
       content: 'Bus Days',
       style: {
-        ...commonItineraryColumnStyles,
+        ...commonColumnStyles,
         width: 60,
       },
     },
     {
       content: '',
       style: {
-        ...commonItineraryColumnStyles,
+        ...commonColumnStyles,
         width: 20,
       },
     },
@@ -104,35 +97,35 @@ export const headerRow: BodyRow = {
         </Link>
       ),
       style: {
-        ...commonItineraryColumnStyles,
+        ...commonColumnStyles,
         width: 110,
       },
     },
     {
       content: 'Actual Rate',
       style: {
-        ...commonItineraryColumnStyles,
+        ...commonColumnStyles,
         width: 110,
       },
     },
     {
       content: 'Excess Amount',
       style: {
-        ...commonItineraryColumnStyles,
+        ...commonColumnStyles,
         width: 110,
       },
     },
     {
       content: 'Days Claim',
       style: {
-        ...commonItineraryColumnStyles,
+        ...commonColumnStyles,
         width: 60,
       },
     },
     {
       content: 'Cost',
       style: {
-        ...commonItineraryColumnStyles,
+        ...commonColumnStyles,
         width: 110,
       },
     },
@@ -388,4 +381,27 @@ export const updateCostOfItinerary = (
       break;
   }
   return itineraryRow;
+};
+
+export const calculateItinerariesTotal = (itineraries: NonEmployeeTravelItinerary[]) => {
+  const miscDaysClaimTotal = calculateTotals(itineraries, [
+    ITINERARY_ITEM_FORM_KEY.MISC_DAYS_CLAIM,
+  ]);
+  const lodgingDaysClaimTotal = calculateTotals(itineraries, [
+    ITINERARY_ITEM_FORM_KEY.LODGING_DAYS_CLAIM,
+  ]);
+  const miscCostTotal = calculateTotals(itineraries, [ITINERARY_ITEM_FORM_KEY.MISC_COST]);
+  const lodgingCostTotal = calculateTotals(itineraries, [ITINERARY_ITEM_FORM_KEY.LODGING_COST]);
+  const itinerariesTotal = calculateTotals(itineraries, [
+    ITINERARY_ITEM_FORM_KEY.LODGING_COST,
+    ITINERARY_ITEM_FORM_KEY.MISC_COST,
+  ]);
+
+  return {
+    miscDaysClaimTotal,
+    lodgingDaysClaimTotal,
+    miscCostTotal,
+    lodgingCostTotal,
+    itinerariesTotal,
+  };
 };

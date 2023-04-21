@@ -95,7 +95,7 @@ export const getPOPaymentFormValueFromResponse = ({
       response: poPaymentResponse,
       isAdvancePayment: true,
     }),
-    totalAmount: Number(poPaymentResponse.totalAmount || 0),
+    paymentTotal: Number(poPaymentResponse.paymentTotal || 0),
     remainingBalance:
       remainingBalanceResponse?.remainingBalance?.total || mockupDataRes.remainingBalance.total, //TODO: Tuyen Tran replace with remainingBalanceResponse
     remainingBalanceLineItems: transformedRemainingBalanceLineItems,

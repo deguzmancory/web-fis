@@ -1,7 +1,7 @@
 /* eslint-disable security/detect-object-injection */
 import dayjs from 'dayjs';
 import { Location } from 'history';
-import _, { get, isDate as isDateLodash, isEqual } from 'lodash';
+import _, { get, isDate as isDateLodash, isEqual, isNumber } from 'lodash';
 import { parse } from 'qs';
 import shortid from 'shortid';
 import { ErrorService, Toastify } from 'src/services';
@@ -181,4 +181,48 @@ export const convertNumberOrNull = (value: string | number) => {
   if (isString(value) && !value) return null;
 
   return Number(value || 0);
+};
+
+/**
+ * Generic function to calculate totals in a list
+ *
+ * return the total amount
+ */
+export const calculateTotals = (itemList: any[], arrayOfFieldNames: string[]) => {
+  // if no item list don't do anything
+  if (isEmpty(itemList)) {
+    return null;
+  }
+  // now calculate the subtotals/totals etc
+  const listTotal = itemList.reduce((output, item) => {
+    const itemLineTotal = calculateLineTotal(item, arrayOfFieldNames);
+
+    if (!isNumber(itemLineTotal)) return output;
+
+    return output + itemLineTotal;
+  }, 0);
+
+  return Number(listTotal.toFixed(2));
+};
+
+/**
+ * Calculate a total of an item, using the list of field names provided
+ *
+ * @param arrayOfFieldNames
+ */
+const calculateLineTotal = (itemListLine: Object, arrayOfFieldNames: string[]): number => {
+  // if no item list don't do anything
+  if (!itemListLine) {
+    return null;
+  }
+
+  const totalAmount = arrayOfFieldNames.reduce((output, fieldName) => {
+    const itemAmount = itemListLine[fieldName];
+
+    if (!isNumber(itemAmount)) return output;
+
+    return output + itemAmount;
+  }, 0);
+
+  return Number(totalAmount.toFixed(2));
 };
