@@ -1,7 +1,7 @@
 import { MyProfile } from 'src/queries';
 import { DateFormat, localTimeToHawaii } from 'src/utils';
 import { UpsertAuthorizationFormValue } from '../types';
-import { emptyUpsertAuthorizationFormValue } from './contants';
+import { emptyUpsertAuthorizationFormValue } from './constants';
 
 export const getInitialAuthorizationFormValue = ({
   profile,

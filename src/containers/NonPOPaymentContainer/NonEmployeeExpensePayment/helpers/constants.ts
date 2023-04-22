@@ -98,6 +98,14 @@ export const emptyUpsertNonEmployeeTravelFormValue: UpsertNonEmployeeTravelFormV
   lodgingDaysClaimTotal: null,
   miscDaysClaimTotal: null,
 
+  // project Items
+  projectItems: [initialNonEmployeeTravelProjectItem],
+  paymentTotal: 0,
+
+  // Receipt Certification
+  noReceiptSmallCorrectFlag: null,
+  noReceiptAmount: null,
+
   acceptedDate: '',
   organization: '',
   homeAddress: '',
@@ -137,8 +145,6 @@ export const emptyUpsertNonEmployeeTravelFormValue: UpsertNonEmployeeTravelFormV
   // daysClaimTotal: '',
   piName: '',
   updateVersionNumber: null,
-  noReceiptSmallCorrectFlag: null,
-  noReceiptAmount: null,
   noReceiptCorrectFlag: null,
   noReceiptFormFlag: null,
   preferredPaymentMethod: '',
@@ -150,7 +156,6 @@ export const emptyUpsertNonEmployeeTravelFormValue: UpsertNonEmployeeTravelFormV
   piOriginalUserId: '',
   faOriginalUserId: '',
   cuOriginalUserId: '',
-  projectItems: [initialNonEmployeeTravelProjectItem],
   remittanceLineItems: [initialNonEmployeeTravelRemittanceLineItem],
   remittance: initialNonEmployeeTravelRemittance,
 };

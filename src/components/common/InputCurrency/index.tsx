@@ -51,7 +51,7 @@ const InputCurrency: React.FC<Props> = ({
   thousandSeparator = true,
   disabled,
   defaultValue,
-  textAlign,
+  textAlign = 'right',
   onChange,
   ...props
 }) => {

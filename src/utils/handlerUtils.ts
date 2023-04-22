@@ -113,6 +113,10 @@ export const scrollToTopError = (error: string[]) => {
 };
 
 export const handleShowErrorMsg = (error: Error, prefix: string = '') => {
+  Toastify.error(`${!isEmpty(prefix) ? `${prefix}: ` : ''}${getErrorMessageFromResponse(error)}`);
+};
+
+export const getErrorMessageFromResponse = (error: Error) => {
   let errorMessage = ErrorService.MESSAGES.unknown;
   if (!isEmpty(error)) {
     if (typeof error?.message === 'string') {
@@ -120,8 +124,9 @@ export const handleShowErrorMsg = (error: Error, prefix: string = '') => {
     } else {
       errorMessage = error?.message[0];
     }
-    Toastify.error(`${!isEmpty(prefix) ? `${prefix}: ` : ''}${errorMessage}`);
   }
+
+  return errorMessage;
 };
 
 export const handleScrollToTopError = <T>(errors: T) => {

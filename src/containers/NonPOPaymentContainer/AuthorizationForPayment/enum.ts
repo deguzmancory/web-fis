@@ -37,17 +37,6 @@ export enum AUTHORIZATION_FOR_PAYMENT_KEY {
   FILE_ATTACHMENTS = 'fileAttachments',
 }
 
-export enum AUTHORIZATION_PMT_PROJECT_LINE_ITEM_KEY {
-  LINE_NUMBER = 'lineNumber',
-  PROJECT_NUMBER = 'projectNumber',
-  SUB_PROJECT = 'subProject',
-  BUDGET_CATEGORY = 'budgetCategory',
-  SUB_BUDGET_CATEGORY = 'subBudgetCategory',
-  SERVICE_DATE = 'serviceDate',
-  AMOUNT = 'amount',
-  DESCRIPTION = 'description',
-}
-
 export enum AUTHORIZATION_REMITTANCE_KEY {
   QUESTION_NAME = 'questionName',
   QUESTION_PHONE_NUMBER = 'questionPhoneNumber',

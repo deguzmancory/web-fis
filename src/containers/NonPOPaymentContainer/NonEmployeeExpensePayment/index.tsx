@@ -12,7 +12,12 @@ import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, RoleService, Toastify } from 'src/services';
 import ErrorNonPOWrapper from '../shared/ErrorWrapper/index.';
 import { UpsertNonEmployeeTravelFormValue, UpsertNonEmployeeTravelFormikProps } from './types';
-import { getUncontrolledInputFieldProps, handleShowErrorMsg } from 'src/utils';
+import {
+  getErrorMessage,
+  getErrorMessageFromResponse,
+  getUncontrolledInputFieldProps,
+  handleShowErrorMsg,
+} from 'src/utils';
 import { useGetNonEmployeeTravelDetail } from 'src/queries/NonPOPayment/NonEmployeeTravel/useGetNonEmployeeTravelDetail';
 import { useCreateNonEmployeeTravel } from 'src/queries/NonPOPayment/NonEmployeeTravel/useCreateNonEmployeeTravel';
 import { useUpdateNonEmployeeTravel } from 'src/queries/NonPOPayment/NonEmployeeTravel/useUpdateNonEmployeeTravel';
@@ -41,6 +46,11 @@ import DeleteWarning from './DeleteWarning';
 import TripItinerary from './TripItineraries';
 import PartialDayTable from './PartialDayTable';
 import TravelExpenditures from './TravelExpenditures';
+import ProjectItems from '../shared/ProjectItems';
+import { NON_EMPLOYEE_TRAVEL_FORM_KEY } from './enums';
+import ReceiptCertification from './ReceiptCertification';
+import BusinessPurposeDetails from './BusinessPurposeDetails';
+import FormErrorSection from 'src/containers/shared/FormErrorSection';
 
 const AuthorizationForPayment: FC<Props> = ({
   formData,
@@ -51,6 +61,7 @@ const AuthorizationForPayment: FC<Props> = ({
 }) => {
   const { id } = useParams<{ id: string }>();
   const [allowRedirectWithoutWarning, setAllowRedirectWithoutWarning] = useState<boolean>(false);
+  const [apiError, setApiError] = useState<string>('');
 
   const isEditMode = !!id;
   const hasPermission = true; //TODO: enhancement: check logic to be granted tp access the this resource
@@ -94,6 +105,9 @@ const AuthorizationForPayment: FC<Props> = ({
     },
     onError: (error) => {
       handleShowErrorMsg(error);
+
+      window.scrollTo(0, 0);
+      setApiError(getErrorMessageFromResponse(error));
     },
   });
   const {
@@ -270,6 +284,10 @@ const AuthorizationForPayment: FC<Props> = ({
     onSetFormData(null);
   };
 
+  const _getErrorMessage = (fieldName) => {
+    return getErrorMessage(fieldName, { touched, errors });
+  };
+
   const blockCondition = (location: Location<string>) => {
     if (allowRedirectWithoutWarning) return false;
 
@@ -319,6 +337,7 @@ const AuthorizationForPayment: FC<Props> = ({
               </SectionLayout>
             ) : (
               <>
+                {apiError && <FormErrorSection>{apiError}</FormErrorSection>}
                 <SectionLayout header={<HeaderOfSection />}>
                   <SelectPayeeCategory
                     formikProps={formikProps}
@@ -350,11 +369,37 @@ const AuthorizationForPayment: FC<Props> = ({
                     currentMode={currentNonEmployeeTravelMode}
                   />
                 </SectionLayout>
+                <SectionLayout>
+                  <ProjectItems
+                    title={'PROJECT(S) TO BE CHARGED'}
+                    formikProps={formikProps}
+                    disabled={disabledSection}
+                    projectItemsPrefix={NON_EMPLOYEE_TRAVEL_FORM_KEY.PROJECT_ITEMS}
+                    totalPrefix={NON_EMPLOYEE_TRAVEL_FORM_KEY.PAYMENT_TOTAL}
+                    showTotalError={false}
+                    tableErrorMessage={_getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.PAYMENT_TOTAL)}
+                  />
+                </SectionLayout>
+                <SectionLayout>
+                  <ReceiptCertification
+                    formikProps={formikProps}
+                    disabled={disabledSection}
+                    currentMode={currentNonEmployeeTravelMode}
+                  />
+                </SectionLayout>
+                <SectionLayout>
+                  <BusinessPurposeDetails
+                    formikProps={formikProps}
+                    disabled={disabledSection}
+                    currentMode={currentNonEmployeeTravelMode}
+                  />
+                </SectionLayout>
                 <ActionButtons
                   currentFormMode={currentNonEmployeeTravelMode}
                   formikProps={formikProps}
                   loading={isLoading}
                   disabled={isLoading}
+                  callback={() => setApiError(null)}
                   warningDeleteContainer={
                     <DeleteWarning id={id} onDelete={() => setAllowRedirectWithoutWarning(true)} />
                   }

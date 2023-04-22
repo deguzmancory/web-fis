@@ -20,12 +20,13 @@ import GeneralInfo from './GeneralInfo';
 import Header from './Header';
 import ReasonsForPayment from './ReasonsForPayment';
 import Remittance from './Remittance';
-import TableLineItems from './TableLineItem';
-import { emptyUpsertAuthorizationFormValue } from './helpers/contants';
+import { emptyUpsertAuthorizationFormValue } from './helpers/constants';
 import { getInitialAuthorizationFormValue } from './helpers/formValues';
 import { getAuthorizationPaymentFormValidationSchema } from './helpers/validationSchema';
 import { UpsertAuthorizationFormValue, UpsertAuthorizationPaymentFormikProps } from './types';
 import FileAttachments from './FileAttachments';
+import ProjectItems from '../shared/ProjectItems';
+import { AUTHORIZATION_FOR_PAYMENT_KEY } from './enum';
 
 const AuthorizationForPayment: FC<Props> = ({
   formData,
@@ -126,7 +127,13 @@ const AuthorizationForPayment: FC<Props> = ({
               </SectionLayout>
 
               <SectionLayout>
-                <TableLineItems formikProps={formikProps} disabled={disabledSection} />
+                <ProjectItems
+                  formikProps={formikProps}
+                  disabled={disabledSection}
+                  currentMode={currentAuthorizationMode}
+                  projectItemsPrefix={AUTHORIZATION_FOR_PAYMENT_KEY.PROJECT_LINE_ITEMS}
+                  totalPrefix={AUTHORIZATION_FOR_PAYMENT_KEY.TOTAL}
+                />
               </SectionLayout>
 
               <SectionLayout>

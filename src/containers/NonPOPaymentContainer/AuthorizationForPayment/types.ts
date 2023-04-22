@@ -1,13 +1,11 @@
 import { AdditionalPOFormValue } from 'src/containers/PurchaseOrderContainer/PO/types';
 import { FinancialProject, Vendor } from 'src/queries';
-import {
-  AuthorizationProjectLineItem,
-  UpsertAuthorizationPayload,
-} from 'src/queries/NonPOPayment/AuthorizationForPayment/types';
+import { UpsertAuthorizationPayload } from 'src/queries/NonPOPayment/AuthorizationForPayment/types';
+import { NonPOPaymentProjectLineItem } from 'src/queries/NonPOPayment/types';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 
-export interface AuthorizationPaymentProjectItemFormValue
-  extends Omit<AuthorizationProjectLineItem, 'projectNumber' | 'serviceDate'> {
+export interface NonPOPaymentProjectItemFormValue
+  extends Omit<NonPOPaymentProjectLineItem, 'projectNumber' | 'serviceDate'> {
   projectNumber: string | FinancialProject;
   serviceDate: Date;
 }
@@ -20,9 +18,10 @@ export interface POPlaceholderFileAttachment {
 }
 
 export interface UpsertAuthorizationFormValue
-  extends Omit<UpsertAuthorizationPayload, 'vendorName' | 'vendorCode'> {
+  extends Omit<UpsertAuthorizationPayload, 'vendorName' | 'vendorCode' | 'projectLineItems'> {
   vendorName: string | Vendor;
   vendorCode: string | Vendor;
+  projectLineItems: NonPOPaymentProjectItemFormValue[];
 
   //form only
   placeholderFileAttachment: POPlaceholderFileAttachment;

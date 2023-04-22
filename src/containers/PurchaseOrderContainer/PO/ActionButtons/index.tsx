@@ -31,6 +31,7 @@ import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormValue, UpsertPOFormikProps } from '../types';
 import { UpdatePOPaymentFormikProps } from '../../POPayment/types';
 import { UpsertNonEmployeeTravelFormikProps } from 'src/containers/NonPOPaymentContainer/NonEmployeeExpensePayment/types';
+import { Callback } from 'src/redux/types';
 
 const ActionButtons = <
   T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps | UpsertNonEmployeeTravelFormikProps
@@ -46,6 +47,7 @@ const ActionButtons = <
   onSetPoFormAction,
   onShowDialog,
   onHideDialog,
+  callback,
 }: Props<T>) => {
   const { id } = useParams<{ id: string }>();
   const isEditPOMode = !!id;
@@ -94,6 +96,9 @@ const ActionButtons = <
     onSetPoFormAction(action);
     setIsTriedSubmit(true);
     validateForm();
+    if (callback) {
+      callback();
+    }
   };
 
   const handleSubmitClick = ({ action }: { action: PO_ACTION }) => {
@@ -246,6 +251,7 @@ type Props<
     loading?: boolean;
     currentFormMode?: PO_MODE;
     warningDeleteContainer: ReactElement;
+    callback?: Callback;
   };
 
 const mapStateToProps = (state: IRootState<UpsertPOFormValue>) => ({

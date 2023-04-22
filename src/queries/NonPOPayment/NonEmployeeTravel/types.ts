@@ -1,11 +1,12 @@
 import { POAuditTrails } from 'src/queries/PurchaseOrders';
 import { PO_ACTION, PO_DETAIL_STATUS } from '../../PurchaseOrders/enums';
 import { NON_PO_PAYMENT_DOCUMENT_TYPE } from '../enums';
+import { NonPOPaymentProjectLineItem } from '../types';
 import { NON_EMPLOYEE_TRAVEL_PAYEE_CATEGORY } from './enums';
 
 export interface SelectPayeeCategory {
   loginName: string;
-  date: string;
+  date: string; //miss api
   requestNumber: string;
   payeeCategory: NON_EMPLOYEE_TRAVEL_PAYEE_CATEGORY;
 }
@@ -14,7 +15,7 @@ export interface GeneralInfo {
   vendorName: string;
   vendorCode: string;
   positionTitle: string;
-  employer: string; //todo: check
+  employer: string; //miss api
   vendorAddress: string;
   documentNumber: string;
   faStaffReviewer: string;
@@ -42,15 +43,35 @@ export interface TravelExpenditure {
   lodgingCostTotal: number;
   miscDescription: string;
   lodgingDescription: string;
-  miscDaysClaimTotal: number;
-  lodgingDaysClaimTotal: number;
+  miscDaysClaimTotal: number; //miss api
+  lodgingDaysClaimTotal: number; //miss api
+}
+
+export interface NonEmployeeTravelProjectItems {
+  projectItems: NonPOPaymentProjectLineItem[];
+  paymentTotal: number; //miss api
+}
+
+export interface ReceiptCertification {
+  noReceiptSmallCorrectFlag: boolean;
+  noReceiptAmount: number;
+}
+
+export interface BusinessPurposeDetails {
+  travelDetails: string;
+  claimantSignature: string;
+  piSignature: string;
+  faSignature: string;
 }
 
 export interface SharedNonEmployeeTravelDetail
   extends SelectPayeeCategory,
     GeneralInfo,
     TripItinerary,
-    TravelExpenditure {
+    TravelExpenditure,
+    NonEmployeeTravelProjectItems,
+    ReceiptCertification,
+    BusinessPurposeDetails {
   acceptedDate: string;
   organization: string;
   homeAddress: string;
@@ -58,12 +79,8 @@ export interface SharedNonEmployeeTravelDetail
   phoneNumber: string;
   directInquiriesTo: string;
   internalComments: string;
-  travelDetails: string;
   total: number;
 
-  claimantSignature: string;
-  piSignature: string;
-  faSignature: string;
   completedBy: string;
   username: string;
   faCode: string;
@@ -90,8 +107,6 @@ export interface SharedNonEmployeeTravelDetail
   piName: string;
 
   updateVersionNumber: number;
-  noReceiptSmallCorrectFlag: boolean;
-  noReceiptAmount: number;
   noReceiptCorrectFlag: boolean;
   noReceiptFormFlag: boolean;
   preferredPaymentMethod: string;
@@ -103,7 +118,6 @@ export interface SharedNonEmployeeTravelDetail
   piOriginalUserId: string;
   faOriginalUserId: string;
   cuOriginalUserId: string;
-  projectItems: NonEmployeeTravelProjectItem[];
   remittanceLineItems: NonEmployeeTravelRemittanceLineItem[];
   remittance: NonEmployeeTravelRemittance;
 
@@ -111,19 +125,6 @@ export interface SharedNonEmployeeTravelDetail
   status?: PO_DETAIL_STATUS;
   auditTrails?: POAuditTrails[];
   documentType?: NON_PO_PAYMENT_DOCUMENT_TYPE;
-}
-
-export interface NonEmployeeTravelProjectItem {
-  id?: string;
-  nonEmployeeTravelId?: string;
-  lineNumber: number;
-  projectNumber: string;
-  subProject: string;
-  budgetCategory: string;
-  subBudgetCategory: string;
-  serviceDate: string;
-  amount: number;
-  description: string;
 }
 
 export interface NonEmployeeTravelItinerary {
@@ -140,7 +141,7 @@ export interface NonEmployeeTravelItinerary {
   lodgingExcess: number;
   lodgingDaysClaim: number;
   lodgingCost: number;
-  lodgingEstimated?: number;
+  lodgingEstimated?: number; //miss api
   miscFar: number;
   miscRate: number;
   miscExcess: number;

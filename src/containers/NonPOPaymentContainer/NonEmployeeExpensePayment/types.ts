@@ -1,16 +1,7 @@
-import {
-  NonEmployeeTravelProjectItem,
-  UpsertNonEmployeeTravelPayload,
-} from 'src/queries/NonPOPayment/NonEmployeeTravel/types';
-import { FinancialProject } from 'src/queries/Projects';
+import { UpsertNonEmployeeTravelPayload } from 'src/queries/NonPOPayment/NonEmployeeTravel/types';
 import { Vendor } from 'src/queries/Vendors';
 import { CommonFormikProps } from 'src/utils/commonTypes';
-
-export interface NonEmployeeTravelProjectItemFormValue
-  extends Omit<NonEmployeeTravelProjectItem, 'projectNumber' | 'serviceDate'> {
-  projectNumber: string | FinancialProject;
-  serviceDate: Date;
-}
+import { NonPOPaymentProjectItemFormValue } from '../AuthorizationForPayment/types';
 
 export interface POPlaceholderFileAttachment {
   file: File;
@@ -33,7 +24,7 @@ export interface UpsertNonEmployeeTravelFormValue
   > {
   vendorName: Vendor | string;
   vendorCode: Vendor | string;
-  projectItems: NonEmployeeTravelProjectItemFormValue[];
+  projectItems: NonPOPaymentProjectItemFormValue[];
   fromServiceDate: Date;
   toServiceDate: Date;
   startDepartureDate: Date;

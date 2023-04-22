@@ -13,7 +13,7 @@ import {
 import {
   authorizationLineItemsRemittanceColumnsNames,
   initialAuthorizationPaymentRemittance,
-} from '../../helpers/contants';
+} from '../../helpers/constants';
 import { UpsertAuthorizationPaymentFormikProps } from '../../types';
 
 const LineItem: React.FC<Props> = ({ formikProps, disabled }) => {

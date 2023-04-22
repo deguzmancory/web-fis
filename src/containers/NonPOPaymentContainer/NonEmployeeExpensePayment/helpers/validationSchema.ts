@@ -22,6 +22,7 @@ export const getNonEmployeeTravelFormValidationSchema = ({ action }: { action: P
           | 'toServiceDate'
           | 'startDepartureDate'
           | 'endArrivalDate'
+          | 'projectItems'
         >
       >
     > & {
@@ -31,6 +32,7 @@ export const getNonEmployeeTravelFormValidationSchema = ({ action }: { action: P
       toServiceDate: any;
       startDepartureDate: any;
       endArrivalDate: any;
+      projectItems: any;
     }
   >({
     // SelectPayeeCategory
@@ -100,5 +102,57 @@ export const getNonEmployeeTravelFormValidationSchema = ({ action }: { action: P
     endArrivalDate: isSubmitPOAction
       ? Yup.date().required().typeError(ErrorService.MESSAGES.required)
       : Yup.date().nullable(),
+
+    //project items
+    projectItems: Yup.array()
+      .min(1, 'At least one Project # is required.')
+      .transform((fields: any[]) => fields.slice(0, -1))
+      .of(
+        Yup.object().shape({
+          projectNumber: Yup.mixed().required(ErrorService.MESSAGES.shortRequired),
+          budgetCategory: isSubmitPOAction
+            ? Yup.string()
+                .required(ErrorService.MESSAGES.shortRequired)
+                .typeError(ErrorService.MESSAGES.shortRequired)
+            : Yup.string().nullable(),
+          amount: isSubmitPOAction
+            ? Yup.number()
+                .required(ErrorService.MESSAGES.shortRequired)
+                .typeError(ErrorService.MESSAGES.shortRequired)
+            : Yup.number().nullable(),
+        })
+      ),
+    paymentTotal: Yup.number()
+      .moreThan(0, 'The TOTAL must be greater than $0.')
+      .lessThan(100000000, 'The TOTAL must be less than $100,000,000.00.')
+      .typeError('The TOTAL must be greater than $0.')
+      .test(
+        'not-match-claim-due',
+        'The TOTAL must match the CLAIM DUE (A-B) from the Expenditures section.',
+        (value, context) => {
+          const { expenditureTotal, amountAdvanced } = context.parent;
+          if (Number(value) !== Number(expenditureTotal) - Number(amountAdvanced)) {
+            return false;
+          }
+
+          return true;
+        }
+      ),
+
+    // Business Purpose Details
+    travelDetails: isSubmitPOAction
+      ? Yup.string()
+          .required('Purpose/NSFA Details are required for your Payee Category')
+          .typeError('Purpose/NSFA Details are required for your Payee Category')
+      : Yup.string().nullable(),
+    claimantSignature: isSubmitPOAction
+      ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
+      : Yup.string().nullable(),
+    piSignature: isSubmitPOAction
+      ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
+      : Yup.string().nullable(),
+    faSignature: isSubmitPOAction
+      ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
+      : Yup.string().nullable(),
   });
 };

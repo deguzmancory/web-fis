@@ -418,6 +418,7 @@ const TravelExpenditures: FC<Props> = ({ formikProps, disabled }) => {
             textAlign="right"
             disabled
             lengthShowTooltip={8}
+            errorMessage={_getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.PAYMENT_TOTAL) ? ' ' : null}
           />
         </Grid>
       </Grid>
@@ -446,6 +447,7 @@ export default memo(TravelExpenditures, (prevProps, nextProps) => {
     NON_EMPLOYEE_TRAVEL_FORM_KEY.LODGING_DESCRIPTION,
     NON_EMPLOYEE_TRAVEL_FORM_KEY.MISC_DAYS_CLAIM_TOTAL,
     NON_EMPLOYEE_TRAVEL_FORM_KEY.LODGING_DAYS_CLAIM_TOTAL,
+    NON_EMPLOYEE_TRAVEL_FORM_KEY.PAYMENT_TOTAL,
   ];
 
   return (

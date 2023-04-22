@@ -1,11 +1,7 @@
-import {
-  AUTHORIZATION_PMT_PROJECT_LINE_ITEM_KEY,
-  AUTHORIZATION_PMT_REMITTANCE_LINE_ITEM_KEY,
-} from '../enum';
+import { AUTHORIZATION_PMT_REMITTANCE_LINE_ITEM_KEY } from '../enum';
 
 export const initialAuthorizationPaymentProjectItem = {
   lineNumber: null,
-  nonEmployeeTravelId: '',
   projectNumber: '',
   subProject: '',
   budgetCategory: '',
@@ -91,16 +87,6 @@ export const emptyUpsertAuthorizationFormValue = {
   equipmentInventories: [initialAuthorizationPaymentEquipmentInventory],
   remittanceLineItems: [initialAuthorizationPaymentRemittanceItem],
 };
-
-export const authorizationProjectLineItemsColumnsName = [
-  AUTHORIZATION_PMT_PROJECT_LINE_ITEM_KEY.PROJECT_NUMBER,
-  AUTHORIZATION_PMT_PROJECT_LINE_ITEM_KEY.SUB_PROJECT,
-  AUTHORIZATION_PMT_PROJECT_LINE_ITEM_KEY.BUDGET_CATEGORY,
-  AUTHORIZATION_PMT_PROJECT_LINE_ITEM_KEY.SUB_BUDGET_CATEGORY,
-  AUTHORIZATION_PMT_PROJECT_LINE_ITEM_KEY.SERVICE_DATE,
-  AUTHORIZATION_PMT_PROJECT_LINE_ITEM_KEY.DESCRIPTION,
-  AUTHORIZATION_PMT_PROJECT_LINE_ITEM_KEY.AMOUNT,
-];
 
 export const authorizationLineItemsRemittanceColumnsNames = [
   AUTHORIZATION_PMT_REMITTANCE_LINE_ITEM_KEY.REFERENCE_NUMBER,

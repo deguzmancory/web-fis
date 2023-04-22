@@ -4,6 +4,7 @@ import {
   PO_ACTION,
   PO_DETAIL_STATUS,
 } from 'src/queries/PurchaseOrders';
+import { NonPOPaymentProjectLineItem } from '../types';
 
 export interface AuthorizationGeneralInfo {
   loginName: string;
@@ -22,19 +23,6 @@ export interface AuthorizationSignature {
   reasonForPayment: string;
   piSignature: string;
   faSignature: string;
-}
-
-export interface AuthorizationProjectLineItem {
-  id?: string;
-  nonEmployeeTravelId: string;
-  lineNumber: number;
-  projectNumber: string;
-  subProject: string;
-  budgetCategory: string;
-  subBudgetCategory: string;
-  serviceDate: string | Date;
-  amount: number;
-  description: string;
 }
 
 export interface AuthorizationRemittance {
@@ -100,7 +88,7 @@ export interface SharedAuthorizationDetail
   total: number;
   internalComments: string;
   remittance: AuthorizationRemittance;
-  projectLineItems: AuthorizationProjectLineItem[];
+  projectLineItems: NonPOPaymentProjectLineItem[];
   remittanceLineItems: AuthorizationRemittanceLineItem[];
 }
 

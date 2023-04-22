@@ -37,6 +37,20 @@ export enum NON_EMPLOYEE_TRAVEL_FORM_KEY {
   LODGING_DESCRIPTION = 'lodgingDescription',
   MISC_DAYS_CLAIM_TOTAL = 'miscDaysClaimTotal',
   LODGING_DAYS_CLAIM_TOTAL = 'lodgingDaysClaimTotal',
+
+  //project items
+  PROJECT_ITEMS = 'projectItems',
+  PAYMENT_TOTAL = 'paymentTotal',
+
+  // Receipt Certification
+  NO_RECEIPT_SMALL_CORRECT_FLAG = 'noReceiptSmallCorrectFlag',
+  NO_RECEIPT_AMOUNT = 'noReceiptAmount',
+
+  // Business Purpose Details
+  TRAVEL_DETAILS = 'travelDetails',
+  CLAIMANT_SIGNATURE = 'claimantSignature',
+  PI_SIGNATURE = 'piSignature',
+  FA_SIGNATURE = 'faSignature',
 }
 
 export enum ITINERARY_ITEM_FORM_KEY {
