@@ -1,4 +1,4 @@
-import { isEmpty, isString } from 'lodash';
+import { isEmpty } from 'lodash';
 import { DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS } from 'src/containers/PurchaseOrderContainer/POPayment/EquipmentInventoriesV2/helpers';
 import { getNumberOfEquipmentInventories } from 'src/containers/PurchaseOrderContainer/POPayment/helpers';
 import { MyProfile, PO_ACTION } from 'src/queries';
@@ -6,7 +6,14 @@ import {
   AuthorizationPaymentResponse,
   UpsertAuthorizationPayload,
 } from 'src/queries/NonPOPayment/AuthorizationForPayment/types';
-import { DateFormat, getDate, getDateDisplay, isoFormat, localTimeToHawaii } from 'src/utils';
+import {
+  DateFormat,
+  getDate,
+  getDateDisplay,
+  isString,
+  isoFormat,
+  localTimeToHawaii,
+} from 'src/utils';
 import { UpsertAuthorizationFormValue } from '../types';
 import {
   emptyUpsertAuthorizationFormValue,
