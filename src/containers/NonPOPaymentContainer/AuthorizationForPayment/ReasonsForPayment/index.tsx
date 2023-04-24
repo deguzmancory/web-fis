@@ -1,7 +1,8 @@
+import { memo } from 'react';
 import { Box, Grid, Typography } from '@mui/material';
 import { Input, TextareaAutosize } from 'src/components/common';
 import SignatureBox from 'src/containers/shared/SignatureBox';
-import { getErrorMessage } from 'src/utils';
+import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { AUTHORIZATION_FOR_PAYMENT_KEY } from '../enum';
 import { UpsertAuthorizationPaymentFormikProps } from '../types';
 
@@ -72,4 +73,23 @@ type Props = {
   currentMode;
 };
 
-export default ReasonsForPayment;
+export default memo(ReasonsForPayment, (prevProps, nextProps) => {
+  const prevFormikProps = prevProps.formikProps;
+  const nextFormikProps = nextProps.formikProps;
+
+  const formKeysNeedRender = [
+    AUTHORIZATION_FOR_PAYMENT_KEY.REASON_FOR_PAYMENT,
+    AUTHORIZATION_FOR_PAYMENT_KEY.PI_SIGNATURE,
+    AUTHORIZATION_FOR_PAYMENT_KEY.FA_SIGNATURE,
+  ];
+
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    prevProps.currentMode === nextProps.currentMode &&
+    isEqualPrevAndNextFormikValues({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender,
+    })
+  );
+});

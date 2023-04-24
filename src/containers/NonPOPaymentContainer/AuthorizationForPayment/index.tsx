@@ -1,7 +1,7 @@
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { Location } from 'history';
-import { FC, Suspense, useEffect, useLayoutEffect, useMemo, lazy, useState } from 'react';
+import { FC, Suspense, lazy, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
@@ -11,15 +11,20 @@ import { LoadingCommon } from 'src/components/common';
 import ActionButtons from 'src/containers/PurchaseOrderContainer/PO/ActionButtons';
 import { getCurrentEditMode } from 'src/containers/PurchaseOrderContainer/PO/helpers';
 import EquipmentInventoriesV2 from 'src/containers/PurchaseOrderContainer/POPayment/EquipmentInventoriesV2';
+import FormErrorSection from 'src/containers/shared/FormErrorSection';
 import SectionLayout from 'src/containers/shared/SectionLayout';
-import { useProfile } from 'src/queries';
-import { useCreateAuthorizationPayment } from 'src/queries/NonPOPayment/AuthorizationForPayment/useCreateAuthorizationPayment';
-import { useGetAuthorizationPaymentDetail } from 'src/queries/NonPOPayment/AuthorizationForPayment/useGetAuthorizationPaymentDetail';
-import { useUpdateAuthorizationPayment } from 'src/queries/NonPOPayment/AuthorizationForPayment/useUpdateAuthorizationPayment';
+import {
+  NON_PO_PAYMENT_DOCUMENT_TYPE,
+  PO_ACTION,
+  useCreateAuthorizationPayment,
+  useGetAuthorizationPaymentDetail,
+  useProfile,
+  useUpdateAuthorizationPayment,
+} from 'src/queries';
 import { isFinalMode, isSaveAction, isViewOnlyMode } from 'src/queries/PurchaseOrders/helpers';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
-import { RoleService } from 'src/services';
+import { Navigator, RoleService, Toastify } from 'src/services';
 import Prompt from 'src/services/Prompt';
 import {
   getErrorMessage,
@@ -27,10 +32,13 @@ import {
   getUncontrolledInputFieldProps,
   handleShowErrorMsg,
 } from 'src/utils';
-import DeleteWarning from '../NonEmployeeExpensePayment/DeleteWarning';
 import BreadcrumbsNonPOForm from '../shared/Breadcrumb';
 import ErrorNonPOWrapper from '../shared/ErrorWrapper/index.';
+import HeaderOfSection from '../shared/HeaderOfSection';
+import InternalComments from '../shared/InternalComments';
 import ProjectItems from '../shared/ProjectItems';
+import { SUBMITTED_NON_PO_PAYMENT_QUERY } from '../shared/SubmittedNonPO/enums';
+import DeleteWarning from './DeleteWarning';
 import GeneralInfo from './GeneralInfo';
 import Header from './Header';
 import ReasonsForPayment from './ReasonsForPayment';
@@ -44,7 +52,6 @@ import {
 } from './helpers/formValues';
 import { getAuthorizationPaymentFormValidationSchema } from './helpers/validationSchema';
 import { UpsertAuthorizationFormValue, UpsertAuthorizationPaymentFormikProps } from './types';
-import InternalComments from '../shared/InternalComments';
 
 const FileAttachments = lazy(() => import('./FileAttachments'));
 const AuditInformation = lazy(() => import('../shared/AuditInformation'));
@@ -89,12 +96,103 @@ const AuthorizationForPayment: FC<Props> = ({
       suspense: true,
     });
 
+  const {
+    updateAuthorizationPayment,
+    data: updateAuthorizationPaymentResponse,
+    isLoading: updateAuthorizationPaymentLoading,
+    isSuccess: isUpdateAuthorizationPaymentSuccess,
+  } = useUpdateAuthorizationPayment({
+    onSuccess: () => {
+      if (!isSaveAction(formAction)) {
+        onSetFormData(null);
+      }
+
+      window.scrollTo(0, 0);
+      //continue navigate to success page with use effect above => for ignore prompt check url when crate succeed purpose
+    },
+    onError: (error) => {
+      handleShowErrorMsg(error);
+    },
+  });
+
+  const {
+    createAuthorizationPayment,
+    data: createAuthorizationPaymentResponse,
+    isLoading: createAuthorizationPaymentLoading,
+    isSuccess: isCreateAuthorizationPaymentSuccess,
+  } = useCreateAuthorizationPayment({
+    onSuccess: () => {
+      onSetFormData(null);
+
+      //continue navigate to success page with use effect above => for ignore prompt check url when crate succeed purpose
+    },
+    onError: (error) => {
+      handleShowErrorMsg(error);
+
+      window.scrollTo(0, 0);
+      setApiError(getErrorMessageFromResponse(error));
+    },
+  });
+
   const initialFormValue = useMemo(() => formData || emptyUpsertAuthorizationFormValue, [formData]);
 
   const validationSchema = useMemo(
     () => getAuthorizationPaymentFormValidationSchema({ action: formAction }),
     [formAction]
   );
+
+  // Navigate to submitted PO success page
+  useEffect(() => {
+    if (
+      (isCreateAuthorizationPaymentSuccess || isUpdateAuthorizationPaymentSuccess) &&
+      !isLoading
+    ) {
+      const responseData = isEditMode
+        ? updateAuthorizationPaymentResponse
+        : createAuthorizationPaymentResponse;
+
+      switch (formAction) {
+        case PO_ACTION.SAVE: {
+          Toastify.success(`Saved form successfully.`);
+          Navigator.navigate(`${PATHS.authorizationForPaymentDetail}/${responseData.data.id}`);
+          return;
+        }
+        case PO_ACTION.SUBMIT: {
+          Navigator.navigate(
+            `${PATHS.submittedNonPOPayment}/${responseData.data.id}?${SUBMITTED_NON_PO_PAYMENT_QUERY.NUMBER}=${responseData.data.requestNumber}&${SUBMITTED_NON_PO_PAYMENT_QUERY.DOCUMENT_TYPE}=${NON_PO_PAYMENT_DOCUMENT_TYPE.AUTHORIZATION_PAYMENT}`
+          );
+          return;
+        }
+
+        case PO_ACTION.APPROVE: {
+          Toastify.success(`Approved successfully.`);
+          handleInvalidateAuthorizationPaymentDetail();
+          onGetAuthorizationPaymentById();
+          return;
+        }
+
+        case PO_ACTION.DISAPPROVE: {
+          Toastify.success(`Disapprove successfully.`);
+          handleInvalidateAuthorizationPaymentDetail();
+          onGetAuthorizationPaymentById();
+          return;
+        }
+
+        case PO_ACTION.ADDITIONAL_INFO: {
+          Toastify.success(`Request more info successfully.`);
+          handleInvalidateAuthorizationPaymentDetail();
+          onGetAuthorizationPaymentById();
+          return;
+        }
+
+        default: {
+          handleInvalidateAuthorizationPaymentDetail();
+          onGetAuthorizationPaymentById();
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isCreateAuthorizationPaymentSuccess, isUpdateAuthorizationPaymentSuccess]);
 
   useLayoutEffect(() => {
     const isInitialEmptyForm = !isEditMode && !isImmutableFormData;
@@ -116,45 +214,7 @@ const AuthorizationForPayment: FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, isEditMode, onGetAuthorizationPaymentById]);
 
-  const {
-    createAuthorizationPayment,
-    data: createAuthorizationPaymentResponse,
-    isLoading: createAuthorizationPaymentLoading,
-    isSuccess: isCreateAuthorizationPaymentSuccess,
-  } = useCreateAuthorizationPayment({
-    onSuccess: () => {
-      onSetFormData(null);
-
-      //continue navigate to success page with use effect above => for ignore prompt check url when crate succeed purpose
-    },
-    onError: (error) => {
-      handleShowErrorMsg(error);
-
-      window.scrollTo(0, 0);
-      setApiError(getErrorMessageFromResponse(error));
-    },
-  });
-
-  const {
-    updateAuthorizationPayment,
-    data: updateAuthorizationPaymentResponse,
-    isLoading: updateAuthorizationPaymentLoading,
-    isSuccess: isUpdateAuthorizationPayemntSuccess,
-  } = useUpdateAuthorizationPayment({
-    onSuccess: () => {
-      if (!isSaveAction(formAction)) {
-        onSetFormData(null);
-      }
-
-      window.scrollTo(0, 0);
-      //continue navigate to success page with use effect above => for ignore prompt check url when crate succeed purpose
-    },
-    onError: (error) => {
-      handleShowErrorMsg(error);
-    },
-  });
-
-  const handleFormSubmit = (values: UpsertAuthorizationFormValue) => {
+  const handleFormSubmit = (values: UpsertAuthorizationFormValue, errors) => {
     if (isEditMode) {
       const editAuthorizationPaymentPayload = getUpsertAuthorizationPaymentPayload({
         formValues: values,
@@ -235,13 +295,18 @@ const AuthorizationForPayment: FC<Props> = ({
     }
 
     const success = isEditMode
-      ? isUpdateAuthorizationPayemntSuccess
+      ? isUpdateAuthorizationPaymentSuccess
       : isCreateAuthorizationPaymentSuccess;
 
     if (!success) {
       return isFormDirty;
     } 
   };
+
+  const projectItemsError =
+    touched.projectLineItems && errors.projectLineItems && values.projectLineItems?.length === 1
+      ? 'At least one Project # is required.'
+      : '';
 
   return (
     <Prompt
@@ -263,7 +328,8 @@ const AuthorizationForPayment: FC<Props> = ({
               </SectionLayout>
             ) : (
               <>
-                <SectionLayout>
+                {apiError && <FormErrorSection>{apiError}</FormErrorSection>}
+                <SectionLayout header={<HeaderOfSection />}>
                   <GeneralInfo
                     formikProps={formikProps}
                     disabled={disabledSection}
@@ -279,9 +345,10 @@ const AuthorizationForPayment: FC<Props> = ({
                     projectItemsPrefix={AUTHORIZATION_FOR_PAYMENT_KEY.PROJECT_LINE_ITEMS}
                     totalPrefix={AUTHORIZATION_FOR_PAYMENT_KEY.PAYMENT_TOTAL}
                     showTotalError={false}
-                    tableErrorMessage={_getErrorMessage(
-                      AUTHORIZATION_FOR_PAYMENT_KEY.PAYMENT_TOTAL
-                    )}
+                    tableErrorMessage={
+                      projectItemsError ||
+                      _getErrorMessage(AUTHORIZATION_FOR_PAYMENT_KEY.PAYMENT_TOTAL)
+                    }
                   />
                 </SectionLayout>
 

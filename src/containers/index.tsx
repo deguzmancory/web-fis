@@ -11,19 +11,19 @@ import Dev from './Dev';
 
 import AuthContainer from './StartupContainers/AuthContainer';
 import DialogContainer from './StartupContainers/DialogContainer';
+import LightboxContainer from './StartupContainers/LightboxContainer';
 import NotFound from './StartupContainers/NotFound';
 import SplashScreen from './StartupContainers/SplashScreen';
 import ToastContainer from './StartupContainers/ToastContainer';
-import LightboxContainer from './StartupContainers/LightboxContainer';
 
 import { Box } from '@mui/material';
 import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundary';
 import Footer from 'src/components/Footer';
 import { useComponentDidMount } from 'src/hooks';
+import ContentContainer from './StartupContainers/ContentContainer';
 import LoadingContainer from './StartupContainers/LoadingContainer';
 import ScrollToTop from './StartupContainers/ScrollToTop';
 import CheckPasswordExpiredContainer from './UAMContainer/ChangePasswordExpired/container';
-import ContentContainer from './StartupContainers/ContentContainer';
 
 const Dashboard = React.lazy(() => import('./Dashboard'));
 const UsersManagement = React.lazy(() => import('./UsersManagement'));
@@ -61,6 +61,7 @@ const PettyCashSummarySheet = React.lazy(
   () => import('./NonPOPaymentContainer/PettyCashSummarySheet')
 );
 const NonPOListing = React.lazy(() => import('./NonPOListing'));
+const SubmittedNonPO = React.lazy(() => import('./NonPOPaymentContainer/shared/SubmittedNonPO'));
 
 const Routing: React.FC<{ location: Location }> = (props) => {
   Navigator.setTopHistory(useHistory());
@@ -183,6 +184,11 @@ const Routing: React.FC<{ location: Location }> = (props) => {
               pageRequiredAuth
               path={`${PATHS.pettyCashPaymentDetail}/:id`}
               component={PettyCashSummarySheet}
+            />
+            <CustomRoute
+              pageRequiredAuth
+              path={`${PATHS.submittedNonPOPayment}/:id`}
+              component={SubmittedNonPO}
             />
 
             {/* Non PO Listing*/}

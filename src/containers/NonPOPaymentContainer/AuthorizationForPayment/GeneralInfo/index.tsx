@@ -1,30 +1,30 @@
+import { Add } from '@mui/icons-material';
 import { Box, Grid } from '@mui/material';
+import { debounce } from 'lodash';
+import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { UpsertAuthorizationPaymentFormikProps } from '../types';
+import { PATHS } from 'src/appConfig/paths';
 import { Input, InputUSPhone, Link, Select, TextareaAutosize } from 'src/components/common';
-import { getErrorMessage, isString } from 'src/utils';
-import { isCreateMode, isPiSuEditMode } from 'src/queries/PurchaseOrders/helpers';
-import React from 'react';
-import usePOSearchVender, {
-  SearchVendorsType,
-} from 'src/containers/PurchaseOrderContainer/PO/GeneralInfo/hooks/usePOSearchVender';
+import { SelectOption } from 'src/components/common/Select';
 import {
   getVendorAddress,
   getVendorNameOrVendorCodeOptions,
 } from 'src/containers/PurchaseOrderContainer/PO/GeneralInfo/helpers';
-import { debounce } from 'lodash';
-import { Add } from '@mui/icons-material';
-import { SelectOption } from 'src/components/common/Select';
-import { Vendor } from 'src/queries';
+import usePOSearchVender, {
+  SearchVendorsType,
+} from 'src/containers/PurchaseOrderContainer/PO/GeneralInfo/hooks/usePOSearchVender';
 import {
   VENDOR_REGISTRATION_NAVIGATE_FROM,
   VENDOR_REGISTRATION_PARAMS,
 } from 'src/containers/Vendors/VendorRegistration/enums';
-import { Navigator } from 'src/services';
+import { Vendor } from 'src/queries';
+import { isCreateMode, isPiSuEditMode } from 'src/queries/PurchaseOrders/helpers';
 import { setFormData } from 'src/redux/form/formSlice';
-import { PATHS } from 'src/appConfig/paths';
-import { useDispatch } from 'react-redux';
+import { Navigator } from 'src/services';
+import { getErrorMessage, isString } from 'src/utils';
 import { AUTHORIZATION_FOR_PAYMENT_KEY } from '../enum';
+import { UpsertAuthorizationPaymentFormikProps } from '../types';
+import { useCallback, useMemo } from 'react';
 
 const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentMode }) => {
   const { id } = useParams<{ id: string }>();
@@ -43,8 +43,8 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentMo
   // show action link only on create PO and PI SU edit mode of PO document
   const showActionLink = isCreateMode(currentMode) || isPiSuEditMode(currentMode);
 
-  const currentVendorName = React.useMemo(() => values.vendorName, [values.vendorName]);
-  const currentVendorCode = React.useMemo(() => values.vendorCode, [values.vendorCode]);
+  const currentVendorName = useMemo(() => values.vendorName, [values.vendorName]);
+  const currentVendorCode = useMemo(() => values.vendorCode, [values.vendorCode]);
 
   const {
     isLoadingSearchVendors,
@@ -53,7 +53,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentMo
     setSearchVendors,
   } = usePOSearchVender({ currentVendorName, currentVendorCode });
 
-  const vendorNameOptions = React.useMemo(() => {
+  const vendorNameOptions = useMemo(() => {
     return getVendorNameOrVendorCodeOptions({
       isLoadingSearchVendors,
       searchedVendorNameOrCodeOptions: searchedVendorNameOptions,
@@ -61,7 +61,7 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentMo
     });
   }, [isLoadingSearchVendors, searchedVendorNameOptions, currentVendorName]);
 
-  const vendorCodeOptions = React.useMemo(() => {
+  const vendorCodeOptions = useMemo(() => {
     return getVendorNameOrVendorCodeOptions({
       isLoadingSearchVendors,
       searchedVendorNameOrCodeOptions: searchedVendorCodeOptions,
@@ -85,18 +85,18 @@ const GeneralInfo: React.FC<Props> = ({ formikProps, disabled = false, currentMo
   };
 
   const handleCreateNewVenderLinkClick = () => {
-    const callingFromParam = `?${VENDOR_REGISTRATION_PARAMS.CALLING_FROM}=${VENDOR_REGISTRATION_NAVIGATE_FROM.NON_EMPLOYEE_TRAVEL_PAYMENT}`;
+    const callingFromParam = `?${VENDOR_REGISTRATION_PARAMS.CALLING_FROM}=${VENDOR_REGISTRATION_NAVIGATE_FROM.AUTHORIZATION_PAYMENT}`;
     const documentIdParam = !!id ? `&${VENDOR_REGISTRATION_PARAMS.DOCUMENT_ID}=${id}` : '';
 
     dispatch(setFormData(values));
     Navigator.navigate(`${PATHS.addVendorRegistration}${callingFromParam}${documentIdParam}`, {
-      isFromForm: VENDOR_REGISTRATION_NAVIGATE_FROM.NON_EMPLOYEE_TRAVEL_PAYMENT,
+      isFromForm: VENDOR_REGISTRATION_NAVIGATE_FROM.AUTHORIZATION_PAYMENT,
     });
   };
 
   // Debouncing search vendors inputs
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debounceSearchVendorsInput = React.useCallback(
+  const debounceSearchVendorsInput = useCallback(
     debounce((key: keyof SearchVendorsType, value: string) => {
       if (!value) return;
 

@@ -1,11 +1,23 @@
 import { Box, Container, Stack, Typography } from '@mui/material';
-import { FC, useMemo, Suspense, useEffect, useLayoutEffect, useState, lazy } from 'react';
+import { useFormik } from 'formik';
+import { Location } from 'history';
+import { FC, Suspense, lazy, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import { PATHS } from 'src/appConfig/paths';
 import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundary';
+import NoPermission from 'src/components/NoPermission';
 import { LoadingCommon } from 'src/components/common';
+import ActionButtons from 'src/containers/PurchaseOrderContainer/PO/ActionButtons';
 import { getCurrentEditMode } from 'src/containers/PurchaseOrderContainer/PO/helpers';
+import FormErrorSection from 'src/containers/shared/FormErrorSection';
+import SectionLayout from 'src/containers/shared/SectionLayout';
 import { PO_ACTION, useProfile } from 'src/queries';
+import { NON_PO_PAYMENT_DOCUMENT_TYPE } from 'src/queries/NonPOPayment';
+import { isInGroup1Payee } from 'src/queries/NonPOPayment/NonEmployeeTravel/helpers';
+import { useCreateNonEmployeeTravel } from 'src/queries/NonPOPayment/NonEmployeeTravel/useCreateNonEmployeeTravel';
+import { useGetNonEmployeeTravelDetail } from 'src/queries/NonPOPayment/NonEmployeeTravel/useGetNonEmployeeTravelDetail';
+import { useUpdateNonEmployeeTravel } from 'src/queries/NonPOPayment/NonEmployeeTravel/useUpdateNonEmployeeTravel';
 import {
   isCUReviewMode,
   isFAReviewMode,
@@ -16,49 +28,37 @@ import {
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, RoleService, Toastify } from 'src/services';
-import ErrorNonPOWrapper from '../shared/ErrorWrapper/index.';
-import { UpsertNonEmployeeTravelFormValue, UpsertNonEmployeeTravelFormikProps } from './types';
+import Prompt from 'src/services/Prompt';
 import {
   getErrorMessage,
   getErrorMessageFromResponse,
   getUncontrolledInputFieldProps,
   handleShowErrorMsg,
 } from 'src/utils';
-import { useGetNonEmployeeTravelDetail } from 'src/queries/NonPOPayment/NonEmployeeTravel/useGetNonEmployeeTravelDetail';
-import { useCreateNonEmployeeTravel } from 'src/queries/NonPOPayment/NonEmployeeTravel/useCreateNonEmployeeTravel';
-import { useUpdateNonEmployeeTravel } from 'src/queries/NonPOPayment/NonEmployeeTravel/useUpdateNonEmployeeTravel';
+import BreadcrumbsNonPOForm from '../shared/Breadcrumb';
+import ErrorNonPOWrapper from '../shared/ErrorWrapper/index.';
+import HeaderOfSection from '../shared/HeaderOfSection';
+import InternalComments from '../shared/InternalComments';
+import ProjectItems from '../shared/ProjectItems';
+import { SUBMITTED_NON_PO_PAYMENT_QUERY } from '../shared/SubmittedNonPO/enums';
+import BusinessPurposeDetails from './BusinessPurposeDetails';
+import DeleteWarning from './DeleteWarning';
+import GeneralInfo from './GeneralInfo';
+import Header from './Header';
+import PartialDayTable from './PartialDayTable';
+import ReceiptCertification from './ReceiptCertification';
+import SelectPayeeCategory from './SelectPayeeCategory';
+import TravelExpenditures from './TravelExpenditures';
+import TripItinerary from './TripItineraries';
+import { NON_EMPLOYEE_TRAVEL_FORM_KEY } from './enums';
+import { emptyUpsertNonEmployeeTravelFormValue } from './helpers/constants';
 import {
   getInitialNonEmployeeTravelFormValue,
   getNonEmployeeTravelFormValueFromResponse,
   getUpsertNonEmployeeTravelPayload,
 } from './helpers/formValues';
-import { PATHS } from 'src/appConfig/paths';
-import { SUBMITTED_NON_PO_PAYMENT_QUERY } from '../shared/SubmittedPO/enums';
-import { emptyUpsertNonEmployeeTravelFormValue } from './helpers/constants';
-import { useFormik } from 'formik';
-import { Location } from 'history';
 import { getNonEmployeeTravelFormValidationSchema } from './helpers/validationSchema';
-import { NON_PO_PAYMENT_DOCUMENT_TYPE } from 'src/queries/NonPOPayment';
-import Prompt from 'src/services/Prompt';
-import BreadcrumbsNonPOForm from '../shared/Breadcrumb';
-import Header from './Header';
-import SectionLayout from 'src/containers/shared/SectionLayout';
-import NoPermission from 'src/components/NoPermission';
-import HeaderOfSection from '../shared/HeaderOfSection';
-import SelectPayeeCategory from './SelectPayeeCategory';
-import GeneralInfo from './GeneralInfo';
-import ActionButtons from 'src/containers/PurchaseOrderContainer/PO/ActionButtons';
-import DeleteWarning from './DeleteWarning';
-import TripItinerary from './TripItineraries';
-import PartialDayTable from './PartialDayTable';
-import TravelExpenditures from './TravelExpenditures';
-import ProjectItems from '../shared/ProjectItems';
-import { NON_EMPLOYEE_TRAVEL_FORM_KEY } from './enums';
-import ReceiptCertification from './ReceiptCertification';
-import BusinessPurposeDetails from './BusinessPurposeDetails';
-import FormErrorSection from 'src/containers/shared/FormErrorSection';
-import { isInGroup1Payee } from 'src/queries/NonPOPayment/NonEmployeeTravel/helpers';
-import InternalComments from '../shared/InternalComments';
+import { UpsertNonEmployeeTravelFormValue, UpsertNonEmployeeTravelFormikProps } from './types';
 
 const FileAttachments = lazy(() => import('./FileAttachments'));
 const AuditInformation = lazy(() => import('../shared/AuditInformation'));

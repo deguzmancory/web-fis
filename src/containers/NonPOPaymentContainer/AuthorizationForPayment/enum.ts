@@ -1,4 +1,6 @@
 export enum AUTHORIZATION_FOR_PAYMENT_KEY {
+  // General Info
+  ID = 'id',
   LOGIN_NAME = 'loginName',
   DATE = 'date',
   REQUEST_NUMBER = 'requestNumber',
@@ -10,6 +12,10 @@ export enum AUTHORIZATION_FOR_PAYMENT_KEY {
   PHONE_NUMBER = 'phoneNumber',
   FA_STAFF_REVIEWER = 'faStaffReviewer',
 
+  // Project line Item
+  PROJECT_LINE_ITEMS = 'projectLineItems',
+
+  // Reason for Payment
   REASON_FOR_PAYMENT = 'reasonForPayment',
   PI_SIGNATURE = 'piSignature',
   FA_SIGNATURE = 'faSignature',
@@ -27,10 +33,10 @@ export enum AUTHORIZATION_FOR_PAYMENT_KEY {
   PAYMENT_TOTAL = 'paymentTotal',
   EQUIPMENT_INVENTORY_MANUAL_FLAG = 'equipmentInventoryManualFlag',
 
-  PROJECT_LINE_ITEMS = 'projectLineItems',
-  REMITTANCE = 'remittance',
   EQUIPMENT_INVENTORIES = 'equipmentInventories',
+
   REMITTANCE_LINE_ITEMS = 'remittanceLineItems',
+  REMITTANCE = 'remittance',
 
   PLACEHOLDER_FILE_ATTACHMENT = 'placeholderFileAttachment',
   // File Attachments

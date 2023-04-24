@@ -9,7 +9,7 @@ export const initialAuthorizationPaymentProjectItem = {
   budgetCategory: '',
   subBudgetCategory: '',
   serviceDate: null,
-  amount: null,
+  amount: 0,
   description: '',
 };
 
@@ -91,17 +91,21 @@ export const emptyUpsertAuthorizationFormValue = {
   minorVersion: null,
   total: 0,
   internalComments: '',
-  equipmentInventoryManualFlag: null,
+
+  // File Attachments
   fileAttachments: [],
   formAttachments: [],
 
+  // Remittance
   remittance: initialAuthorizationPaymentRemittance,
+  remittanceLineItems: [initialAuthorizationPaymentRemittanceItem],
+
+  // Equipment Inventories
   equipmentInventories: getInitialPaymentEquipmentInventories(
     DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS
   ),
+  equipmentInventoryManualFlag: null,
   paymentNumberOfEquipmentInventories: DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS,
-
-  remittanceLineItems: [initialAuthorizationPaymentRemittanceItem],
 };
 
 export const authorizationLineItemsRemittanceColumnsNames = [

@@ -1,5 +1,4 @@
 import { Box, Grid, Typography } from '@mui/material';
-import React from 'react';
 import CustomTable from 'src/components/CustomTable';
 import { BodyBasicRows, CellType } from 'src/components/CustomTable/types';
 import { EllipsisTooltipInput, EllipsisTooltipInputCurrency } from 'src/components/common';
@@ -15,11 +14,12 @@ import {
   initialAuthorizationPaymentRemittance,
 } from '../../helpers/constants';
 import { UpsertAuthorizationPaymentFormikProps } from '../../types';
+import { useCallback, useMemo } from 'react';
 
 const LineItem: React.FC<Props> = ({ formikProps, disabled }) => {
   const { errors, values, touched, setFieldValue, getFieldProps } = formikProps;
 
-  const lineItemValue = React.useMemo(() => {
+  const lineItemValue = useMemo(() => {
     return values.remittanceLineItems || [];
   }, [values.remittanceLineItems]);
 
@@ -29,7 +29,7 @@ const LineItem: React.FC<Props> = ({ formikProps, disabled }) => {
     return getErrorMessage(fieldName, { touched, errors });
   };
 
-  const addNewRow = React.useCallback(() => {
+  const addNewRow = useCallback(() => {
     setFieldValue(`${remittanceLineItemKey}`, [
       ...lineItemValue,
       {
@@ -38,7 +38,7 @@ const LineItem: React.FC<Props> = ({ formikProps, disabled }) => {
     ]);
   }, [lineItemValue, remittanceLineItemKey, setFieldValue]);
 
-  const removeRow = React.useCallback(
+  const removeRow = useCallback(
     (index: number) => {
       setFieldValue(
         `${remittanceLineItemKey}`,
@@ -61,7 +61,7 @@ const LineItem: React.FC<Props> = ({ formikProps, disabled }) => {
     });
   };
 
-  const updatePaymentAmountTotal = React.useCallback(
+  const updatePaymentAmountTotal = useCallback(
     ({ lineItemRow, index }: { lineItemRow: AuthorizationRemittanceLineItem; index: number }) => {
       let updatedPaymentTotal = Number(values.remittance?.remittanceTotal || 0);
       const currentLineItemAmount = Number(lineItemRow.amount || 0);
@@ -80,7 +80,7 @@ const LineItem: React.FC<Props> = ({ formikProps, disabled }) => {
     [lineItemValue, setFieldValue, values.remittance?.remittanceTotal]
   );
 
-  const handleAmountChange = React.useCallback(
+  const handleAmountChange = useCallback(
     ({
       name,
       value,

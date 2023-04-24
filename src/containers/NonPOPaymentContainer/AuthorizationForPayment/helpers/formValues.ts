@@ -61,7 +61,7 @@ export const getUpsertAuthorizationPaymentPayload = ({
       projectNumber: isString(projectItem.projectNumber)
         ? projectItem.projectNumber
         : projectItem.projectNumber.number,
-      serviceDate: getDateDisplay(projectItem.serviceDate),
+      serviceDate: getDateDisplay(projectItem.serviceDate) || null,
     })) || [];
 
   const remittanceLineItemsPayload = remittanceLineItems.slice(0, 1) || [];
@@ -74,7 +74,6 @@ export const getUpsertAuthorizationPaymentPayload = ({
 
     vendorName: isString(vendorName) ? vendorName : vendorName.name,
     vendorCode: isString(vendorCode) ? vendorCode : vendorCode.code,
-
     projectLineItems: projectLineItemsPayload,
     remittanceLineItems: remittanceLineItemsPayload,
     equipmentInventories: equipmentInventories

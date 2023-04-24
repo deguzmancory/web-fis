@@ -46,7 +46,6 @@ import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import {
   isFAReviewMode,
   isFinalMode,
-  isPOChangeDocumentType,
   isPiSuEditMode,
   isSaveAction,
   isViewOnlyMode,
@@ -56,14 +55,14 @@ import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, RoleService, Toastify } from 'src/services';
 import Prompt from 'src/services/Prompt';
 import { getUncontrolledInputFieldProps, handleShowErrorMsg } from 'src/utils';
+import AuditInformation from '../../PO/AuditInformation';
+import DeletePOWarning from '../../PO/DeletePOWarning';
 import { PO_CHANGE_FORM_QUERY_KEY } from '../POChangeForm/enums';
 import BreadcrumbsPOChangeForm from '../breadcrumbs';
 import OriginalPurchaseInfo from './OriginalPurchaseInfo';
 import PurchaseInfoChange from './PurchaseInfoChange';
 import TableLineItemsPOChange from './TableLineItemsChange';
 import { getPoChangeFormTitle } from './helpers';
-import DeletePOWarning from '../../PO/DeletePOWarning';
-import AuditInformation from '../../PO/AuditInformation';
 
 const POChangeForm: React.FC<Props> = ({
   formData,

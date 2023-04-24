@@ -1,18 +1,17 @@
-import React from 'react';
-import { UpsertAuthorizationPaymentFormikProps } from '../types';
-import { useDispatch } from 'react-redux';
+import { memo, useCallback, useMemo, useState } from 'react';
 import { isEmpty } from 'lodash';
-import { FileCache, Toastify } from 'src/services';
-import { handleShowErrorMsg, niceBytes, trimUrl } from 'src/utils';
-import { AUTHORIZATION_FOR_PAYMENT_KEY } from '../enum';
-import { useUploadAuthorizationFileAttachment } from 'src/queries/NonPOPayment/AuthorizationForPayment/useUploadAuthorizationFileAttachment';
+import { useDispatch } from 'react-redux';
+import FileAttachmentsSection from 'src/containers/shared/FileAttachmentsSection';
+import { POFileAttachment, useDeleteAuthorizationPaymentAttachment } from 'src/queries';
 import { useAddAuthorizationAttachment } from 'src/queries/NonPOPayment/AuthorizationForPayment/useAddAuthorizationAttachment';
-import { useDeleteAuthorizationPaymentAttachment } from 'src/queries/NonPOPayment/AuthorizationForPayment/useDeleteNonAuthorizationAttachment';
-import { POFileAttachment } from 'src/queries';
+import { useGetAuthorizationPaymentAttachmentPresignedUrl } from 'src/queries/NonPOPayment/AuthorizationForPayment/useGetAuthorizationPaymentAttachmentPresignedUrl';
+import { useUploadAuthorizationFileAttachment } from 'src/queries/NonPOPayment/AuthorizationForPayment/useUploadAuthorizationFileAttachment';
 import { hideAllDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
-import { useGetAuthorizationPaymentAttachmentPresignedUrl } from 'src/queries/NonPOPayment/AuthorizationForPayment/useGetAuthorizationPaymentAttachmentPresignedUrl';
-import FileAttachmentsSection from 'src/containers/shared/FileAttachmentsSection';
+import { FileCache, Toastify } from 'src/services';
+import { handleShowErrorMsg, isEqualPrevAndNextFormikValues, niceBytes, trimUrl } from 'src/utils';
+import { AUTHORIZATION_FOR_PAYMENT_KEY } from '../enum';
+import { UpsertAuthorizationFormValue, UpsertAuthorizationPaymentFormikProps } from '../types';
 
 const FileAttachments: React.FC<Props> = ({
   formikProps,
@@ -22,7 +21,7 @@ const FileAttachments: React.FC<Props> = ({
   const { fileAttachments, id: Id, placeholderFileAttachment } = formikProps.values;
   const { setFieldValue } = formikProps;
   const dispatch = useDispatch();
-  const attachments = React.useMemo(() => {
+  const attachments = useMemo(() => {
     if (isEmpty(fileAttachments)) return [];
 
     return fileAttachments.slice().sort((cur, next) => {
@@ -30,13 +29,13 @@ const FileAttachments: React.FC<Props> = ({
     });
   }, [fileAttachments]);
 
-  const [uploadProgress, setUploadProgress] = React.useState(0);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const allowUploadFile = !disabled;
   const allowRemoveFile = !disabled;
   const defaultExpandedAccordion = !isEmpty(attachments);
 
-  const handleFileSelect = React.useCallback(
+  const handleFileSelect = useCallback(
     (files: File[]) => {
       if (isEmpty(files)) {
         Toastify.warning('Please select a file');
@@ -100,7 +99,7 @@ const FileAttachments: React.FC<Props> = ({
       },
     });
 
-  const handleDeleteAttachment = React.useCallback(
+  const handleDeleteAttachment = useCallback(
     (attachment: POFileAttachment) => {
       dispatch(
         showDialog({
@@ -148,7 +147,7 @@ const FileAttachments: React.FC<Props> = ({
       },
     });
 
-  const handleGetDecodeUrl = React.useCallback(
+  const handleGetDecodeUrl = useCallback(
     ({ attachmentId, fileUrl }: { attachmentId: string; fileUrl: string }): Promise<string> => {
       return new Promise((resolve, reject) => {
         if (typeof fileUrl === 'string') {
@@ -178,7 +177,7 @@ const FileAttachments: React.FC<Props> = ({
     [getAuthorizationPaymentPresignedDownloadUrl, Id]
   );
 
-  const handleDescriptionInputChange = React.useCallback(
+  const handleDescriptionInputChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       const value = event.target.value || '';
       setFieldValue(AUTHORIZATION_FOR_PAYMENT_KEY.PLACEHOLDER_FILE_ATTACHMENT, {
@@ -189,7 +188,7 @@ const FileAttachments: React.FC<Props> = ({
     [placeholderFileAttachment, setFieldValue]
   );
 
-  const loading = React.useMemo(() => {
+  const loading = useMemo(() => {
     return isLoadingGetPresignedUrl || isLoading || isLoadingAddNonPOAttachment;
   }, [isLoading, isLoadingAddNonPOAttachment, isLoadingGetPresignedUrl]);
 
@@ -223,4 +222,26 @@ type Props = {
   allowActionAfterFinalApproveOnly?: boolean;
 };
 
-export default FileAttachments;
+export default memo(FileAttachments, (prevProps, nextProps) => {
+  const prevFormikProps = prevProps.formikProps;
+  const nextFormikProps = nextProps.formikProps;
+
+  const allowUploadFile = !nextProps.disabled;
+  const allowRemoveFile = !nextProps.disabled;
+
+  if (allowUploadFile || allowRemoveFile) return false;
+
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    prevProps.allowActionAfterFinalApproveOnly === nextProps.allowActionAfterFinalApproveOnly &&
+    isEqualPrevAndNextFormikValues<UpsertAuthorizationFormValue>({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender: [
+        AUTHORIZATION_FOR_PAYMENT_KEY.FILE_ATTACHMENTS,
+        AUTHORIZATION_FOR_PAYMENT_KEY.ID,
+        AUTHORIZATION_FOR_PAYMENT_KEY.PLACEHOLDER_FILE_ATTACHMENT,
+      ],
+    })
+  );
+});

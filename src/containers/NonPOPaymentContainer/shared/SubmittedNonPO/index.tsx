@@ -4,24 +4,24 @@ import { useLocation, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import { PATHS } from 'src/appConfig/paths';
-import { IconSuccess } from 'src/components/common';
 import TypographyLink from 'src/components/TypographyLink';
+import { IconSuccess } from 'src/components/common';
 import SectionLayout from 'src/containers/shared/SectionLayout';
-import { PO_DOCUMENT_TYPE } from 'src/queries';
-import { getSubmittedPOContent } from './helpers';
+import { NON_PO_PAYMENT_DOCUMENT_TYPE } from 'src/queries';
 import BreadcrumbsNonPOForm from '../Breadcrumb';
 import { SUBMITTED_NON_PO_PAYMENT_QUERY } from './enums';
+import { getSubmittedNonPOContent } from './helpers';
 
-export type SubmittedPOContent = ReturnType<typeof getSubmittedPOContent>;
+export type SubmittedNonPOContent = ReturnType<typeof getSubmittedNonPOContent>;
 
-const SubmittedPO: React.FC<Props> = () => {
+const SubmittedNonPO: React.FC<Props> = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const poNumber = query.get(SUBMITTED_NON_PO_PAYMENT_QUERY.NUMBER) || null;
   const documentType = query.get(SUBMITTED_NON_PO_PAYMENT_QUERY.DOCUMENT_TYPE) || null;
-  const content: SubmittedPOContent = getSubmittedPOContent({
-    documentType: documentType as PO_DOCUMENT_TYPE,
+  const content: SubmittedNonPOContent = getSubmittedNonPOContent({
+    documentType: documentType as NON_PO_PAYMENT_DOCUMENT_TYPE,
     id,
   });
 
@@ -68,4 +68,4 @@ const SubmittedPO: React.FC<Props> = () => {
 
 type Props = {};
 
-export default React.memo(SubmittedPO);
+export default React.memo(SubmittedNonPO);

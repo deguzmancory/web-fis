@@ -35,8 +35,12 @@ export const getAuthorizationPaymentFormValidationSchema = ({ action }: { action
       //general info
       vendorName: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
       vendorCode: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
-      directInquiriesTo: Yup.string().required().typeError(ErrorService.MESSAGES.required),
-      faStaffReviewer: Yup.string().required().typeError(ErrorService.MESSAGES.required),
+      directInquiriesTo: isSubmitPOAction
+        ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
+        : Yup.string().nullable(),
+      faStaffReviewer: isSubmitPOAction
+        ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
+        : Yup.string().nullable(),
 
       // project line Item
       projectLineItems: Yup.array()
@@ -50,6 +54,11 @@ export const getAuthorizationPaymentFormValidationSchema = ({ action }: { action
                   .required(ErrorService.MESSAGES.shortRequired)
                   .typeError(ErrorService.MESSAGES.shortRequired)
               : Yup.string().nullable(),
+            description: isSubmitPOAction
+              ? Yup.string()
+                  .required(ErrorService.MESSAGES.shortRequired)
+                  .typeError(ErrorService.MESSAGES.shortRequired)
+              : Yup.string().nullable(),
             amount: isSubmitPOAction
               ? Yup.number()
                   .required(ErrorService.MESSAGES.shortRequired)
@@ -58,21 +67,13 @@ export const getAuthorizationPaymentFormValidationSchema = ({ action }: { action
           })
         ),
 
-      paymentTotal: Yup.number()
-        .moreThan(0, 'The TOTAL must be greater than $0.')
-        .lessThan(100000000, 'The TOTAL must be less than $100,000,000.00.')
-        .typeError('The TOTAL must be greater than $0.')
-        .test(
-          'not-match-claim-due',
-          'The TOTAL must match the CLAIM DUE (A-B) from the Expenditures section.',
-          (value, context) => {
-            const { expenditureTotal, amountAdvanced } = context.parent;
-            if (Number(value) !== Number(expenditureTotal) - Number(amountAdvanced)) {
-              return false;
-            }
-            return true;
-          }
-        ),
+      paymentTotal: isSubmitPOAction
+        ? Yup.number()
+            .lessThan(100000000, 'The TOTAL must be less than $100,000,000.00.')
+            .moreThan(0, 'The TOTAL must be greater than $0.')
+            .required('The TOTAL must be greater than $0.')
+            .typeError('The TOTAL must be greater than $0.')
+        : Yup.number().nullable(),
 
       remittanceLineItems: Yup.array().of(
         Yup.object().shape({
@@ -89,20 +90,22 @@ export const getAuthorizationPaymentFormValidationSchema = ({ action }: { action
       ),
       remittance: Yup.lazy((_remittanceValue, remittanceOptions) => {
         return Yup.object().shape({
-          remittanceTotal: Yup.number()
-            .required('The remittance total does not match the payment total.')
-            .typeError('The remittance total does not match the payment total.')
-            .test(
-              'not-match-payment',
-              'The remittance total does not match the payment total.',
-              (value) => {
-                if (value !== remittanceOptions.parent?.paymentTotal) {
-                  return false;
-                } else {
-                  return true;
-                }
-              }
-            ),
+          remittanceTotal: isSubmitPOAction
+            ? Yup.number()
+                .required('The remittance total does not match the payment total.')
+                .typeError('The remittance total does not match the payment total.')
+                .test(
+                  'not-match-payment',
+                  'The remittance total does not match the payment total.',
+                  (value) => {
+                    if (value !== remittanceOptions.parent?.paymentTotal) {
+                      return false;
+                    } else {
+                      return true;
+                    }
+                  }
+                )
+            : Yup.number().nullable(),
         });
       }),
 

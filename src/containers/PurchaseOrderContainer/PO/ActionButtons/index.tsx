@@ -1,38 +1,38 @@
 import { Error } from '@mui/icons-material';
 import { Stack } from '@mui/material';
-import { useEffect, useState, memo, useCallback, ReactElement } from 'react';
+import { ReactElement, memo, useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import { Button } from 'src/components/common';
+import { UpsertAuthorizationPaymentFormikProps } from 'src/containers/NonPOPaymentContainer/AuthorizationForPayment/types';
+import { UpsertNonEmployeeTravelFormikProps } from 'src/containers/NonPOPaymentContainer/NonEmployeeExpensePayment/types';
 import { PO_ACTION, PO_MODE, usePostPOCloneDocument } from 'src/queries';
 import { ROLE_NAME, isPI, isSU } from 'src/queries/Profile/helpers';
 import {
-  isCUReviewMode,
-  isFAReviewMode,
-  isFinalMode,
   isAdditionalInfoAction,
   isApprovedAction,
+  isCUReviewMode,
   isDisapproveAction,
+  isFAReviewMode,
+  isFinalMode,
+  isPiSuEditMode,
   isSaveAction,
   isSubmitAction,
-  isPiSuEditMode,
   isViewOnlyMode,
 } from 'src/queries/PurchaseOrders/helpers';
 import { hideDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { setFormData, setIsImmutableFormData, setPoFormAction } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
+import { Callback } from 'src/redux/types';
 import { Navigator, RoleService, Toastify } from 'src/services';
 import { handleScrollToTopError } from 'src/utils';
 import { isEmpty } from 'src/validations';
 import urljoin from 'url-join';
+import { UpdatePOPaymentFormikProps } from '../../POPayment/types';
 import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormValue, UpsertPOFormikProps } from '../types';
-import { UpdatePOPaymentFormikProps } from '../../POPayment/types';
-import { UpsertNonEmployeeTravelFormikProps } from 'src/containers/NonPOPaymentContainer/NonEmployeeExpensePayment/types';
-import { Callback } from 'src/redux/types';
-import { UpsertAuthorizationPaymentFormikProps } from 'src/containers/NonPOPaymentContainer/AuthorizationForPayment/types';
 
 const ActionButtons = <
   T extends
@@ -52,6 +52,8 @@ const ActionButtons = <
   onSetPoFormAction,
   onShowDialog,
   onHideDialog,
+  showCloneDocument = false,
+  showVendorPrintMode = false,
   callback,
 }: Props<T>) => {
   const { id } = useParams<{ id: string }>();
@@ -74,9 +76,9 @@ const ActionButtons = <
     isFAReviewMode(currentFormMode) || isCUReviewMode(currentFormMode);
   const showSaveButton = !isViewOnlyMode(currentFormMode);
   const showSubmitToFAButton = !isEditPOMode || isPiSuEditMode(currentFormMode);
-  const showViewVendorPrintModeButton = isFinalMode(currentFormMode);
+  const showViewVendorPrintModeButton = showVendorPrintMode && isFinalMode(currentFormMode);
   const showCloneDocumentButton =
-    isFinalMode(currentFormMode) && (isPI(currentRole) || isSU(currentRole));
+    showCloneDocument && isFinalMode(currentFormMode) && (isPI(currentRole) || isSU(currentRole));
 
   const _handleScrollToTopError = useCallback(() => {
     handleScrollToTopError(errors);
@@ -92,7 +94,15 @@ const ActionButtons = <
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTriedSubmit]);
 
-  const { postPOCloneDocument } = usePostPOCloneDocument({});
+  const { postPOCloneDocument } = usePostPOCloneDocument({
+    onSuccess: (data) => {
+      Toastify.success('Clone Document Successful!');
+      Navigator.navigate(urljoin(PATHS.purchaseOrderDetail, data?.data?.id));
+    },
+    onError(error: Error) {
+      Toastify.error(error.message);
+    },
+  });
 
   // set form action states for updating form's validation schema purpose
   const handleConfirmSubmitForm = (action) => {
@@ -154,18 +164,7 @@ const ActionButtons = <
   };
 
   const handleCloneDocument = () => {
-    postPOCloneDocument(
-      { id: values.id },
-      {
-        onSuccess() {
-          Toastify.success('Clone Document successfully.');
-          Navigator.navigate(urljoin(PATHS.purchaseOrderDetail, values.id));
-        },
-        onError(error: Error) {
-          Toastify.error(error.message);
-        },
-      }
-    );
+    postPOCloneDocument({ id: values.id });
   };
 
   return (
@@ -261,6 +260,8 @@ type Props<
     disabled?: boolean;
     loading?: boolean;
     currentFormMode?: PO_MODE;
+    showCloneDocument?: boolean;
+    showVendorPrintMode?: boolean;
     warningDeleteContainer: ReactElement;
     callback?: Callback;
   };

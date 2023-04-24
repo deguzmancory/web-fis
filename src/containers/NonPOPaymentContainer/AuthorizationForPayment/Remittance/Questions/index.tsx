@@ -11,19 +11,19 @@ import {
   Select,
 } from 'src/components/common';
 import TypographyLink from 'src/components/TypographyLink';
-import React from 'react';
 import { PO_PAYMENT_VENDOR_TYPE } from 'src/containers/PurchaseOrderContainer/POPayment/enums';
 import { checkVendorPaymentType } from 'src/containers/PurchaseOrderContainer/POPayment/helpers';
 import { StateService } from 'src/services';
 import { useZipCode } from 'src/queries';
 import { US_ZIP_CODE_LENGTH } from 'src/appConfig/constants';
+import { useMemo } from 'react';
 
 const prefixRemittance = AUTHORIZATION_FOR_PAYMENT_KEY.REMITTANCE;
 
 const Question: React.FC<Props> = ({ formikProps, disabled }) => {
   const { values, touched, errors, getFieldProps, setFieldTouched, setFieldValue } = formikProps;
 
-  const statesOptions = React.useMemo(() => {
+  const statesOptions = useMemo(() => {
     return StateService.getStates();
   }, []);
 
@@ -57,14 +57,14 @@ const Question: React.FC<Props> = ({ formikProps, disabled }) => {
     onError() {},
   });
 
-  const isShowRemittance = React.useMemo(() => {
+  const isShowRemittance = useMemo(() => {
     return (
       values.remittance?.returnRemittanceFlag === true ||
       checkVendorPaymentType(values.preferredPaymentMethod as PO_PAYMENT_VENDOR_TYPE)
     );
   }, [values.preferredPaymentMethod, values.remittance?.returnRemittanceFlag]);
 
-  const isCheckStatus = React.useMemo(() => {
+  const isCheckStatus = useMemo(() => {
     return values?.preferredPaymentMethod === PO_PAYMENT_VENDOR_TYPE.CHECK;
   }, [values?.preferredPaymentMethod]);
 
