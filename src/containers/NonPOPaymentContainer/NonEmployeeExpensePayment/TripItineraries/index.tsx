@@ -20,6 +20,7 @@ import { initialNonEmployeeTravelItinerary } from '../helpers/constants';
 import { UpsertNonEmployeeTravelFormikProps } from '../types';
 import { calculateDataOfItineraries, calculateItinerariesTotal, headerRow } from './helpers';
 import { commonInputColumnStyles, commonColumnStyles } from '../../shared/constants';
+import { isNumber } from 'lodash';
 
 const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
   const { values, errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } =
@@ -138,7 +139,7 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
   };
 
   const itinerariesRows: BodyRow[] = itinerariesValue.reduce(
-    (prevRows, _currentItinerary, index) => {
+    (prevRows, currentItinerary, index) => {
       const prefixItinerary = `${NON_EMPLOYEE_TRAVEL_FORM_KEY.ITINERARIES}.${index}`;
 
       // an itinerary will take 2 row
@@ -203,6 +204,7 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                     `${prefixItinerary}.${ITINERARY_ITEM_FORM_KEY.CALC_DAYS}`
                   )}
                   {...getFieldProps(`${prefixItinerary}.${ITINERARY_ITEM_FORM_KEY.CALC_DAYS}`)}
+                  value={isNumber(currentItinerary?.calcDays) ? currentItinerary.calcDays : ''}
                   type="number"
                   disabled
                   hideArrowTypeNumber
@@ -219,6 +221,7 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                     `${prefixItinerary}.${ITINERARY_ITEM_FORM_KEY.MINUS_DAYS}`
                   )}
                   {...getFieldProps(`${prefixItinerary}.${ITINERARY_ITEM_FORM_KEY.MINUS_DAYS}`)}
+                  value={isNumber(currentItinerary?.minusDays) ? currentItinerary.minusDays : ''}
                   type="number"
                   disabled={disabled}
                   hideArrowTypeNumber
@@ -235,6 +238,9 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                     `${prefixItinerary}.${ITINERARY_ITEM_FORM_KEY.BUSINESS_DAYS}`
                   )}
                   {...getFieldProps(`${prefixItinerary}.${ITINERARY_ITEM_FORM_KEY.BUSINESS_DAYS}`)}
+                  value={
+                    isNumber(currentItinerary?.businessDays) ? currentItinerary.businessDays : ''
+                  }
                   type="number"
                   disabled
                   hideArrowTypeNumber
@@ -305,6 +311,9 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                   {...getFieldProps(
                     `${prefixItinerary}.${ITINERARY_ITEM_FORM_KEY.MISC_DAYS_CLAIM}`
                   )}
+                  value={
+                    isNumber(currentItinerary?.miscDaysClaim) ? currentItinerary.miscDaysClaim : ''
+                  }
                   type="number"
                   disabled={disabled}
                   hideArrowTypeNumber
@@ -477,6 +486,11 @@ const TripItinerary: FC<Props> = ({ formikProps, disabled = false }) => {
                   {...getFieldProps(
                     `${prefixItinerary}.${ITINERARY_ITEM_FORM_KEY.LODGING_DAYS_CLAIM}`
                   )}
+                  value={
+                    isNumber(currentItinerary?.lodgingDaysClaim)
+                      ? currentItinerary.lodgingDaysClaim
+                      : ''
+                  }
                   type="number"
                   disabled={disabled}
                   hideArrowTypeNumber

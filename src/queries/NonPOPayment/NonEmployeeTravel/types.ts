@@ -1,4 +1,4 @@
-import { POAuditTrails } from 'src/queries/PurchaseOrders';
+import { POAuditTrails, POFileAttachment } from 'src/queries/PurchaseOrders';
 import { PO_ACTION, PO_DETAIL_STATUS } from '../../PurchaseOrders/enums';
 import { NON_PO_PAYMENT_DOCUMENT_TYPE } from '../enums';
 import { NonPOPaymentProjectLineItem } from '../types';
@@ -64,6 +64,11 @@ export interface BusinessPurposeDetails {
   faSignature: string;
 }
 
+export interface NonEmployeeTravelRemittance {
+  remittanceLineItems: NonEmployeeTravelRemittanceLineItem[];
+  remittance: NonEmployeeTravelRemittanceDetail;
+}
+
 export interface SharedNonEmployeeTravelDetail
   extends SelectPayeeCategory,
     GeneralInfo,
@@ -71,60 +76,59 @@ export interface SharedNonEmployeeTravelDetail
     TravelExpenditure,
     NonEmployeeTravelProjectItems,
     ReceiptCertification,
-    BusinessPurposeDetails {
-  acceptedDate: string;
-  organization: string;
-  homeAddress: string;
-  purposeForTravel: string;
-  phoneNumber: string;
-  directInquiriesTo: string;
+    BusinessPurposeDetails,
+    NonEmployeeTravelRemittance {
+  fileAttachments: POFileAttachment[];
   internalComments: string;
-  total: number;
-
-  completedBy: string;
-  username: string;
-  faCode: string;
-  faName: string;
-  faEmail: string;
-  faApprover: string;
-  faApprovedDate: string;
-  rcuhApprover: string;
-  rcuhApprovedDate: string;
-  majorVersion: string;
-  minorVersion: number;
-  formName: string;
-  shortFormName: string;
-  firstProjectNumber: string;
-  listedProjectNumber: string;
-  hasFinalPdf: boolean;
-  preparerEmail: string;
-  checkNumber: string;
-  checkDate: string;
-  miscPaymentMethod: string;
-  lodgingPaymentMethod: string;
-
-  // daysClaimTotal: string;
-  piName: string;
-
-  updateVersionNumber: number;
-  noReceiptCorrectFlag: boolean;
-  noReceiptFormFlag: boolean;
-  preferredPaymentMethod: string;
-  preferredPaymentMethodTimestamp: string;
-  paymentMethod: string;
-  piUserId: string;
-  faUserId: string;
-  cuUserId: string;
-  piOriginalUserId: string;
-  faOriginalUserId: string;
-  cuOriginalUserId: string;
-  remittanceLineItems: NonEmployeeTravelRemittanceLineItem[];
-  remittance: NonEmployeeTravelRemittance;
 
   //get from response for logic and view purpose
   status?: PO_DETAIL_STATUS;
   auditTrails?: POAuditTrails[];
   documentType?: NON_PO_PAYMENT_DOCUMENT_TYPE;
+
+  //check?
+  acceptedDate?: string;
+  organization?: string;
+  homeAddress?: string;
+  purposeForTravel?: string;
+  phoneNumber?: string;
+  directInquiriesTo?: string;
+  total?: number;
+  completedBy?: string;
+  username?: string;
+  faCode?: string;
+  faName?: string;
+  faEmail?: string;
+  faApprover?: string;
+  faApprovedDate?: string;
+  rcuhApprover?: string;
+  rcuhApprovedDate?: string;
+  majorVersion?: string;
+  minorVersion?: number;
+  formName?: string;
+  shortFormName?: string;
+  firstProjectNumber?: string;
+  listedProjectNumber?: string;
+  hasFinalPdf?: boolean;
+  preparerEmail?: string;
+  checkNumber?: string;
+  checkDate?: string;
+  miscPaymentMethod?: string;
+  lodgingPaymentMethod?: string;
+  // daysClaimTotal?: string;
+  piName?: string;
+  updateVersionNumber?: number;
+  noReceiptCorrectFlag?: boolean;
+  noReceiptFormFlag?: boolean;
+  preferredPaymentMethod?: string;
+  preferredPaymentMethodTimestamp?: string;
+  paymentMethod?: string;
+  piUserId?: string;
+  faUserId?: string;
+  cuUserId?: string;
+  piOriginalUserId?: string;
+  faOriginalUserId?: string;
+  cuOriginalUserId?: string;
 }
 
 export interface NonEmployeeTravelItinerary {
@@ -163,13 +167,14 @@ export interface NonEmployeeTravelExpenditure {
 export interface NonEmployeeTravelRemittanceLineItem {
   id?: string;
   nonEmployeeTravelId?: string;
-  number: string;
+  // number: string;
+  referenceNumber: string;
   amount: number;
   lineNumber: number;
   customerAccountComment: string;
 }
 
-export interface NonEmployeeTravelRemittance {
+export interface NonEmployeeTravelRemittanceDetail {
   id?: string;
   remittanceTotal: number;
   questionName: string;

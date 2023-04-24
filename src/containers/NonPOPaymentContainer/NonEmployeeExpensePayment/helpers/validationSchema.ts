@@ -91,16 +91,40 @@ export const getNonEmployeeTravelFormValidationSchema = ({ action }: { action: P
 
     // trip itineraries
     startDestination: isSubmitPOAction
-      ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
+      ? Yup.string().when(['payeeCategory'], ([payeeCategory], schema) => {
+          if (isInGroup1Payee(payeeCategory)) {
+            return schema.required().typeError(ErrorService.MESSAGES.required);
+          }
+
+          return schema.nullable();
+        })
       : Yup.string().nullable(),
     startDepartureDate: isSubmitPOAction
-      ? Yup.date().required().typeError(ErrorService.MESSAGES.required)
+      ? Yup.date().when(['payeeCategory'], ([payeeCategory], schema) => {
+          if (isInGroup1Payee(payeeCategory)) {
+            return schema.required().typeError(ErrorService.MESSAGES.required);
+          }
+
+          return schema.nullable();
+        })
       : Yup.date().nullable(),
     endDestination: isSubmitPOAction
-      ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
+      ? Yup.string().when(['payeeCategory'], ([payeeCategory], schema) => {
+          if (isInGroup1Payee(payeeCategory)) {
+            return schema.required().typeError(ErrorService.MESSAGES.required);
+          }
+
+          return schema.nullable();
+        })
       : Yup.string().nullable(),
     endArrivalDate: isSubmitPOAction
-      ? Yup.date().required().typeError(ErrorService.MESSAGES.required)
+      ? Yup.date().when(['payeeCategory'], ([payeeCategory], schema) => {
+          if (isInGroup1Payee(payeeCategory)) {
+            return schema.required().typeError(ErrorService.MESSAGES.required);
+          }
+
+          return schema.nullable();
+        })
       : Yup.date().nullable(),
 
     //project items

@@ -1,5 +1,5 @@
-import { Box, Container } from '@mui/material';
-import { FC, useMemo, Suspense, useEffect, useLayoutEffect, useState } from 'react';
+import { Box, Container, Stack, Typography } from '@mui/material';
+import { FC, useMemo, Suspense, useEffect, useLayoutEffect, useState, lazy } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundary';
@@ -51,6 +51,11 @@ import { NON_EMPLOYEE_TRAVEL_FORM_KEY } from './enums';
 import ReceiptCertification from './ReceiptCertification';
 import BusinessPurposeDetails from './BusinessPurposeDetails';
 import FormErrorSection from 'src/containers/shared/FormErrorSection';
+import { isInGroup1Payee } from 'src/queries/NonPOPayment/NonEmployeeTravel/helpers';
+import AuditInformation from '../shared/AuditInformation';
+import InternalComments from '../shared/InternalComments';
+
+const FileAttachments = lazy(() => import('./FileAttachments'));
 
 const AuthorizationForPayment: FC<Props> = ({
   formData,
@@ -317,6 +322,11 @@ const AuthorizationForPayment: FC<Props> = ({
     }
   };
 
+  const showItineraryAndExpenditureSections = useMemo(
+    () => !values.payeeCategory || isInGroup1Payee(values.payeeCategory),
+    [values.payeeCategory]
+  );
+
   return (
     <Prompt
       title={'Leave site?'}
@@ -352,23 +362,27 @@ const AuthorizationForPayment: FC<Props> = ({
                     currentMode={currentNonEmployeeTravelMode}
                   />
                 </SectionLayout>
-                <SectionLayout sx={{ p: 0 }}>
-                  <TripItinerary
-                    formikProps={formikProps}
-                    disabled={disabledSection}
-                    currentMode={currentNonEmployeeTravelMode}
-                  />
-                </SectionLayout>
-                <SectionLayout sx={{ p: 0, border: 'none' }}>
-                  <PartialDayTable />
-                </SectionLayout>
-                <SectionLayout>
-                  <TravelExpenditures
-                    formikProps={formikProps}
-                    disabled={disabledSection}
-                    currentMode={currentNonEmployeeTravelMode}
-                  />
-                </SectionLayout>
+                {showItineraryAndExpenditureSections && (
+                  <>
+                    <SectionLayout sx={{ p: 0 }}>
+                      <TripItinerary
+                        formikProps={formikProps}
+                        disabled={disabledSection}
+                        currentMode={currentNonEmployeeTravelMode}
+                      />
+                    </SectionLayout>
+                    <SectionLayout sx={{ p: 0, border: 'none' }}>
+                      <PartialDayTable />
+                    </SectionLayout>
+                    <SectionLayout>
+                      <TravelExpenditures
+                        formikProps={formikProps}
+                        disabled={disabledSection}
+                        currentMode={currentNonEmployeeTravelMode}
+                      />
+                    </SectionLayout>
+                  </>
+                )}
                 <SectionLayout>
                   <ProjectItems
                     title={'PROJECT(S) TO BE CHARGED'}
@@ -394,6 +408,35 @@ const AuthorizationForPayment: FC<Props> = ({
                     currentMode={currentNonEmployeeTravelMode}
                   />
                 </SectionLayout>
+                <SectionLayout sx={{ p: 0, border: 'none' }}>
+                  {isEditMode ? (
+                    <FileAttachments
+                      formikProps={formikProps}
+                      disabled={isViewOnlyMode(currentNonEmployeeTravelMode)}
+                      allowActionAfterFinalApproveOnly={isFinalMode(currentNonEmployeeTravelMode)}
+                    />
+                  ) : (
+                    <SectionLayout sx={{ p: 2 }}>
+                      <Stack direction={'row'} alignItems={'center'}>
+                        <Typography variant={'h5'}>File Attachments: </Typography>
+                        <Typography variant="body2" ml={1} mt={'1px'}>
+                          (Please Save the Document before adding File Attachments)
+                        </Typography>
+                      </Stack>
+                    </SectionLayout>
+                  )}
+                </SectionLayout>
+
+                {isEditMode && (
+                  <SectionLayout sx={{ p: 0, border: 'none' }}>
+                    <AuditInformation auditTrails={values.auditTrails} />
+                  </SectionLayout>
+                )}
+
+                <SectionLayout>
+                  <InternalComments formikProps={formikProps} disabled={disabledSection} />
+                </SectionLayout>
+
                 <ActionButtons
                   currentFormMode={currentNonEmployeeTravelMode}
                   formikProps={formikProps}

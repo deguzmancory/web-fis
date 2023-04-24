@@ -1,25 +1,31 @@
 import React from 'react';
-import { UpsertAuthorizationPaymentFormikProps } from '../types';
 import { useDispatch } from 'react-redux';
-import { isEmpty } from 'lodash';
-import { FileCache, Toastify } from 'src/services';
-import { handleShowErrorMsg, niceBytes, trimUrl } from 'src/utils';
-import { AUTHORIZATION_FOR_PAYMENT_KEY } from '../enum';
-import { useUploadAuthorizationFileAttachment } from 'src/queries/NonPOPayment/AuthorizationForPayment/useUploadAuthorizationFileAttachment';
-import { useAddAuthorizationAttachment } from 'src/queries/NonPOPayment/AuthorizationForPayment/useAddAuthorizationAttachment';
-import { useDeleteAuthorizationPaymentAttachment } from 'src/queries/NonPOPayment/AuthorizationForPayment/useDeleteNonAuthorizationAttachment';
-import { POFileAttachment } from 'src/queries';
+import FileAttachmentsSection from 'src/containers/shared/FileAttachmentsSection';
+import {
+  POFileAttachment,
+  useAddNonEmployeeTravelAttachment,
+  useDeleteNonEmployeeTravelAttachment,
+  useGetNonEmployeeTravelAttachmentPresignedUrl,
+  useUploadNonEmployeeTravelFileAttachment,
+} from 'src/queries';
 import { hideAllDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
-import { useGetAuthorizationPaymentAttachmentPresignedUrl } from 'src/queries/NonPOPayment/AuthorizationForPayment/useGetAuthorizationPaymentAttachmentPresignedUrl';
-import FileAttachmentsSection from 'src/containers/shared/FileAttachmentsSection';
+import { FileCache, Toastify } from 'src/services';
+import { handleShowErrorMsg, isEqualPrevAndNextFormikValues, niceBytes, trimUrl } from 'src/utils';
+import { isEmpty } from 'src/validations';
+import { NON_EMPLOYEE_TRAVEL_FORM_KEY } from '../enums';
+import { UpsertNonEmployeeTravelFormikProps } from '../types';
 
-const FileAttachments: React.FC<Props> = ({
+const FileAttachments = ({
   formikProps,
   disabled = false,
   allowActionAfterFinalApproveOnly = false,
-}) => {
-  const { fileAttachments, id: Id, placeholderFileAttachment } = formikProps.values;
+}: Props) => {
+  const {
+    fileAttachments,
+    id: nonEmployeeTravelId,
+    placeholderFileAttachment,
+  } = formikProps.values;
   const { setFieldValue } = formikProps;
   const dispatch = useDispatch();
   const attachments = React.useMemo(() => {
@@ -42,7 +48,7 @@ const FileAttachments: React.FC<Props> = ({
         Toastify.warning('Please select a file');
         return;
       }
-      setFieldValue(AUTHORIZATION_FOR_PAYMENT_KEY.PLACEHOLDER_FILE_ATTACHMENT, {
+      setFieldValue(NON_EMPLOYEE_TRAVEL_FORM_KEY.PLACEHOLDER_FILE_ATTACHMENT, {
         ...placeholderFileAttachment,
         file: files[0],
         size: niceBytes(files[0].size),
@@ -52,11 +58,11 @@ const FileAttachments: React.FC<Props> = ({
     [placeholderFileAttachment, setFieldValue]
   );
 
-  const { getAuthorizationPresignedUploadUrl, loading: isLoadingGetPresignedUrl } =
-    useUploadAuthorizationFileAttachment({
+  const { getNonEmployeeTravelPresignedUploadUrl, loading: isLoadingGetPresignedUrl } =
+    useUploadNonEmployeeTravelFileAttachment({
       onUploadSuccess(data, variables, context) {
-        addAuthorizationAttachment({
-          id: Id,
+        addNonEmployeeTravelAttachment({
+          id: nonEmployeeTravelId,
           name: placeholderFileAttachment.file.name,
           size: placeholderFileAttachment.size,
           description: placeholderFileAttachment.descriptions,
@@ -68,17 +74,17 @@ const FileAttachments: React.FC<Props> = ({
         handleShowErrorMsg(error);
       },
       setProgress: setUploadProgress,
-      id: Id,
+      id: nonEmployeeTravelId,
     });
 
-  const { addAuthorizationAttachment, isLoading: isLoadingAddNonPOAttachment } =
-    useAddAuthorizationAttachment({
+  const { addNonEmployeeTravelAttachment, isLoading: isLoadingAddNonEmployeeTravelAttachment } =
+    useAddNonEmployeeTravelAttachment({
       onSuccess({ data }) {
         Toastify.success('Upload file attachment successfully');
 
         setUploadProgress(0);
-        setFieldValue(AUTHORIZATION_FOR_PAYMENT_KEY.PLACEHOLDER_FILE_ATTACHMENT, null);
-        setFieldValue(AUTHORIZATION_FOR_PAYMENT_KEY.FILE_ATTACHMENTS, [...fileAttachments, data]);
+        setFieldValue(NON_EMPLOYEE_TRAVEL_FORM_KEY.PLACEHOLDER_FILE_ATTACHMENT, null);
+        setFieldValue(NON_EMPLOYEE_TRAVEL_FORM_KEY.FILE_ATTACHMENTS, [...fileAttachments, data]);
       },
       onError(error) {
         handleShowErrorMsg(error);
@@ -90,15 +96,14 @@ const FileAttachments: React.FC<Props> = ({
       Toastify.warning('Please select a file');
       return;
     }
-    getAuthorizationPresignedUploadUrl(placeholderFileAttachment.file);
+    getNonEmployeeTravelPresignedUploadUrl(placeholderFileAttachment.file);
   };
 
-  const { deleteAuthorizationPaymentAttachment, isLoading } =
-    useDeleteAuthorizationPaymentAttachment({
-      onError(error) {
-        handleShowErrorMsg(error);
-      },
-    });
+  const { deleteNonEmployeeTravelAttachment, isLoading } = useDeleteNonEmployeeTravelAttachment({
+    onError(error) {
+      handleShowErrorMsg(error);
+    },
+  });
 
   const handleDeleteAttachment = React.useCallback(
     (attachment: POFileAttachment) => {
@@ -111,9 +116,9 @@ const FileAttachments: React.FC<Props> = ({
             okText: 'Yes, delete it',
             cancelText: 'Cancel',
             onOk: () => {
-              deleteAuthorizationPaymentAttachment(
+              deleteNonEmployeeTravelAttachment(
                 {
-                  id: Id,
+                  id: nonEmployeeTravelId,
                   attachmentId: attachment.id,
                 },
                 {
@@ -121,7 +126,7 @@ const FileAttachments: React.FC<Props> = ({
                     Toastify.success('Delete file attachment successfully');
 
                     setFieldValue(
-                      AUTHORIZATION_FOR_PAYMENT_KEY.FILE_ATTACHMENTS,
+                      NON_EMPLOYEE_TRAVEL_FORM_KEY.FILE_ATTACHMENTS,
                       fileAttachments.filter(
                         (fileAttachment) => fileAttachment.id !== attachment.id
                       )
@@ -138,11 +143,17 @@ const FileAttachments: React.FC<Props> = ({
         })
       );
     },
-    [deleteAuthorizationPaymentAttachment, dispatch, fileAttachments, Id, setFieldValue]
+    [
+      deleteNonEmployeeTravelAttachment,
+      dispatch,
+      fileAttachments,
+      nonEmployeeTravelId,
+      setFieldValue,
+    ]
   );
 
-  const { getAuthorizationPaymentPresignedDownloadUrl } =
-    useGetAuthorizationPaymentAttachmentPresignedUrl({
+  const { getNonEmployeeTravelPresignedDownloadUrl } =
+    useGetNonEmployeeTravelAttachmentPresignedUrl({
       onError(error) {
         handleShowErrorMsg(error);
       },
@@ -154,9 +165,9 @@ const FileAttachments: React.FC<Props> = ({
         if (typeof fileUrl === 'string') {
           const decodeUrl = FileCache.getCachedUrl(fileUrl);
           if (!decodeUrl) {
-            getAuthorizationPaymentPresignedDownloadUrl(
+            getNonEmployeeTravelPresignedDownloadUrl(
               {
-                id: Id,
+                id: nonEmployeeTravelId,
                 attachmentId: attachmentId,
               },
               {
@@ -175,13 +186,13 @@ const FileAttachments: React.FC<Props> = ({
         }
       });
     },
-    [getAuthorizationPaymentPresignedDownloadUrl, Id]
+    [getNonEmployeeTravelPresignedDownloadUrl, nonEmployeeTravelId]
   );
 
   const handleDescriptionInputChange = React.useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       const value = event.target.value || '';
-      setFieldValue(AUTHORIZATION_FOR_PAYMENT_KEY.PLACEHOLDER_FILE_ATTACHMENT, {
+      setFieldValue(NON_EMPLOYEE_TRAVEL_FORM_KEY.PLACEHOLDER_FILE_ATTACHMENT, {
         ...placeholderFileAttachment,
         descriptions: value,
       });
@@ -190,8 +201,8 @@ const FileAttachments: React.FC<Props> = ({
   );
 
   const loading = React.useMemo(() => {
-    return isLoadingGetPresignedUrl || isLoading || isLoadingAddNonPOAttachment;
-  }, [isLoading, isLoadingAddNonPOAttachment, isLoadingGetPresignedUrl]);
+    return isLoadingGetPresignedUrl || isLoading || isLoadingAddNonEmployeeTravelAttachment;
+  }, [isLoadingGetPresignedUrl, isLoading, isLoadingAddNonEmployeeTravelAttachment]);
 
   return (
     <FileAttachmentsSection
@@ -208,7 +219,7 @@ const FileAttachments: React.FC<Props> = ({
       onFileSelect={handleFileSelect}
       onDescriptionInputChange={handleDescriptionInputChange}
       onRemoveSelectedFile={() => {
-        setFieldValue(AUTHORIZATION_FOR_PAYMENT_KEY.PLACEHOLDER_FILE_ATTACHMENT, null);
+        setFieldValue(NON_EMPLOYEE_TRAVEL_FORM_KEY.PLACEHOLDER_FILE_ATTACHMENT, null);
       }}
       onUploadFile={handleUploadFile}
       onGetDecodeUrl={handleGetDecodeUrl}
@@ -218,9 +229,31 @@ const FileAttachments: React.FC<Props> = ({
 };
 
 type Props = {
-  formikProps: UpsertAuthorizationPaymentFormikProps;
+  formikProps: UpsertNonEmployeeTravelFormikProps;
   disabled?: boolean;
   allowActionAfterFinalApproveOnly?: boolean;
 };
 
-export default FileAttachments;
+export default React.memo(FileAttachments, (prevProps, nextProps) => {
+  const prevFormikProps = prevProps.formikProps;
+  const nextFormikProps = nextProps.formikProps;
+
+  const allowUploadFile = !nextProps.disabled;
+  const allowRemoveFile = !nextProps.disabled;
+
+  if (allowUploadFile || allowRemoveFile) return false;
+
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    prevProps.allowActionAfterFinalApproveOnly === nextProps.allowActionAfterFinalApproveOnly &&
+    isEqualPrevAndNextFormikValues({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender: [
+        NON_EMPLOYEE_TRAVEL_FORM_KEY.FILE_ATTACHMENTS,
+        NON_EMPLOYEE_TRAVEL_FORM_KEY.ID,
+        NON_EMPLOYEE_TRAVEL_FORM_KEY.PLACEHOLDER_FILE_ATTACHMENT,
+      ],
+    })
+  );
+});

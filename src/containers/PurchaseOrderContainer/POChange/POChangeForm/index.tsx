@@ -12,7 +12,6 @@ import NoPermission from 'src/components/NoPermission';
 import { Accordion, LoadingCommon } from 'src/components/common';
 import ActionButtons from 'src/containers/PurchaseOrderContainer/PO/ActionButtons';
 import AdditionalForms from 'src/containers/PurchaseOrderContainer/PO/AdditionalForms';
-import AuditInformation from 'src/containers/PurchaseOrderContainer/PO/AuditInformation';
 import AuthorizedBy from 'src/containers/PurchaseOrderContainer/PO/AuthorizedBy';
 import ErrorWrapperPO from 'src/containers/PurchaseOrderContainer/PO/ErrorWrapper/index.';
 import FileAttachments from 'src/containers/PurchaseOrderContainer/PO/FileAttachments';
@@ -64,6 +63,7 @@ import PurchaseInfoChange from './PurchaseInfoChange';
 import TableLineItemsPOChange from './TableLineItemsChange';
 import { getPoChangeFormTitle } from './helpers';
 import DeletePOWarning from '../../PO/DeletePOWarning';
+import AuditInformation from '../../PO/AuditInformation';
 
 const POChangeForm: React.FC<Props> = ({
   formData,

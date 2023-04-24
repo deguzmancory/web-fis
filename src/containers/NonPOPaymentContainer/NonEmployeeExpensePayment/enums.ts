@@ -1,4 +1,6 @@
 export enum NON_EMPLOYEE_TRAVEL_FORM_KEY {
+  ID = 'id',
+
   // SelectPayeeCategory
   LOGIN_NAME = 'loginName',
   DATE = 'date',
@@ -51,6 +53,13 @@ export enum NON_EMPLOYEE_TRAVEL_FORM_KEY {
   CLAIMANT_SIGNATURE = 'claimantSignature',
   PI_SIGNATURE = 'piSignature',
   FA_SIGNATURE = 'faSignature',
+
+  //file attachments
+  FILE_ATTACHMENTS = 'fileAttachments',
+  PLACEHOLDER_FILE_ATTACHMENT = 'placeholderFileAttachment',
+
+  //comment
+  INTERNAL_COMMENTS = 'internalComments',
 }
 
 export enum ITINERARY_ITEM_FORM_KEY {

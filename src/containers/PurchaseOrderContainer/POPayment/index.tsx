@@ -35,7 +35,6 @@ import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, RoleService, Toastify } from 'src/services';
 import Prompt from 'src/services/Prompt';
 import { getUncontrolledInputFieldProps, handleShowErrorMsg } from 'src/utils';
-import AuditInformation from '../PO/AuditInformation';
 import FileAttachments from '../PO/FileAttachments';
 import InternalComments from '../PO/InternalComments';
 import PurchaseInfo from '../PO/PurchaseInfo';
@@ -56,6 +55,7 @@ import {
 } from './helpers';
 import { UpdatePOPaymentFormValue, UpdatePOPaymentFormikProps } from './types';
 import DeletePOPaymentWarning from './DeletePOPaymentWarning';
+import AuditInformation from '../PO/AuditInformation';
 
 const POPayment: FC<Props> = ({
   formData,
@@ -84,7 +84,6 @@ const POPayment: FC<Props> = ({
   const { onGetPOPaymentById, handleInvalidatePOPaymentDetail } = useGetPOPaymentDetail({
     id: id,
     onSuccess: async (data) => {
-      console.log('data: ', data);
       const { data: remainingBalanceResponse } = await onGetRemainingBalance();
 
       const formValue: UpdatePOPaymentFormValue = getPOPaymentFormValueFromResponse({

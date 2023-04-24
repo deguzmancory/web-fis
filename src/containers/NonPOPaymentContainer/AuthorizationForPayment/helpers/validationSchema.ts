@@ -58,7 +58,7 @@ export const getAuthorizationPaymentFormValidationSchema = ({ action }: { action
           })
         ),
 
-      total: Yup.number()
+      paymentTotal: Yup.number()
         .moreThan(0, 'The TOTAL must be greater than $0.')
         .lessThan(100000000, 'The TOTAL must be less than $100,000,000.00.')
         .typeError('The TOTAL must be greater than $0.')

@@ -37,6 +37,7 @@ import {
   UpsertAuthorizationPaymentFormikProps,
 } from 'src/containers/NonPOPaymentContainer/AuthorizationForPayment/types';
 import { AUTHORIZATION_FOR_PAYMENT_KEY } from 'src/containers/NonPOPaymentContainer/AuthorizationForPayment/enum';
+import { isNumber } from 'lodash';
 
 const getHeaderRow = (tableIndex: number): BodyRow => {
   const tableStartOrder = tableIndex * DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS + 1;
@@ -117,7 +118,6 @@ const EquipmentInventories = <
 }: Props<T>) => {
   const { values, errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } =
     formikProps;
-  console.log('values: ', values);
 
   const equipmentInventoriesValue = useMemo(() => {
     if (isUpsertAuthorizationPaymentFormValue(values, authorizationPaymentPrefix)) {
@@ -170,23 +170,17 @@ const EquipmentInventories = <
           ...equipmentInventoriesValue
             .slice(startIndexOfSliceInventories, endIndexOfSliceInventories)
             .map((_inventory, index) => {
-              const prefixInventory = `${PO_FORM_KEY.PAYMENT_EQUIPMENT_INVENTORIES}.${
-                startIndexOfSliceInventories + index
-              }`;
+              const prefixInventory = getPrefixName(startIndexOfSliceInventories, index);
 
               return {
                 content: (
                   <TextareaAutosize
                     {...getUncontrolledFieldProps(
-                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.DESCRIPTION
-                      }`
+                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.DESCRIPTION}`
                     )}
                     disabled={disabled}
                     errorMessage={_getErrorMessage(
-                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.DESCRIPTION
-                      }`
+                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.DESCRIPTION}`
                     )}
                     minRows={3}
                   />
@@ -212,23 +206,17 @@ const EquipmentInventories = <
           ...equipmentInventoriesValue
             .slice(startIndexOfSliceInventories, endIndexOfSliceInventories)
             .map((_inventory, index) => {
-              const prefixInventory = `${PO_FORM_KEY.PAYMENT_EQUIPMENT_INVENTORIES}.${
-                startIndexOfSliceInventories + index
-              }`;
+              const prefixInventory = getPrefixName(startIndexOfSliceInventories, index);
 
               return {
                 content: (
                   <TextareaAutosize
                     {...getUncontrolledFieldProps(
-                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.BRAND_NAME
-                      }`
+                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.BRAND_NAME}`
                     )}
                     disabled={disabled}
                     errorMessage={_getErrorMessage(
-                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.BRAND_NAME
-                      }`
+                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.BRAND_NAME}`
                     )}
                     minRows={2}
                   />
@@ -254,23 +242,17 @@ const EquipmentInventories = <
           ...equipmentInventoriesValue
             .slice(startIndexOfSliceInventories, endIndexOfSliceInventories)
             .map((_inventory, index) => {
-              const prefixInventory = `${PO_FORM_KEY.PAYMENT_EQUIPMENT_INVENTORIES}.${
-                startIndexOfSliceInventories + index
-              }`;
+              const prefixInventory = getPrefixName(startIndexOfSliceInventories, index);
 
               return {
                 content: (
                   <TextareaAutosize
                     {...getUncontrolledFieldProps(
-                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.SERIAL_NUMBER
-                      }`
+                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.SERIAL_NUMBER}`
                     )}
                     disabled={disabled}
                     errorMessage={_getErrorMessage(
-                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.SERIAL_NUMBER
-                      }`
+                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.SERIAL_NUMBER}`
                     )}
                     minRows={2}
                   />
@@ -295,10 +277,8 @@ const EquipmentInventories = <
           },
           ...equipmentInventoriesValue
             .slice(startIndexOfSliceInventories, endIndexOfSliceInventories)
-            .map((_inventory, index) => {
-              const prefixInventory = `${PO_FORM_KEY.PAYMENT_EQUIPMENT_INVENTORIES}.${
-                startIndexOfSliceInventories + index
-              }`;
+            .map((inventory, index) => {
+              const prefixInventory = getPrefixName(startIndexOfSliceInventories, index);
 
               return {
                 content: (
@@ -306,16 +286,13 @@ const EquipmentInventories = <
                     type="number"
                     hideArrowTypeNumber
                     {...getUncontrolledFieldProps(
-                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.ITEM_COST
-                      }`
+                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.ITEM_COST}`
                     )}
                     disabled={disabled}
                     errorMessage={_getErrorMessage(
-                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.ITEM_COST
-                      }`
+                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.ITEM_COST}`
                     )}
+                    value={isNumber(inventory?.itemCost) ? inventory.itemCost : ''}
                   />
                 ),
                 style: getContentStyle(index === DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS - 1),
@@ -339,24 +316,18 @@ const EquipmentInventories = <
           ...equipmentInventoriesValue
             .slice(startIndexOfSliceInventories, endIndexOfSliceInventories)
             .map((_inventory, index) => {
-              const prefixInventory = `${PO_FORM_KEY.PAYMENT_EQUIPMENT_INVENTORIES}.${
-                startIndexOfSliceInventories + index
-              }`;
+              const prefixInventory = getPrefixName(startIndexOfSliceInventories, index);
 
               return {
                 content: (
                   <TextareaAutosize
                     {...getUncontrolledFieldProps(
-                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.LOCATION_OF_EQUIPMENT
-                      }`
+                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.LOCATION_OF_EQUIPMENT}`
                     )}
                     minRows={2}
                     disabled={disabled}
                     errorMessage={_getErrorMessage(
-                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.LOCATION_OF_EQUIPMENT
-                      }`
+                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.LOCATION_OF_EQUIPMENT}`
                     )}
                   />
                 ),
@@ -381,17 +352,13 @@ const EquipmentInventories = <
           ...equipmentInventoriesValue
             .slice(startIndexOfSliceInventories, endIndexOfSliceInventories)
             .map((_inventory, index) => {
-              const prefixInventory = `${PO_FORM_KEY.PAYMENT_EQUIPMENT_INVENTORIES}.${
-                startIndexOfSliceInventories + index
-              }`;
+              const prefixInventory = getPrefixName(startIndexOfSliceInventories, index);
 
               return {
                 content: (
                   <Element
                     errorMessage={_getErrorMessage(
-                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.OWNERSHIP
-                      }`
+                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.OWNERSHIP}`
                     )}
                     showErrorBorder
                   >
@@ -400,9 +367,7 @@ const EquipmentInventories = <
                       columns={1}
                       options={ownershipOptions}
                       {...getFieldProps(
-                        `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                          PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.OWNERSHIP
-                        }`
+                        `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.OWNERSHIP}`
                       )}
                       onChange={setFieldValue}
                       showClearButton
@@ -431,23 +396,17 @@ const EquipmentInventories = <
           ...equipmentInventoriesValue
             .slice(startIndexOfSliceInventories, endIndexOfSliceInventories)
             .map((_inventory, index) => {
-              const prefixInventory = `${PO_FORM_KEY.PAYMENT_EQUIPMENT_INVENTORIES}.${
-                startIndexOfSliceInventories + index
-              }`;
+              const prefixInventory = getPrefixName(startIndexOfSliceInventories, index);
 
               return {
                 content: (
                   <TextareaAutosize
                     {...getUncontrolledFieldProps(
-                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.PREPARER_NAME
-                      }`
+                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.PREPARER_NAME}`
                     )}
                     disabled={disabled}
                     errorMessage={_getErrorMessage(
-                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.PREPARER_NAME
-                      }`
+                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.PREPARER_NAME}`
                     )}
                     minRows={2}
                   />
@@ -473,23 +432,17 @@ const EquipmentInventories = <
           ...equipmentInventoriesValue
             .slice(startIndexOfSliceInventories, endIndexOfSliceInventories)
             .map((_inventory, index) => {
-              const prefixInventory = `${PO_FORM_KEY.PAYMENT_EQUIPMENT_INVENTORIES}.${
-                startIndexOfSliceInventories + index
-              }`;
+              const prefixInventory = getPrefixName(startIndexOfSliceInventories, index);
 
               return {
                 content: (
                   <InputPhoneWithoutFlags
                     {...getFieldProps(
-                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.PREPARER_PHONE
-                      }`
+                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.PREPARER_PHONE}`
                     )}
                     disabled={disabled}
                     errorMessage={_getErrorMessage(
-                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.PREPARER_PHONE
-                      }`
+                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.PREPARER_PHONE}`
                     )}
                     onChange={setFieldValue}
                     onlyUS
@@ -519,23 +472,17 @@ const EquipmentInventories = <
           ...equipmentInventoriesValue
             .slice(startIndexOfSliceInventories, endIndexOfSliceInventories)
             .map((_inventory, index) => {
-              const prefixInventory = `${PO_FORM_KEY.PAYMENT_EQUIPMENT_INVENTORIES}.${
-                startIndexOfSliceInventories + index
-              }`;
+              const prefixInventory = getPrefixName(startIndexOfSliceInventories, index);
 
               return {
                 content: (
                   <TextareaAutosize
                     {...getUncontrolledFieldProps(
-                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.COMPONENT
-                      }`
+                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.COMPONENT}`
                     )}
                     disabled={disabled}
                     errorMessage={_getErrorMessage(
-                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.COMPONENT
-                      }`
+                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.COMPONENT}`
                     )}
                     minRows={8}
                   />
@@ -564,9 +511,7 @@ const EquipmentInventories = <
           ...equipmentInventoriesValue
             .slice(startIndexOfSliceInventories, endIndexOfSliceInventories)
             .map((_inventory, index) => {
-              const prefixInventory = `${PO_FORM_KEY.PAYMENT_EQUIPMENT_INVENTORIES}.${
-                startIndexOfSliceInventories + index
-              }`;
+              const prefixInventory = getPrefixName(startIndexOfSliceInventories, index);
 
               return {
                 content: (
@@ -574,15 +519,11 @@ const EquipmentInventories = <
                     <TextareaAutosize
                       label="(a) Product Name"
                       {...getUncontrolledFieldProps(
-                        `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                          PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.FABRICATED_A
-                        }`
+                        `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.FABRICATED_A}`
                       )}
                       disabled={disabled}
                       errorMessage={_getErrorMessage(
-                        `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                          PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.FABRICATED_A
-                        }`
+                        `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.FABRICATED_A}`
                       )}
                       minRows={2}
                       className="mb-12"
@@ -590,15 +531,11 @@ const EquipmentInventories = <
                     <TextareaAutosize
                       label="(b) Decal# or PO#"
                       {...getUncontrolledFieldProps(
-                        `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                          PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.FABRICATED_B
-                        }`
+                        `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.FABRICATED_B}`
                       )}
                       disabled={disabled}
                       errorMessage={_getErrorMessage(
-                        `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                          PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.FABRICATED_B
-                        }`
+                        `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.FABRICATED_B}`
                       )}
                       minRows={2}
                     />
@@ -625,30 +562,22 @@ const EquipmentInventories = <
           ...equipmentInventoriesValue
             .slice(startIndexOfSliceInventories, endIndexOfSliceInventories)
             .map((_inventory, index) => {
-              const prefixInventory = `${PO_FORM_KEY.PAYMENT_EQUIPMENT_INVENTORIES}.${
-                startIndexOfSliceInventories + index
-              }`;
+              const prefixInventory = getPrefixName(startIndexOfSliceInventories, index);
 
               return {
                 content: (
                   <DatePicker
                     {...getFieldProps(
-                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.RECEIVE_DATE
-                      }`
+                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.RECEIVE_DATE}`
                     )}
                     disabled={disabled}
                     errorMessage={_getErrorMessage(
-                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.RECEIVE_DATE
-                      }`
+                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.RECEIVE_DATE}`
                     )}
                     onChange={setFieldValue}
                     selected={
                       getFieldProps(
-                        `${getPrefixName(startIndexOfSliceInventories, index)}.${
-                          PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.RECEIVE_DATE
-                        }`
+                        `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.RECEIVE_DATE}`
                       ).value
                     }
                   />

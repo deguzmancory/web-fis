@@ -159,10 +159,11 @@ export const calculateDataOfItineraries = ({
       // 2. minus a day for the ends (which we will put back after we decided how much to put back)
       // 3. calculate how much to add using the table provided to travel
       // 4. add back the number of partial days back to the total
-      calcDays = getFullDayDifference({
-        startDate: startDepartureDate,
-        endDate: endArrivalDate,
-      });
+      calcDays =
+        getFullDayDifference({
+          startDate: startDepartureDate,
+          endDate: endArrivalDate,
+        }) - 1;
       calcDays += getPartialDaysFromHours('home-dept', startDepartureDate);
       calcDays += getPartialDaysFromHours('home-return', endArrivalDate);
 

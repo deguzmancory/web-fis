@@ -73,6 +73,10 @@ export const emptyUpsertAuthorizationFormValue = {
   phoneNumber: '',
   faStaffReviewer: '',
 
+  //project items
+  projectLineItems: [initialAuthorizationPaymentProjectItem],
+  paymentTotal: 0,
+
   // Signature
   reasonForPayment: '',
   piSignature: '',
@@ -87,12 +91,10 @@ export const emptyUpsertAuthorizationFormValue = {
   minorVersion: null,
   total: 0,
   internalComments: '',
-  paymentTotal: null,
   equipmentInventoryManualFlag: null,
   fileAttachments: [],
   formAttachments: [],
 
-  projectLineItems: [initialAuthorizationPaymentProjectItem],
   remittance: initialAuthorizationPaymentRemittance,
   equipmentInventories: getInitialPaymentEquipmentInventories(
     DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS

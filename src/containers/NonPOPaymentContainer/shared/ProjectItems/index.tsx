@@ -364,7 +364,7 @@ const ProjectItems = <
                 })
               }
               style={{
-                width: 140,
+                width: 145,
               }}
               disabled={disabled}
               textAlign="right"

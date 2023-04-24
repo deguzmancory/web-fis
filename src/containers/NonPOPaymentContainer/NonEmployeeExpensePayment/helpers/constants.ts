@@ -43,7 +43,7 @@ export const initialNonEmployeeTravelExpenditure = {
 };
 
 export const initialNonEmployeeTravelRemittanceLineItem = {
-  number: '',
+  referenceNumber: '',
   amount: 0,
   lineNumber: null,
   customerAccountComment: '',
@@ -106,13 +106,18 @@ export const emptyUpsertNonEmployeeTravelFormValue: UpsertNonEmployeeTravelFormV
   noReceiptSmallCorrectFlag: null,
   noReceiptAmount: null,
 
+  //file attachments
+  fileAttachments: [],
+
+  //comments
+  internalComments: '',
+
   acceptedDate: '',
   organization: '',
   homeAddress: '',
   purposeForTravel: '',
   phoneNumber: '',
   directInquiriesTo: '',
-  internalComments: '',
   travelDetails: '',
   total: null,
   claimantSignature: '',
