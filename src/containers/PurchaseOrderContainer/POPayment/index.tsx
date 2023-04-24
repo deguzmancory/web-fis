@@ -84,6 +84,7 @@ const POPayment: FC<Props> = ({
   const { onGetPOPaymentById, handleInvalidatePOPaymentDetail } = useGetPOPaymentDetail({
     id: id,
     onSuccess: async (data) => {
+      console.log('data: ', data);
       const { data: remainingBalanceResponse } = await onGetRemainingBalance();
 
       const formValue: UpdatePOPaymentFormValue = getPOPaymentFormValueFromResponse({

@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import { memo, useMemo } from 'react';
+import { memo, useMemo, useCallback } from 'react';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import CustomTable from 'src/components/CustomTable';
 import { BodyRow, BodyRows } from 'src/components/CustomTable/types';
@@ -32,6 +32,11 @@ import {
   numberOfItemsOptions,
   ownershipOptions,
 } from './helpers';
+import {
+  UpsertAuthorizationFormValue,
+  UpsertAuthorizationPaymentFormikProps,
+} from 'src/containers/NonPOPaymentContainer/AuthorizationForPayment/types';
+import { AUTHORIZATION_FOR_PAYMENT_KEY } from 'src/containers/NonPOPaymentContainer/AuthorizationForPayment/enum';
 
 const getHeaderRow = (tableIndex: number): BodyRow => {
   const tableStartOrder = tableIndex * DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS + 1;
@@ -96,13 +101,44 @@ const getContentStyle = (isLastColumn: boolean) => ({
   borderRight: isLastColumn ? COLOR_CODE.DEFAULT_BORDER : 'none',
 });
 
-const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }) => {
+const isUpsertAuthorizationPaymentFormValue = (
+  formValues,
+  authorizationPaymentPrefix: string
+): formValues is UpsertAuthorizationFormValue => {
+  return authorizationPaymentPrefix === AUTHORIZATION_FOR_PAYMENT_KEY.EQUIPMENT_INVENTORIES;
+};
+
+const EquipmentInventories = <
+  T extends UpdatePOPaymentFormikProps | UpsertAuthorizationPaymentFormikProps
+>({
+  formikProps,
+  authorizationPaymentPrefix,
+  disabled = false,
+}: Props<T>) => {
   const { values, errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } =
     formikProps;
+  console.log('values: ', values);
 
-  const equipmentInventoriesValue = useMemo(
-    () => values.paymentEquipmentInventories || [],
-    [values.paymentEquipmentInventories]
+  const equipmentInventoriesValue = useMemo(() => {
+    if (isUpsertAuthorizationPaymentFormValue(values, authorizationPaymentPrefix)) {
+      return values.equipmentInventories || [];
+    }
+    return values.paymentEquipmentInventories || [];
+  }, [authorizationPaymentPrefix, values]);
+
+  const getPrefixName = useCallback(
+    (startIndexOfSliceInventories, index) => {
+      if (isUpsertAuthorizationPaymentFormValue(values, authorizationPaymentPrefix)) {
+        return `${AUTHORIZATION_FOR_PAYMENT_KEY.EQUIPMENT_INVENTORIES}.${
+          startIndexOfSliceInventories + index
+        }`;
+      } else {
+        return `${PO_FORM_KEY.PAYMENT_EQUIPMENT_INVENTORIES}.${
+          startIndexOfSliceInventories + index
+        }`;
+      }
+    },
+    [authorizationPaymentPrefix, values]
   );
 
   const isExpanded = equipmentInventoriesValue.some((inventory) =>
@@ -142,11 +178,15 @@ const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }
                 content: (
                   <TextareaAutosize
                     {...getUncontrolledFieldProps(
-                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.DESCRIPTION}`
+                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.DESCRIPTION
+                      }`
                     )}
                     disabled={disabled}
                     errorMessage={_getErrorMessage(
-                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.DESCRIPTION}`
+                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.DESCRIPTION
+                      }`
                     )}
                     minRows={3}
                   />
@@ -180,11 +220,15 @@ const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }
                 content: (
                   <TextareaAutosize
                     {...getUncontrolledFieldProps(
-                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.BRAND_NAME}`
+                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.BRAND_NAME
+                      }`
                     )}
                     disabled={disabled}
                     errorMessage={_getErrorMessage(
-                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.BRAND_NAME}`
+                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.BRAND_NAME
+                      }`
                     )}
                     minRows={2}
                   />
@@ -218,11 +262,15 @@ const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }
                 content: (
                   <TextareaAutosize
                     {...getUncontrolledFieldProps(
-                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.SERIAL_NUMBER}`
+                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.SERIAL_NUMBER
+                      }`
                     )}
                     disabled={disabled}
                     errorMessage={_getErrorMessage(
-                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.SERIAL_NUMBER}`
+                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.SERIAL_NUMBER
+                      }`
                     )}
                     minRows={2}
                   />
@@ -258,11 +306,15 @@ const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }
                     type="number"
                     hideArrowTypeNumber
                     {...getUncontrolledFieldProps(
-                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.ITEM_COST}`
+                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.ITEM_COST
+                      }`
                     )}
                     disabled={disabled}
                     errorMessage={_getErrorMessage(
-                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.ITEM_COST}`
+                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.ITEM_COST
+                      }`
                     )}
                   />
                 ),
@@ -295,12 +347,16 @@ const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }
                 content: (
                   <TextareaAutosize
                     {...getUncontrolledFieldProps(
-                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.LOCATION_OF_EQUIPMENT}`
+                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.LOCATION_OF_EQUIPMENT
+                      }`
                     )}
                     minRows={2}
                     disabled={disabled}
                     errorMessage={_getErrorMessage(
-                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.LOCATION_OF_EQUIPMENT}`
+                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.LOCATION_OF_EQUIPMENT
+                      }`
                     )}
                   />
                 ),
@@ -333,7 +389,9 @@ const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }
                 content: (
                   <Element
                     errorMessage={_getErrorMessage(
-                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.OWNERSHIP}`
+                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.OWNERSHIP
+                      }`
                     )}
                     showErrorBorder
                   >
@@ -342,7 +400,9 @@ const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }
                       columns={1}
                       options={ownershipOptions}
                       {...getFieldProps(
-                        `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.OWNERSHIP}`
+                        `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                          PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.OWNERSHIP
+                        }`
                       )}
                       onChange={setFieldValue}
                       showClearButton
@@ -379,11 +439,15 @@ const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }
                 content: (
                   <TextareaAutosize
                     {...getUncontrolledFieldProps(
-                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.PREPARER_NAME}`
+                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.PREPARER_NAME
+                      }`
                     )}
                     disabled={disabled}
                     errorMessage={_getErrorMessage(
-                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.PREPARER_NAME}`
+                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.PREPARER_NAME
+                      }`
                     )}
                     minRows={2}
                   />
@@ -417,11 +481,15 @@ const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }
                 content: (
                   <InputPhoneWithoutFlags
                     {...getFieldProps(
-                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.PREPARER_PHONE}`
+                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.PREPARER_PHONE
+                      }`
                     )}
                     disabled={disabled}
                     errorMessage={_getErrorMessage(
-                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.PREPARER_PHONE}`
+                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.PREPARER_PHONE
+                      }`
                     )}
                     onChange={setFieldValue}
                     onlyUS
@@ -459,11 +527,15 @@ const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }
                 content: (
                   <TextareaAutosize
                     {...getUncontrolledFieldProps(
-                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.COMPONENT}`
+                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.COMPONENT
+                      }`
                     )}
                     disabled={disabled}
                     errorMessage={_getErrorMessage(
-                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.COMPONENT}`
+                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.COMPONENT
+                      }`
                     )}
                     minRows={8}
                   />
@@ -502,11 +574,15 @@ const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }
                     <TextareaAutosize
                       label="(a) Product Name"
                       {...getUncontrolledFieldProps(
-                        `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.FABRICATED_A}`
+                        `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                          PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.FABRICATED_A
+                        }`
                       )}
                       disabled={disabled}
                       errorMessage={_getErrorMessage(
-                        `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.FABRICATED_A}`
+                        `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                          PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.FABRICATED_A
+                        }`
                       )}
                       minRows={2}
                       className="mb-12"
@@ -514,11 +590,15 @@ const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }
                     <TextareaAutosize
                       label="(b) Decal# or PO#"
                       {...getUncontrolledFieldProps(
-                        `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.FABRICATED_B}`
+                        `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                          PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.FABRICATED_B
+                        }`
                       )}
                       disabled={disabled}
                       errorMessage={_getErrorMessage(
-                        `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.FABRICATED_B}`
+                        `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                          PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.FABRICATED_B
+                        }`
                       )}
                       minRows={2}
                     />
@@ -553,16 +633,22 @@ const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }
                 content: (
                   <DatePicker
                     {...getFieldProps(
-                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.RECEIVE_DATE}`
+                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.RECEIVE_DATE
+                      }`
                     )}
                     disabled={disabled}
                     errorMessage={_getErrorMessage(
-                      `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.RECEIVE_DATE}`
+                      `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                        PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.RECEIVE_DATE
+                      }`
                     )}
                     onChange={setFieldValue}
                     selected={
                       getFieldProps(
-                        `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.RECEIVE_DATE}`
+                        `${getPrefixName(startIndexOfSliceInventories, index)}.${
+                          PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.RECEIVE_DATE
+                        }`
                       ).value
                     }
                   />
@@ -634,8 +720,13 @@ const EquipmentInventories: React.FC<Props> = ({ formikProps, disabled = false }
   );
 };
 
-type Props = {
-  formikProps: UpdatePOPaymentFormikProps;
+type Props<T> = {
+  formikProps: T extends UpsertAuthorizationPaymentFormikProps
+    ? UpsertAuthorizationPaymentFormikProps
+    : T extends UpdatePOPaymentFormikProps
+    ? UpdatePOPaymentFormikProps
+    : unknown;
+  authorizationPaymentPrefix?: string;
   disabled?: boolean;
   currentPOMode: PO_MODE;
 };
@@ -648,7 +739,7 @@ export default memo(EquipmentInventories, (prevProps, nextProps) => {
     prevProps.disabled === nextProps.disabled &&
     prevProps.currentPOMode === nextProps.currentPOMode &&
     prevFormikProps.submitCount === nextFormikProps.submitCount &&
-    isEqualPrevAndNextFormikValues<UpdatePOPaymentFormValue>({
+    isEqualPrevAndNextFormikValues<UpdatePOPaymentFormValue | UpsertAuthorizationFormValue>({
       prevFormikProps,
       nextFormikProps,
       formKeysNeedRender: [
@@ -659,6 +750,9 @@ export default memo(EquipmentInventories, (prevProps, nextProps) => {
         PO_FORM_KEY.PAYMENT_EQUIPMENT_INVENTORIES,
         PO_FORM_KEY.PAYMENT_EQUIPMENT_INVENTORY_MANUAL_FLAG,
         PO_FORM_KEY.PAYMENT_EQUIPMENT_INVENTORIES_NUMBER_OF_ITEMS,
+
+        AUTHORIZATION_FOR_PAYMENT_KEY.EQUIPMENT_INVENTORIES,
+        AUTHORIZATION_FOR_PAYMENT_KEY.EQUIPMENT_INVENTORY_MANUAL_FLAG,
       ],
     })
   );

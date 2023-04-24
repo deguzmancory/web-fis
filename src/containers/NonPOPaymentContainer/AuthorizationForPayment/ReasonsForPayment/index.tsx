@@ -5,7 +5,7 @@ import { getErrorMessage } from 'src/utils';
 import { AUTHORIZATION_FOR_PAYMENT_KEY } from '../enum';
 import { UpsertAuthorizationPaymentFormikProps } from '../types';
 
-const ReasonsForPayment: React.FC<Props> = ({ formikProps, disabled }) => {
+const ReasonsForPayment: React.FC<Props> = ({ formikProps, disabled, currentMode }) => {
   const { errors, touched, getUncontrolledFieldProps } = formikProps;
 
   const _getErrorMessage = (fieldName: any) => {
@@ -69,6 +69,7 @@ const ReasonsForPayment: React.FC<Props> = ({ formikProps, disabled }) => {
 type Props = {
   formikProps: UpsertAuthorizationPaymentFormikProps;
   disabled?: boolean;
+  currentMode;
 };
 
 export default ReasonsForPayment;

@@ -1,4 +1,3 @@
-import { AdditionalPOFormValue } from 'src/containers/PurchaseOrderContainer/PO/types';
 import { FinancialProject, Vendor } from 'src/queries';
 import { UpsertAuthorizationPayload } from 'src/queries/NonPOPayment/AuthorizationForPayment/types';
 import { NonPOPaymentProjectLineItem } from 'src/queries/NonPOPayment/types';
@@ -25,7 +24,9 @@ export interface UpsertAuthorizationFormValue
 
   //form only
   placeholderFileAttachment: POPlaceholderFileAttachment;
-  formAttachments: AdditionalPOFormValue[];
+
+  //equipment inventories
+  paymentNumberOfEquipmentInventories: number;
 }
 
 export type UpsertAuthorizationPaymentFormikProps = CommonFormikProps<UpsertAuthorizationFormValue>;

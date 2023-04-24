@@ -1,6 +1,9 @@
 import {
   AdditionalPOForm,
+  POAdditionalFormResponse,
+  POAuditTrails,
   POFileAttachment,
+  POFileAttachmentResponse,
   PO_ACTION,
   PO_DETAIL_STATUS,
 } from 'src/queries/PurchaseOrders';
@@ -90,6 +93,7 @@ export interface SharedAuthorizationDetail
   remittance: AuthorizationRemittance;
   projectLineItems: NonPOPaymentProjectLineItem[];
   remittanceLineItems: AuthorizationRemittanceLineItem[];
+  auditTrails?: POAuditTrails[];
 }
 
 export interface UpsertAuthorizationPayload extends SharedAuthorizationDetail {
@@ -103,4 +107,8 @@ export interface AuthorizationPaymentResponse extends SharedAuthorizationDetail 
   id?: string;
   createdAt: string;
   updatedAt: string;
+
+  // TODO: Tuyen Tran check type response when BE fixed bug
+  fileAttachments: POFileAttachmentResponse[];
+  formAttachments: POAdditionalFormResponse[];
 }

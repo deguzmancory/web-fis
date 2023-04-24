@@ -8,7 +8,7 @@ import { AUTHORIZATION_FOR_PAYMENT_KEY } from '../enum';
 import { useUploadAuthorizationFileAttachment } from 'src/queries/NonPOPayment/AuthorizationForPayment/useUploadAuthorizationFileAttachment';
 import { useAddAuthorizationAttachment } from 'src/queries/NonPOPayment/AuthorizationForPayment/useAddAuthorizationAttachment';
 import { useDeleteAuthorizationPaymentAttachment } from 'src/queries/NonPOPayment/AuthorizationForPayment/useDeleteNonAuthorizationAttachment';
-import { POFileAttachment } from 'src/queries';
+import { POFileAttachment, PO_MODE } from 'src/queries';
 import { hideAllDialog, showDialog } from 'src/redux/dialog/dialogSlice';
 import { DIALOG_TYPES } from 'src/redux/dialog/type';
 import { useGetAuthorizationPaymentAttachmentPresignedUrl } from 'src/queries/NonPOPayment/AuthorizationForPayment/useGetAuthorizationPaymentAttachmentPresignedUrl';
@@ -17,6 +17,7 @@ import FileAttachmentsSection from 'src/containers/shared/FileAttachmentsSection
 const FileAttachments: React.FC<Props> = ({
   formikProps,
   disabled = false,
+  currentPOMode,
   allowActionAfterFinalApproveOnly = false,
 }) => {
   const { fileAttachments, id: Id, placeholderFileAttachment } = formikProps.values;
@@ -220,6 +221,7 @@ const FileAttachments: React.FC<Props> = ({
 type Props = {
   formikProps: UpsertAuthorizationPaymentFormikProps;
   disabled?: boolean;
+  currentPOMode?: PO_MODE;
   allowActionAfterFinalApproveOnly?: boolean;
 };
 

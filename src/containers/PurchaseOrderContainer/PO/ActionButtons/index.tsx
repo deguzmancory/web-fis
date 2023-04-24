@@ -32,9 +32,14 @@ import { UpsertPOFormValue, UpsertPOFormikProps } from '../types';
 import { UpdatePOPaymentFormikProps } from '../../POPayment/types';
 import { UpsertNonEmployeeTravelFormikProps } from 'src/containers/NonPOPaymentContainer/NonEmployeeExpensePayment/types';
 import { Callback } from 'src/redux/types';
+import { UpsertAuthorizationPaymentFormikProps } from 'src/containers/NonPOPaymentContainer/AuthorizationForPayment/types';
 
 const ActionButtons = <
-  T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps | UpsertNonEmployeeTravelFormikProps
+  T extends
+    | UpsertPOFormikProps
+    | UpdatePOPaymentFormikProps
+    | UpsertNonEmployeeTravelFormikProps
+    | UpsertAuthorizationPaymentFormikProps
 >({
   formikProps,
   currentFormMode,
@@ -237,7 +242,11 @@ const ActionButtons = <
 };
 
 type Props<
-  T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps | UpsertNonEmployeeTravelFormikProps
+  T extends
+    | UpsertPOFormikProps
+    | UpdatePOPaymentFormikProps
+    | UpsertNonEmployeeTravelFormikProps
+    | UpsertAuthorizationPaymentFormikProps
 > = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps & {
     formikProps: T extends UpsertPOFormikProps
@@ -246,6 +255,8 @@ type Props<
       ? UpdatePOPaymentFormikProps
       : T extends UpsertNonEmployeeTravelFormikProps
       ? UpsertNonEmployeeTravelFormikProps
+      : T extends UpsertAuthorizationPaymentFormikProps
+      ? UpsertAuthorizationPaymentFormikProps
       : unknown;
     disabled?: boolean;
     loading?: boolean;

@@ -1,3 +1,5 @@
+import { DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS } from 'src/containers/PurchaseOrderContainer/POPayment/EquipmentInventoriesV2/helpers';
+import { POPaymentEquipmentInventory } from 'src/queries';
 import { AUTHORIZATION_PMT_REMITTANCE_LINE_ITEM_KEY } from '../enum';
 
 export const initialAuthorizationPaymentProjectItem = {
@@ -24,6 +26,7 @@ export const initialAuthorizationPaymentRemittance = {
   remittanceTotal: 0,
 };
 
+//  TODO: Tuyen Tran will remove if not need
 export const initialAuthorizationPaymentEquipmentInventory = {
   lineNumber: null,
   ownership: '',
@@ -39,6 +42,13 @@ export const initialAuthorizationPaymentEquipmentInventory = {
   fabricatedB: '',
   receiveDate: null,
 };
+
+export const getInitialPaymentEquipmentInventories = (
+  numberOfITems = DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS
+) =>
+  Array<POPaymentEquipmentInventory>(numberOfITems).fill(
+    initialAuthorizationPaymentEquipmentInventory
+  );
 
 export const initialAuthorizationPaymentRemittanceItem = {
   referenceNumber: '',
@@ -84,7 +94,11 @@ export const emptyUpsertAuthorizationFormValue = {
 
   projectLineItems: [initialAuthorizationPaymentProjectItem],
   remittance: initialAuthorizationPaymentRemittance,
-  equipmentInventories: [initialAuthorizationPaymentEquipmentInventory],
+  equipmentInventories: getInitialPaymentEquipmentInventories(
+    DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS
+  ),
+  paymentNumberOfEquipmentInventories: DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS,
+
   remittanceLineItems: [initialAuthorizationPaymentRemittanceItem],
 };
 

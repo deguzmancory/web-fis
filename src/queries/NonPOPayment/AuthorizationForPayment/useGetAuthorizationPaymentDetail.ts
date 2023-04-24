@@ -4,7 +4,7 @@ import { ApiResponseType, getResponseData, responseWrapper } from 'src/queries/h
 import { API_QUERIES } from 'src/queries/keys';
 import { AuthorizationPaymentResponse } from './types';
 
-export function useGetAuthorizationPayment(
+export function useGetAuthorizationPaymentDetail(
   options?: UseQueryOptions<
     ApiResponseType<AuthorizationPaymentResponse>,
     Error,
@@ -16,7 +16,7 @@ export function useGetAuthorizationPayment(
     error,
     isError,
     isFetching: isLoading,
-    refetch: onGetAuthorizationPaymentPayId,
+    refetch: onGetAuthorizationPaymentById,
   } = useQuery<ApiResponseType<AuthorizationPaymentResponse>, Error, AuthorizationPaymentResponse>(
     [API_QUERIES.AUTHORIZATION_DETAIL, { id: options.id }],
     {
@@ -43,7 +43,7 @@ export function useGetAuthorizationPayment(
     error,
     isError,
     isLoading,
-    onGetAuthorizationPaymentPayId,
+    onGetAuthorizationPaymentById,
     handleInvalidateAuthorizationPaymentDetail,
   };
 }
