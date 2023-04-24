@@ -397,6 +397,8 @@ const POPayment: FC<Props> = ({
                   formikProps={formikProps}
                   loading={isLoading}
                   disabled={isLoading}
+                  showCloneDocument={false}
+                  showVendorPrintMode={false}
                   warningDeleteContainer={
                     <DeletePOPaymentWarning
                       id={id}

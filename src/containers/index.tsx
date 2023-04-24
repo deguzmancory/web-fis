@@ -191,6 +191,13 @@ const Routing: React.FC<{ location: Location }> = (props) => {
               component={SubmittedNonPO}
             />
 
+            {/* Purchasing List*/}
+            <CustomRoute
+              pageRequiredAuth
+              path={`${PATHS.submittedNonPOPayment}/:id`}
+              component={SubmittedNonPO}
+            />
+
             {/* Non PO Listing*/}
             <CustomRoute pageRequiredAuth path={PATHS.nonPOListing} component={NonPOListing} />
 

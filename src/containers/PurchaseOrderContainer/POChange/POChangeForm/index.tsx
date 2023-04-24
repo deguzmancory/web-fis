@@ -428,6 +428,7 @@ const POChangeForm: React.FC<Props> = ({
                   formikProps={formikProps}
                   loading={isLoading}
                   disabled={isLoading}
+                  showCloneDocument={false}
                   warningDeleteContainer={<DeletePOWarning id={id} />}
                 />
               </>

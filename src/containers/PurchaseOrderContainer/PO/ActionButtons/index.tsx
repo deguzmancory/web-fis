@@ -52,8 +52,8 @@ const ActionButtons = <
   onSetPoFormAction,
   onShowDialog,
   onHideDialog,
-  showCloneDocument = false,
-  showVendorPrintMode = false,
+  showCloneDocument = true,
+  showVendorPrintMode = true,
   callback,
 }: Props<T>) => {
   const { id } = useParams<{ id: string }>();
