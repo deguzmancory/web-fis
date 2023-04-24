@@ -30,6 +30,7 @@ import {
 import { authorizationProjectLineItemsColumnsName, commonColumnStyles } from '../constants';
 import { PMT_PROJECT_LINE_ITEM_KEY } from '../enums';
 import { PO_MODE } from 'src/queries';
+import { isCUReviewMode, isFAReviewMode } from 'src/queries/PurchaseOrders/helpers';
 
 const isUpsertAuthorizationPaymentFormValue = (
   formValues,
@@ -66,6 +67,8 @@ const ProjectItems = <
     setFieldTouched,
     getUncontrolledFieldProps,
   } = formikProps;
+
+  const isReviewMode = isFAReviewMode(currentMode) || isCUReviewMode(currentMode);
 
   const lineItemsValue = useMemo(() => {
     if (isUpsertAuthorizationPaymentFormValue(values, projectItemsPrefix)) {
@@ -205,7 +208,7 @@ const ProjectItems = <
               setFieldTouched={setFieldTouched}
               setFieldValue={setFieldValue}
               sx={{ width: 140 }}
-              disabled={disabled}
+              disabled={disabled || isReviewMode}
               onChange={(name, value) => {
                 handleInputChange({
                   index,

@@ -1,6 +1,7 @@
 import { PO_ACTION } from 'src/queries';
 import {
   isInGroup1Payee,
+  isInGroup2Payee,
   isServiceProviderPayeeCategory,
 } from 'src/queries/NonPOPayment/NonEmployeeTravel/helpers';
 import { isSubmitAction } from 'src/queries/PurchaseOrders/helpers';
@@ -146,22 +147,27 @@ export const getNonEmployeeTravelFormValidationSchema = ({ action }: { action: P
             : Yup.number().nullable(),
         })
       ),
-    paymentTotal: Yup.number()
-      .moreThan(0, 'The TOTAL must be greater than $0.')
-      .lessThan(100000000, 'The TOTAL must be less than $100,000,000.00.')
-      .typeError('The TOTAL must be greater than $0.')
-      .test(
-        'not-match-claim-due',
-        'The TOTAL must match the CLAIM DUE (A-B) from the Expenditures section.',
-        (value, context) => {
-          const { expenditureTotal, amountAdvanced } = context.parent;
-          if (Number(value) !== Number(expenditureTotal) - Number(amountAdvanced)) {
-            return false;
-          }
+    paymentTotal: isSubmitPOAction
+      ? Yup.number()
+          .moreThan(0, 'The TOTAL must be greater than $0.')
+          .lessThan(100000000, 'The TOTAL must be less than $100,000,000.00.')
+          .typeError('The TOTAL must be greater than $0.')
+          .test(
+            'not-match-claim-due',
+            'The TOTAL must match the CLAIM DUE (A-B) from the Expenditures section.',
+            (value, context) => {
+              const { expenditureTotal, amountAdvanced, payeeCategory } = context.parent;
 
-          return true;
-        }
-      ),
+              if (isInGroup2Payee(payeeCategory)) return true;
+
+              if (Number(value) !== Number(expenditureTotal) - Number(amountAdvanced)) {
+                return false;
+              }
+
+              return true;
+            }
+          )
+      : Yup.number().nullable(),
 
     // Business Purpose Details
     travelDetails: isSubmitPOAction

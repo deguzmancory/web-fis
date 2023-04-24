@@ -1,12 +1,13 @@
-import { Divider, Grid, Typography } from '@mui/material';
+import { Box, Divider, Grid, Typography } from '@mui/material';
 import React from 'react';
 import {
   EllipsisTooltipInput,
   EllipsisTooltipInputCurrency,
+  Input,
   TextareaAutosize,
 } from 'src/components/common';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
-import { MAX_TAX_NUMBER } from './helpers';
+import { FED_ATTACHMENT_VALUE, MAX_TAX_NUMBER } from './helpers';
 
 import { PO_FORM_KEY } from 'src/containers/PurchaseOrderContainer/PO/enums';
 import {
@@ -25,6 +26,7 @@ const PurchaseInfoChange: React.FC<Props> = ({
 }) => {
   const { values, errors, touched, getFieldProps, setFieldValue, getUncontrolledFieldProps } =
     formikProps;
+  console.log('values: ', values);
 
   const isTotalCancellationForm = isPOChangeTotalCancellationForm(values.formNumber);
 
@@ -93,6 +95,20 @@ const PurchaseInfoChange: React.FC<Props> = ({
           <b>Type of Change:</b> {getTypeOfPOChange(values.formNumber)}
         </Typography>
       </Grid>
+
+      {values.fedAttachment === FED_ATTACHMENT_VALUE.UH_SUBAWARD && (
+        <Grid item xs={12}>
+          <Box width={'25%'}>
+            <Input
+              label={'UH Subaward'}
+              maxLength={10}
+              {...getUncontrolledFieldProps(PO_FORM_KEY.UH_SUBAWARD_NUMBER)}
+              errorMessage={_getErrorMessage(PO_FORM_KEY.UH_SUBAWARD_NUMBER)}
+              disabled={disabled}
+            />
+          </Box>
+        </Grid>
+      )}
 
       <Grid item xs={12} md={7}>
         <Grid item xs={11} container spacing={2}>
@@ -220,17 +236,14 @@ export default React.memo(PurchaseInfoChange, (prevProps, nextProps) => {
   const nextFormikProps = nextProps.formikProps;
 
   const formKeysNeedRender = [
-    PO_FORM_KEY.CONFIRMING,
-    PO_FORM_KEY.GET_EXEMPT,
-    PO_FORM_KEY.ATTACHMENT_31,
-    PO_FORM_KEY.UH_SUBAWARD_NUMBER,
-    PO_FORM_KEY.FED_ATTACHMENT,
     PO_FORM_KEY.SUBTOTAL,
     PO_FORM_KEY.TAX_RATE,
     PO_FORM_KEY.SUPER_QUOTE_NUMBER,
     PO_FORM_KEY.TAX_TOTAL,
     PO_FORM_KEY.SHIPPING_TOTAL,
     PO_FORM_KEY.TOTAL,
+    PO_FORM_KEY.UH_SUBAWARD_NUMBER,
+    PO_FORM_KEY.FED_ATTACHMENT,
   ]; // only re-render if keys using in this component change
 
   return (

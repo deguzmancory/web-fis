@@ -2,7 +2,7 @@ import { Box, Grid } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { UpsertAuthorizationPaymentFormikProps } from '../types';
 import { Input, InputUSPhone, Link, Select, TextareaAutosize } from 'src/components/common';
-import { getErrorMessage } from 'src/utils';
+import { getErrorMessage, isString } from 'src/utils';
 import { isCreateMode, isPiSuEditMode } from 'src/queries/PurchaseOrders/helpers';
 import React from 'react';
 import usePOSearchVender, {
@@ -12,7 +12,7 @@ import {
   getVendorAddress,
   getVendorNameOrVendorCodeOptions,
 } from 'src/containers/PurchaseOrderContainer/PO/GeneralInfo/helpers';
-import { debounce, isString } from 'lodash';
+import { debounce } from 'lodash';
 import { Add } from '@mui/icons-material';
 import { SelectOption } from 'src/components/common/Select';
 import { Vendor } from 'src/queries';

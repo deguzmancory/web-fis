@@ -26,7 +26,12 @@ import {
   VENDOR_REGISTRATION_PARAMS,
 } from 'src/containers/Vendors/VendorRegistration/enums';
 import { PO_MODE, Vendor } from 'src/queries';
-import { isCreateMode, isPiSuEditMode } from 'src/queries/PurchaseOrders/helpers';
+import {
+  isCUReviewMode,
+  isCreateMode,
+  isFAReviewMode,
+  isPiSuEditMode,
+} from 'src/queries/PurchaseOrders/helpers';
 import { setFormData } from 'src/redux/form/formSlice';
 import { Navigator } from 'src/services';
 import { getErrorMessage, isString } from 'src/utils';
@@ -53,6 +58,8 @@ const GeneralInfo: FC<Props> = ({ formikProps, disabled = false, currentMode }) 
 
   // show action link only on create PO and PI SU edit mode of PO document
   const showActionLink = isCreateMode(currentMode) || isPiSuEditMode(currentMode);
+
+  const isReviewMode = isFAReviewMode(currentMode) || isCUReviewMode(currentMode);
 
   const isPayee1Group = isInGroup1Payee(values.payeeCategory);
 
@@ -152,7 +159,7 @@ const GeneralInfo: FC<Props> = ({ formikProps, disabled = false, currentMode }) 
             isClearable={true}
             onChange={(_name, value) => updateVendorFields(value)}
             optionWithSubLabel
-            isDisabled={disabled}
+            isDisabled={disabled || isReviewMode}
             menuStyle={{
               width: '800px',
             }}
@@ -214,7 +221,7 @@ const GeneralInfo: FC<Props> = ({ formikProps, disabled = false, currentMode }) 
             isClearable={true}
             onChange={(_name, value) => updateVendorFields(value)}
             optionWithSubLabel
-            isDisabled={disabled}
+            isDisabled={disabled || isReviewMode}
           />
         </Grid>
         {isPayee1Group && (
@@ -223,7 +230,7 @@ const GeneralInfo: FC<Props> = ({ formikProps, disabled = false, currentMode }) 
               label={'Position Title'}
               errorMessage={_getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.POSITION_TITLE)}
               {...getUncontrolledFieldProps(NON_EMPLOYEE_TRAVEL_FORM_KEY.POSITION_TITLE)}
-              disabled={disabled}
+              disabled={disabled || isReviewMode}
               required={isServiceProviderPayeeCategory(values.payeeCategory)}
               footer={
                 <Typography variant="subtitle1">
@@ -239,7 +246,7 @@ const GeneralInfo: FC<Props> = ({ formikProps, disabled = false, currentMode }) 
               label={'Employer'}
               errorMessage={_getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.EMPLOYER)}
               {...getUncontrolledFieldProps(NON_EMPLOYEE_TRAVEL_FORM_KEY.EMPLOYER)}
-              disabled={disabled}
+              disabled={disabled || isReviewMode}
               required={isServiceProviderPayeeCategory(values.payeeCategory)}
               footer={
                 <Typography variant="subtitle1">
@@ -281,7 +288,7 @@ const GeneralInfo: FC<Props> = ({ formikProps, disabled = false, currentMode }) 
             label={'Project Contact'}
             errorMessage={_getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.PROJECT_CONTACT)}
             {...getUncontrolledFieldProps(NON_EMPLOYEE_TRAVEL_FORM_KEY.PROJECT_CONTACT)}
-            disabled={disabled}
+            disabled={disabled || isReviewMode}
             required
             footer={
               <Typography variant="subtitle1">(Preparer's name and phone number.)</Typography>
@@ -294,7 +301,7 @@ const GeneralInfo: FC<Props> = ({ formikProps, disabled = false, currentMode }) 
             errorMessage={_getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.PROJECT_CONTACT_PHONE)}
             {...getFieldProps(NON_EMPLOYEE_TRAVEL_FORM_KEY.PROJECT_CONTACT_PHONE)}
             onChange={setFieldValue}
-            disabled={disabled}
+            disabled={disabled || isReviewMode}
             required
           />
         </Grid>
@@ -310,7 +317,7 @@ const GeneralInfo: FC<Props> = ({ formikProps, disabled = false, currentMode }) 
                 {...getFieldProps(NON_EMPLOYEE_TRAVEL_FORM_KEY.FROM_SERVICE_DATE)}
                 onChange={setFieldValue}
                 selected={values.fromServiceDate}
-                disabled={disabled}
+                disabled={disabled || isReviewMode}
                 required
               />
             </Grid>
@@ -321,7 +328,7 @@ const GeneralInfo: FC<Props> = ({ formikProps, disabled = false, currentMode }) 
                 {...getFieldProps(NON_EMPLOYEE_TRAVEL_FORM_KEY.TO_SERVICE_DATE)}
                 onChange={setFieldValue}
                 selected={values.toServiceDate}
-                disabled={disabled}
+                disabled={disabled || isReviewMode}
                 required
               />
             </Grid>

@@ -1,7 +1,7 @@
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { Location } from 'history';
-import React, { FC, Suspense, useEffect, useLayoutEffect, useMemo } from 'react';
+import { FC, Suspense, useEffect, useLayoutEffect, useMemo, lazy, useState } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
@@ -28,11 +28,9 @@ import {
   handleShowErrorMsg,
 } from 'src/utils';
 import DeleteWarning from '../NonEmployeeExpensePayment/DeleteWarning';
-import AuditInformation from '../shared/AuditInformation';
 import BreadcrumbsNonPOForm from '../shared/Breadcrumb';
 import ErrorNonPOWrapper from '../shared/ErrorWrapper/index.';
 import ProjectItems from '../shared/ProjectItems';
-import FileAttachments from './FileAttachments';
 import GeneralInfo from './GeneralInfo';
 import Header from './Header';
 import ReasonsForPayment from './ReasonsForPayment';
@@ -48,6 +46,9 @@ import { getAuthorizationPaymentFormValidationSchema } from './helpers/validatio
 import { UpsertAuthorizationFormValue, UpsertAuthorizationPaymentFormikProps } from './types';
 import InternalComments from '../shared/InternalComments';
 
+const FileAttachments = lazy(() => import('./FileAttachments'));
+const AuditInformation = lazy(() => import('../shared/AuditInformation'));
+
 const AuthorizationForPayment: FC<Props> = ({
   formData,
   isImmutableFormData,
@@ -57,9 +58,8 @@ const AuthorizationForPayment: FC<Props> = ({
 }) => {
   const { id } = useParams<{ id: string }>();
   const isEditMode = !!id;
-  const [apiError, setApiError] = React.useState<string>('');
-  const [allowRedirectWithoutWarning, setAllowRedirectWithoutWarning] =
-    React.useState<boolean>(false);
+  const [apiError, setApiError] = useState<string>('');
+  const [allowRedirectWithoutWarning, setAllowRedirectWithoutWarning] = useState<boolean>(false);
 
   const currentRole = RoleService.getCurrentRole();
   const hasPermission = true; //TODO: enhancement: check logic to be granted tp access the this resource

@@ -398,7 +398,7 @@ const POChangeForm: React.FC<Props> = ({
     }
   };
 
-  const hasPermission = true || isPOChangeDocumentType(values.documentType); //TODO: update when enhancement needed
+  const hasPermission = true; //TODO: update when enhancement needed
 
   return (
     <Prompt

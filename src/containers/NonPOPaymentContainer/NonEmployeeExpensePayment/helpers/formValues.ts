@@ -145,7 +145,11 @@ export const getUpsertNonEmployeeTravelPayload = ({
       serviceDate: getDateDisplay(projectItem.serviceDate),
     })) || [];
 
-  const remittanceLineItemsPayload = remittanceLineItems.slice(0, 1) || [];
+  const remittanceLineItemsPayload =
+    remittanceLineItems.slice(0, 1).map((remittanceItem, index) => ({
+      ...remittanceItem,
+      lineNumber: index + 1,
+    })) || [];
   const itinerariesPayload = itineraries.slice(0, 1) || [];
 
   return {

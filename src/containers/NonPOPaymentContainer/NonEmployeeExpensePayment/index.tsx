@@ -6,7 +6,13 @@ import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundar
 import { LoadingCommon } from 'src/components/common';
 import { getCurrentEditMode } from 'src/containers/PurchaseOrderContainer/PO/helpers';
 import { PO_ACTION, useProfile } from 'src/queries';
-import { isFinalMode, isSaveAction, isViewOnlyMode } from 'src/queries/PurchaseOrders/helpers';
+import {
+  isCUReviewMode,
+  isFAReviewMode,
+  isFinalMode,
+  isSaveAction,
+  isViewOnlyMode,
+} from 'src/queries/PurchaseOrders/helpers';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, RoleService, Toastify } from 'src/services';
@@ -52,10 +58,10 @@ import ReceiptCertification from './ReceiptCertification';
 import BusinessPurposeDetails from './BusinessPurposeDetails';
 import FormErrorSection from 'src/containers/shared/FormErrorSection';
 import { isInGroup1Payee } from 'src/queries/NonPOPayment/NonEmployeeTravel/helpers';
-import AuditInformation from '../shared/AuditInformation';
 import InternalComments from '../shared/InternalComments';
 
 const FileAttachments = lazy(() => import('./FileAttachments'));
+const AuditInformation = lazy(() => import('../shared/AuditInformation'));
 
 const AuthorizationForPayment: FC<Props> = ({
   formData,
@@ -78,6 +84,9 @@ const AuthorizationForPayment: FC<Props> = ({
   );
   const disabledSection =
     isViewOnlyMode(currentNonEmployeeTravelMode) || isFinalMode(currentNonEmployeeTravelMode);
+  const isReviewMode =
+    isFAReviewMode(currentNonEmployeeTravelMode) || isCUReviewMode(currentNonEmployeeTravelMode);
+
   const { profile } = useProfile();
 
   const { onGetNonEmployeeTravelById, handleInvalidateNonEmployeeTravelDetail } =
@@ -327,6 +336,11 @@ const AuthorizationForPayment: FC<Props> = ({
     [values.payeeCategory]
   );
 
+  const projectItemsError =
+    touched.projectItems && errors.projectItems && values.projectItems?.length === 1
+      ? 'At least one Project # is required.'
+      : '';
+
   return (
     <Prompt
       title={'Leave site?'}
@@ -351,7 +365,7 @@ const AuthorizationForPayment: FC<Props> = ({
                 <SectionLayout header={<HeaderOfSection />}>
                   <SelectPayeeCategory
                     formikProps={formikProps}
-                    disabled={disabledSection}
+                    disabled={disabledSection || isReviewMode}
                     currentMode={currentNonEmployeeTravelMode}
                   />
                 </SectionLayout>
@@ -377,7 +391,7 @@ const AuthorizationForPayment: FC<Props> = ({
                     <SectionLayout>
                       <TravelExpenditures
                         formikProps={formikProps}
-                        disabled={disabledSection}
+                        disabled={disabledSection || isReviewMode}
                         currentMode={currentNonEmployeeTravelMode}
                       />
                     </SectionLayout>
@@ -391,20 +405,23 @@ const AuthorizationForPayment: FC<Props> = ({
                     projectItemsPrefix={NON_EMPLOYEE_TRAVEL_FORM_KEY.PROJECT_ITEMS}
                     totalPrefix={NON_EMPLOYEE_TRAVEL_FORM_KEY.PAYMENT_TOTAL}
                     showTotalError={false}
-                    tableErrorMessage={_getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.PAYMENT_TOTAL)}
+                    tableErrorMessage={
+                      projectItemsError ||
+                      _getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.PAYMENT_TOTAL)
+                    }
                   />
                 </SectionLayout>
                 <SectionLayout>
                   <ReceiptCertification
                     formikProps={formikProps}
-                    disabled={disabledSection}
+                    disabled={disabledSection || isReviewMode}
                     currentMode={currentNonEmployeeTravelMode}
                   />
                 </SectionLayout>
                 <SectionLayout>
                   <BusinessPurposeDetails
                     formikProps={formikProps}
-                    disabled={disabledSection}
+                    disabled={disabledSection || isReviewMode}
                     currentMode={currentNonEmployeeTravelMode}
                   />
                 </SectionLayout>
