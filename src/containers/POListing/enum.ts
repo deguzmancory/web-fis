@@ -53,4 +53,5 @@ export enum PO_LIST_QUERY_KEY {
   PRINTED_END_DATE = 'printedEndDate',
 
   PAYMENT_TYPE = 'paymentType',
+  PAYMENT_METHOD = 'paymentMethod',
 }

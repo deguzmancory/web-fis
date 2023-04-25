@@ -1,6 +1,6 @@
 import { Box, useMediaQuery } from '@mui/material';
 import { MUIDataTableOptions } from 'mui-datatables';
-import React, { Suspense } from 'react';
+import { Suspense, useMemo, useCallback, useState, lazy, useEffect, FC } from 'react';
 import { connect } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { muiResponsive } from 'src/appConfig/constants';
@@ -32,102 +32,102 @@ import {
 } from './allColumns';
 import HeaderTable from './header';
 
-const PDFView = React.lazy(() => import('src/components/common/PDFView'));
+const PDFView = lazy(() => import('src/components/common/PDFView'));
 
-const TablePurchasingOrderList: React.FC<Props> = () => {
+const TablePurchasingOrderList: FC<Props> = () => {
   const isTabletScreen = useMediaQuery(muiResponsive.TABLET);
   const location = useLocation();
-  const query = React.useMemo(() => new URLSearchParams(location.search), [location]);
+  const query = useMemo(() => new URLSearchParams(location.search), [location]);
 
   const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
 
-  const workFlowTypeStatus = React.useMemo(
+  const workFlowTypeStatus = useMemo(
     () => query.get(PO_LIST_QUERY_KEY.WORKFLOW_STATUS) || undefined,
     [query]
   );
-  const poNumberSearch = React.useMemo(
+  const poNumberSearch = useMemo(
     () => query.get(PO_LIST_QUERY_KEY.PO_NUMBER) || undefined,
     [query]
   );
-  const projectNumberSearch = React.useMemo(
+  const projectNumberSearch = useMemo(
     () => query.get(PO_LIST_QUERY_KEY.PROJECT_NUMBER) || undefined,
     [query]
   );
-  const vendorNameSearch = React.useMemo(
+  const vendorNameSearch = useMemo(
     () => query.get(PO_LIST_QUERY_KEY.VENDOR_NAME) || undefined,
     [query]
   );
-  const faReviewerSearch = React.useMemo(
+  const faReviewerSearch = useMemo(
     () => query.get(PO_LIST_QUERY_KEY.FA_REVIEWER) || undefined,
     [query]
   );
-  const piNameSearch = React.useMemo(
-    () => query.get(PO_LIST_QUERY_KEY.PI_NAME) || undefined,
-    [query]
-  );
-  const modifiedStartDateSearch = React.useMemo(
+  const piNameSearch = useMemo(() => query.get(PO_LIST_QUERY_KEY.PI_NAME) || undefined, [query]);
+  const modifiedStartDateSearch = useMemo(
     () => query.get(PO_LIST_QUERY_KEY.MODIFIED_START_DATE) || undefined,
     [query]
   );
-  const modifiedEndDateSearch = React.useMemo(
+  const modifiedEndDateSearch = useMemo(
     () => query.get(PO_LIST_QUERY_KEY.MODIFIED_END_DATE) || undefined,
     [query]
   );
 
-  const paymentRequestNumberSearch = React.useMemo(
+  const paymentRequestNumberSearch = useMemo(
     () => query.get(PO_LIST_QUERY_KEY.PAYMENT_REQUEST_NUMBER) || undefined,
     [query]
   );
 
-  const checkNumberSearch = React.useMemo(
-    () => query.get(PO_LIST_QUERY_KEY.PAYMENT_REQUEST_NUMBER) || undefined,
+  const checkNumberSearch = useMemo(
+    () => query.get(PO_LIST_QUERY_KEY.CHECK_NUMBER) || undefined,
     [query]
   );
 
-  const checkStartDateSearch = React.useMemo(
+  const checkStartDateSearch = useMemo(
     () => query.get(PO_LIST_QUERY_KEY.CHECK_START_DATE) || undefined,
     [query]
   );
 
-  const checkEndDateSearch = React.useMemo(
+  const checkEndDateSearch = useMemo(
     () => query.get(PO_LIST_QUERY_KEY.CHECK_END_DATE) || undefined,
     [query]
   );
 
-  const finalApprovedStartDateSearch = React.useMemo(
+  const finalApprovedStartDateSearch = useMemo(
     () => query.get(PO_LIST_QUERY_KEY.FINAL_APPROVED_START_DATE) || undefined,
     [query]
   );
 
-  const finalApprovedEndDateSearch = React.useMemo(
+  const finalApprovedEndDateSearch = useMemo(
     () => query.get(PO_LIST_QUERY_KEY.FINAL_APPROVED_END_DATE) || undefined,
     [query]
   );
 
-  const printedStartDateSearch = React.useMemo(
+  const printedStartDateSearch = useMemo(
     () => query.get(PO_LIST_QUERY_KEY.PRINTED_START_DATE) || undefined,
     [query]
   );
-  const printedEndDateSearch = React.useMemo(
+  const printedEndDateSearch = useMemo(
     () => query.get(PO_LIST_QUERY_KEY.PRINTED_END_DATE) || undefined,
     [query]
   );
 
-  const documentTypeFilter = React.useMemo(
-    () => query.get(PO_LIST_QUERY_KEY.DOCUMENT_TYPE) || undefined,
-    [query]
-  );
-  const statusFilter = React.useMemo(
-    () => query.get(PO_LIST_QUERY_KEY.STATUS) || undefined,
+  const documentTypeFilter = useMemo(
+    () => query.getAll(PO_LIST_QUERY_KEY.DOCUMENT_TYPE) || undefined,
     [query]
   );
 
-  const paymentTypeFilter = React.useMemo(
-    () => query.get(PO_LIST_QUERY_KEY.PAYMENT_TYPE) || undefined,
+  const statusFilter = useMemo(() => query.getAll(PO_LIST_QUERY_KEY.STATUS) || undefined, [query]);
+
+  const paymentTypeFilter = useMemo(
+    () => query.getAll(PO_LIST_QUERY_KEY.PAYMENT_TYPE) || undefined,
     [query]
   );
 
-  const searchValues = React.useMemo(() => {
+  const paymentMethodFilter = useMemo(
+    () => query.getAll(PO_LIST_QUERY_KEY.PAYMENT_METHOD) || undefined,
+    [query]
+  );
+
+  const searchValues = useMemo(() => {
     return {
       number: poNumberSearch,
       projectNumber: projectNumberSearch,
@@ -144,9 +144,11 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
       finalApprovedEndDate: finalApprovedEndDateSearch,
       printedStartDate: printedStartDateSearch,
       printedEndDate: printedEndDateSearch,
-      documentType: documentTypeFilter,
+
       status: statusFilter,
+      documentType: documentTypeFilter,
       paymentType: paymentTypeFilter,
+      paymentMethod: paymentMethodFilter,
     };
   }, [
     poNumberSearch,
@@ -167,9 +169,10 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
     documentTypeFilter,
     statusFilter,
     paymentTypeFilter,
+    paymentMethodFilter,
   ]);
 
-  const [pdfUrl, setPdfUrl] = React.useState(null);
+  const [pdfUrl, setPdfUrl] = useState(null);
 
   const { getFinalPdf } = useViewFinalPdf({
     onSuccess(_data) {
@@ -208,7 +211,7 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
     onError: (error) => handleShowErrorMsg(error),
   });
 
-  const handleGetPurchasing = React.useCallback(
+  const handleGetPurchasing = useCallback(
     (params: GetPropertiesParams) => {
       let newParams = {
         ...params,
@@ -229,12 +232,12 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
     [searchValues, workFlowTypeStatus, setParams]
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     handleInvalidateAllPurchases();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentRole]);
 
-  const handleViewFinalPDF = React.useCallback(
+  const handleViewFinalPDF = useCallback(
     (rowData: PurchaseOrderItem) => {
       const id = rowData?.id;
       getFinalPdf({ id: id });
@@ -242,7 +245,7 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
     [getFinalPdf]
   );
 
-  const handlePrintedId = React.useCallback(
+  const handlePrintedId = useCallback(
     (rowData: PurchaseOrderItem) => {
       const id = rowData?.id;
       patchPrintedId({ id: id });
@@ -250,7 +253,7 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
     [patchPrintedId]
   );
 
-  const columns = React.useMemo(() => {
+  const columns = useMemo(() => {
     switch (workFlowTypeStatus) {
       case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.ALL_PO_DOCUMENTS:
       case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.PENDING_PO_DOCUMENTS:
@@ -285,7 +288,7 @@ const TablePurchasingOrderList: React.FC<Props> = () => {
     }
   }, [createPOPayment, handlePrintedId, handleViewFinalPDF, workFlowTypeStatus]);
 
-  const tableOptions: MUIDataTableOptions = React.useMemo(
+  const tableOptions: MUIDataTableOptions = useMemo(
     () => ({
       count: totalRecords,
       rowHover: true,

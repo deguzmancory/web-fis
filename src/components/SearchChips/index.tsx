@@ -53,10 +53,10 @@ const SearchChips: FC<Props> = ({ data = [] }) => {
     const filterChips: SearchChip[] = filterItems.reduce((prevValue, currentFilterItems, index) => {
       const { value, name, label, type, nameSplitter, customRenderFn } = currentFilterItems;
 
-      if (isEmpty(value)) return prevValue;
+      if (isEmpty(value) || !Array.isArray(value)) return prevValue;
 
       const splitFilterChips =
-        value.split(',').map((filterItemValue) => {
+        value.map((filterItemValue) => {
           const formattedValue = !!customRenderFn
             ? customRenderFn(filterItemValue)
             : filterItemValue;
@@ -127,11 +127,9 @@ const SearchChips: FC<Props> = ({ data = [] }) => {
       }
 
       if (type === 'filter') {
-        const currentFilterItemValues =
-          filterItems?.find((item) => item.name === name)?.value?.split(',') || [];
-        const updatedFilterValue = currentFilterItemValues
-          .filter((item) => item !== value)
-          .join(',');
+        const currentFilterItemValues: any[] =
+          filterItems?.find((item) => item.name === name)?.value || [];
+        const updatedFilterValue = currentFilterItemValues.filter((item) => item !== value);
 
         if (!updatedFilterValue) {
           if (!!nameSplitter) {
@@ -144,10 +142,16 @@ const SearchChips: FC<Props> = ({ data = [] }) => {
         } else {
           if (!!nameSplitter) {
             name.split(nameSplitter).forEach((nameItem) => {
-              query.set(nameItem, updatedFilterValue);
+              query.delete(nameItem);
+              updatedFilterValue.forEach((item) => {
+                query.append(nameItem, item);
+              });
             });
           } else {
-            query.set(name, updatedFilterValue);
+            query.delete(name);
+            updatedFilterValue.forEach((item) => {
+              query.append(name, item);
+            });
           }
         }
 

@@ -12,8 +12,10 @@ export type CustomFilterPOApprovedQueryValue = {
   finalApprovedEndDate: string;
   printedStartDate: string;
   printedEndDate: string;
-  documentType: string;
-  paymentType: string;
+
+  documentType: string[];
+  paymentType: string[];
+  paymentMethod: string[];
 };
 
 export type CustomFilterPOApprovedFormValue = {
@@ -29,21 +31,25 @@ export type CustomFilterPOApprovedFormValue = {
   printedDate: [Date, Date];
   documentType: PO_ALL_FORM_DOCUMENT_TYPE[];
   paymentType: PO_PAYMENT_TYPE[];
+  paymentMethod: PO_PAYMENT_METHOD[];
 };
 
 export enum PO_ALL_FORM_DOCUMENT_TYPE {
   PURCHASE_ORDER = 'purchaseOrder',
   PO_CHANGE = 'poChange',
   PO_PAYMENT = 'poPayment',
-  PO_FINAL_PAYMENT = 'final',
-  PO_PARTIAL_PAYMENT = 'partial',
-  PO_ADVANCE_PAYMENT = 'advance',
+}
+
+export enum PO_PAYMENT_METHOD {
+  CARD = 'card',
+  CHECK = 'check',
+  ACH = 'ach',
 }
 
 export enum PO_PAYMENT_TYPE {
-  CARD = 'Card',
-  CHECK = 'Check',
-  ACH = 'ACH',
+  PO_FINAL_PAYMENT = 'final',
+  PO_PARTIAL_PAYMENT = 'partial',
+  PO_ADVANCE_PAYMENT = 'advance',
 }
 
 export const emptySearchApprovedFormValue = {
@@ -59,6 +65,7 @@ export const emptySearchApprovedFormValue = {
   printedDate: null,
   documentType: [],
   paymentType: [],
+  paymentMethod: [],
 };
 
 export const documentTypeApprovedOptions = [
@@ -67,34 +74,37 @@ export const documentTypeApprovedOptions = [
     value: PO_ALL_FORM_DOCUMENT_TYPE.PURCHASE_ORDER,
   },
   {
-    label: 'PO Change Form',
+    label: 'PO Change',
     value: PO_ALL_FORM_DOCUMENT_TYPE.PO_CHANGE,
-  },
-  {
-    label: 'Payment - Final',
-    value: PO_ALL_FORM_DOCUMENT_TYPE.PO_FINAL_PAYMENT,
-  },
-  {
-    label: 'Payment - Partial',
-    value: PO_ALL_FORM_DOCUMENT_TYPE.PO_PARTIAL_PAYMENT,
-  },
-  {
-    label: 'Payment - Advance',
-    value: PO_ALL_FORM_DOCUMENT_TYPE.PO_ADVANCE_PAYMENT,
   },
 ];
 
 export const paymentTypeOptions = [
   {
+    label: 'Payment - Final',
+    value: PO_PAYMENT_TYPE.PO_FINAL_PAYMENT,
+  },
+  {
+    label: 'Payment - Partial',
+    value: PO_PAYMENT_TYPE.PO_PARTIAL_PAYMENT,
+  },
+  {
+    label: 'Payment - Advance',
+    value: PO_PAYMENT_TYPE.PO_ADVANCE_PAYMENT,
+  },
+];
+
+export const paymentMethodOptions = [
+  {
     label: 'Check',
-    value: PO_PAYMENT_TYPE.CHECK,
+    value: PO_PAYMENT_METHOD.CHECK,
   },
   {
     label: 'ACH',
-    value: PO_PAYMENT_TYPE.ACH,
+    value: PO_PAYMENT_METHOD.ACH,
   },
   {
     label: 'Card',
-    value: PO_PAYMENT_TYPE.CARD,
+    value: PO_PAYMENT_METHOD.CARD,
   },
 ];

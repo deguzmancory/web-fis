@@ -1,9 +1,17 @@
 import { Search } from '@mui/icons-material';
+import { Grid, Typography } from '@mui/material';
+import { useFormik } from 'formik';
+import { isEmpty } from 'lodash';
 import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import CustomFilter from 'src/components/CustomFilter';
-import { getDate, getDateDisplay } from 'src/utils';
+import { Checkbox, DateRangePicker, Input } from 'src/components/common';
+import {
+  PO_LIST_QUERY_KEY,
+  PURCHASING_LIST_WORK_FLOW_STATUS_KEY,
+} from 'src/containers/POListing/enum';
+import { getDate, getDateDisplay, getEndOfDayDisplay, isoFormat } from 'src/utils';
 import { CustomFilterPOQueryValue } from '../SearchPendingReviewApprove/helpers';
 import {
   CustomFilterPOPaymentAndChangeFormFormValue,
@@ -11,14 +19,6 @@ import {
   documentTypePaymentAndChangeForm,
   emptySearchPaymentAndChangeFormValue,
 } from './helpers';
-import {
-  PO_LIST_QUERY_KEY,
-  PURCHASING_LIST_WORK_FLOW_STATUS_KEY,
-} from 'src/containers/POListing/enum';
-import { isEmpty } from 'lodash';
-import { useFormik } from 'formik';
-import { Grid, Typography } from '@mui/material';
-import { Checkbox, DateRangePicker, Input } from 'src/components/common';
 
 const SearchPOChangePayment = ({
   searchValues,
@@ -34,11 +34,14 @@ const SearchPOChangePayment = ({
   const handleSubmitSearchAndFilter = (values: CustomFilterPOPaymentAndChangeFormFormValue) => {
     const { documentType, ...searchInputValues } = values;
 
-    Object.entries({ documentType }).forEach(([key, value]) => {
-      if (!isEmpty(value)) {
-        query.set(key, value.join(','));
+    Object.entries({ documentType }).forEach(([filterKey, filterValueItems]) => {
+      if (!isEmpty(filterValueItems)) {
+        query.delete(filterKey);
+        filterValueItems.forEach((item) => {
+          query.append(filterKey, item);
+        });
       } else {
-        query.delete(key);
+        query.delete(filterKey);
       }
     });
 
@@ -52,8 +55,14 @@ const SearchPOChangePayment = ({
                 query.delete(PO_LIST_QUERY_KEY.FINAL_APPROVED_END_DATE);
                 return;
               }
-              query.set(PO_LIST_QUERY_KEY.FINAL_APPROVED_START_DATE, getDateDisplay(value[0]));
-              query.set(PO_LIST_QUERY_KEY.FINAL_APPROVED_END_DATE, getDateDisplay(value[1]));
+              query.set(
+                PO_LIST_QUERY_KEY.FINAL_APPROVED_START_DATE,
+                getDateDisplay(value[0], isoFormat)
+              );
+              query.set(
+                PO_LIST_QUERY_KEY.FINAL_APPROVED_END_DATE,
+                getEndOfDayDisplay(value[1], isoFormat)
+              );
               return;
             }
             case PO_LIST_QUERY_KEY.PRINTED_DATE: {
@@ -62,8 +71,11 @@ const SearchPOChangePayment = ({
                 query.delete(PO_LIST_QUERY_KEY.PRINTED_END_DATE);
                 return;
               }
-              query.set(PO_LIST_QUERY_KEY.PRINTED_START_DATE, getDateDisplay(value[0]));
-              query.set(PO_LIST_QUERY_KEY.PRINTED_END_DATE, getDateDisplay(value[1]));
+              query.set(PO_LIST_QUERY_KEY.PRINTED_START_DATE, getDateDisplay(value[0], isoFormat));
+              query.set(
+                PO_LIST_QUERY_KEY.PRINTED_END_DATE,
+                getEndOfDayDisplay(value[1], isoFormat)
+              );
               return;
             }
             case PO_LIST_QUERY_KEY.MODIFIED_DATE: {
@@ -73,8 +85,11 @@ const SearchPOChangePayment = ({
                 return;
               }
 
-              query.set(PO_LIST_QUERY_KEY.MODIFIED_START_DATE, getDateDisplay(value[0]));
-              query.set(PO_LIST_QUERY_KEY.MODIFIED_END_DATE, getDateDisplay(value[1]));
+              query.set(PO_LIST_QUERY_KEY.MODIFIED_START_DATE, getDateDisplay(value[0], isoFormat));
+              query.set(
+                PO_LIST_QUERY_KEY.MODIFIED_END_DATE,
+                getEndOfDayDisplay(value[1], isoFormat)
+              );
               return;
             }
             default:
@@ -113,7 +128,7 @@ const SearchPOChangePayment = ({
           ? [getDate(searchValues.printedStartDate), getDate(searchValues.printedEndDate)]
           : null,
       documentType: searchValues.documentType
-        ? (searchValues.documentType.split(',') as PO_CHG_PMT_FORM_DOCUMENT_TYPE[])
+        ? (searchValues.documentType as PO_CHG_PMT_FORM_DOCUMENT_TYPE[])
         : [],
     }),
     [searchValues]

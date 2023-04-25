@@ -1,12 +1,12 @@
 import { Box, Container, Stack } from '@mui/material';
-import React from 'react';
+import { FC } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button } from 'src/components/common';
 import { useGetPODetail } from 'src/queries/PurchaseOrders';
 import { Callback } from 'src/redux/types';
 import { Toastify } from 'src/services';
 
-const RefetchPO: React.FC<Props> = ({ resetErrorBoundary }) => {
+const RefetchPO: FC<Props> = ({ resetErrorBoundary }) => {
   const { id } = useParams<{ id: string }>();
 
   const { onGetPOById, isLoading } = useGetPODetail({

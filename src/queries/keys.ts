@@ -27,6 +27,9 @@ export enum API_QUERIES {
   PO_PAYMENT_DETAIL = '/po-payments/:id',
   PO_PAYMENT_REMAINING_BALANCE = 'po-payment/:id/remaining-balance',
 
+  // Non PO Listing
+  NON_PO_LISTING = '/direct-payments',
+
   // Non PO Payment
   // Authorization
   AUTHORIZATION_DETAIL = '/authorization-payments/:id',

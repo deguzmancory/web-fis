@@ -26,7 +26,6 @@ const PurchaseInfoChange: React.FC<Props> = ({
 }) => {
   const { values, errors, touched, getFieldProps, setFieldValue, getUncontrolledFieldProps } =
     formikProps;
-  console.log('values: ', values);
 
   const isTotalCancellationForm = isPOChangeTotalCancellationForm(values.formNumber);
 

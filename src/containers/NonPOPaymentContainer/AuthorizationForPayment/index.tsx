@@ -240,7 +240,7 @@ const AuthorizationForPayment: FC<Props> = ({
 
     if (!success) {
       return isFormDirty;
-    }
+    } 
   };
 
   return (

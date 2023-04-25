@@ -145,7 +145,7 @@ const AuthorizationForPayment: FC<Props> = ({
 
   const isLoading = createNonEmployeeTravelLoading || updateNonEmployeeTravelLoading;
 
-  // Navigate to submitted PO success page
+  // Navigate to submitted Non Employee Travel success page
   useEffect(() => {
     if ((isCreateNonEmployeeTravelSuccess || isUpdateNonEmployeeTravelSuccess) && !isLoading) {
       const responseData = isEditMode
@@ -204,8 +204,8 @@ const AuthorizationForPayment: FC<Props> = ({
     const isInitialEmptyForm = !isEditMode && !isImmutableFormData;
 
     if (isInitialEmptyForm) {
-      const initialPOFormValue = getInitialNonEmployeeTravelFormValue({ profile });
-      onSetFormData<UpsertNonEmployeeTravelFormValue>(initialPOFormValue);
+      const initialNonEmployeeTravelFormValue = getInitialNonEmployeeTravelFormValue({ profile });
+      onSetFormData<UpsertNonEmployeeTravelFormValue>(initialNonEmployeeTravelFormValue);
       return;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -311,9 +311,8 @@ const AuthorizationForPayment: FC<Props> = ({
     }
 
     const acceptablePaths = [
-      PATHS.createPurchaseOrders,
-      PATHS.purchaseOrderDetail,
-      PATHS.poAdditionalForm,
+      PATHS.nonEmployeeTravelPaymentDetail,
+      PATHS.createNonEmployeeTravelPayment,
       PATHS.addVendorRegistration,
     ];
     const isAcceptablePath = acceptablePaths.some((path) => location.pathname.includes(path));

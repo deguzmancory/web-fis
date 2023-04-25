@@ -222,8 +222,8 @@ const Dev: React.FC<Props> = ({ location, onShowDialog, onHideDialog, onHideAllD
             piName: query.get(PO_LIST_QUERY_KEY.PI_NAME),
             modifiedStartDate: query.get(PO_LIST_QUERY_KEY.MODIFIED_START_DATE),
             modifiedEndDate: query.get(PO_LIST_QUERY_KEY.MODIFIED_END_DATE),
-            documentType: query.get(PO_LIST_QUERY_KEY.DOCUMENT_TYPE),
-            status: query.get(PO_LIST_QUERY_KEY.STATUS),
+            documentType: query.getAll(PO_LIST_QUERY_KEY.DOCUMENT_TYPE),
+            status: query.getAll(PO_LIST_QUERY_KEY.STATUS),
           }}
           allowSelectWorkflow={false}
         />

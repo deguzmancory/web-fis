@@ -6,17 +6,16 @@ import SearchChips, { ChipsData } from 'src/components/SearchChips';
 import { Select } from 'src/components/common';
 import { IRootState } from 'src/redux/store';
 import { getOptionLabel } from 'src/utils';
-import { PO_LIST_QUERY_KEY, PURCHASING_LIST_WORK_FLOW_STATUS_KEY } from '../enum';
+import { NON_PO_LISTING_QUERY_KEY, NON_PO_LISTING_WORK_FLOW_STATUS_KEY } from '../enum';
 import SearchApproved from './CustomSearch/SearchApproved';
-import { paymentMethodOptions, paymentTypeOptions } from './CustomSearch/SearchApproved/helpers';
 import SearchPendingReviewApprove from './CustomSearch/SearchPendingReviewApprove';
 import {
   CustomFilterPOQueryValue,
-  documentTypePendingApproveReviewOptions,
-  poStatusOptions,
+  nonPODocumentTypePendingApproveReviewOptions,
+  nonPoStatusOptions,
 } from './CustomSearch/SearchPendingReviewApprove/helpers';
 import { purchasingListType } from './helpers';
-import SearchPOChangePayment from './CustomSearch/SearchPOChangePayment';
+import { paymentMethodOptions } from 'src/containers/POListing/TableList/CustomSearch/SearchApproved/helpers';
 
 export interface SearchChip {
   id: string;
@@ -30,21 +29,22 @@ const POHeaderTable: FC<Props> = ({ searchValues, currentRole, allowSelectWorkfl
   const location = useLocation();
   const query = useMemo(() => new URLSearchParams(location.search), [location]);
   const searchStatusText = useMemo(
-    () => query.get(PO_LIST_QUERY_KEY.WORKFLOW_STATUS) || '',
+    () => query.get(NON_PO_LISTING_QUERY_KEY.WORKFLOW_STATUS) || '',
     [query]
   );
 
   const tableColumnsForChips = useMemo<ChipsData[]>(
     () => [
       {
-        name: 'number',
-        value: searchValues.number,
+        name: 'requestNumber',
+        label: 'Request Number',
+        value: searchValues.requestNumber,
         type: 'input',
       },
       {
-        name: 'projectNumber',
-        label: 'Project #',
-        value: searchValues.projectNumber,
+        name: 'documentNumber',
+        label: 'Document Number',
+        value: searchValues.documentNumber,
         type: 'input',
       },
       {
@@ -53,9 +53,15 @@ const POHeaderTable: FC<Props> = ({ searchValues, currentRole, allowSelectWorkfl
         type: 'input',
       },
       {
-        name: 'faReviewer',
+        name: 'listedProjectNumber',
+        label: 'Project Number',
+        value: searchValues.listedProjectNumber,
+        type: 'input',
+      },
+      {
+        name: 'faStaffReviewer',
         label: 'FA Staff',
-        value: searchValues.faReviewer,
+        value: searchValues.faStaffReviewer,
         type: 'input',
       },
       {
@@ -85,37 +91,25 @@ const POHeaderTable: FC<Props> = ({ searchValues, currentRole, allowSelectWorkfl
         value: [searchValues.finalApprovedStartDate, searchValues.finalApprovedEndDate],
         type: 'dateRange',
       },
-      {
-        name: 'printedStartDate;printedEndDate',
-        nameSplitter: ';',
-        label: 'Printed Date',
-        value: [searchValues.printedStartDate, searchValues.printedEndDate],
-        type: 'dateRange',
-      },
+
       {
         name: 'documentType',
         label: 'Document Type',
         value: searchValues.documentType || [],
         type: 'filter',
-        customRenderFn: (value) => getOptionLabel(documentTypePendingApproveReviewOptions, value),
+        customRenderFn: (value) =>
+          getOptionLabel(nonPODocumentTypePendingApproveReviewOptions, value),
       },
       {
         name: 'status',
         label: 'Status',
         value: searchValues.status || [],
         type: 'filter',
-        customRenderFn: (value) => getOptionLabel(poStatusOptions, value),
-      },
-      {
-        name: 'paymentType',
-        label: 'Payment Type',
-        value: searchValues.paymentType || [],
-        type: 'filter',
-        customRenderFn: (value) => getOptionLabel(paymentTypeOptions, value),
+        customRenderFn: (value) => getOptionLabel(nonPoStatusOptions, value),
       },
       {
         name: 'paymentMethod',
-        label: 'Payment Method',
+        label: 'Payment Type',
         value: searchValues.paymentMethod || [],
         type: 'filter',
         customRenderFn: (value) => getOptionLabel(paymentMethodOptions, value),
@@ -124,7 +118,7 @@ const POHeaderTable: FC<Props> = ({ searchValues, currentRole, allowSelectWorkfl
     [searchValues]
   );
 
-  const onSearch = (_: any, value: string) => {
+  const onSearch = (_, value) => {
     if (!value) return;
     for (const searchValue in searchValues) {
       // eslint-disable-next-line security/detect-object-injection
@@ -133,7 +127,7 @@ const POHeaderTable: FC<Props> = ({ searchValues, currentRole, allowSelectWorkfl
       }
     }
 
-    query.set(PO_LIST_QUERY_KEY.WORKFLOW_STATUS, value);
+    query.set(NON_PO_LISTING_QUERY_KEY.WORKFLOW_STATUS, value);
 
     history.push({ search: query.toString() });
   };
@@ -145,18 +139,13 @@ const POHeaderTable: FC<Props> = ({ searchValues, currentRole, allowSelectWorkfl
 
   const changeFormFilterValue = useMemo(() => {
     switch (searchStatusText) {
-      case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.PENDING_PO_DOCUMENTS:
-      case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.REVIEW_APPROVE_PO_DOCUMENTS:
-      case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.ALL_PO_DOCUMENTS:
+      case NON_PO_LISTING_WORK_FLOW_STATUS_KEY.PENDING_DOCUMENTS:
+      case NON_PO_LISTING_WORK_FLOW_STATUS_KEY.REVIEW_APPROVE_DOCUMENTS:
+      case NON_PO_LISTING_WORK_FLOW_STATUS_KEY.ALL_DOCUMENT:
         return <SearchPendingReviewApprove searchValues={searchValues} />;
-      case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.APPROVED_PO_DOCUMENTS:
+      case NON_PO_LISTING_WORK_FLOW_STATUS_KEY.APPROVED_DOCUMENTS:
         return <SearchApproved searchValues={searchValues} />;
-      case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.PO_CHANGE:
-      case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.PO_PAYMENT:
-      case PURCHASING_LIST_WORK_FLOW_STATUS_KEY.OUTSTANDING_PO_DOCUMENTS:
-        return (
-          <SearchPOChangePayment searchValues={searchValues} searchStatusText={searchStatusText} />
-        );
+
       default:
         return null;
     }

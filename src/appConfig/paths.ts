@@ -51,6 +51,9 @@ export const PATHS = {
 
   submittedNonPOPayment: '/submitted-direct-payments',
 
+  // Purchasing
+  nonPOListing: '/direct-payments',
+
   // Vendor Print Mode
   vendorPrintMode: '/vendor-print-mode',
 

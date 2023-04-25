@@ -626,6 +626,10 @@ const create = (baseURL = appConfig.API_URL) => {
     );
   };
 
+  const getFinalPdfNonEmployeeTravel = (params: GetPropertiesParams) => {
+    return api.get(`/financial-svc/v1/non-employee-travel-payments/${params.id}/final-pdf`);
+  };
+
   // ====================== Global Settings ======================
   const getAllGlobalSettings = () => {
     return api.get('/financial-svc/v1/global-settings', {}, newCancelToken());
@@ -654,6 +658,12 @@ const create = (baseURL = appConfig.API_URL) => {
 
   const patchPrintedPurchaseOrder = (params: GetPropertiesParams) => {
     return api.patch(`/financial-svc/v1/purchase-orders/${params.id}/printed`);
+  };
+
+  // ================== Non PO List ===============
+  const getNonPOListing = (params: GetPropertiesParams) => {
+    const queryString = stringify(params);
+    return api.get(`/financial-svc/v1/direct-payments?${queryString}`, {}, newCancelToken());
   };
 
   //
@@ -777,6 +787,10 @@ const create = (baseURL = appConfig.API_URL) => {
     getAppPurchasingList,
     getFinalPdfPurchaseOrder,
     patchPrintedPurchaseOrder,
+
+    // ================== Non PO List ===============
+    getNonPOListing,
+    getFinalPdfNonEmployeeTravel,
 
     // ================== Global Setting ===============
     getAllGlobalSettings,

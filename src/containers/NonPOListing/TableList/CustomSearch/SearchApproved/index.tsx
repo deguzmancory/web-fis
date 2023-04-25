@@ -7,32 +7,32 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import CustomFilter from 'src/components/CustomFilter';
 import { Checkbox, DateRangePicker, Input } from 'src/components/common';
-import { PO_LIST_QUERY_KEY } from 'src/containers/POListing/enum';
 import { getDate, getDateDisplay, getEndOfDayDisplay, isoFormat } from 'src/utils';
 import {
-  CustomFilterPOApprovedFormValue,
-  CustomFilterPOApprovedQueryValue,
-  PO_ALL_FORM_DOCUMENT_TYPE,
-  PO_PAYMENT_METHOD,
-  PO_PAYMENT_TYPE,
-  documentTypeApprovedOptions,
-  emptySearchApprovedFormValue,
-  paymentMethodOptions,
-  paymentTypeOptions,
+  CustomFilterNonPOApprovedFormValue,
+  CustomFilterNonPOApprovedQueryValue,
+  documentTypeNonPOApprovedOptions,
+  emptySearchNonPOApprovedFormValue,
 } from './helpers';
+import { NON_PO_LISTING_QUERY_KEY } from 'src/containers/NonPOListing/enum';
+import {
+  PO_PAYMENT_METHOD,
+  paymentMethodOptions,
+} from 'src/containers/POListing/TableList/CustomSearch/SearchApproved/helpers';
+import { NON_PO_PAYMENT_DOCUMENT_TYPE } from 'src/queries';
 
 const SearchApproved = ({
   searchValues,
 }: {
-  searchValues: Partial<CustomFilterPOApprovedQueryValue>;
+  searchValues: Partial<CustomFilterNonPOApprovedQueryValue>;
 }) => {
   const history = useHistory();
   const location = useLocation();
   const query = new URLSearchParams(location.search);
 
-  const handleSubmitSearchAndFilter = (values: CustomFilterPOApprovedFormValue) => {
-    const { documentType, paymentType, paymentMethod, ...searchInputValues } = values;
-    const filterValues = { documentType, paymentType, paymentMethod };
+  const handleSubmitSearchAndFilter = (values: CustomFilterNonPOApprovedFormValue) => {
+    const { documentType, paymentMethod, ...searchInputValues } = values;
+    const filterValues = { documentType, paymentMethod };
 
     Object.entries(filterValues).forEach(([filterKey, filterValueItems]) => {
       if (!isEmpty(filterValueItems)) {
@@ -49,45 +49,39 @@ const SearchApproved = ({
       if (!!value) {
         if (Array.isArray(value)) {
           switch (key) {
-            case PO_LIST_QUERY_KEY.CHECK_DATE: {
+            case NON_PO_LISTING_QUERY_KEY.CHECK_DATE: {
               if (value.length < 2 || !value[0] || !value[1]) {
-                query.delete(PO_LIST_QUERY_KEY.CHECK_START_DATE);
-                query.delete(PO_LIST_QUERY_KEY.CHECK_END_DATE);
-                return;
-              }
-              query.set(PO_LIST_QUERY_KEY.CHECK_START_DATE, getDateDisplay(value[0], isoFormat));
-              query.set(PO_LIST_QUERY_KEY.CHECK_END_DATE, getEndOfDayDisplay(value[1], isoFormat));
-              return;
-            }
-            case PO_LIST_QUERY_KEY.FINAL_APPROVED_DATE: {
-              if (value.length < 2 || !value[0] || !value[1]) {
-                query.delete(PO_LIST_QUERY_KEY.FINAL_APPROVED_START_DATE);
-                query.delete(PO_LIST_QUERY_KEY.FINAL_APPROVED_END_DATE);
+                query.delete(NON_PO_LISTING_QUERY_KEY.CHECK_START_DATE);
+                query.delete(NON_PO_LISTING_QUERY_KEY.CHECK_END_DATE);
                 return;
               }
               query.set(
-                PO_LIST_QUERY_KEY.FINAL_APPROVED_START_DATE,
+                NON_PO_LISTING_QUERY_KEY.CHECK_START_DATE,
                 getDateDisplay(value[0], isoFormat)
               );
               query.set(
-                PO_LIST_QUERY_KEY.FINAL_APPROVED_END_DATE,
+                NON_PO_LISTING_QUERY_KEY.CHECK_END_DATE,
                 getEndOfDayDisplay(value[1], isoFormat)
               );
               return;
             }
-            case PO_LIST_QUERY_KEY.PRINTED_DATE: {
+            case NON_PO_LISTING_QUERY_KEY.FINAL_APPROVED_DATE: {
               if (value.length < 2 || !value[0] || !value[1]) {
-                query.delete(PO_LIST_QUERY_KEY.PRINTED_START_DATE);
-                query.delete(PO_LIST_QUERY_KEY.PRINTED_END_DATE);
+                query.delete(NON_PO_LISTING_QUERY_KEY.FINAL_APPROVED_START_DATE);
+                query.delete(NON_PO_LISTING_QUERY_KEY.FINAL_APPROVED_END_DATE);
                 return;
               }
-              query.set(PO_LIST_QUERY_KEY.PRINTED_START_DATE, getDateDisplay(value[0], isoFormat));
               query.set(
-                PO_LIST_QUERY_KEY.PRINTED_END_DATE,
+                NON_PO_LISTING_QUERY_KEY.FINAL_APPROVED_START_DATE,
+                getDateDisplay(value[0], isoFormat)
+              );
+              query.set(
+                NON_PO_LISTING_QUERY_KEY.FINAL_APPROVED_END_DATE,
                 getEndOfDayDisplay(value[1], isoFormat)
               );
               return;
             }
+
             default:
               return;
           }
@@ -101,13 +95,13 @@ const SearchApproved = ({
     history.push({ search: query.toString() });
   };
 
-  const initialFormValue: CustomFilterPOApprovedFormValue = React.useMemo(
+  const initialFormValue: CustomFilterNonPOApprovedFormValue = React.useMemo(
     () => ({
-      number: searchValues.number,
-      projectNumber: searchValues.projectNumber,
+      requestNumber: searchValues.requestNumber,
+      documentNumber: searchValues.documentNumber,
       vendorName: searchValues.vendorName,
-      paymentRequestNumber: searchValues.paymentRequestNumber,
-      faReviewer: searchValues.faReviewer,
+      listedProjectNumber: searchValues.listedProjectNumber,
+      faStaffReviewer: searchValues.faStaffReviewer,
       piName: searchValues.piName,
       checkNumber: searchValues.checkNumber,
       checkDate:
@@ -121,14 +115,10 @@ const SearchApproved = ({
               getDate(searchValues.finalApprovedEndDate),
             ]
           : null,
-      printedDate:
-        searchValues.printedStartDate && searchValues.printedEndDate
-          ? [getDate(searchValues.printedStartDate), getDate(searchValues.printedEndDate)]
-          : null,
       documentType: searchValues.documentType
-        ? (searchValues.documentType as PO_ALL_FORM_DOCUMENT_TYPE[])
+        ? (searchValues.documentType as NON_PO_PAYMENT_DOCUMENT_TYPE[])
         : [],
-      paymentType: searchValues.paymentType ? (searchValues.paymentType as PO_PAYMENT_TYPE[]) : [],
+
       paymentMethod: searchValues.paymentMethod
         ? (searchValues.paymentMethod as PO_PAYMENT_METHOD[])
         : [],
@@ -143,9 +133,9 @@ const SearchApproved = ({
   });
 
   const handleClearAll = () => {
-    setValues(emptySearchApprovedFormValue);
+    setValues(emptySearchNonPOApprovedFormValue);
 
-    Object.keys(emptySearchApprovedFormValue).forEach((key) => {
+    Object.keys(emptySearchNonPOApprovedFormValue).forEach((key) => {
       query.delete(key);
     });
 
@@ -175,114 +165,88 @@ const SearchApproved = ({
           </Grid>
           <Grid item xs={3}>
             <Input
-              label={'Search by PO Number'}
+              label={'Search by Request Number'}
               placeholder="Search"
-              {...getFieldProps(PO_LIST_QUERY_KEY.PO_NUMBER)}
+              {...getFieldProps(NON_PO_LISTING_QUERY_KEY.REQUEST_NUMBER)}
             />
           </Grid>
           <Grid item xs={3}>
             <Input
-              label={'Search by Project #'}
+              label={'Search by Document Number'}
               placeholder="Search"
-              {...getFieldProps(PO_LIST_QUERY_KEY.PROJECT_NUMBER)}
+              {...getFieldProps(NON_PO_LISTING_QUERY_KEY.DOCUMENT_NUMBER)}
             />
           </Grid>
           <Grid item xs={6}>
             <Input
               label={'Search by Vendor Name'}
               placeholder="Search"
-              {...getFieldProps(PO_LIST_QUERY_KEY.VENDOR_NAME)}
+              {...getFieldProps(NON_PO_LISTING_QUERY_KEY.VENDOR_NAME)}
             />
           </Grid>
           <Grid item xs={3}>
             <Input
-              label={'Search by Payment Request #'}
+              label={'Search by Project Number'}
               placeholder="Search"
-              {...getFieldProps(PO_LIST_QUERY_KEY.PAYMENT_REQUEST_NUMBER)}
+              {...getFieldProps(NON_PO_LISTING_QUERY_KEY.LISTED_PROJECT_NUMBER)}
             />
           </Grid>
           <Grid item xs={3}>
             <Input
               label={'Search by FA Staff'}
               placeholder="Search"
-              {...getFieldProps(PO_LIST_QUERY_KEY.FA_REVIEWER)}
+              {...getFieldProps(NON_PO_LISTING_QUERY_KEY.FA_STAFF_REVIEWER)}
             />
           </Grid>
           <Grid item xs={3}>
             <Input
               label={'Search by PI Name'}
               placeholder="Search"
-              {...getFieldProps(PO_LIST_QUERY_KEY.PI_NAME)}
+              {...getFieldProps(NON_PO_LISTING_QUERY_KEY.PI_NAME)}
             />
           </Grid>
           <Grid item xs={3}>
             <Input
               label={'Check Number'}
               placeholder="Search"
-              {...getFieldProps(PO_LIST_QUERY_KEY.CHECK_NUMBER)}
+              {...getFieldProps(NON_PO_LISTING_QUERY_KEY.CHECK_NUMBER)}
             />
           </Grid>
 
-          <Grid container item xs={3.5}>
+          <Grid container item xs={3}>
             <DateRangePicker
               label={'Check Date'}
               placeholder="From - To"
-              {...getFieldProps(PO_LIST_QUERY_KEY.CHECK_DATE)}
+              {...getFieldProps(NON_PO_LISTING_QUERY_KEY.CHECK_DATE)}
               onChange={setFieldValue}
               selecteds={values.checkDate}
             />
           </Grid>
-          <Grid item xs={3.5}>
+          <Grid item xs={3}>
             <DateRangePicker
               label={'Approved Date'}
               placeholder="From - To"
-              {...getFieldProps(PO_LIST_QUERY_KEY.FINAL_APPROVED_DATE)}
+              {...getFieldProps(NON_PO_LISTING_QUERY_KEY.FINAL_APPROVED_DATE)}
               selecteds={values.finalApprovedDate}
               onChange={setFieldValue}
             />
           </Grid>
-          <Grid item xs={3.5}>
-            <DateRangePicker
-              label={'Printed Date'}
-              placeholder="From - To"
-              {...getFieldProps(PO_LIST_QUERY_KEY.PRINTED_DATE)}
-              selecteds={values.printedDate}
-              onChange={setFieldValue}
-            />
-          </Grid>
+
           <Grid item xs={2}>
             {null}
           </Grid>
           <Grid item xs={12} container>
-            <Grid item xs={4}>
-              <Checkbox.Group
-                label={
-                  <Typography variant="body2" fontWeight="bold">
-                    Document Type
-                  </Typography>
-                }
-                {...getFieldProps(PO_LIST_QUERY_KEY.DOCUMENT_TYPE)}
-                onChange={setFieldValue}
-                columns={2}
-                options={documentTypeApprovedOptions}
-              />
-            </Grid>
-            {/* <Grid item xs={1}>
-              {null}
-            </Grid> */}
-            <Grid item xs={7}>
-              <Checkbox.Group
-                label={
-                  <Typography variant="body2" fontWeight="bold">
-                    Payment Type
-                  </Typography>
-                }
-                {...getFieldProps(PO_LIST_QUERY_KEY.PAYMENT_TYPE)}
-                onChange={setFieldValue}
-                columns={3}
-                options={paymentTypeOptions}
-              />
-            </Grid>
+            <Checkbox.Group
+              label={
+                <Typography variant="body2" fontWeight="bold">
+                  Document Type
+                </Typography>
+              }
+              {...getFieldProps(NON_PO_LISTING_QUERY_KEY.DOCUMENT_TYPE)}
+              onChange={setFieldValue}
+              columns={4}
+              options={documentTypeNonPOApprovedOptions}
+            />
           </Grid>
           <Grid item xs={12}>
             <Checkbox.Group
@@ -291,9 +255,9 @@ const SearchApproved = ({
                   Payment Method
                 </Typography>
               }
-              {...getFieldProps(PO_LIST_QUERY_KEY.PAYMENT_METHOD)}
+              {...getFieldProps(NON_PO_LISTING_QUERY_KEY.PAYMENT_METHOD)}
               onChange={setFieldValue}
-              columns={6}
+              columns={4}
               options={paymentMethodOptions}
             />
           </Grid>

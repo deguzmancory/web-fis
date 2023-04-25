@@ -1,10 +1,11 @@
-import { PO_DETAIL_STATUS, PO_DOCUMENT_TYPE } from 'src/queries';
+import { NON_PO_PAYMENT_DOCUMENT_TYPE, PO_DETAIL_STATUS } from 'src/queries';
 
 export type CustomFilterPOQueryValue = {
-  number: string;
-  projectNumber: string;
+  requestNumber: string;
+  documentNumber: string;
   vendorName: string;
-  faReviewer: string;
+  listedProjectNumber: string;
+  faStaffReviewer: string;
   piName: string;
   modifiedStartDate: string;
   modifiedEndDate: string;
@@ -12,53 +13,59 @@ export type CustomFilterPOQueryValue = {
   checkEndDate: string;
   finalApprovedStartDate: string;
   finalApprovedEndDate: string;
-  printedStartDate: string;
-  printedEndDate: string;
+  checkNumber: string;
 
   status: string[];
-  paymentType: string[];
   paymentMethod: string[];
   documentType: string[];
 };
 
-export type CustomFilterPOFormValue = {
-  number: string;
-  projectNumber: string;
+export type CustomFilterNonPOFormValue = {
+  requestNumber: string;
+  documentNumber: string;
   vendorName: string;
-  faReviewer: string;
+  listedProjectNumber: string;
+  faStaffReviewer: string;
   piName: string;
   modifiedDate: [Date, Date];
-  documentType: PO_DOCUMENT_TYPE[];
+
+  documentType: NON_PO_PAYMENT_DOCUMENT_TYPE[];
   status: PO_DETAIL_STATUS[];
 };
 
-export const emptySearchPendingReviewApproveFormValue = {
-  number: '',
-  projectNumber: '',
+export const emptySearchPendingReviewApproveNonPOFormValue = {
+  requestNumber: '',
+  documentNumber: '',
   vendorName: '',
-  faReviewer: '',
+  listedProjectNumber: '',
+  faStaffReviewer: '',
   piName: '',
   modifiedDate: null,
+
   documentType: [],
   status: [],
 };
 
-export const documentTypePendingApproveReviewOptions = [
+export const nonPODocumentTypePendingApproveReviewOptions = [
   {
-    label: 'PO',
-    value: PO_DOCUMENT_TYPE.PURCHASE_ORDER,
+    label: 'Non Emp Travel',
+    value: NON_PO_PAYMENT_DOCUMENT_TYPE.NON_EMPLOYEE_TRAVEL_PAYMENT,
   },
   {
-    label: 'PO Change Form',
-    value: PO_DOCUMENT_TYPE.PO_CHANGE,
+    label: 'Auth For Payment',
+    value: NON_PO_PAYMENT_DOCUMENT_TYPE.AUTHORIZATION_PAYMENT,
   },
   {
-    label: 'PO Payment',
-    value: PO_DOCUMENT_TYPE.PO_PAYMENT,
+    label: 'Pers Auto',
+    value: NON_PO_PAYMENT_DOCUMENT_TYPE.PERSONAL_AUTO_PAYMENT,
+  },
+  {
+    label: 'Petty Cash',
+    value: NON_PO_PAYMENT_DOCUMENT_TYPE.PETTY_CASH_PAYMENT,
   },
 ];
 
-export const poStatusOptions = [
+export const nonPoStatusOptions = [
   {
     label: 'Pending PI Submittal',
     value: PO_DETAIL_STATUS.PI_PENDING_SUBMITTAL,

@@ -4,6 +4,7 @@ import { PATHS } from 'src/appConfig/paths';
 import { PERMISSION_VALUE } from 'src/queries/Permissions';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { PURCHASING_LIST_WORK_FLOW_STATUS_KEY } from '../POListing/enum';
+import { NON_PO_LISTING_WORK_FLOW_STATUS_KEY } from '../NonPOListing/enum';
 
 export type DashboardItem = {
   title: string;
@@ -98,7 +99,7 @@ export const dashboardItems: DashboardItem[] = [
     items: [
       {
         title: 'Review/Approve Payments over $24,999',
-        url: '#',
+        url: `${PATHS.nonPOListing}?workflowStatus=${NON_PO_LISTING_WORK_FLOW_STATUS_KEY.REVIEW_APPROVE_DOCUMENTS}`,
         isExternalUrl: false,
         roles: [ROLE_NAME.CU],
         permissions: [PERMISSION_VALUE.APPROVAL_PO_PAYMENTS_OVER_24999],
@@ -111,25 +112,25 @@ export const dashboardItems: DashboardItem[] = [
       },
       {
         title: 'Review/Approve Payments ',
-        url: '#',
+        url: `${PATHS.nonPOListing}?workflowStatus=${NON_PO_LISTING_WORK_FLOW_STATUS_KEY.REVIEW_APPROVE_DOCUMENTS}`,
         isExternalUrl: false,
         roles: [ROLE_NAME.FA],
       },
       {
         title: 'Pending Payments',
-        url: '#',
+        url: `${PATHS.nonPOListing}?workflowStatus=${NON_PO_LISTING_WORK_FLOW_STATUS_KEY.PENDING_DOCUMENTS}`,
         isExternalUrl: false,
         roles: [ROLE_NAME.CU, ROLE_NAME.PI, ROLE_NAME.SU, ROLE_NAME.FA],
       },
       {
         title: 'Approved Payments',
-        url: '#',
+        url: `${PATHS.nonPOListing}?workflowStatus=${NON_PO_LISTING_WORK_FLOW_STATUS_KEY.APPROVED_DOCUMENTS}`,
         isExternalUrl: false,
         roles: [ROLE_NAME.CU, ROLE_NAME.PI, ROLE_NAME.SU, ROLE_NAME.FA],
       },
       {
         title: 'Search Payments',
-        url: '#',
+        url: `${PATHS.nonPOListing}?workflowStatus=${NON_PO_LISTING_WORK_FLOW_STATUS_KEY.SEARCH_DOCUMENTS}`,
         isExternalUrl: false,
         roles: [ROLE_NAME.CU, ROLE_NAME.PI, ROLE_NAME.SU, ROLE_NAME.FA],
       },
