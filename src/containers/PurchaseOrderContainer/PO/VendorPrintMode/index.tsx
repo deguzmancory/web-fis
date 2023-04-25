@@ -56,7 +56,7 @@ const VendorPrintMode: React.FC<Props> = ({ formData }) => {
         <Button className="mr-8" onClick={handleViewPOMode}>
           Purchase Order View Mode
         </Button>
-        <Button className="mr-8" onClick={handleCancelClick}>
+        <Button variant="outline" className="mr-8" onClick={handleCancelClick}>
           Cancel
         </Button>
       </Stack>
