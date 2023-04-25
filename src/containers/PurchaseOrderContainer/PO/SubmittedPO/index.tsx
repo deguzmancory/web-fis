@@ -37,7 +37,10 @@ const SubmittedPO: React.FC<Props> = () => {
             </Typography>
             <Typography variant="body1" mt={2}>
               Your {content.name} has been successfully submitted and transferred to your DUO-Fiscal
-              Office. {content.poNumberName} <b>{poNumber}</b> has been assigned to your request.
+              Office.
+            </Typography>
+            <Typography variant="body1" mt={2}>
+              {content.poNumberName} <b>{poNumber}</b> has been assigned to your request.
             </Typography>
             <Typography variant="body1" mt={2}>
               Would you like to:
