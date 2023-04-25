@@ -8,6 +8,7 @@ import EmptyTable from 'src/components/EmptyTable';
 import { getFileName, handleParseAndDownloadFile } from 'src/components/FilePreview/helper';
 import { LoadingCommon, Table } from 'src/components/common';
 import {
+  NON_PO_LISTING_ITEM_KEY,
   NonPOListingItem,
   useGetAllNonPOListing,
   useViewNonEmployeeTravelFinalPdf,
@@ -107,9 +108,9 @@ const TableNonPOOrderList: FC<Props> = () => {
   const searchValues = useMemo(() => {
     return {
       requestNumber: requestNumberSearch,
-      projectNumber: projectNumberSearch,
+      listedProjectNumber: projectNumberSearch,
       vendorName: vendorNameSearch,
-      faReviewer: faReviewerSearch,
+      faStaffReviewer: faReviewerSearch,
       piName: piNameSearch,
       modifiedStartDate: modifiedStartDateSearch,
       modifiedEndDate: modifiedEndDateSearch,
@@ -120,7 +121,7 @@ const TableNonPOOrderList: FC<Props> = () => {
       finalApprovedEndDate: finalApprovedEndDateSearch,
       documentType: documentTypeFilter,
       status: statusFilter,
-      paymentType: paymentMethodFilter,
+      paymentMethod: paymentMethodFilter,
     };
   }, [
     requestNumberSearch,
@@ -240,11 +241,11 @@ const TableNonPOOrderList: FC<Props> = () => {
         onAction={handleGetNonPOListing}
         isLoading={isFetching}
         data={nonPOListing}
-        // defaultSortOrder={
-        //   workFlowTypeStatus === NON_PO_LISTING_WORK_FLOW_STATUS_KEY.APPROVED_DOCUMENTS
-        //     ? { name: NON_PO_LISTING_ITEM_KEY.FINAL_APPROVED_DATE, direction: 'desc' }
-        //     : { name: NON_PO_LISTING_ITEM_KEY.MODIFIED_DATE, direction: 'desc' }
-        // }
+        defaultSortOrder={
+          workFlowTypeStatus === NON_PO_LISTING_WORK_FLOW_STATUS_KEY.APPROVED_DOCUMENTS
+            ? { name: NON_PO_LISTING_ITEM_KEY.ACCEPTED_DATE, direction: 'desc' }
+            : { name: NON_PO_LISTING_ITEM_KEY.UPDATED_AT, direction: 'desc' }
+        }
         tableOptions={tableOptions}
         columns={columns}
         emptyComponent={<EmptyTable />}

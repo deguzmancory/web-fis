@@ -53,7 +53,7 @@ export const getNonEmployeeTravelFormValidationSchema = ({ action }: { action: P
           return schema.nullable();
         })
       : Yup.string().nullable(),
-    employer: isSubmitPOAction
+    organization: isSubmitPOAction
       ? Yup.string().when(['payeeCategory'], ([payeeCategory], schema) => {
           if (isServiceProviderPayeeCategory(payeeCategory)) {
             return schema.required().typeError(ErrorService.MESSAGES.required);

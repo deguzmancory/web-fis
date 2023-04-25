@@ -1,10 +1,10 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { isEmpty, upperFirst } from 'lodash';
 import { MUIDataTableColumn, MUIDataTableMeta } from 'mui-datatables';
-import { PurchaseOrderItem } from 'src/queries/PurchasingListing';
+import { PO_DETAIL_STATUS } from 'src/queries';
+import { NON_PO_LISTING_ITEM_KEY, NonPOListingItem } from 'src/queries/NonPOListing';
 import { localTimeToHawaii } from 'src/utils';
-import { getPOLinkByDocumentType, getPOStatus, transformDocumentType } from '../helpers';
-import { NON_PO_LISTING_ITEM_KEY } from 'src/queries/NonPOListing';
+import { getNonPOLinkByDocumentType, getNonPOStatus, transformNonPODocumentType } from '../helpers';
 
 export const allColumnsPendingReviewApprove = (): MUIDataTableColumn[] => [
   {
@@ -17,12 +17,12 @@ export const allColumnsPendingReviewApprove = (): MUIDataTableColumn[] => [
         _value: any,
         meta:
           | MUIDataTableMeta
-          | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: PurchaseOrderItem[] })
+          | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: NonPOListingItem[] })
       ) => {
-        const rowData = meta.tableData[meta.rowIndex] as PurchaseOrderItem;
+        const rowData = meta.tableData[meta.rowIndex] as NonPOListingItem;
         return (
           <Stack direction="row" alignItems={'center'}>
-            <Box>{getPOLinkByDocumentType(rowData)}</Box>
+            <Box>{getNonPOLinkByDocumentType(rowData)}</Box>
           </Stack>
         );
       },
@@ -48,7 +48,7 @@ export const allColumnsPendingReviewApprove = (): MUIDataTableColumn[] => [
       filter: false,
       sort: true,
       customBodyRender: (value: string) => {
-        return <Typography>{transformDocumentType(value)}</Typography>;
+        return <Typography>{transformNonPODocumentType(value)}</Typography>;
       },
     },
   },
@@ -108,7 +108,7 @@ export const allColumnsPendingReviewApprove = (): MUIDataTableColumn[] => [
     options: {
       filter: false,
       sort: true,
-      customBodyRender: (value: string) => {
+      customBodyRender: (value: PO_DETAIL_STATUS) => {
         return (
           <Stack direction="row" alignItems={'center'}>
             <Box
@@ -118,7 +118,7 @@ export const allColumnsPendingReviewApprove = (): MUIDataTableColumn[] => [
               }}
             >
               <Typography fontWeight="bold" variant="body2">
-                {getPOStatus(value)}
+                {getNonPOStatus(value)}
               </Typography>
             </Box>
           </Stack>

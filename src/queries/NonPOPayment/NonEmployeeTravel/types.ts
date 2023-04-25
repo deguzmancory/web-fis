@@ -15,7 +15,7 @@ export interface GeneralInfo {
   vendorName: string;
   vendorCode: string;
   positionTitle: string;
-  employer: string; //miss api
+  organization: string;
   vendorAddress: string;
   documentNumber: string;
   faStaffReviewer: string;
@@ -88,7 +88,6 @@ export interface SharedNonEmployeeTravelDetail
 
   //check?
   acceptedDate?: string;
-  organization?: string;
   homeAddress?: string;
   purposeForTravel?: string;
   phoneNumber?: string;

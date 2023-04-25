@@ -49,6 +49,9 @@ export const PATHS = {
   createPettyCashPayment: '/petty-cash-payment/create',
   pettyCashPaymentDetail: '/petty-cash-payment/detail',
 
+  reimbursementPayment: '/reimbursement-payment/detail',
+  multiTravelPayment: '/multi-travel-payment/detail',
+
   submittedNonPOPayment: '/submitted-direct-payments',
 
   // Purchasing

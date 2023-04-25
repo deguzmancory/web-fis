@@ -37,7 +37,7 @@ export enum NON_PO_LISTING_QUERY_KEY {
   FINAL_APPROVED_END_DATE = 'finalApprovedEndDate',
 
   //for form
-  MODIFIED_DATE = 'MODIFIED_DATE',
+  UPDATED_AT = 'updatedAt',
   CHECK_DATE = 'checkDate',
-  FINAL_APPROVED_DATE = 'finalApprovedDate',
+  ACCEPTED_DATE = 'acceptedDate',
 }

@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import { memo, useMemo, useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import CustomTable from 'src/components/CustomTable';
 import { BodyRow, BodyRows } from 'src/components/CustomTable/types';
@@ -14,11 +14,16 @@ import {
   TextareaAutosize,
 } from 'src/components/common';
 import { InputPhoneWithoutFlags } from 'src/components/common/InputPhone';
+import { AUTHORIZATION_FOR_PAYMENT_KEY } from 'src/containers/NonPOPaymentContainer/AuthorizationForPayment/enum';
+import {
+  UpsertAuthorizationFormValue,
+  UpsertAuthorizationPaymentFormikProps,
+} from 'src/containers/NonPOPaymentContainer/AuthorizationForPayment/types';
+import { PO_FORM_KEY } from 'src/containers/PurchaseOrderContainer/PO/enums';
 import {
   UpdatePOPaymentFormValue,
   UpdatePOPaymentFormikProps,
 } from 'src/containers/PurchaseOrderContainer/POPayment/types';
-import { PO_FORM_KEY } from 'src/containers/PurchaseOrderContainer/PO/enums';
 import { PO_MODE } from 'src/queries';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY } from '../enums';
@@ -32,12 +37,6 @@ import {
   numberOfItemsOptions,
   ownershipOptions,
 } from './helpers';
-import {
-  UpsertAuthorizationFormValue,
-  UpsertAuthorizationPaymentFormikProps,
-} from 'src/containers/NonPOPaymentContainer/AuthorizationForPayment/types';
-import { AUTHORIZATION_FOR_PAYMENT_KEY } from 'src/containers/NonPOPaymentContainer/AuthorizationForPayment/enum';
-import { isNumber } from 'lodash';
 
 const getHeaderRow = (tableIndex: number): BodyRow => {
   const tableStartOrder = tableIndex * DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS + 1;
@@ -277,7 +276,7 @@ const EquipmentInventories = <
           },
           ...equipmentInventoriesValue
             .slice(startIndexOfSliceInventories, endIndexOfSliceInventories)
-            .map((inventory, index) => {
+            .map((_inventory, index) => {
               const prefixInventory = getPrefixName(startIndexOfSliceInventories, index);
 
               return {
@@ -292,7 +291,6 @@ const EquipmentInventories = <
                     errorMessage={_getErrorMessage(
                       `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.ITEM_COST}`
                     )}
-                    value={isNumber(inventory?.itemCost) ? inventory.itemCost : ''}
                   />
                 ),
                 style: getContentStyle(index === DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS - 1),

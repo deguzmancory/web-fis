@@ -247,6 +247,7 @@ const POPayment: FC<Props> = ({
 
         <SectionLayout>
           <GeneralInfo
+            title={'PURCHASE ORDER MAKING PAYMENT ON:'}
             formikProps={formikProps}
             disabled
             currentPOMode={currentPOMode}

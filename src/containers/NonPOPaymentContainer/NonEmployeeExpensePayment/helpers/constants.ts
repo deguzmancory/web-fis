@@ -71,7 +71,7 @@ export const emptyUpsertNonEmployeeTravelFormValue: UpsertNonEmployeeTravelFormV
   vendorName: null,
   vendorCode: null,
   positionTitle: '',
-  employer: '', //todo: check
+  organization: '',
   vendorAddress: '',
   documentNumber: '',
   faStaffReviewer: '',
@@ -113,7 +113,6 @@ export const emptyUpsertNonEmployeeTravelFormValue: UpsertNonEmployeeTravelFormV
   internalComments: '',
 
   acceptedDate: '',
-  organization: '',
   homeAddress: '',
   purposeForTravel: '',
   phoneNumber: '',

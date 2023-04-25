@@ -2,11 +2,10 @@ import { Box, Stack, Typography } from '@mui/material';
 import { capitalize, isEmpty, upperFirst } from 'lodash';
 import { MUIDataTableColumn, MUIDataTableMeta } from 'mui-datatables';
 import TypographyLink from 'src/components/TypographyLink';
-import { PurchaseOrderItem } from 'src/queries/PurchasingListing';
 import { Callback } from 'src/redux/types';
 import { getDateDisplay, localTimeToHawaii } from 'src/utils';
-import { getPOLinkByDocumentType, transformDocumentType } from '../helpers';
-import { NON_PO_LISTING_ITEM_KEY } from 'src/queries/NonPOListing';
+import { getNonPOLinkByDocumentType, transformNonPODocumentType } from '../helpers';
+import { NON_PO_LISTING_ITEM_KEY, NonPOListingItem } from 'src/queries/NonPOListing';
 
 export const allApprovedColumns = ({
   handleViewFinalPDF,
@@ -25,13 +24,13 @@ export const allApprovedColumns = ({
         _value: any,
         meta:
           | MUIDataTableMeta
-          | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: PurchaseOrderItem[] })
+          | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: NonPOListingItem[] })
       ) => {
-        const rowData = meta.tableData[meta.rowIndex] as PurchaseOrderItem;
+        const rowData = meta.tableData[meta.rowIndex] as NonPOListingItem;
 
         return (
           <Stack direction="row" alignItems={'center'}>
-            <Box>{getPOLinkByDocumentType(rowData)}</Box>
+            <Box>{getNonPOLinkByDocumentType(rowData)}</Box>
           </Stack>
         );
       },
@@ -54,7 +53,7 @@ export const allApprovedColumns = ({
               maxWidth: 30,
             }}
           >
-            <Typography variant="body2">{transformDocumentType(value) ?? '--'}</Typography>
+            <Typography variant="body2">{transformNonPODocumentType(value) ?? '--'}</Typography>
           </Box>
         );
       },
@@ -298,7 +297,7 @@ export const allApprovedColumns = ({
         _value: any,
         meta:
           | MUIDataTableMeta
-          | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: PurchaseOrderItem[] })
+          | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: NonPOListingItem[] })
       ) => {
         const rowData = meta.tableData[meta.rowIndex];
 

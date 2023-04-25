@@ -11,7 +11,7 @@ export enum NON_EMPLOYEE_TRAVEL_FORM_KEY {
   VENDOR_NAME = 'vendorName',
   VENDOR_CODE = 'vendorCode',
   POSITION_TITLE = 'positionTitle',
-  EMPLOYER = 'employer',
+  ORGANIZATION = 'organization',
   VENDOR_ADDRESS = 'vendorAddress',
   DOCUMENT_NUMBER = 'documentNumber',
   FA_STAFF_REVIEWER = 'faStaffReviewer',

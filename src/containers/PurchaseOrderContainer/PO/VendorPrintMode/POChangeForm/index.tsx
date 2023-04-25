@@ -1,9 +1,10 @@
-import { Box, Grid, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { AiFillWarning } from 'react-icons/ai';
 import { connect } from 'react-redux';
 import { COLOR_CODE } from 'src/appConfig/constants';
 import { TextareaAutosize } from 'src/components/common';
+import { getTypeOfPOChange } from 'src/containers/PurchaseOrderContainer/POChange/POChangeForm/helpers';
 import { PO_CHANGE_FORM_NUMBER } from 'src/queries';
 import { IRootState } from 'src/redux/rootReducer';
 import TableMiddle from '../Table/tableMiddle';
@@ -11,7 +12,6 @@ import TableTop from '../Table/tableTop';
 import SpecialInstructions from '../specialInstructions';
 import TableChangeOrderToReadLineItem from './Table/tableChangeOrderToReadLineItem';
 import TableOriginalLineItem from './Table/tableOriginalLineItem';
-import { getTypeOfPOChange } from 'src/containers/PurchaseOrderContainer/POChange/POChangeForm/helpers';
 
 const VendorPrintModePOChangeForm: React.FC<Props> = ({ formData }) => {
   const handleSwitchFormData = React.useMemo(() => {

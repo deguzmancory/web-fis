@@ -57,6 +57,7 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
   disabled = false,
   currentPOMode,
   documentType = PO_DOCUMENT_TYPE.PURCHASE_ORDER,
+  title,
 }: Props<T>) => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
@@ -231,6 +232,11 @@ const GeneralInfo = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps>
 
   return (
     <Box>
+      {title && (
+        <Typography variant="h5" mb={2}>
+          {title}
+        </Typography>
+      )}
       <Grid container spacing={2}>
         {/* PO, PO Payment logic */}
         {(isPODocument || isPOPaymentDocument || isBlankDocument) && (
@@ -617,6 +623,7 @@ type Props<T extends UpsertPOFormikProps | UpdatePOPaymentFormikProps> = {
   disabled?: boolean;
   currentPOMode: PO_MODE;
   documentType: PO_DOCUMENT_TYPE;
+  title?: string;
 };
 
 export default memo(GeneralInfo, (prevProps, nextProps) => {

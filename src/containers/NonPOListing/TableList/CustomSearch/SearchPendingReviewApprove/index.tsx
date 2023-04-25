@@ -46,7 +46,7 @@ const SearchPendingReviewApprove = ({
       if (!!value) {
         if (Array.isArray(value)) {
           switch (key) {
-            case NON_PO_LISTING_QUERY_KEY.MODIFIED_DATE: {
+            case NON_PO_LISTING_QUERY_KEY.UPDATED_AT: {
               if (value.length < 2 || !value[0] || !value[1]) {
                 query.delete(NON_PO_LISTING_QUERY_KEY.MODIFIED_START_DATE);
                 query.delete(NON_PO_LISTING_QUERY_KEY.MODIFIED_END_DATE);
@@ -178,7 +178,7 @@ const SearchPendingReviewApprove = ({
             <DateRangePicker
               label={'Modified Date'}
               placeholder="Search"
-              {...getFieldProps(NON_PO_LISTING_QUERY_KEY.MODIFIED_DATE)}
+              {...getFieldProps(NON_PO_LISTING_QUERY_KEY.UPDATED_AT)}
               onChange={setFieldValue}
               selecteds={values.modifiedDate}
             />

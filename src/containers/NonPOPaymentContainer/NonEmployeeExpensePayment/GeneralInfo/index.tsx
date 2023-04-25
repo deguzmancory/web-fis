@@ -244,8 +244,8 @@ const GeneralInfo: FC<Props> = ({ formikProps, disabled = false, currentMode }) 
           <Grid item xs={12} sm={6}>
             <Input
               label={'Employer'}
-              errorMessage={_getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.EMPLOYER)}
-              {...getUncontrolledFieldProps(NON_EMPLOYEE_TRAVEL_FORM_KEY.EMPLOYER)}
+              errorMessage={_getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.ORGANIZATION)}
+              {...getUncontrolledFieldProps(NON_EMPLOYEE_TRAVEL_FORM_KEY.ORGANIZATION)}
               disabled={disabled || isReviewMode}
               required={isServiceProviderPayeeCategory(values.payeeCategory)}
               footer={

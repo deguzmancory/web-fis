@@ -1,11 +1,9 @@
 import { Link } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import TypographyLink from 'src/components/TypographyLink';
-import { SELECT_CHANGE_FORM_TYPE_QUERY_KEY } from 'src/containers/PurchaseOrderContainer/POChange/SelectChangeFormType/enums';
-import { PO_DETAIL_STATUS, PO_DOCUMENT_TYPE } from 'src/queries';
+import { NON_PO_PAYMENT_DOCUMENT_TYPE, PO_DETAIL_STATUS } from 'src/queries';
+import { NonPOListingItem } from 'src/queries/NonPOListing';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
-import { PurchaseOrderItem } from 'src/queries/PurchasingListing';
-import { Callback } from 'src/redux/types';
 import { NON_PO_LISTING_WORK_FLOW_STATUS_KEY } from '../enum';
 
 export const purchasingListType = [
@@ -36,7 +34,7 @@ export const purchasingListType = [
   },
 ];
 
-export const getPOStatus = (value: string) => {
+export const getNonPOStatus = (value: PO_DETAIL_STATUS) => {
   switch (value) {
     case PO_DETAIL_STATUS.FINAL:
       return 'Final';
@@ -55,66 +53,64 @@ export const getPOStatus = (value: string) => {
   }
 };
 
-export const transformDocumentType = (value: string) => {
+export const transformNonPODocumentType = (value: string) => {
   if (!value) return '--';
   switch (value) {
-    case PO_DOCUMENT_TYPE.PURCHASE_ORDER:
-      return 'PO';
-    case PO_DOCUMENT_TYPE.PO_CHANGE:
-      return 'Chg';
-    case PO_DOCUMENT_TYPE.PO_PAYMENT:
-      return 'Pmt';
+    case NON_PO_PAYMENT_DOCUMENT_TYPE.AUTHORIZATION_PAYMENT:
+      return 'Auth For Pmnt';
+    case NON_PO_PAYMENT_DOCUMENT_TYPE.NON_EMPLOYEE_TRAVEL_PAYMENT:
+      return 'Non Emp Trvl';
+    case NON_PO_PAYMENT_DOCUMENT_TYPE.PERSONAL_AUTO_PAYMENT:
+      return 'Pers Auto';
+    case NON_PO_PAYMENT_DOCUMENT_TYPE.PETTY_CASH_PAYMENT:
+      return 'Petty Cash';
+    case NON_PO_PAYMENT_DOCUMENT_TYPE.REIMBURSEMENT_PAYMENT:
+      return 'Reimburse';
+    case NON_PO_PAYMENT_DOCUMENT_TYPE.MULTI_TRAVEL_PAYMENT:
+      return 'Multi Travel';
     default:
-      return '';
+      return '--';
   }
 };
 
-export const getPOLinkByDocumentType = (poItem: PurchaseOrderItem) => {
-  switch (poItem.documentType) {
-    case PO_DOCUMENT_TYPE.PURCHASE_ORDER:
+export const getNonPOLinkByDocumentType = (nonPOItem: NonPOListingItem) => {
+  switch (nonPOItem.documentType) {
+    case NON_PO_PAYMENT_DOCUMENT_TYPE.AUTHORIZATION_PAYMENT:
       return (
-        <Link to={`${PATHS.purchaseOrderDetail}/${poItem.id}`}>
-          <TypographyLink>{poItem.number ?? '--'}</TypographyLink>
+        <Link to={`${PATHS.authorizationForPaymentDetail}/${nonPOItem.id}`}>
+          <TypographyLink>{nonPOItem.requestNumber ?? '--'}</TypographyLink>
         </Link>
       );
-    case PO_DOCUMENT_TYPE.PO_CHANGE:
+    case NON_PO_PAYMENT_DOCUMENT_TYPE.NON_EMPLOYEE_TRAVEL_PAYMENT:
       return (
-        <Link to={`${PATHS.poChangeForm}/${poItem.id}`}>
-          <TypographyLink>{poItem.number ?? '--'}</TypographyLink>
+        <Link to={`${PATHS.nonEmployeeTravelPaymentDetail}/${nonPOItem.id}`}>
+          <TypographyLink>{nonPOItem.requestNumber ?? '--'}</TypographyLink>
         </Link>
       );
-    case PO_DOCUMENT_TYPE.PO_PAYMENT:
+    case NON_PO_PAYMENT_DOCUMENT_TYPE.PERSONAL_AUTO_PAYMENT:
       return (
-        <Link to={`${PATHS.poPaymentForm}/${poItem.id}`}>
-          <TypographyLink>{poItem.number ?? '--'}</TypographyLink>
+        <Link to={`${PATHS.personalAutoPaymentDetail}/${nonPOItem.id}`}>
+          <TypographyLink>{nonPOItem.requestNumber ?? '--'}</TypographyLink>
         </Link>
       );
-    default:
-      return null;
-  }
-};
-
-export const getCreatePOChangeOrPaymentLink = ({
-  poItem,
-  typeStatus,
-  onCreatePOPayment,
-}: {
-  poItem: PurchaseOrderItem;
-  typeStatus: PO_DOCUMENT_TYPE;
-  onCreatePOPayment: Callback;
-}) => {
-  switch (typeStatus) {
-    case PO_DOCUMENT_TYPE.PO_CHANGE:
+    case NON_PO_PAYMENT_DOCUMENT_TYPE.PETTY_CASH_PAYMENT:
       return (
-        <Link
-          to={`${PATHS.poChangeOptions}?${SELECT_CHANGE_FORM_TYPE_QUERY_KEY.DOCUMENT_ID}=${poItem.id}`}
-        >
-          <TypographyLink>Create PO Chg</TypographyLink>
+        <Link to={`${PATHS.pettyCashPaymentDetail}/${nonPOItem.id}`}>
+          <TypographyLink>{nonPOItem.requestNumber ?? '--'}</TypographyLink>
         </Link>
       );
-    case PO_DOCUMENT_TYPE.PO_PAYMENT: {
-      return <TypographyLink onClick={onCreatePOPayment}>Create PO Pm</TypographyLink>;
-    }
+    case NON_PO_PAYMENT_DOCUMENT_TYPE.REIMBURSEMENT_PAYMENT:
+      return (
+        <Link to={`${PATHS.reimbursementPayment}/${nonPOItem.id}`}>
+          <TypographyLink>{nonPOItem.requestNumber ?? '--'}</TypographyLink>
+        </Link>
+      );
+    case NON_PO_PAYMENT_DOCUMENT_TYPE.MULTI_TRAVEL_PAYMENT:
+      return (
+        <Link to={`${PATHS.multiTravelPayment}/${nonPOItem.id}`}>
+          <TypographyLink>{nonPOItem.requestNumber ?? '--'}</TypographyLink>
+        </Link>
+      );
     default:
       return null;
   }

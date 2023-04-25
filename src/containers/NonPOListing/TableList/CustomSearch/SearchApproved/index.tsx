@@ -65,7 +65,7 @@ const SearchApproved = ({
               );
               return;
             }
-            case NON_PO_LISTING_QUERY_KEY.FINAL_APPROVED_DATE: {
+            case NON_PO_LISTING_QUERY_KEY.ACCEPTED_DATE: {
               if (value.length < 2 || !value[0] || !value[1]) {
                 query.delete(NON_PO_LISTING_QUERY_KEY.FINAL_APPROVED_START_DATE);
                 query.delete(NON_PO_LISTING_QUERY_KEY.FINAL_APPROVED_END_DATE);
@@ -226,7 +226,7 @@ const SearchApproved = ({
             <DateRangePicker
               label={'Approved Date'}
               placeholder="From - To"
-              {...getFieldProps(NON_PO_LISTING_QUERY_KEY.FINAL_APPROVED_DATE)}
+              {...getFieldProps(NON_PO_LISTING_QUERY_KEY.ACCEPTED_DATE)}
               selecteds={values.finalApprovedDate}
               onChange={setFieldValue}
             />
