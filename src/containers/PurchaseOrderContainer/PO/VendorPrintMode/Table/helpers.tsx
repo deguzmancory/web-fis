@@ -263,7 +263,11 @@ export const reportTaxRate = (value: string): BodyRow => {
         type: CellType.PRINT_CELL,
       },
       {
-        content: <EllipsisTooltipInputCurrency value={value} name="" disabled />,
+        content: (
+          <Typography variant="body2" style={{ paddingRight: 14 }}>
+            {!value ? '%' : `${value}%`}
+          </Typography>
+        ),
         colSpan: 1,
         rowSpan: 1,
         style: {

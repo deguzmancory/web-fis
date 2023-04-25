@@ -104,17 +104,13 @@ const VendorPrintModePOChangeForm: React.FC<Props> = ({ formData }) => {
           />
         </Box>
       </Stack>
-      <Stack sx={{ mt: 12 }}>
-        <Grid container justifyContent="flex-end">
-          <Grid container item xs={4} textAlign="center">
-            <Typography variant="body2" fontWeight="bold" borderTop={1}>
-              FISCAL AUTHORIZED SIGNATURE
-            </Typography>
-            <Typography variant="body2" fontWeight="bold" borderTop={1} marginLeft={1} width="35%">
-              Date
-            </Typography>
-          </Grid>
-        </Grid>
+      <Stack sx={{ mt: 12 }} justifyContent="flex-end" flexDirection="row">
+        <Typography variant="body2" fontWeight="bold" borderTop={1} width="25%" marginRight={1}>
+          FISCAL AUTHORIZED SIGNATURE
+        </Typography>
+        <Typography variant="body2" fontWeight="bold" borderTop={1} width="15%" textAlign="start">
+          Date
+        </Typography>
       </Stack>
     </>
   );

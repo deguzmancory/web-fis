@@ -581,13 +581,16 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
       leftContent: '52.215-13',
       rightContent: 'Subcontractor Certified Cost or Pricing Data—Modifications',
     },
-    { leftContent: '52.230-2', rightContent: 'Cost Accounting Standards' },
-    {
+    !isAttachment32d && { leftContent: '52.230-2', rightContent: 'Cost Accounting Standards' },
+    !isAttachment32d && {
       leftContent: '52.230-3',
       rightContent: 'Disclosure and Consistency of Cost Accounting Practices',
     },
     { leftContent: '52.230-5', rightContent: 'Cost Accounting Standards--Educational Institution' },
-    { leftContent: '52.230-6', rightContent: 'Administration of Cost Accounting Standards' },
+    !isAttachment32d && {
+      leftContent: '52.230-6',
+      rightContent: 'Administration of Cost Accounting Standards',
+    },
   ];
 
   return (
@@ -1002,7 +1005,9 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
           <Grid container>
             <Grid item container>
               <Grid item xs={2}>
-                <Typography variant="body2">252.225-7033</Typography>
+                <Typography variant="body2">
+                  {isAttachment32d ? '252.211-7000' : '252.225-7033'}
+                </Typography>
               </Grid>
               <Grid item xs={10}>
                 <Typography variant="body2">Waiver of United Kingdom Levies</Typography>
@@ -1021,7 +1026,10 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
           <Grid container>
             <Grid item container>
               <Grid item xs={2}>
-                <Typography variant="body2">252.211-7000</Typography>
+                <Typography variant="body2">
+                  {' '}
+                  {isAttachment32d ? '252.225.7033' : '252.211-7000'}
+                </Typography>
               </Grid>
               <Grid item xs={10}>
                 <Typography variant="body2">Acquisition Streamlining</Typography>

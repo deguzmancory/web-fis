@@ -1,11 +1,16 @@
 import { Grid, Stack, Typography } from '@mui/material';
-import React from 'react';
+import { useMemo } from 'react';
 import { connect } from 'react-redux';
 import CustomTable from 'src/components/CustomTable';
 import { BodyRows, CellType } from 'src/components/CustomTable/types';
+import { PO_DOCUMENT_TYPE } from 'src/queries';
 import { IRootState } from 'src/redux/rootReducer';
 
 const TableTop: React.FC<Props> = ({ formData }) => {
+  const isPOChangeForm = useMemo(() => {
+    return formData?.documentType === PO_DOCUMENT_TYPE.PO_CHANGE;
+  }, [formData?.documentType]);
+
   const bodyList: BodyRows = [
     {
       style: {
@@ -79,7 +84,25 @@ const TableTop: React.FC<Props> = ({ formData }) => {
           ),
           rowSpan: 2,
           type: CellType.PRINT_CELL,
-          subContent: <Typography variant="body2">{formData?.number}</Typography>,
+          subContent: isPOChangeForm ? (
+            <Stack>
+              <Typography variant="body2" fontWeight="bold" style={{ display: 'contents' }}>
+                New:{' '}
+                <Typography variant="body2" style={{ display: 'contents' }}>
+                  {formData?.number}
+                </Typography>
+              </Typography>
+              <Typography>{}</Typography>
+              <Typography variant="body2" fontWeight="bold" style={{ display: 'contents' }}>
+                Original:{' '}
+                <Typography variant="body2" style={{ display: 'contents' }}>
+                  {formData?.previousPoNumber}
+                </Typography>
+              </Typography>
+            </Stack>
+          ) : (
+            <Typography variant="body2">{formData?.number}</Typography>
+          ),
         },
       ],
     },

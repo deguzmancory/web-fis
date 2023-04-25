@@ -1,11 +1,16 @@
-import { Grid, Typography } from '@mui/material';
-import React from 'react';
+import { Grid, Stack, Typography } from '@mui/material';
+import { useMemo } from 'react';
 import { connect } from 'react-redux';
 import CustomTable from 'src/components/CustomTable';
 import { BodyRow, BodyRows, CellType } from 'src/components/CustomTable/types';
+import { PO_DOCUMENT_TYPE } from 'src/queries';
 import { IRootState } from 'src/redux/rootReducer';
 
 const TableMiddle: React.FC<Props> = ({ formData }) => {
+  const isPOChangeForm = useMemo(() => {
+    return formData?.documentType === PO_DOCUMENT_TYPE.PO_CHANGE;
+  }, [formData?.documentType]);
+
   const tableNote: BodyRow = {
     columns: [
       {
@@ -86,7 +91,9 @@ const TableMiddle: React.FC<Props> = ({ formData }) => {
         subContent: (
           <Grid container sx={{ flexDirection: 'column' }}>
             <Grid item>
-              <Typography variant="body2">{formData?.shipVia}</Typography>
+              <Typography variant="body2">
+                {formData?.shipVia} {formData?.shipOther && `- ${formData?.shipOther}`}
+              </Typography>
             </Grid>
             <Grid item>
               <Typography variant="body2" fontWeight="bold">
@@ -122,7 +129,25 @@ const TableMiddle: React.FC<Props> = ({ formData }) => {
           </Typography>
         ),
         type: CellType.PRINT_CELL,
-        subContent: <Typography variant="body2">{formData?.directInquiriesTo}</Typography>,
+        subContent: isPOChangeForm ? (
+          <Stack>
+            <Typography variant="body2" fontWeight="bold" style={{ display: 'contents' }}>
+              ATT.{' '}
+              <Typography variant="body2" style={{ display: 'contents' }}>
+                {formData?.directInquiriesTo}
+              </Typography>
+            </Typography>
+            <Typography>{}</Typography>
+            <Typography variant="body2" fontWeight="bold" style={{ display: 'contents' }}>
+              PH.{' '}
+              <Typography variant="body2" style={{ display: 'contents' }}>
+                {formData?.phoneNumber}
+              </Typography>
+            </Typography>
+          </Stack>
+        ) : (
+          <Typography variant="body2">{formData?.directInquiriesTo}</Typography>
+        ),
       },
     ],
   };

@@ -2,21 +2,37 @@ import { Box, Grid, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { connect } from 'react-redux';
 import { PO_DOCUMENT_TYPE } from 'src/queries';
+import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { IRootState } from 'src/redux/rootReducer';
+import { RoleService } from 'src/services';
 
 const SpecialInstructions: React.FC<Props> = ({ formData }) => {
+  const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
+
   const isPOChangeForm = React.useMemo(() => {
     return formData?.documentType === PO_DOCUMENT_TYPE.PO_CHANGE;
   }, [formData?.documentType]);
 
   return (
     <Stack>
-      <Typography variant="body2" style={{ display: 'contents' }} fontWeight="bold">
-        SPECIAL INSTRUCTIONS:{' '}
-        <Typography variant="body2" style={{ display: 'contents' }}>
-          Refunds payable to RCUH and not traveler on any unused tickets
+      {currentRole === ROLE_NAME.PI && isPOChangeForm && (
+        // TODO: Tuyen Tran add dhApproved
+        <Stack>
+          <Typography variant="body2">{`Project No. ${formData?.projectNumber}`}</Typography>
+          <Typography variant="body2">{`P.O. Initiated by ${formData?.loginName}`}</Typography>
+        </Stack>
+      )}
+
+      {currentRole !== ROLE_NAME.PI && (
+        <Typography variant="body2" style={{ display: 'contents' }} fontWeight="bold">
+          SPECIAL INSTRUCTIONS:{' '}
+          <Typography variant="body2" style={{ display: 'contents' }}>
+            {formData?.presetInstructions === 'Travel Agency Refund Notice'
+              ? 'Refunds payable to RCUH and not traveler on any unused tickets.'
+              : `${formData?.externalSpecialInstructions}`}
+          </Typography>
         </Typography>
-      </Typography>
+      )}
 
       <Grid container mt={2}>
         <Grid item xs={9}>
