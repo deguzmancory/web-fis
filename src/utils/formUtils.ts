@@ -99,6 +99,7 @@ export const checkRowStateAndSetValue = <TRecord = any, TValue = any>({
   onRemoveRow,
   onAddRow,
   callback,
+  removeCallback,
 }: {
   name: string;
   value: TValue;
@@ -113,6 +114,7 @@ export const checkRowStateAndSetValue = <TRecord = any, TValue = any>({
   onRemoveRow: (index: number) => void;
   onAddRow: Callback;
   callback?: Callback;
+  removeCallback?: Callback;
 }) => {
   const currentRow = get(records, index);
 
@@ -135,6 +137,8 @@ export const checkRowStateAndSetValue = <TRecord = any, TValue = any>({
     if (index === records.length - 1) return;
 
     onRemoveRow(index);
+
+    if (removeCallback) removeCallback();
   }
   // add new row if the current row is the last row
   else {

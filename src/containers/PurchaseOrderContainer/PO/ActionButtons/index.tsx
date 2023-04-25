@@ -33,6 +33,7 @@ import urljoin from 'url-join';
 import { UpdatePOPaymentFormikProps } from '../../POPayment/types';
 import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormValue, UpsertPOFormikProps } from '../types';
+import { PersonalAutomobileFormikProps } from '../../../NonPOPaymentContainer/PersonalAutomobileMileageVoucher/types';
 
 const ActionButtons = <
   T extends
@@ -40,6 +41,7 @@ const ActionButtons = <
     | UpdatePOPaymentFormikProps
     | UpsertNonEmployeeTravelFormikProps
     | UpsertAuthorizationPaymentFormikProps
+    | PersonalAutomobileFormikProps
 >({
   formikProps,
   currentFormMode,
@@ -246,6 +248,7 @@ type Props<
     | UpdatePOPaymentFormikProps
     | UpsertNonEmployeeTravelFormikProps
     | UpsertAuthorizationPaymentFormikProps
+    | PersonalAutomobileFormikProps
 > = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps & {
     formikProps: T extends UpsertPOFormikProps
@@ -256,6 +259,8 @@ type Props<
       ? UpsertNonEmployeeTravelFormikProps
       : T extends UpsertAuthorizationPaymentFormikProps
       ? UpsertAuthorizationPaymentFormikProps
+      : T extends PersonalAutomobileFormikProps
+      ? PersonalAutomobileFormikProps
       : unknown;
     disabled?: boolean;
     loading?: boolean;

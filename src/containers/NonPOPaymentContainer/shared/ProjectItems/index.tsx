@@ -27,6 +27,11 @@ import {
   UpsertNonEmployeeTravelFormValue,
   UpsertNonEmployeeTravelFormikProps,
 } from '../../NonEmployeeExpensePayment/types';
+import { PERSONAL_AUTOMOBILE_FORM_KEY } from '../../PersonalAutomobileMileageVoucher/enums';
+import {
+  PersonalAutomobileFormValue,
+  PersonalAutomobileFormikProps,
+} from '../../PersonalAutomobileMileageVoucher/types';
 import { authorizationProjectLineItemsColumnsName, commonColumnStyles } from '../constants';
 import { PMT_PROJECT_LINE_ITEM_KEY } from '../enums';
 import { PO_MODE } from 'src/queries';
@@ -46,8 +51,18 @@ const isUpsertNonEmployeeTravelFormValue = (
   return projectItemsPrefix === NON_EMPLOYEE_TRAVEL_FORM_KEY.PROJECT_ITEMS;
 };
 
+const isUpsertPersonalAutomobileFormValue = (
+  formValues,
+  projectItemsPrefix: string
+): formValues is PersonalAutomobileFormValue => {
+  return projectItemsPrefix === PERSONAL_AUTOMOBILE_FORM_KEY.PROJECT_ITEMS;
+};
+
 const ProjectItems = <
-  T extends UpsertAuthorizationPaymentFormikProps | UpsertNonEmployeeTravelFormikProps
+  T extends
+    | UpsertAuthorizationPaymentFormikProps
+    | UpsertNonEmployeeTravelFormikProps
+    | PersonalAutomobileFormikProps
 >({
   formikProps,
   disabled,
@@ -71,7 +86,10 @@ const ProjectItems = <
   const isReviewMode = isFAReviewMode(currentMode) || isCUReviewMode(currentMode);
 
   const lineItemsValue = useMemo(() => {
-    if (isUpsertAuthorizationPaymentFormValue(values, projectItemsPrefix)) {
+    if (
+      isUpsertAuthorizationPaymentFormValue(values, projectItemsPrefix) ||
+      isUpsertPersonalAutomobileFormValue(values, projectItemsPrefix)
+    ) {
       return values.projectLineItems || [];
     }
 
@@ -413,6 +431,8 @@ type Props<T> = {
     ? UpsertAuthorizationPaymentFormikProps
     : T extends UpsertNonEmployeeTravelFormikProps
     ? UpsertNonEmployeeTravelFormikProps
+    : T extends PersonalAutomobileFormikProps
+    ? PersonalAutomobileFormikProps
     : unknown;
   projectItemsPrefix: string;
   totalPrefix: string;
@@ -436,12 +456,12 @@ export default memo(ProjectItems, (prevProps, nextProps) => {
     prevProps.tableErrorMessage === nextProps.tableErrorMessage &&
     prevProps.showTotalError === nextProps.showTotalError &&
     prevProps.currentMode === nextProps.currentMode &&
-    isEqualPrevAndNextFormikValues<UpsertAuthorizationFormValue | UpsertNonEmployeeTravelFormValue>(
-      {
-        prevFormikProps,
-        nextFormikProps,
-        formKeysNeedRender,
-      }
-    )
+    isEqualPrevAndNextFormikValues<
+      UpsertAuthorizationFormValue | UpsertNonEmployeeTravelFormValue | PersonalAutomobileFormValue
+    >({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender,
+    })
   );
 });
