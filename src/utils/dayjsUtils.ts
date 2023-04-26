@@ -37,6 +37,17 @@ export const getDateDisplay = (value: DateType, format = DateFormat) => {
  * @param {string|date|Dayjs} value
  * @param {string} languageCode
  */
+export const formatDateApi = (value: DateType, format = DateFormatWithYear) => {
+  if (!value) return null;
+
+  return dayjs(value).format(format);
+};
+
+/**
+ * Get date display
+ * @param {string|date|Dayjs} value
+ * @param {string} languageCode
+ */
 export const getEndOfDayDisplay = (value: DateType, format = DateFormat) => {
   if (!value) return '';
 

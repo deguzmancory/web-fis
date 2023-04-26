@@ -8,8 +8,8 @@ import {
 } from 'src/queries/NonPOPayment/AuthorizationForPayment/types';
 import {
   DateFormat,
+  formatDateApi,
   getDate,
-  getDateDisplay,
   isString,
   isoFormat,
   localTimeToHawaii,
@@ -61,10 +61,10 @@ export const getUpsertAuthorizationPaymentPayload = ({
       projectNumber: isString(projectItem.projectNumber)
         ? projectItem.projectNumber
         : projectItem.projectNumber.number,
-      serviceDate: getDateDisplay(projectItem.serviceDate) || null,
+      serviceDate: formatDateApi(projectItem.serviceDate) || null,
     })) || [];
 
-  const remittanceLineItemsPayload = remittanceLineItems.slice(0, 1) || [];
+  const remittanceLineItemsPayload = remittanceLineItems.slice(0, -1) || [];
 
   return {
     ...payloadProps,
@@ -119,7 +119,7 @@ export const getAuthorizationPaymentFormValueFromResponse = ({
     action: null,
     placeholderFileAttachment: null,
 
-    date: getDateDisplay(response.date),
+    date: formatDateApi(response.date),
     paymentTotal: Number(response.paymentTotal || 0),
     total: Number(response.total || 0),
 

@@ -179,20 +179,18 @@ export const calculateDataOfItineraries = ({
 
   // the first one is special and uses the main dep date, everything else uses the line dept date
   if (startDepartureDate && updatedItineraries[0].departureDate) {
-    if (startDepartureDate && updatedItineraries[0].departureDate) {
-      calcDays =
-        getFullDayDifference({
-          startDate: startDepartureDate,
-          endDate: updatedItineraries[0].departureDate,
-        }) - 1;
-      calcDays += getPartialDaysFromHours('home-dept', startDepartureDate);
-      calcDays += getPartialDaysFromHours('dest-dept', updatedItineraries[0].departureDate);
-      updatedItineraries[0].calcDays = calcDays;
-    } else {
-      updatedItineraries[0].calcDays = null;
-    }
-    updateBusDaysOfItinerary(updatedItineraries[0], estimatedFlag);
+    calcDays =
+      getFullDayDifference({
+        startDate: startDepartureDate,
+        endDate: updatedItineraries[0].departureDate,
+      }) - 1;
+    calcDays += getPartialDaysFromHours('home-dept', startDepartureDate);
+    calcDays += getPartialDaysFromHours('dest-dept', updatedItineraries[0].departureDate);
+    updatedItineraries[0].calcDays = calcDays;
+  } else {
+    updatedItineraries[0].calcDays = null;
   }
+  updateBusDaysOfItinerary(updatedItineraries[0], estimatedFlag);
 
   // go thru all the other lines and figure out the calc days
   updatedItineraries.forEach((itinerary, index) => {

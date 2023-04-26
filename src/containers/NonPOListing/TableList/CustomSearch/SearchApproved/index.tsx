@@ -213,7 +213,7 @@ const SearchApproved = ({
             />
           </Grid>
 
-          <Grid container item xs={3}>
+          <Grid container item xs={6}>
             <DateRangePicker
               label={'Check Date'}
               placeholder="From - To"
@@ -222,7 +222,7 @@ const SearchApproved = ({
               selecteds={values.checkDate}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={6}>
             <DateRangePicker
               label={'Approved Date'}
               placeholder="From - To"

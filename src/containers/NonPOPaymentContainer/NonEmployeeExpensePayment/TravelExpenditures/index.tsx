@@ -9,7 +9,7 @@ import {
   TextareaAutosize,
 } from 'src/components/common';
 import { PO_MODE } from 'src/queries';
-import { checkRowStateAndSetValue, getErrorMessage } from 'src/utils';
+import { calculateTotals, checkRowStateAndSetValue, getErrorMessage } from 'src/utils';
 import { isEqualPrevAndNextFormikValues } from 'src/utils';
 import { UpsertNonEmployeeTravelFormValue, UpsertNonEmployeeTravelFormikProps } from '../types';
 import { EXPENDITURE_ITEM_FORM_KEY, NON_EMPLOYEE_TRAVEL_FORM_KEY } from '../enums';
@@ -29,9 +29,24 @@ const TravelExpenditures: FC<Props> = ({ formikProps, disabled }) => {
     return values.expenditures || [];
   }, [values.expenditures]);
 
-  const expenditureItemKey = NON_EMPLOYEE_TRAVEL_FORM_KEY.EXPENDITURES;
+  useEffect(() => {
+    let updatedPaymentTotal = Number(values.expenditureTotal || 0);
 
-  useEffect(() => {}, []);
+    updatedPaymentTotal =
+      Number(values.miscCostTotal || 0) +
+      Number(values.lodgingCostTotal || 0) +
+      calculateTotals(expenditureItemValue, [EXPENDITURE_ITEM_FORM_KEY.AMOUNT]);
+
+    setFieldValue(`${NON_EMPLOYEE_TRAVEL_FORM_KEY.EXPENDITURE_TOTAL}`, updatedPaymentTotal);
+  }, [
+    expenditureItemValue,
+    values.expenditureTotal,
+    values.lodgingCostTotal,
+    values.miscCostTotal,
+    setFieldValue,
+  ]);
+
+  const expenditureItemKey = NON_EMPLOYEE_TRAVEL_FORM_KEY.EXPENDITURES;
 
   const _getErrorMessage = (fieldName) => {
     return getErrorMessage(fieldName, { touched, errors });
@@ -53,22 +68,6 @@ const TravelExpenditures: FC<Props> = ({ formikProps, disabled }) => {
       initialNonEmployeeTravelExpenditure,
     ]);
   }, [expenditureItemValue, expenditureItemKey, setFieldValue]);
-
-  const updatePaymentAmountTotal = useCallback(
-    ({ lineItemRow, index }: { lineItemRow: NonEmployeeTravelExpenditure; index: number }) => {
-      let updatedPaymentTotal = Number(values.remittance?.remittanceTotal || 0);
-      const currentLineItemAmount = Number(lineItemRow.amount || 0);
-
-      updatedPaymentTotal = expenditureItemValue.reduce((total, currentLineItem, currentIndex) => {
-        if (index === currentIndex) return total + currentLineItemAmount;
-
-        return total + currentLineItem.amount;
-      }, 0);
-      setFieldValue(`${NON_EMPLOYEE_TRAVEL_FORM_KEY.EXPENDITURE_TOTAL}`, updatedPaymentTotal);
-    },
-
-    [expenditureItemValue, setFieldValue, values.remittance?.remittanceTotal]
-  );
 
   const handleAmountChange = useCallback(
     ({
@@ -93,18 +92,9 @@ const TravelExpenditures: FC<Props> = ({ formikProps, disabled }) => {
         setFieldValue,
         onAddRow: addNewRow,
         onRemoveRow: removeRow,
-        callback: () => {
-          updatePaymentAmountTotal({
-            index,
-            lineItemRow: {
-              ...lineItemRow,
-              [key]: value,
-            },
-          });
-        },
       });
     },
-    [addNewRow, expenditureItemValue, removeRow, setFieldValue, updatePaymentAmountTotal]
+    [addNewRow, expenditureItemValue, removeRow, setFieldValue]
   );
 
   const miscExpenditureRow: BodyRow = {

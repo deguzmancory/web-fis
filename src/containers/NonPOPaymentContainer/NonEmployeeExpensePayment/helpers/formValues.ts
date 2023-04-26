@@ -7,6 +7,7 @@ import { PO_ACTION } from 'src/queries/PurchaseOrders';
 import {
   DateFormat,
   convertNumberOrNull,
+  formatDateApi,
   getDate,
   getDateDisplay,
   isString,
@@ -142,15 +143,15 @@ export const getUpsertNonEmployeeTravelPayload = ({
       projectNumber: isString(projectItem.projectNumber)
         ? projectItem.projectNumber
         : projectItem.projectNumber.number,
-      serviceDate: getDateDisplay(projectItem.serviceDate),
+      serviceDate: formatDateApi(projectItem.serviceDate),
     })) || [];
 
   const remittanceLineItemsPayload =
-    remittanceLineItems.slice(0, 1).map((remittanceItem, index) => ({
+    remittanceLineItems.slice(0, -1).map((remittanceItem, index) => ({
       ...remittanceItem,
       lineNumber: index + 1,
     })) || [];
-  const itinerariesPayload = itineraries.slice(0, 1) || [];
+  const itinerariesPayload = itineraries.slice(0, -1) || [];
 
   return {
     ...payloadProps,
@@ -160,11 +161,11 @@ export const getUpsertNonEmployeeTravelPayload = ({
 
     vendorName: isString(vendorName) ? vendorName : vendorName.name,
     vendorCode: isString(vendorCode) ? vendorCode : vendorCode.code,
-    fromServiceDate: getDateDisplay(fromServiceDate),
-    toServiceDate: getDateDisplay(toServiceDate),
+    fromServiceDate: formatDateApi(fromServiceDate, isoFormat),
+    toServiceDate: formatDateApi(toServiceDate, isoFormat),
 
-    startDepartureDate: getDateDisplay(startDepartureDate, isoFormat),
-    endArrivalDate: getDateDisplay(endArrivalDate, isoFormat),
+    startDepartureDate: formatDateApi(startDepartureDate, isoFormat),
+    endArrivalDate: formatDateApi(endArrivalDate, isoFormat),
 
     projectItems: projectItemsPayload,
     remittanceLineItems: remittanceLineItemsPayload,

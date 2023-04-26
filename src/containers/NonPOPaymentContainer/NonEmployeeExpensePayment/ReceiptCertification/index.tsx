@@ -1,13 +1,13 @@
 import { Box, Typography } from '@mui/material';
 import { ChangeEvent, FC, memo } from 'react';
-import { Checkbox, EllipsisTooltipInputCurrency } from 'src/components/common';
+import { Checkbox, InputCurrency } from 'src/components/common';
 import { PO_MODE } from 'src/queries';
 import { getErrorMessage, isEqualPrevAndNextFormikValues } from 'src/utils';
 import { NON_EMPLOYEE_TRAVEL_FORM_KEY } from '../enums';
 import { UpsertNonEmployeeTravelFormikProps } from '../types';
 
 const ReceiptCertification: FC<Props> = ({ formikProps, disabled = false }) => {
-  const { errors, touched, getUncontrolledFieldProps, getFieldProps, setFieldValue } = formikProps;
+  const { errors, touched, getFieldProps, setFieldValue } = formikProps;
 
   const _getErrorMessage = (fieldName: NON_EMPLOYEE_TRAVEL_FORM_KEY) => {
     return getErrorMessage(fieldName, { touched, errors });
@@ -28,9 +28,10 @@ const ReceiptCertification: FC<Props> = ({ formikProps, disabled = false }) => {
                   official business. The total amount of these expense is{' '}
                 </div>
                 <div style={{ display: 'inline-block' }}>
-                  <EllipsisTooltipInputCurrency
+                  <InputCurrency
+                    {...getFieldProps(NON_EMPLOYEE_TRAVEL_FORM_KEY.NO_RECEIPT_AMOUNT)}
                     errorMessage={_getErrorMessage(NON_EMPLOYEE_TRAVEL_FORM_KEY.NO_RECEIPT_AMOUNT)}
-                    {...getUncontrolledFieldProps(NON_EMPLOYEE_TRAVEL_FORM_KEY.NO_RECEIPT_AMOUNT)}
+                    onChange={setFieldValue}
                     disabled={disabled}
                     style={{ width: 150 }}
                   />
