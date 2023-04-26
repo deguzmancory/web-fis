@@ -9,6 +9,8 @@ import {
   TextareaAutosize,
 } from 'src/components/common';
 import SearchProjectNumber from 'src/containers/shared/SearchProjectNumber';
+import { PO_MODE } from 'src/queries';
+import { isCUReviewMode, isFAReviewMode } from 'src/queries/PurchaseOrders/helpers';
 import {
   calculateTotals,
   checkRowStateAndSetValue,
@@ -32,10 +34,13 @@ import {
   PersonalAutomobileFormValue,
   PersonalAutomobileFormikProps,
 } from '../../PersonalAutomobileMileageVoucher/types';
+import { PETTY_CASH_FORM_KEY } from '../../PettyCashSummarySheet/enums';
+import {
+  UpsertPettyCashFormValue,
+  UpsertPettyCashFormikProps,
+} from '../../PettyCashSummarySheet/types';
 import { authorizationProjectLineItemsColumnsName, commonColumnStyles } from '../constants';
 import { PMT_PROJECT_LINE_ITEM_KEY } from '../enums';
-import { PO_MODE } from 'src/queries';
-import { isCUReviewMode, isFAReviewMode } from 'src/queries/PurchaseOrders/helpers';
 
 const isUpsertAuthorizationPaymentFormValue = (
   formValues,
@@ -58,11 +63,19 @@ const isUpsertPersonalAutomobileFormValue = (
   return projectItemsPrefix === PERSONAL_AUTOMOBILE_FORM_KEY.PROJECT_ITEMS;
 };
 
+const isUpsertPettyCashFormValue = (
+  formValues,
+  projectItemsPrefix: string
+): formValues is UpsertPettyCashFormValue => {
+  return projectItemsPrefix === PETTY_CASH_FORM_KEY.PROJECT_ITEMS;
+};
+
 const ProjectItems = <
   T extends
     | UpsertAuthorizationPaymentFormikProps
     | UpsertNonEmployeeTravelFormikProps
     | PersonalAutomobileFormikProps
+    | UpsertPettyCashFormikProps
 >({
   formikProps,
   disabled,
@@ -88,7 +101,8 @@ const ProjectItems = <
   const lineItemsValue = useMemo(() => {
     if (
       isUpsertAuthorizationPaymentFormValue(values, projectItemsPrefix) ||
-      isUpsertPersonalAutomobileFormValue(values, projectItemsPrefix)
+      isUpsertPersonalAutomobileFormValue(values, projectItemsPrefix) ||
+      isUpsertPettyCashFormValue(values, projectItemsPrefix)
     ) {
       return values.projectLineItems || [];
     }
@@ -433,6 +447,8 @@ type Props<T> = {
     ? UpsertNonEmployeeTravelFormikProps
     : T extends PersonalAutomobileFormikProps
     ? PersonalAutomobileFormikProps
+    : T extends UpsertPettyCashFormikProps
+    ? UpsertPettyCashFormikProps
     : unknown;
   projectItemsPrefix: string;
   totalPrefix: string;
@@ -457,7 +473,10 @@ export default memo(ProjectItems, (prevProps, nextProps) => {
     prevProps.showTotalError === nextProps.showTotalError &&
     prevProps.currentMode === nextProps.currentMode &&
     isEqualPrevAndNextFormikValues<
-      UpsertAuthorizationFormValue | UpsertNonEmployeeTravelFormValue | PersonalAutomobileFormValue
+      | UpsertAuthorizationFormValue
+      | UpsertNonEmployeeTravelFormValue
+      | PersonalAutomobileFormValue
+      | UpsertPettyCashFormValue
     >({
       prevFormikProps,
       nextFormikProps,

@@ -27,14 +27,3 @@ export const nonPoPaymentLineItemsRemittanceColumnsNames = [
   NON_PO_PAYMENT_REMITTANCE_LINE_ITEM_KEY.CUSTOMER_ACCOUNT_COMMENT,
   NON_PO_PAYMENT_REMITTANCE_LINE_ITEM_KEY.AMOUNT,
 ];
-
-export interface NonPoPaymentRemittanceLineItem {
-  id?: string;
-  referenceNumber: string;
-  customerAccountComment: string;
-  amount: number;
-
-  externalId?: number;
-  createdAt?: string;
-  updatedAt?: string;
-}

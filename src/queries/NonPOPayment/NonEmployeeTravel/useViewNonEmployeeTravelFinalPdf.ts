@@ -1,6 +1,6 @@
 import { useMutation, UseMutationOptions } from 'react-query';
-import apiClient from '../apiClient';
-import { responseWrapper } from '../helpers';
+import apiClient from '../../apiClient';
+import { responseWrapper } from '../../helpers';
 
 export function useViewNonEmployeeTravelFinalPdf(
   options?: UseMutationOptions<any, Error, { id: string }>

@@ -14,6 +14,7 @@ import {
 import { GetPresignedPayload, UploadFilePayload } from 'src/queries/File/types';
 import { UpsertAuthorizationPayload } from 'src/queries/NonPOPayment/AuthorizationForPayment/types';
 import { UpsertNonEmployeeTravelPayload } from 'src/queries/NonPOPayment/NonEmployeeTravel/types';
+import { UpsertPettyCashPayload } from 'src/queries/NonPOPayment/PettyCash/types';
 import { GetProfileProjectsParams } from 'src/queries/Projects/useGetProfileProjects';
 import {
   AddPoAttachmentPayload,
@@ -630,6 +631,83 @@ const create = (baseURL = appConfig.API_URL) => {
     return api.get(`/financial-svc/v1/non-employee-travel-payments/${params.id}/final-pdf`);
   };
 
+  // ====================== Petty Cash ======================
+  const getPettyCashDetail = (params: { id: string }) => {
+    return api.get(`/financial-svc/v1/petty-cash-payments/${params.id}`, {}, newCancelToken());
+  };
+
+  const createPettyCash = (payload: UpsertPettyCashPayload) => {
+    return api.post(
+      `/financial-svc/v1/petty-cash-payments?action=${payload.action}`,
+      {
+        ...payload,
+      },
+      newCancelToken()
+    );
+  };
+
+  const updatePettyCash = (payload: UpsertPettyCashPayload) => {
+    return api.put(
+      `/financial-svc/v1/petty-cash-payments/${payload.id}?action=${payload.action}`,
+      {
+        ...payload,
+      },
+      newCancelToken()
+    );
+  };
+
+  const deletePettyCash = (params: { id: string }) => {
+    return api.delete(`/financial-svc/v1/petty-cash-payments/${params.id}`, {}, newCancelToken());
+  };
+
+  const getPettyCashFileAttachmentPresignedUrl = (params: GetPresignedPOPayload) => {
+    return api.get(
+      `/financial-svc/v1/petty-cash-payments/${params.id}/attachments/presigned-url`,
+      params,
+      newCancelToken()
+    );
+  };
+
+  const getPettyCashFileAttachmentPresignedDownloadUrl = (
+    params: GetPresignedPoAttachmentDownloadUrl
+  ) => {
+    return api.get(
+      `/financial-svc/v1/petty-cash-payments/${params.id}/attachments/${params.attachmentId}/read`,
+      params,
+      newCancelToken()
+    );
+  };
+
+  const addPettyCashAttachment = (payload: AddPoAttachmentPayload) => {
+    return api.put(
+      `/financial-svc/v1/petty-cash-payments/${payload.id}/attachments`,
+      {
+        ...payload,
+      },
+      newCancelToken()
+    );
+  };
+
+  const deletePettyCashAttachment = (params: DeletePoAttachmentPayload) => {
+    return api.delete(
+      `/financial-svc/v1/petty-cash-payments/${params.id}/attachments/${params.attachmentId}`,
+      {},
+      newCancelToken()
+    );
+  };
+
+  const postPettyCashCloneDocument = (params: any) => {
+    return api.post(
+      `/financial-svc/v1/petty-cash-payments/${params.id}/clone`,
+      {},
+      newCancelToken()
+    );
+  };
+
+  const getFinalPdfPettyCash = (params: GetPropertiesParams) => {
+    return api.get(`/financial-svc/v1/petty-cash-payments/${params.id}/final-pdf`);
+  };
+
   // ====================== Global Settings ======================
   const getAllGlobalSettings = () => {
     return api.get('/financial-svc/v1/global-settings', {}, newCancelToken());
@@ -772,6 +850,7 @@ const create = (baseURL = appConfig.API_URL) => {
     getAuthorizationPaymentFileAttachmentPresignedDownloadUrl,
     getAuthorizationPaymentFinalPdf,
     addAuthorizationPaymentAttachment,
+
     // ====================== Non Employee Travel ======================
     getNonEmployeeTravelDetail,
     createNonEmployeeTravel,
@@ -782,6 +861,19 @@ const create = (baseURL = appConfig.API_URL) => {
     addNonEmployeeTravelAttachment,
     deleteNonEmployeeTravelAttachment,
     postNonEmployeeTravelCloneDocument,
+    getFinalPdfNonEmployeeTravel,
+
+    // ====================== Non Employee Travel ======================
+    getPettyCashDetail,
+    createPettyCash,
+    updatePettyCash,
+    deletePettyCash,
+    getPettyCashFileAttachmentPresignedUrl,
+    getPettyCashFileAttachmentPresignedDownloadUrl,
+    addPettyCashAttachment,
+    deletePettyCashAttachment,
+    postPettyCashCloneDocument,
+    getFinalPdfPettyCash,
 
     // ================== Purchasing List ===============
     getAppPurchasingList,
@@ -790,7 +882,6 @@ const create = (baseURL = appConfig.API_URL) => {
 
     // ================== Non PO List ===============
     getNonPOListing,
-    getFinalPdfNonEmployeeTravel,
 
     // ================== Global Setting ===============
     getAllGlobalSettings,

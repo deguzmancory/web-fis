@@ -34,6 +34,7 @@ import { UpdatePOPaymentFormikProps } from '../../POPayment/types';
 import { PO_FORM_KEY } from '../enums';
 import { UpsertPOFormValue, UpsertPOFormikProps } from '../types';
 import { PersonalAutomobileFormikProps } from '../../../NonPOPaymentContainer/PersonalAutomobileMileageVoucher/types';
+import { UpsertPettyCashFormikProps } from 'src/containers/NonPOPaymentContainer/PettyCashSummarySheet/types';
 
 const ActionButtons = <
   T extends
@@ -42,6 +43,7 @@ const ActionButtons = <
     | UpsertNonEmployeeTravelFormikProps
     | UpsertAuthorizationPaymentFormikProps
     | PersonalAutomobileFormikProps
+    | UpsertPettyCashFormikProps
 >({
   formikProps,
   currentFormMode,
@@ -249,6 +251,7 @@ type Props<
     | UpsertNonEmployeeTravelFormikProps
     | UpsertAuthorizationPaymentFormikProps
     | PersonalAutomobileFormikProps
+    | UpsertPettyCashFormikProps
 > = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps & {
     formikProps: T extends UpsertPOFormikProps
@@ -261,6 +264,8 @@ type Props<
       ? UpsertAuthorizationPaymentFormikProps
       : T extends PersonalAutomobileFormikProps
       ? PersonalAutomobileFormikProps
+      : T extends UpsertPettyCashFormikProps
+      ? UpsertPettyCashFormikProps
       : unknown;
     disabled?: boolean;
     loading?: boolean;

@@ -4,14 +4,14 @@ import { NON_PO_PAYMENT_DOCUMENT_TYPE } from '../enums';
 import { NonPOPaymentProjectLineItem } from '../types';
 import { NON_EMPLOYEE_TRAVEL_PAYEE_CATEGORY } from './enums';
 
-export interface SelectPayeeCategory {
+interface SelectPayeeCategory {
   loginName: string;
   date: string; //miss api
   requestNumber: string;
   payeeCategory: NON_EMPLOYEE_TRAVEL_PAYEE_CATEGORY;
 }
 
-export interface GeneralInfo {
+interface GeneralInfo {
   vendorName: string;
   vendorCode: string;
   positionTitle: string;
@@ -25,7 +25,7 @@ export interface GeneralInfo {
   fromServiceDate: string;
 }
 
-export interface TripItinerary {
+interface TripItinerary {
   startDestination: string;
   startDepartureDate: string;
   itineraries: NonEmployeeTravelItinerary[];
@@ -34,7 +34,7 @@ export interface TripItinerary {
   tripTotal: number;
 }
 
-export interface TravelExpenditure {
+interface TravelExpenditure {
   expenditures: NonEmployeeTravelExpenditure[];
   advancedDocumentNumber: string;
   expenditureTotal: number;
@@ -47,24 +47,24 @@ export interface TravelExpenditure {
   lodgingDaysClaimTotal: number; //miss api
 }
 
-export interface NonEmployeeTravelProjectItems {
+interface NonEmployeeTravelProjectItems {
   projectItems: NonPOPaymentProjectLineItem[];
   paymentTotal: number; //miss api
 }
 
-export interface ReceiptCertification {
+interface ReceiptCertification {
   noReceiptSmallCorrectFlag: boolean;
   noReceiptAmount: number;
 }
 
-export interface BusinessPurposeDetails {
+interface BusinessPurposeDetails {
   travelDetails: string;
   claimantSignature: string;
   piSignature: string;
   faSignature: string;
 }
 
-export interface NonEmployeeTravelRemittance {
+interface NonEmployeeTravelRemittance {
   remittanceLineItems: NonEmployeeTravelRemittanceLineItem[];
   remittance: NonEmployeeTravelRemittanceDetail;
 }
@@ -86,48 +86,9 @@ export interface SharedNonEmployeeTravelDetail
   auditTrails?: POAuditTrails[];
   documentType?: NON_PO_PAYMENT_DOCUMENT_TYPE;
 
-  //check?
-  acceptedDate?: string;
-  homeAddress?: string;
-  purposeForTravel?: string;
-  phoneNumber?: string;
-  directInquiriesTo?: string;
   total?: number;
-  completedBy?: string;
-  username?: string;
-  faCode?: string;
-  faName?: string;
-  faEmail?: string;
-  faApprover?: string;
-  faApprovedDate?: string;
-  rcuhApprover?: string;
-  rcuhApprovedDate?: string;
-  majorVersion?: string;
-  minorVersion?: number;
-  formName?: string;
-  shortFormName?: string;
-  firstProjectNumber?: string;
-  listedProjectNumber?: string;
-  hasFinalPdf?: boolean;
-  preparerEmail?: string;
-  checkNumber?: string;
-  checkDate?: string;
-  miscPaymentMethod?: string;
-  lodgingPaymentMethod?: string;
-  // daysClaimTotal?: string;
-  piName?: string;
-  updateVersionNumber?: number;
-  noReceiptCorrectFlag?: boolean;
-  noReceiptFormFlag?: boolean;
   preferredPaymentMethod?: string;
   preferredPaymentMethodTimestamp?: string;
-  paymentMethod?: string;
-  piUserId?: string;
-  faUserId?: string;
-  cuUserId?: string;
-  piOriginalUserId?: string;
-  faOriginalUserId?: string;
-  cuOriginalUserId?: string;
 }
 
 export interface NonEmployeeTravelItinerary {
@@ -190,4 +151,44 @@ export interface NonEmployeeTravelDetailResponse extends SharedNonEmployeeTravel
   id?: string;
   createdAt: string;
   updatedAt: string;
+
+  acceptedDate?: string;
+  homeAddress?: string;
+  purposeForTravel?: string;
+  phoneNumber?: string;
+  directInquiriesTo?: string;
+  completedBy?: string;
+  username?: string;
+  faCode?: string;
+  faName?: string;
+  faEmail?: string;
+  faApprover?: string;
+  faApprovedDate?: string;
+  rcuhApprover?: string;
+  rcuhApprovedDate?: string;
+  majorVersion?: string;
+  minorVersion?: number;
+  formName?: string;
+  shortFormName?: string;
+  firstProjectNumber?: string;
+  listedProjectNumber?: string;
+  hasFinalPdf?: boolean;
+  preparerEmail?: string;
+  checkNumber?: string;
+  checkDate?: string;
+  miscPaymentMethod?: string;
+  lodgingPaymentMethod?: string;
+  daysClaimTotal?: string;
+  piName?: string;
+  updateVersionNumber?: number;
+  noReceiptCorrectFlag?: boolean;
+  noReceiptFormFlag?: boolean;
+
+  paymentMethod?: string;
+  piUserId?: string;
+  faUserId?: string;
+  cuUserId?: string;
+  piOriginalUserId?: string;
+  faOriginalUserId?: string;
+  cuOriginalUserId?: string;
 }

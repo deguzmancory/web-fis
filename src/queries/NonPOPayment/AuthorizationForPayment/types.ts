@@ -7,7 +7,7 @@ import {
   PO_ACTION,
   PO_DETAIL_STATUS,
 } from 'src/queries/PurchaseOrders';
-import { NonPOPaymentProjectLineItem } from '../types';
+import { NonPOPaymentProjectLineItem, NonPOPaymentRemittance } from '../types';
 
 export interface AuthorizationGeneralInfo {
   loginName: string;
@@ -26,19 +26,6 @@ export interface AuthorizationSignature {
   reasonForPayment: string;
   piSignature: string;
   faSignature: string;
-}
-
-export interface AuthorizationRemittance {
-  questionName: string;
-  questionPhoneNumber: number;
-  returnRemittanceFlag: boolean;
-  remittanceAttention: string;
-  remittanceStreet: string;
-  remittanceCity: string;
-  remittanceState: string;
-  zipCode: string;
-  zipCodePlus4: string;
-  remittanceTotal: number;
 }
 
 export interface AuthorizationEquipmentInventory {
@@ -90,7 +77,7 @@ export interface SharedAuthorizationDetail
   paymentTotal: number;
   total: number;
   internalComments: string;
-  remittance: AuthorizationRemittance;
+  remittance: NonPOPaymentRemittance;
   projectLineItems: NonPOPaymentProjectLineItem[];
   remittanceLineItems: AuthorizationRemittanceLineItem[];
   auditTrails?: POAuditTrails[];

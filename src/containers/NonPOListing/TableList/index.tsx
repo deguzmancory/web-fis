@@ -7,11 +7,11 @@ import { muiResponsive } from 'src/appConfig/constants';
 import EmptyTable from 'src/components/EmptyTable';
 import { getFileName, handleParseAndDownloadFile } from 'src/components/FilePreview/helper';
 import { LoadingCommon, Table } from 'src/components/common';
+import { useViewNonEmployeeTravelFinalPdf } from 'src/queries';
 import {
   NON_PO_LISTING_ITEM_KEY,
   NonPOListingItem,
   useGetAllNonPOListing,
-  useViewNonEmployeeTravelFinalPdf,
 } from 'src/queries/NonPOListing';
 import { ROLE_NAME } from 'src/queries/Profile/helpers';
 import { GetPropertiesParams } from 'src/queries/helpers';

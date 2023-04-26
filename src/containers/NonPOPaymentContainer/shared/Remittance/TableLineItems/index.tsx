@@ -16,9 +16,9 @@ import {
   NON_PO_PAYMENT_REMITTANCE_KEY,
   NON_PO_PAYMENT_REMITTANCE_LINE_ITEM_KEY,
   NON_PO_PAYMENT_REMITTANCE_QUESTIONS_KEY,
-  NonPoPaymentRemittanceLineItem,
   nonPoPaymentLineItemsRemittanceColumnsNames,
 } from '../enum';
+import { NonPOPaymentRemittanceLineItem } from 'src/queries/NonPOPayment/types';
 
 const remittanceLineItemKey = NON_PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_LINE_ITEMS;
 
@@ -58,7 +58,7 @@ const RemittanceTableLineItems: React.FC<Props> = ({
   );
 
   const handleInputChange = ({ name, value, index }) => {
-    checkRowStateAndSetValue<NonPoPaymentRemittanceLineItem>({
+    checkRowStateAndSetValue<NonPOPaymentRemittanceLineItem>({
       name,
       value,
       index,
@@ -71,7 +71,7 @@ const RemittanceTableLineItems: React.FC<Props> = ({
   };
 
   const updatePaymentAmountTotal = useCallback(
-    ({ lineItemRow, index }: { lineItemRow: NonPoPaymentRemittanceLineItem; index: number }) => {
+    ({ lineItemRow, index }: { lineItemRow: NonPOPaymentRemittanceLineItem; index: number }) => {
       let updatedPaymentTotal = Number(values.remittance?.remittanceTotal || 0);
       const currentLineItemAmount = Number(lineItemRow.amount || 0);
 
@@ -99,11 +99,11 @@ const RemittanceTableLineItems: React.FC<Props> = ({
     }: {
       name: string;
       value: any;
-      lineItemRow: NonPoPaymentRemittanceLineItem;
+      lineItemRow: NonPOPaymentRemittanceLineItem;
       key: NON_PO_PAYMENT_REMITTANCE_LINE_ITEM_KEY;
       index: number;
     }) => {
-      checkRowStateAndSetValue<NonPoPaymentRemittanceLineItem>({
+      checkRowStateAndSetValue<NonPOPaymentRemittanceLineItem>({
         name,
         value,
         index,
