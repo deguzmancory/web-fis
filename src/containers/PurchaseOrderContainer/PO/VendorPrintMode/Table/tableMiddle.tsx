@@ -1,16 +1,10 @@
 import { Grid, Stack, Typography } from '@mui/material';
-import { useMemo } from 'react';
 import { connect } from 'react-redux';
 import CustomTable from 'src/components/CustomTable';
 import { BodyRow, BodyRows, CellType } from 'src/components/CustomTable/types';
-import { PO_DOCUMENT_TYPE } from 'src/queries';
 import { IRootState } from 'src/redux/rootReducer';
 
 const TableMiddle: React.FC<Props> = ({ formData }) => {
-  const isPOChangeForm = useMemo(() => {
-    return formData?.documentType === PO_DOCUMENT_TYPE.PO_CHANGE;
-  }, [formData?.documentType]);
-
   const tableNote: BodyRow = {
     columns: [
       {
@@ -129,7 +123,7 @@ const TableMiddle: React.FC<Props> = ({ formData }) => {
           </Typography>
         ),
         type: CellType.PRINT_CELL,
-        subContent: isPOChangeForm ? (
+        subContent: (
           <Stack>
             <Typography variant="body2" fontWeight="bold" style={{ display: 'contents' }}>
               ATT.{' '}
@@ -145,8 +139,6 @@ const TableMiddle: React.FC<Props> = ({ formData }) => {
               </Typography>
             </Typography>
           </Stack>
-        ) : (
-          <Typography variant="body2">{formData?.directInquiriesTo}</Typography>
         ),
       },
     ],

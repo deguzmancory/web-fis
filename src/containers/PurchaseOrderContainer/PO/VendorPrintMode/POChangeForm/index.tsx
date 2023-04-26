@@ -109,7 +109,7 @@ const VendorPrintModePOChangeForm: React.FC<Props> = ({ formData }) => {
           FISCAL AUTHORIZED SIGNATURE
         </Typography>
         <Typography variant="body2" fontWeight="bold" borderTop={1} width="15%" textAlign="start">
-          Date
+          DATE
         </Typography>
       </Stack>
     </>

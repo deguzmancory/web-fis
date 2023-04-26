@@ -11,7 +11,6 @@ import {
 import { memo, useCallback, useMemo } from 'react';
 
 import { initialPaymentRemittanceInfo } from 'src/containers/PurchaseOrderContainer/POPayment/helpers';
-import { NON_PO_PAYMENT_DOCUMENT_TYPE } from 'src/queries';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import {
   NON_PO_PAYMENT_REMITTANCE_KEY,

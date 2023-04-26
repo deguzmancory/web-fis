@@ -54,7 +54,7 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
       rightContent: 'Security Requirements (applies if there is access to classified information)',
     },
     {
-      leftContent: '52.204-8',
+      leftContent: '52.208-8',
       rightContent: 'Required Sources for Helium and Helium Usage Data',
     },
     {
@@ -642,7 +642,7 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
           <Typography variant="body2" mt={3} mb={3}>
             THE FOLLOWING PROVISIONS APPLY:{' '}
           </Typography>
-          <Typography variant="body2" flexWrap="wrap" sx={{ borderBottom: 1, width: 205 }}>
+          <Typography variant="body2" flexWrap="wrap" sx={{ borderBottom: 1, width: 200 }}>
             Applies to orders of any amount
           </Typography>
 
@@ -768,7 +768,7 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
             </Grid>
           </Stack>
 
-          <Typography variant="body2" mt={2} sx={{ borderBottom: 1, width: 205 }}>
+          <Typography variant="body2" mt={2} sx={{ borderBottom: 1, width: 198 }}>
             Applies if order is over $15,000
           </Typography>
           <Stack>
@@ -869,7 +869,7 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
             </Grid>
           </Stack>
 
-          <Typography variant="body2" mt={2} sx={{ borderBottom: 1, width: 205 }}>
+          <Typography variant="body2" mt={2} sx={{ borderBottom: 1, width: 206 }}>
             Applies if order is over $150,000
           </Typography>
 
@@ -922,7 +922,7 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
             </Grid>
           </Grid>
 
-          <Typography variant="body2" mt={2} sx={{ borderBottom: 1, width: 205 }}>
+          <Typography variant="body2" mt={2} sx={{ borderBottom: 1, width: 202 }}>
             Applies if order is over $700,000
           </Typography>
 
@@ -994,7 +994,7 @@ const Attachment32bTod: React.FC<Props> = ({ formData }) => {
             </Grid>
           </Stack>
 
-          <Typography variant="body2" mt={2} sx={{ borderBottom: 1, width: 205 }}>
+          <Typography variant="body2" mt={2} sx={{ borderBottom: 1, width: 214 }}>
             Applies if order is over $1,000,000
           </Typography>
 

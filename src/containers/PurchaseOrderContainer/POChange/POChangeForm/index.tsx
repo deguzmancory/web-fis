@@ -1,7 +1,7 @@
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { Location } from 'history';
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { AiFillWarning } from 'react-icons/ai';
 import { connect } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
@@ -72,8 +72,11 @@ const POChangeForm: React.FC<Props> = ({
   formAction,
 }) => {
   const { id } = useParams<{ id: string }>();
+
   const location = useLocation();
   const query = React.useMemo(() => new URLSearchParams(location.search), [location]);
+  const [allowRedirectWithoutWarning, setAllowRedirectWithoutWarning] = useState<boolean>(false);
+
   const scrollToParam = React.useMemo(
     () => query.get(PO_CHANGE_FORM_QUERY_KEY.SCROLL_TO) || null,
     [query]
@@ -380,6 +383,8 @@ const POChangeForm: React.FC<Props> = ({
   };
 
   const blockCondition = (location: Location<string>) => {
+    if (allowRedirectWithoutWarning) return false;
+
     if (location.pathname.includes(PATHS.createPurchaseOrders)) {
       onSetIsImmutableFormData(false);
       return true;
@@ -429,7 +434,12 @@ const POChangeForm: React.FC<Props> = ({
                   loading={isLoading}
                   disabled={isLoading}
                   showCloneDocument={false}
-                  warningDeleteContainer={<DeletePOWarning id={id} />}
+                  warningDeleteContainer={
+                    <DeletePOWarning
+                      id={id}
+                      onDelete={() => setAllowRedirectWithoutWarning(true)}
+                    />
+                  }
                 />
               </>
             )}
