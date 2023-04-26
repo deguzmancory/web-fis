@@ -50,6 +50,7 @@ import {
   XApiKeyService,
   ZipCodeService,
 } from '.';
+import { PersonalAutomobilePayload } from '../queries/NonPOPayment/PersonalAuto/types';
 
 axios.defaults.withCredentials = true;
 
@@ -627,6 +628,87 @@ const create = (baseURL = appConfig.API_URL) => {
     );
   };
 
+  // ====================== Personal Automobile Mileage Voucher  ======================
+  const createPersonalAutoCloneDocument = (params: any) => {
+    return api.post(
+      `/financial-svc/v1/personal-auto-payments/${params.id}/clone`,
+      {},
+      newCancelToken()
+    );
+  };
+
+  const createPersonalAutomobile = (payload: PersonalAutomobilePayload) => {
+    return api.post(
+      `/financial-svc/v1/personal-auto-payments?action=${payload.action}`,
+      {
+        ...payload,
+      },
+      newCancelToken()
+    );
+  };
+
+  const getPersonalAutomobileFileAttachmentPresignedUrl = (params: GetPresignedPOPayload) => {
+    return api.get(
+      `/financial-svc/v1/personal-auto-payments/${params.id}/attachments/presigned-url`,
+      params,
+      newCancelToken()
+    );
+  };
+
+  const getPersonalAutomobileFileAttachmentPresignedDownloadUrl = (
+    params: GetPresignedPoAttachmentDownloadUrl
+  ) => {
+    return api.get(
+      `/financial-svc/v1/personal-auto-payments/${params.id}/attachments/${params.attachmentId}/read`,
+      params,
+      newCancelToken()
+    );
+  };
+
+  const addPersonalAutoAttachment = (payload: AddPoAttachmentPayload) => {
+    return api.put(
+      `/financial-svc/v1/personal-auto-payments/${payload.id}/attachments`,
+      {
+        ...payload,
+      },
+      newCancelToken()
+    );
+  };
+
+  const deletePersonalAutoAttachment = (params: DeletePoAttachmentPayload) => {
+    return api.delete(
+      `/financial-svc/v1/personal-auto-payments/${params.id}/attachments/${params.attachmentId}`,
+      {},
+      newCancelToken()
+    );
+  };
+
+  const getPersonalAutoById = (params: { id: string }) => {
+    return api.get(`/financial-svc/v1/personal-auto-payments/${params.id}`, {}, newCancelToken());
+  };
+
+  const updatePersonalAutomobile = (payload: PersonalAutomobilePayload) => {
+    return api.put(
+      `/financial-svc/v1/personal-auto-payments/${payload.id}?action=${payload.action}`,
+      {
+        ...payload,
+      },
+      newCancelToken()
+    );
+  };
+
+  const getPersonalAutoFinalPDF = (params: GetPropertiesParams) => {
+    return api.get(`/financial-svc/v1/personal-auto-payments/${params.id}/final-pdf`);
+  };
+
+  const deletePersonalAuto = (params: { id: string }) => {
+    return api.delete(
+      `/financial-svc/v1/personal-auto-payments/${params.id}`,
+      {},
+      newCancelToken()
+    );
+  };
+
   // Non-PO-Listing View Final PDF
   const getFinalPdfAuthorizationPayment = (params: GetPropertiesParams) => {
     return api.get(`/financial-svc/v1/authorization-payments/${params.id}/final-pdf`);
@@ -882,6 +964,18 @@ const create = (baseURL = appConfig.API_URL) => {
     addPettyCashAttachment,
     deletePettyCashAttachment,
     postPettyCashCloneDocument,
+
+    // ====================== Personal Automobile  ======================
+    createPersonalAutoCloneDocument,
+    createPersonalAutomobile,
+    getPersonalAutomobileFileAttachmentPresignedUrl,
+    getPersonalAutomobileFileAttachmentPresignedDownloadUrl,
+    addPersonalAutoAttachment,
+    deletePersonalAutoAttachment,
+    getPersonalAutoById,
+    updatePersonalAutomobile,
+    getPersonalAutoFinalPDF,
+    deletePersonalAuto,
 
     // ================== Purchasing List ===============
     getAppPurchasingList,

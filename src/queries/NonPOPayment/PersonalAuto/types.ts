@@ -1,4 +1,4 @@
-import { PO_DETAIL_STATUS } from '../../PurchaseOrders/enums';
+import { PO_ACTION, PO_DETAIL_STATUS } from '../../PurchaseOrders/enums';
 import { NON_PO_PAYMENT_DOCUMENT_TYPE } from '../enums';
 
 export interface GeneralInfo {
@@ -180,4 +180,9 @@ export interface PersonalAutomobileResponse extends PersonalAutomobileMileageVou
   id: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface PersonalAutomobilePayload extends PersonalAutomobileMileageVoucher {
+  id?: string;
+  action: PO_ACTION;
 }

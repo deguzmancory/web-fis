@@ -22,19 +22,13 @@ export interface PersonalAutomobileFormValue
   extends Omit<
     PersonalAutomobileMileageVoucher,
     //override
-    | 'vendorName'
-    | 'vendorCode'
-    | 'projectLineItems'
-    | 'tripInfos'
-    | 'fromServiceDate'
-    | 'toServiceDate'
-    | 'startDepartureDate'
-    | 'endArrivalDate'
+    'vendorName' | 'vendorCode' | 'projectLineItems' | 'tripInfos' | 'expirationDate'
   > {
   vendorName: Vendor | string;
   vendorCode: Vendor | string;
   projectLineItems: NonPOPaymentProjectItemFormValue[];
   tripInfos: PersonalAutomobileTripItemFormValue[];
+  expirationDate: Date;
   id?: string;
 
   //form only

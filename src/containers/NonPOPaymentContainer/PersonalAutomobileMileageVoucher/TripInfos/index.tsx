@@ -608,6 +608,7 @@ const ProjectItems = <T extends PersonalAutomobileFormikProps>({
             placeholder=""
             dateFormat="MM/dd/yyyy"
             {...getFieldProps(expirationDatePrefix)}
+            errorMessage={_getErrorMessage(expirationDatePrefix)}
             selected={expirationDate ? new Date(expirationDate) : null}
             name={expirationDatePrefix}
             onChange={setFieldValue}

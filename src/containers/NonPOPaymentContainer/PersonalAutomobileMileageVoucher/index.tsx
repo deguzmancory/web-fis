@@ -1,7 +1,7 @@
-import { Box, Container } from '@mui/material';
+import { Box, Container, Stack, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { Location } from 'history';
-import { FC, Suspense, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { FC, Suspense, useEffect, useLayoutEffect, useMemo, useState, lazy } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
@@ -43,6 +43,10 @@ import { personalAutomobileFormInitialValue } from './helpers/constants';
 import { getInitialPersonalAutomobileFormValue } from './helpers/formValues';
 import { getPersonalAutomobileFormValidationSchema } from './helpers/validationSchema';
 import { PersonalAutomobileFormValue, PersonalAutomobileFormikProps } from './types';
+import InternalComments from '../shared/InternalComments';
+
+const FileAttachments = lazy(() => import('./FileAttachments'));
+const AuditInformation = lazy(() => import('../shared/AuditInformation'));
 
 const AuthorizationForPayment: FC<Props> = ({
   formData,
@@ -56,6 +60,7 @@ const AuthorizationForPayment: FC<Props> = ({
   const [apiError, setApiError] = useState<string>('');
 
   const isEditMode = !!id;
+
   const hasPermission = true; //TODO: enhancement: check logic to be granted tp access the this resource
   const currentRole = RoleService.getCurrentRole();
   const poStatus = useMemo(() => formData?.status, [formData?.status]);
@@ -386,6 +391,36 @@ const AuthorizationForPayment: FC<Props> = ({
                     disabled={disabledSection}
                     currentMode={currentNonEmployeeTravelMode}
                   />
+                </SectionLayout>
+                <SectionLayout sx={{ p: 0, border: 'none' }}>
+                  {isEditMode ? (
+                    <FileAttachments
+                      formikProps={formikProps}
+                      // disabled={isViewOnlyMode(currentNonEmployeeTravelMode)}
+                      disabled={false} // TODO: fix this when integration
+                      // allowActionAfterFinalApproveOnly={isFinalMode(currentNonEmployeeTravelMode)}
+                      allowActionAfterFinalApproveOnly={false} // TODO: fix this when integration
+                    />
+                  ) : (
+                    <SectionLayout sx={{ p: 2 }}>
+                      <Stack direction={'row'} alignItems={'center'}>
+                        <Typography variant={'h5'}>File Attachments: </Typography>
+                        <Typography variant="body2" ml={1} mt={'1px'}>
+                          (Please Save the Document before adding File Attachments)
+                        </Typography>
+                      </Stack>
+                    </SectionLayout>
+                  )}
+                </SectionLayout>
+
+                {isEditMode && (
+                  <SectionLayout sx={{ p: 0, border: 'none' }}>
+                    <AuditInformation auditTrails={values.auditTrails} />
+                  </SectionLayout>
+                )}
+
+                <SectionLayout>
+                  <InternalComments formikProps={formikProps} disabled={disabledSection} />
                 </SectionLayout>
 
                 <ActionButtons

@@ -28,7 +28,14 @@ export const getPersonalAutomobileFormValueFromResponse = ({
   response: PersonalAutomobileResponse;
   profile: MyProfile;
 }): PersonalAutomobileFormValue => {
-  const { id, projectLineItems, remittanceLineItems, date, ...formValue } = response;
+  const {
+    id,
+    projectLineItems,
+    remittanceLineItems,
+    date,
+    expirationDate = null,
+    ...formValue
+  } = response;
 
   const transformedProjectItems =
     projectLineItems?.map((lineItem) => ({
@@ -54,5 +61,6 @@ export const getPersonalAutomobileFormValueFromResponse = ({
       initialPersonalAutomobileRemittanceLineItem,
     ],
     placeholderFileAttachment: null,
+    expirationDate: expirationDate && new Date(expirationDate),
   };
 };

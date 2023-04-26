@@ -10,11 +10,18 @@ export const getPersonalAutomobileFormValidationSchema = ({ action }: { action: 
 
   return Yup.object().shape<
     CustomShape<
-      Partial<Omit<PersonalAutomobileFormValue, 'vendorName' | 'vendorCode' | 'projectItems'>>
+      Partial<
+        Omit<
+          PersonalAutomobileFormValue,
+          'vendorName' | 'vendorCode' | 'projectLineItems' | 'tripInfos' | 'expirationDate'
+        >
+      >
     > & {
       vendorName: any;
       vendorCode: any;
-      projectItems: any;
+      projectLineItems: any;
+      tripInfos: any;
+      expirationDate: any;
     }
   >({
     //general info
@@ -28,9 +35,6 @@ export const getPersonalAutomobileFormValidationSchema = ({ action }: { action: 
 
           return schema.nullable();
         })
-      : Yup.string().nullable(),
-    faStaffReviewer: isSubmitPOAction
-      ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
       : Yup.string().nullable(),
 
     employeeStatus: Yup.string()
@@ -76,9 +80,47 @@ export const getPersonalAutomobileFormValidationSchema = ({ action }: { action: 
         }
       }
     ),
+    directInquiriesTo: isSubmitPOAction
+      ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
+      : Yup.string().nullable(),
+    phoneNumber: isSubmitPOAction
+      ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
+      : Yup.string().nullable(),
+    faStaffReviewer: isSubmitPOAction
+      ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
+      : Yup.string().nullable(),
+
+    // Itemized Trip Information
+    tripInfos: Yup.array()
+      .min(1, 'At least one Item is required.') // TODO: check and update this error message
+      .transform((fields: any[]) => fields.slice(0, -1))
+      .of(
+        Yup.object().shape({
+          serviceDate: Yup.mixed().required(ErrorService.MESSAGES.shortRequired),
+          tripFrom: isSubmitPOAction
+            ? Yup.string()
+                .required(ErrorService.MESSAGES.shortRequired)
+                .typeError(ErrorService.MESSAGES.shortRequired)
+            : Yup.string().nullable(),
+          tripTo: isSubmitPOAction
+            ? Yup.string()
+                .required(ErrorService.MESSAGES.shortRequired)
+                .typeError(ErrorService.MESSAGES.shortRequired)
+            : Yup.string().nullable(),
+          purpose: isSubmitPOAction
+            ? Yup.string()
+                .required(ErrorService.MESSAGES.shortRequired)
+                .typeError(ErrorService.MESSAGES.shortRequired)
+            : Yup.string().nullable(),
+        })
+      ),
+
+    company: Yup.string().nullable().required(),
+    policyNumber: Yup.string().nullable().required(),
+    expirationDate: Yup.mixed().required(),
 
     //project items
-    projectItems: Yup.array()
+    projectLineItems: Yup.array()
       .min(1, 'At least one Project # is required.')
       .transform((fields: any[]) => fields.slice(0, -1))
       .of(
@@ -96,5 +138,10 @@ export const getPersonalAutomobileFormValidationSchema = ({ action }: { action: 
             : Yup.number().nullable(),
         })
       ),
+
+    // Authorization Signatures
+    travelerSignature: Yup.string().nullable().required(),
+    piSignature: Yup.string().nullable().required(),
+    uhSignature: Yup.string().nullable().required(),
   });
 };

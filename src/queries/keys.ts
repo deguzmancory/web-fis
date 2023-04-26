@@ -37,6 +37,8 @@ export enum API_QUERIES {
   NON_EMPLOYEE_TRAVEL_DETAIL = '/non-employee-travel-payments/:id',
   // Petty Cash
   PETTY_CASH_DETAIL = '/petty-cash-payments/:id',
+  // Personal Automobile
+  PERSONAL_AUTOMOBILE_DETAIL = '/personal-auto-payments/:id',
 
   // Vendor
   SEARCH_VENDOR = '/vendor/search',

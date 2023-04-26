@@ -1,4 +1,6 @@
 export enum PERSONAL_AUTOMOBILE_FORM_KEY {
+  ID = 'id',
+
   //general info
   LOGIN_NAME = 'loginName',
   DATE = 'date',
@@ -39,6 +41,10 @@ export enum PERSONAL_AUTOMOBILE_FORM_KEY {
   TRAVELER_SIGNATURE = 'travelerSignature',
   PI_SIGNATURE = 'piSignature',
   UH_SIGNATURE = 'uhSignature',
+
+  // Attachments
+  FILE_ATTACHMENTS = 'attachments',
+  PLACEHOLDER_FILE_ATTACHMENT = 'placeholderFileAttachment',
 }
 
 export enum PERSONAL_AUTO_TRIP_ITEM_FORM_KEY {
