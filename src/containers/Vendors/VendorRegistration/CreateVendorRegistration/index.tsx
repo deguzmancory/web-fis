@@ -10,7 +10,12 @@ import { getVendorAddress } from 'src/containers/PurchaseOrderContainer/PO/Gener
 import { getPOFormValueFromResponse } from 'src/containers/PurchaseOrderContainer/PO/helpers';
 import { UpsertPOFormValue } from 'src/containers/PurchaseOrderContainer/PO/types';
 import SectionLayout from 'src/containers/shared/SectionLayout';
-import { useGetPODetail, useProfile, useUpdateVendorRegistration } from 'src/queries';
+import {
+  useGetAuthorizationPaymentDetail,
+  useGetPODetail,
+  useProfile,
+  useUpdateVendorRegistration,
+} from 'src/queries';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/store';
 import { Navigator, Toastify } from 'src/services';
@@ -37,6 +42,8 @@ import { VENDOR_REGISTRATION_FORM_KEY } from './enums';
 import { UpsertNonEmployeeTravelFormValue } from 'src/containers/NonPOPaymentContainer/NonEmployeeExpensePayment/types';
 import { useGetNonEmployeeTravelDetail } from 'src/queries/NonPOPayment/NonEmployeeTravel';
 import { getNonEmployeeTravelFormValueFromResponse } from 'src/containers/NonPOPaymentContainer/NonEmployeeExpensePayment/helpers/formValues';
+import { UpsertAuthorizationFormValue } from 'src/containers/NonPOPaymentContainer/AuthorizationForPayment/types';
+import { getAuthorizationPaymentFormValueFromResponse } from 'src/containers/NonPOPaymentContainer/AuthorizationForPayment/helpers/formValues';
 
 const CreateVendorRegistration: FC<Props> = ({
   formData,
@@ -72,6 +79,13 @@ const CreateVendorRegistration: FC<Props> = ({
     },
   });
   const { onGetNonEmployeeTravelById } = useGetNonEmployeeTravelDetail({
+    id: documentId,
+    onError: (error) => {
+      Toastify.error(error.message);
+    },
+  });
+
+  const { onGetAuthorizationPaymentById } = useGetAuthorizationPaymentDetail({
     id: documentId,
     onError: (error) => {
       Toastify.error(error.message);
@@ -163,6 +177,38 @@ const CreateVendorRegistration: FC<Props> = ({
               Navigator.navigate(urljoin(PATHS.nonEmployeeTravelPaymentDetail, documentId));
             } else {
               Navigator.navigate(PATHS.createNonEmployeeTravelPayment);
+            }
+          });
+
+          return;
+        }
+
+        if (redirectSection === VENDOR_REGISTRATION_NAVIGATE_FROM.AUTHORIZATION_PAYMENT) {
+          //if there's no formData => redirect page have no data => fetch data to prepari
+          if (!formData) {
+            const { data: authorizationForPaymentResponse } = await onGetAuthorizationPaymentById();
+
+            const formValue: UpsertAuthorizationFormValue =
+              getAuthorizationPaymentFormValueFromResponse({
+                response: authorizationForPaymentResponse,
+                profile,
+              });
+
+            onSetFormData<UpsertAuthorizationFormValue>({ ...formValue, ...newVendorData });
+          } else {
+            onSetFormData<UpsertAuthorizationFormValue>({
+              ...formData,
+              ...newVendorData,
+            });
+          }
+
+          onSetIsImmutableFormData(true);
+
+          setTimeout(() => {
+            if (documentId) {
+              Navigator.navigate(urljoin(PATHS.authorizationForPaymentDetail, documentId));
+            } else {
+              Navigator.navigate(PATHS.createAuthorizationForPayment);
             }
           });
 

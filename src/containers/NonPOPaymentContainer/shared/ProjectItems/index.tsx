@@ -155,22 +155,6 @@ const ProjectItems = <
     });
   };
 
-  const updatePaymentAmountTotal = useCallback(
-    ({ lineItemRow, index }: { lineItemRow: NonPOPaymentProjectItemFormValue; index: number }) => {
-      let updatedAuthPaymentTotal = Number(values?.total || 0);
-      const currentLineItemAmount = Number(lineItemRow.amount || 0);
-
-      updatedAuthPaymentTotal = lineItemsValue.reduce((total, currentLineItem, currentIndex) => {
-        if (index === currentIndex) return total + currentLineItemAmount;
-
-        return total + currentLineItem.amount;
-      }, 0);
-      setFieldValue(`${AUTHORIZATION_FOR_PAYMENT_KEY.TOTAL}`, updatedAuthPaymentTotal);
-    },
-
-    [lineItemsValue, setFieldValue, values?.total]
-  );
-
   const handleAmountChange = useCallback(
     ({
       name,
@@ -194,18 +178,9 @@ const ProjectItems = <
         setFieldValue,
         onAddRow: addNewRow,
         onRemoveRow: removeRow,
-        callback: () => {
-          updatePaymentAmountTotal({
-            index,
-            lineItemRow: {
-              ...lineItemRow,
-              [key]: value,
-            },
-          });
-        },
       });
     },
-    [addNewRow, lineItemsValue, removeRow, setFieldValue, updatePaymentAmountTotal]
+    [addNewRow, lineItemsValue, removeRow, setFieldValue]
   );
 
   const lineItemRows: BodyBasicRows = lineItemsValue.map((lineItemRow, index) => {

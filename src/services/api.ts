@@ -627,6 +627,11 @@ const create = (baseURL = appConfig.API_URL) => {
     );
   };
 
+  // Non-PO-Listing View Final PDF
+  const getFinalPdfAuthorizationPayment = (params: GetPropertiesParams) => {
+    return api.get(`/financial-svc/v1/authorization-payments/${params.id}/final-pdf`);
+  };
+
   const getFinalPdfNonEmployeeTravel = (params: GetPropertiesParams) => {
     return api.get(`/financial-svc/v1/non-employee-travel-payments/${params.id}/final-pdf`);
   };
@@ -704,7 +709,11 @@ const create = (baseURL = appConfig.API_URL) => {
     );
   };
 
-  const getFinalPdfPettyCash = (params: GetPropertiesParams) => {
+  const getFinalPdfPersonalAutoPayment = (params: GetPropertiesParams) => {
+    return api.get(`/financial-svc/v1/personal-auto-payments/${params.id}/final-pdf`);
+  };
+
+  const getFinalPdfPettyCashPayment = (params: GetPropertiesParams) => {
     return api.get(`/financial-svc/v1/petty-cash-payments/${params.id}/final-pdf`);
   };
 
@@ -873,7 +882,6 @@ const create = (baseURL = appConfig.API_URL) => {
     addPettyCashAttachment,
     deletePettyCashAttachment,
     postPettyCashCloneDocument,
-    getFinalPdfPettyCash,
 
     // ================== Purchasing List ===============
     getAppPurchasingList,
@@ -882,6 +890,9 @@ const create = (baseURL = appConfig.API_URL) => {
 
     // ================== Non PO List ===============
     getNonPOListing,
+    getFinalPdfAuthorizationPayment,
+    getFinalPdfPersonalAutoPayment,
+    getFinalPdfPettyCashPayment,
 
     // ================== Global Setting ===============
     getAllGlobalSettings,

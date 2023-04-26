@@ -54,6 +54,14 @@ const NewVendorCheckList: React.FC<Props> = ({ onNextPage }) => {
           return Navigator.navigate(PATHS.createNonEmployeeTravelPayment);
         }
       }
+      case VENDOR_REGISTRATION_NAVIGATE_FROM.AUTHORIZATION_PAYMENT: {
+        dispatch(setIsImmutableFormData(true));
+        if (documentId) {
+          return Navigator.navigate(urljoin(PATHS.authorizationForPaymentDetail, documentId));
+        } else {
+          return Navigator.navigate(PATHS.createAuthorizationForPayment);
+        }
+      }
 
       default:
         Navigator.navigate(PATHS.vendors);

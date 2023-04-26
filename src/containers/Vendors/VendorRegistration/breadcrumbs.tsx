@@ -53,6 +53,28 @@ const BreadcrumbsVendorRegistration: FC<Props> = ({ isFrom }) => {
           <Typography variant="body2">Create Vendor</Typography>,
         ];
 
+      case VENDOR_REGISTRATION_NAVIGATE_FROM.AUTHORIZATION_PAYMENT:
+        return [
+          <Typography variant="body2">Non-PO Payments</Typography>,
+          <RouterLink
+            to={
+              documentId
+                ? `${PATHS.authorizationForPaymentDetail}/${documentId}`
+                : PATHS.createAuthorizationForPayment
+            }
+            onClick={() => {
+              dispatch(setIsImmutableFormData(true));
+            }}
+          >
+            <TypographyLink>
+              {documentId
+                ? 'Edit Authorization for Payment Form'
+                : 'Create Authorization for Payment Form'}
+            </TypographyLink>
+          </RouterLink>,
+          <Typography variant="body2">Create Vendor</Typography>,
+        ];
+
       case VENDOR_REGISTRATION_NAVIGATE_FROM.VIEW_VENDOR_REGISTRATION:
         return [
           <Typography variant="body2">Miscellaneous</Typography>,

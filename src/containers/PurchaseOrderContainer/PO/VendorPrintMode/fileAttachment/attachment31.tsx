@@ -1,5 +1,9 @@
 import { Box, Divider, Grid, Stack, Typography } from '@mui/material';
 import React from 'react';
+import { IMAGES } from 'src/appConfig/images';
+import { Image } from 'src/components/common';
+
+const clsPrefix = 'ctn-navbar-desktop';
 
 const Attachment31: React.FC = () => {
   return (
@@ -12,11 +16,15 @@ const Attachment31: React.FC = () => {
           ATTACHMENT 31
         </Typography>
       </Stack>
-      <Stack alignItems="center" mb={1}>
-        {/* TODO: Tuyen Tran */}
-        <Typography variant="h5" fontWeight="bold">
-          General Terms and Conditions Applicable to All Purchase Orders
-        </Typography>
+      <Stack alignItems="center" mb={2}>
+        <Stack flexDirection="row" alignItems="center">
+          <Box sx={{ mr: 1 }}>
+            <Image src={IMAGES.logoGrey} className={`${clsPrefix}-logo`} />
+          </Box>
+          <Typography variant="h5" fontWeight="bold">
+            General Terms and Conditions Applicable to All Purchase Orders
+          </Typography>
+        </Stack>
       </Stack>
 
       <Stack flexDirection="row">

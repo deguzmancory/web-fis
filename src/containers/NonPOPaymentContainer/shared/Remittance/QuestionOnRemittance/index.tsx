@@ -9,7 +9,9 @@ import {
   InputUSPhone,
   LoadingCommon,
   Select,
+  TextareaAutosize,
 } from 'src/components/common';
+import { AUTHORIZATION_FOR_PAYMENT_KEY } from 'src/containers/NonPOPaymentContainer/AuthorizationForPayment/enum';
 import { PO_PAYMENT_VENDOR_TYPE } from 'src/containers/PurchaseOrderContainer/POPayment/enums';
 import { checkVendorPaymentType } from 'src/containers/PurchaseOrderContainer/POPayment/helpers';
 import { useZipCode } from 'src/queries';
@@ -18,6 +20,7 @@ import {
   getErrorMessage,
   getUncontrolledInputFieldProps,
   isEqualPrevAndNextFormikValues,
+  isString,
 } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { NON_PO_PAYMENT_REMITTANCE_KEY, NON_PO_PAYMENT_REMITTANCE_QUESTIONS_KEY } from '../enum';
@@ -183,21 +186,36 @@ const RemittanceQuestions: React.FC<Props> = ({ formikProps, disabled = false })
 
             <Grid item container spacing={2}>
               <Grid item xs={4}>
-                <Input label="Name" value={values?.vendorName as string} disabled maxLength={30} />
+                <Input
+                  label="Name"
+                  value={isString(values.vendorName) ? values.vendorName : values.vendorName.name}
+                  disabled
+                  maxLength={30}
+                />
+                <Typography variant="body2">
+                  To use a different address, fill out the fields below:
+                </Typography>
               </Grid>
 
               <Grid item xs={8}>
-                <Input label="Address" value={values?.vendorAddress} disabled maxLength={30} />
+                <TextareaAutosize
+                  label="Address"
+                  value={values?.vendorAddress}
+                  disabled
+                  maxLength={30}
+                  resize="none"
+                />
               </Grid>
             </Grid>
 
-            <Typography variant="body2">
-              To use a different address, fill out the fields below:
-            </Typography>
-
             <Grid item container spacing={2} my={2}>
               <Grid item xs={4}>
-                <Input label="Name" value={values?.vendorName as string} disabled maxLength={30} />
+                <Input
+                  label="Name"
+                  value={isString(values.vendorName) ? values.vendorName : values.vendorName.name}
+                  disabled
+                  maxLength={30}
+                />
               </Grid>
               <Grid item xs={4}>
                 <Input
@@ -326,7 +344,11 @@ export default memo(RemittanceQuestions, (prevProps, nextProps) => {
     isEqualPrevAndNextFormikValues({
       prevFormikProps,
       nextFormikProps,
-      formKeysNeedRender: [prefixRemittance],
+      formKeysNeedRender: [
+        prefixRemittance,
+        AUTHORIZATION_FOR_PAYMENT_KEY.VENDOR_NAME,
+        AUTHORIZATION_FOR_PAYMENT_KEY.VENDOR_CODE,
+      ],
     })
   );
 });
