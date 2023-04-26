@@ -59,6 +59,8 @@ import {
 } from './helpers/formValues';
 import { getNonEmployeeTravelFormValidationSchema } from './helpers/validationSchema';
 import { UpsertNonEmployeeTravelFormValue, UpsertNonEmployeeTravelFormikProps } from './types';
+import RemittanceTableLineItems from '../shared/Remittance/TableLineItems';
+import RemittanceQuestions from './RemittanceQuestions';
 
 const FileAttachments = lazy(() => import('./FileAttachments'));
 const AuditInformation = lazy(() => import('../shared/AuditInformation'));
@@ -424,6 +426,16 @@ const AuthorizationForPayment: FC<Props> = ({
                     currentMode={currentNonEmployeeTravelMode}
                   />
                 </SectionLayout>
+
+                <SectionLayout>
+                  <RemittanceTableLineItems
+                    formikProps={formikProps}
+                    disableReferenceNumber
+                    disabled={disabledSection}
+                  />
+                  <RemittanceQuestions formikProps={formikProps} disabled={disabledSection} />
+                </SectionLayout>
+
                 <SectionLayout sx={{ p: 0, border: 'none' }}>
                   {isEditMode ? (
                     <FileAttachments

@@ -37,12 +37,13 @@ import ErrorNonPOWrapper from '../shared/ErrorWrapper/index.';
 import HeaderOfSection from '../shared/HeaderOfSection';
 import InternalComments from '../shared/InternalComments';
 import ProjectItems from '../shared/ProjectItems';
+import RemittanceQuestions from '../shared/Remittance/QuestionOnRemittance';
+import RemittanceTableLineItems from '../shared/Remittance/TableLineItems';
 import { SUBMITTED_NON_PO_PAYMENT_QUERY } from '../shared/SubmittedNonPO/enums';
 import DeleteWarning from './DeleteWarning';
 import GeneralInfo from './GeneralInfo';
 import Header from './Header';
 import ReasonsForPayment from './ReasonsForPayment';
-import Remittance from './Remittance';
 import { AUTHORIZATION_FOR_PAYMENT_KEY } from './enum';
 import { emptyUpsertAuthorizationFormValue } from './helpers/constants';
 import {
@@ -361,7 +362,8 @@ const AuthorizationForPayment: FC<Props> = ({
                 </SectionLayout>
 
                 <SectionLayout>
-                  <Remittance formikProps={formikProps} disabled={disabledSection} />
+                  <RemittanceTableLineItems formikProps={formikProps} disabled={disabledSection} />
+                  <RemittanceQuestions formikProps={formikProps} disabled={disabledSection} />
                 </SectionLayout>
 
                 <SectionLayout sx={{ p: 0, border: 'none' }}>

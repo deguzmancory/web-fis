@@ -75,19 +75,37 @@ export const getAuthorizationPaymentFormValidationSchema = ({ action }: { action
             .typeError('The TOTAL must be greater than $0.')
         : Yup.number().nullable(),
 
-      remittanceLineItems: Yup.array().of(
-        Yup.object().shape({
-          referenceNumber: Yup.string().when(
-            ['amount', 'customerAccountComment'],
-            ([amount, customerAccountComment], schema) => {
-              if (amount !== 0 && customerAccountComment)
-                return schema
-                  .required(ErrorService.MESSAGES.requiredInvoiceRemittance)
-                  .typeError(ErrorService.MESSAGES.requiredInvoiceRemittance);
-            }
+      remittanceLineItems: isSubmitPOAction
+        ? Yup.array()
+            .min(1, 'At least one remittance line must be filled in.')
+            .transform((fields: any[]) => fields.slice(0, -1))
+            .of(
+              Yup.object().shape({
+                referenceNumber: Yup.string().when(
+                  ['amount', 'customerAccountComment'],
+                  ([amount, customerAccountComment], schema) => {
+                    if (amount !== 0 && customerAccountComment)
+                      return schema
+                        .required(ErrorService.MESSAGES.requiredInvoiceRemittance)
+                        .typeError(ErrorService.MESSAGES.requiredInvoiceRemittance);
+                  }
+                ),
+              })
+            )
+        : Yup.array()
+          .of(
+            Yup.object().shape({
+              referenceNumber: Yup.string().when(
+                ['amount', 'customerAccountComment'],
+                ([amount, customerAccountComment], schema) => {
+                  if (amount !== 0 && customerAccountComment)
+                    return schema
+                      .required(ErrorService.MESSAGES.requiredInvoiceRemittance)
+                      .typeError(ErrorService.MESSAGES.requiredInvoiceRemittance);
+                }
+              ),
+            })
           ),
-        })
-      ),
       remittance: Yup.lazy((_remittanceValue, remittanceOptions) => {
         return Yup.object().shape({
           remittanceTotal: isSubmitPOAction

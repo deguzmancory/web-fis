@@ -2,28 +2,38 @@ import { Box, Grid, Typography } from '@mui/material';
 import CustomTable from 'src/components/CustomTable';
 import { BodyBasicRows, CellType } from 'src/components/CustomTable/types';
 import { EllipsisTooltipInput, EllipsisTooltipInputCurrency } from 'src/components/common';
-import { AuthorizationRemittanceLineItem } from 'src/queries/NonPOPayment/AuthorizationForPayment/types';
-import { checkRowStateAndSetValue, getErrorMessage } from 'src/utils';
 import {
-  AUTHORIZATION_FOR_PAYMENT_KEY,
-  AUTHORIZATION_PMT_REMITTANCE_LINE_ITEM_KEY,
-  AUTHORIZATION_REMITTANCE_KEY,
-} from '../../enum';
-import {
-  authorizationLineItemsRemittanceColumnsNames,
-  initialAuthorizationPaymentRemittance,
-} from '../../helpers/constants';
-import { UpsertAuthorizationPaymentFormikProps } from '../../types';
-import { useCallback, useMemo } from 'react';
+  checkRowStateAndSetValue,
+  getErrorMessage,
+  isEqualPrevAndNextFormikValues,
+} from 'src/utils';
 
-const LineItem: React.FC<Props> = ({ formikProps, disabled }) => {
+import { memo, useCallback, useMemo } from 'react';
+
+import { initialPaymentRemittanceInfo } from 'src/containers/PurchaseOrderContainer/POPayment/helpers';
+import { NON_PO_PAYMENT_DOCUMENT_TYPE } from 'src/queries';
+import { CommonFormikProps } from 'src/utils/commonTypes';
+import {
+  NON_PO_PAYMENT_REMITTANCE_KEY,
+  NON_PO_PAYMENT_REMITTANCE_LINE_ITEM_KEY,
+  NON_PO_PAYMENT_REMITTANCE_QUESTIONS_KEY,
+  NonPoPaymentRemittanceLineItem,
+  nonPoPaymentLineItemsRemittanceColumnsNames,
+} from '../enum';
+
+const remittanceLineItemKey = NON_PO_PAYMENT_REMITTANCE_KEY.REMITTANCE_LINE_ITEMS;
+
+const RemittanceTableLineItems: React.FC<Props> = ({
+  formikProps,
+  prefixRemittanceLineItem,
+  disableReferenceNumber = false,
+  disabled = false,
+}) => {
   const { errors, values, touched, setFieldValue, getFieldProps } = formikProps;
 
   const lineItemValue = useMemo(() => {
     return values.remittanceLineItems || [];
   }, [values.remittanceLineItems]);
-
-  const remittanceLineItemKey = AUTHORIZATION_FOR_PAYMENT_KEY.REMITTANCE_LINE_ITEMS;
 
   const _getErrorMessage = (fieldName) => {
     return getErrorMessage(fieldName, { touched, errors });
@@ -33,10 +43,10 @@ const LineItem: React.FC<Props> = ({ formikProps, disabled }) => {
     setFieldValue(`${remittanceLineItemKey}`, [
       ...lineItemValue,
       {
-        ...initialAuthorizationPaymentRemittance,
+        ...initialPaymentRemittanceInfo,
       },
     ]);
-  }, [lineItemValue, remittanceLineItemKey, setFieldValue]);
+  }, [lineItemValue, setFieldValue]);
 
   const removeRow = useCallback(
     (index: number) => {
@@ -45,16 +55,16 @@ const LineItem: React.FC<Props> = ({ formikProps, disabled }) => {
         lineItemValue.filter((_row, idx) => idx !== index)
       );
     },
-    [lineItemValue, remittanceLineItemKey, setFieldValue]
+    [lineItemValue, setFieldValue]
   );
 
   const handleInputChange = ({ name, value, index }) => {
-    checkRowStateAndSetValue<AuthorizationRemittanceLineItem>({
+    checkRowStateAndSetValue<NonPoPaymentRemittanceLineItem>({
       name,
       value,
       index,
       records: lineItemValue,
-      columnKeys: authorizationLineItemsRemittanceColumnsNames,
+      columnKeys: nonPoPaymentLineItemsRemittanceColumnsNames,
       setFieldValue,
       onAddRow: addNewRow,
       onRemoveRow: removeRow,
@@ -62,7 +72,7 @@ const LineItem: React.FC<Props> = ({ formikProps, disabled }) => {
   };
 
   const updatePaymentAmountTotal = useCallback(
-    ({ lineItemRow, index }: { lineItemRow: AuthorizationRemittanceLineItem; index: number }) => {
+    ({ lineItemRow, index }: { lineItemRow: NonPoPaymentRemittanceLineItem; index: number }) => {
       let updatedPaymentTotal = Number(values.remittance?.remittanceTotal || 0);
       const currentLineItemAmount = Number(lineItemRow.amount || 0);
 
@@ -72,7 +82,7 @@ const LineItem: React.FC<Props> = ({ formikProps, disabled }) => {
         return total + currentLineItem.amount;
       }, 0);
       setFieldValue(
-        `${AUTHORIZATION_FOR_PAYMENT_KEY.REMITTANCE}.${AUTHORIZATION_REMITTANCE_KEY.REMITTANCE_TOTAL}`,
+        `${NON_PO_PAYMENT_REMITTANCE_KEY.REMITTANCE}.${NON_PO_PAYMENT_REMITTANCE_QUESTIONS_KEY.REMITTANCE_TOTAL}`,
         updatedPaymentTotal
       );
     },
@@ -90,16 +100,16 @@ const LineItem: React.FC<Props> = ({ formikProps, disabled }) => {
     }: {
       name: string;
       value: any;
-      lineItemRow: AuthorizationRemittanceLineItem;
-      key: AUTHORIZATION_PMT_REMITTANCE_LINE_ITEM_KEY;
+      lineItemRow: NonPoPaymentRemittanceLineItem;
+      key: NON_PO_PAYMENT_REMITTANCE_LINE_ITEM_KEY;
       index: number;
     }) => {
-      checkRowStateAndSetValue<AuthorizationRemittanceLineItem>({
+      checkRowStateAndSetValue<NonPoPaymentRemittanceLineItem>({
         name,
         value,
         index,
         records: lineItemValue,
-        columnKeys: authorizationLineItemsRemittanceColumnsNames,
+        columnKeys: nonPoPaymentLineItemsRemittanceColumnsNames,
         setFieldValue,
         onAddRow: addNewRow,
         onRemoveRow: removeRow,
@@ -125,7 +135,7 @@ const LineItem: React.FC<Props> = ({ formikProps, disabled }) => {
         verticalAlign: 'top',
       },
       errorMessage: _getErrorMessage(
-        `${prefixLineItem}.${AUTHORIZATION_PMT_REMITTANCE_LINE_ITEM_KEY.REFERENCE_NUMBER}`
+        `${prefixLineItem}.${NON_PO_PAYMENT_REMITTANCE_LINE_ITEM_KEY.REFERENCE_NUMBER}`
       ),
       columns: [
         {
@@ -138,17 +148,17 @@ const LineItem: React.FC<Props> = ({ formikProps, disabled }) => {
           content: (
             <EllipsisTooltipInput
               {...getFieldProps(
-                `${prefixLineItem}.${AUTHORIZATION_PMT_REMITTANCE_LINE_ITEM_KEY.REFERENCE_NUMBER}`
+                `${prefixLineItem}.${NON_PO_PAYMENT_REMITTANCE_LINE_ITEM_KEY.REFERENCE_NUMBER}`
               )}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                 handleInputChange({
                   index,
-                  name: `${prefixLineItem}.${AUTHORIZATION_PMT_REMITTANCE_LINE_ITEM_KEY.REFERENCE_NUMBER}`,
+                  name: `${prefixLineItem}.${NON_PO_PAYMENT_REMITTANCE_LINE_ITEM_KEY.REFERENCE_NUMBER}`,
                   value: event.target.value,
                 })
               }
               maxLength={29}
-              disabled={disabled}
+              disabled={disabled || disableReferenceNumber}
             />
           ),
         },
@@ -158,12 +168,12 @@ const LineItem: React.FC<Props> = ({ formikProps, disabled }) => {
           content: (
             <EllipsisTooltipInput
               {...getFieldProps(
-                `${prefixLineItem}.${AUTHORIZATION_PMT_REMITTANCE_LINE_ITEM_KEY.CUSTOMER_ACCOUNT_COMMENT}`
+                `${prefixLineItem}.${NON_PO_PAYMENT_REMITTANCE_LINE_ITEM_KEY.CUSTOMER_ACCOUNT_COMMENT}`
               )}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                 handleInputChange({
                   index,
-                  name: `${prefixLineItem}.${AUTHORIZATION_PMT_REMITTANCE_LINE_ITEM_KEY.CUSTOMER_ACCOUNT_COMMENT}`,
+                  name: `${prefixLineItem}.${NON_PO_PAYMENT_REMITTANCE_LINE_ITEM_KEY.CUSTOMER_ACCOUNT_COMMENT}`,
                   value: event.target.value,
                 })
               }
@@ -178,7 +188,7 @@ const LineItem: React.FC<Props> = ({ formikProps, disabled }) => {
           content: (
             <EllipsisTooltipInputCurrency
               {...getFieldProps(
-                `${prefixLineItem}.${AUTHORIZATION_PMT_REMITTANCE_LINE_ITEM_KEY.AMOUNT}`
+                `${prefixLineItem}.${NON_PO_PAYMENT_REMITTANCE_LINE_ITEM_KEY.AMOUNT}`
               )}
               onChange={(name, value) =>
                 handleAmountChange({
@@ -186,7 +196,7 @@ const LineItem: React.FC<Props> = ({ formikProps, disabled }) => {
                   value,
                   lineItemRow,
                   index,
-                  key: AUTHORIZATION_PMT_REMITTANCE_LINE_ITEM_KEY.AMOUNT,
+                  key: NON_PO_PAYMENT_REMITTANCE_LINE_ITEM_KEY.AMOUNT,
                 })
               }
               disabled={disabled}
@@ -197,6 +207,13 @@ const LineItem: React.FC<Props> = ({ formikProps, disabled }) => {
     };
   });
 
+  const remittanceItemsErrors =
+    touched.remittanceLineItems &&
+    errors.remittanceLineItems &&
+    values.remittanceLineItems?.length === 1
+      ? 'At least one remittance line must be filled in.'
+      : '';
+
   return (
     <Box>
       <Typography variant="h5" mb={2}>
@@ -205,7 +222,7 @@ const LineItem: React.FC<Props> = ({ formikProps, disabled }) => {
       {/* Hidden input for scroll to error purpose */}
       <input name={remittanceLineItemKey} hidden />
       <Typography variant="body2">Remittance Advice</Typography>
-      <CustomTable.Basic bodyList={lineItemRows} />
+      <CustomTable.Basic bodyList={lineItemRows} errorMessage={remittanceItemsErrors} />
 
       <Grid container className="justify-flex-end" mt={2}>
         <Grid item xs={1.5}>
@@ -216,10 +233,10 @@ const LineItem: React.FC<Props> = ({ formikProps, disabled }) => {
         <Grid item>
           <EllipsisTooltipInputCurrency
             {...getFieldProps(
-              `${AUTHORIZATION_FOR_PAYMENT_KEY.REMITTANCE}.${AUTHORIZATION_REMITTANCE_KEY.REMITTANCE_TOTAL}`
+              `${NON_PO_PAYMENT_REMITTANCE_KEY.REMITTANCE}.${NON_PO_PAYMENT_REMITTANCE_QUESTIONS_KEY.REMITTANCE_TOTAL}`
             )}
             errorMessage={_getErrorMessage(
-              `${AUTHORIZATION_FOR_PAYMENT_KEY.REMITTANCE}.${AUTHORIZATION_REMITTANCE_KEY.REMITTANCE_TOTAL}`
+              `${NON_PO_PAYMENT_REMITTANCE_KEY.REMITTANCE}.${NON_PO_PAYMENT_REMITTANCE_QUESTIONS_KEY.REMITTANCE_TOTAL}`
             )}
             textAlign="right"
             disabled
@@ -232,8 +249,22 @@ const LineItem: React.FC<Props> = ({ formikProps, disabled }) => {
 };
 
 type Props = {
-  formikProps: UpsertAuthorizationPaymentFormikProps;
+  formikProps: CommonFormikProps<any>;
+  prefixRemittanceLineItem?: string;
+  disableReferenceNumber?: boolean;
   disabled?: boolean;
 };
 
-export default LineItem;
+export default memo(RemittanceTableLineItems, (prevProps, nextProps) => {
+  const prevFormikProps = prevProps.formikProps;
+  const nextFormikProps = nextProps.formikProps;
+
+  return (
+    prevProps.disabled === nextProps.disabled &&
+    isEqualPrevAndNextFormikValues({
+      prevFormikProps,
+      nextFormikProps,
+      formKeysNeedRender: [remittanceLineItemKey],
+    })
+  );
+});
