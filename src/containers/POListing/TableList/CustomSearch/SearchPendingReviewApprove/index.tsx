@@ -169,7 +169,7 @@ const SearchPendingReviewApprove = ({
           <Grid item xs={4}>
             <DateRangePicker
               label={'Modified Date'}
-              placeholder="Search"
+              placeholder="From - To"
               {...getFieldProps(PO_LIST_QUERY_KEY.MODIFIED_DATE)}
               onChange={setFieldValue}
               selecteds={values.modifiedDate}

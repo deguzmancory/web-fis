@@ -13,6 +13,7 @@ import SectionLayout from 'src/containers/shared/SectionLayout';
 import {
   useGetAuthorizationPaymentDetail,
   useGetPODetail,
+  useGetPersonalAutomobileDetail,
   useGetPettyCashDetail,
   useProfile,
   useUpdateVendorRegistration,
@@ -47,6 +48,8 @@ import { UpsertAuthorizationFormValue } from 'src/containers/NonPOPaymentContain
 import { getAuthorizationPaymentFormValueFromResponse } from 'src/containers/NonPOPaymentContainer/AuthorizationForPayment/helpers/formValues';
 import { UpsertPettyCashFormValue } from 'src/containers/NonPOPaymentContainer/PettyCashSummarySheet/types';
 import { getPettyCashFormValueFromResponse } from 'src/containers/NonPOPaymentContainer/PettyCashSummarySheet/helpers/formValues';
+import { getPersonalAutomobileFormValueFromResponse } from 'src/containers/NonPOPaymentContainer/PersonalAutomobileMileageVoucher/helpers/formValues';
+import { PersonalAutomobileFormValue } from 'src/containers/NonPOPaymentContainer/PersonalAutomobileMileageVoucher/types';
 
 const CreateVendorRegistration: FC<Props> = ({
   formData,
@@ -87,6 +90,14 @@ const CreateVendorRegistration: FC<Props> = ({
       Toastify.error(error.message);
     },
   });
+
+  const { onGetPersonalAutoById } = useGetPersonalAutomobileDetail({
+    id: documentId,
+    onError: (error) => {
+      Toastify.error(error.message);
+    },
+  });
+
   const { onGetAuthorizationPaymentById } = useGetAuthorizationPaymentDetail({
     id: documentId,
     onError: (error) => {
@@ -217,6 +228,38 @@ const CreateVendorRegistration: FC<Props> = ({
               Navigator.navigate(urljoin(PATHS.authorizationForPaymentDetail, documentId));
             } else {
               Navigator.navigate(PATHS.createAuthorizationForPayment);
+            }
+          });
+
+          return;
+        }
+
+        if (redirectSection === VENDOR_REGISTRATION_NAVIGATE_FROM.PERSONAL_AUTO_PAYMENT) {
+          //if there's no formData => redirect page have no data => fetch data to prepare
+          if (!formData) {
+            const { data: personalAutoPaymentResponse } = await onGetPersonalAutoById();
+
+            const formValue: PersonalAutomobileFormValue =
+              getPersonalAutomobileFormValueFromResponse({
+                response: personalAutoPaymentResponse,
+                profile,
+              });
+
+            onSetFormData<PersonalAutomobileFormValue>({ ...formValue, ...newVendorData });
+          } else {
+            onSetFormData<PersonalAutomobileFormValue>({
+              ...formData,
+              ...newVendorData,
+            });
+          }
+
+          onSetIsImmutableFormData(true);
+
+          setTimeout(() => {
+            if (documentId) {
+              Navigator.navigate(urljoin(PATHS.personalAutoPaymentDetail, documentId));
+            } else {
+              Navigator.navigate(PATHS.createPersonalAutoPayment);
             }
           });
 

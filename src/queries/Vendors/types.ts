@@ -14,6 +14,9 @@ export interface Vendor {
   rcuhEmpNumber?: string;
   uhEmpNumber?: string;
   type?: string;
+
+  // TODO: Tuyen Tran will update type
+  updatedAt?: string;
 }
 
 export interface VenderItem {

@@ -91,6 +91,19 @@ export const checkVendorPaymentType = (type: PO_PAYMENT_VENDOR_TYPE) => {
   }
 };
 
+export const checkVendorPaymentPOType = (type: PO_PAYMENT_VENDOR_TYPE) => {
+  switch (type) {
+    case PO_PAYMENT_VENDOR_TYPE.ACH:
+    case PO_PAYMENT_VENDOR_TYPE.CARD:
+    case PO_PAYMENT_VENDOR_TYPE.CHECK:
+      return false;
+    case PO_PAYMENT_VENDOR_TYPE.TBD:
+      return true;
+    default:
+      return true;
+  }
+};
+
 export const getNumberOfEquipmentInventories = (data: POPaymentEquipmentInventory[]) => {
   if (isEmpty(data)) return DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS;
 

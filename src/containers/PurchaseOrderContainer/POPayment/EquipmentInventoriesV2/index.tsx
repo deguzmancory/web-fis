@@ -9,11 +9,11 @@ import {
   DatePicker,
   Element,
   Input,
+  InputUSPhone,
   RadioButton,
   Select,
   TextareaAutosize,
 } from 'src/components/common';
-import { InputPhoneWithoutFlags } from 'src/components/common/InputPhone';
 import { AUTHORIZATION_FOR_PAYMENT_KEY } from 'src/containers/NonPOPaymentContainer/AuthorizationForPayment/enum';
 import {
   UpsertAuthorizationFormValue,
@@ -434,7 +434,7 @@ const EquipmentInventories = <
 
               return {
                 content: (
-                  <InputPhoneWithoutFlags
+                  <InputUSPhone
                     {...getFieldProps(
                       `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.PREPARER_PHONE}`
                     )}
@@ -443,7 +443,6 @@ const EquipmentInventories = <
                       `${prefixInventory}.${PO_PAYMENT_EQUIPMENT_INVENTORY_ITEM_KEY.PREPARER_PHONE}`
                     )}
                     onChange={setFieldValue}
-                    onlyUS
                   />
                 ),
                 style: getContentStyle(index === DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS - 1),

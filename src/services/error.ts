@@ -29,6 +29,7 @@ const MESSAGES = {
   inValidUsername: 'Please use only letters, numbers (0-9), underscore (_), dot (.), hyphen (-).',
   requiredInvoiceRemittance:
     'Invoice Number must be filled in if customer account comment or an amount is filled in',
+  notMatchRemittanceTotal: 'The remittance total does not match the payment total.',
 };
 
 const handler = (error: AuthError | Error) => {

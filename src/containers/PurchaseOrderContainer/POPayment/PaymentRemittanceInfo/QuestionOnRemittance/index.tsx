@@ -6,21 +6,17 @@ import {
   Checkbox,
   Input,
   InputMask,
+  InputUSPhone,
   LoadingCommon,
   Select,
-  InputUSPhone,
 } from 'src/components/common';
 import { PO_FORM_KEY } from 'src/containers/PurchaseOrderContainer/PO/enums';
 import { PO_MODE, useZipCode } from 'src/queries';
 import { StateService } from 'src/services';
-import {
-  getErrorMessage,
-  getUncontrolledInputFieldProps,
-  isEqualPrevAndNextFormikValues,
-} from 'src/utils';
+import { getErrorMessage, getUncontrolledInputFieldProps, localTimeToHawaii } from 'src/utils';
 import { PO_PAYMENT_REMITTANCE_KEY, PO_PAYMENT_VENDOR_TYPE } from '../../enums';
-import { checkVendorPaymentType } from '../../helpers/utils';
-import { UpdatePOPaymentFormValue, UpdatePOPaymentFormikProps } from '../../types';
+import { checkVendorPaymentPOType } from '../../helpers/utils';
+import { UpdatePOPaymentFormikProps } from '../../types';
 
 const QuestionOnRemittance: React.FC<Props> = ({ formikProps, disabled }) => {
   const { values, touched, errors, getFieldProps, setFieldTouched, setFieldValue } = formikProps;
@@ -29,7 +25,7 @@ const QuestionOnRemittance: React.FC<Props> = ({ formikProps, disabled }) => {
   const isShowRemittance = React.useMemo(() => {
     return (
       values.remittance?.returnRemittanceFlag === true ||
-      checkVendorPaymentType(values.preferredPaymentMethod as PO_PAYMENT_VENDOR_TYPE)
+      checkVendorPaymentPOType(values.preferredPaymentMethod as PO_PAYMENT_VENDOR_TYPE)
     );
   }, [values.preferredPaymentMethod, values.remittance?.returnRemittanceFlag]);
 
@@ -83,7 +79,11 @@ const QuestionOnRemittance: React.FC<Props> = ({ formikProps, disabled }) => {
         </div>
         <div style={{ display: 'contents' }}>as of</div>
         <div style={{ display: 'inline-block', margin: '0 8px' }}>
-          <Input value={values?.preferredPaymentMethodTimestamp} disabled style={{ width: 100 }} />
+          <Input
+            value={localTimeToHawaii(values?.preferredPaymentMethodTimestamp)}
+            disabled
+            style={{ width: 180 }}
+          />
         </div>
       </div>
 
@@ -286,19 +286,4 @@ type Props = {
   currentPOMode?: PO_MODE;
 };
 
-export default React.memo(QuestionOnRemittance, (prevProps, nextProps) => {
-  const prevFormikProps = prevProps.formikProps;
-  const nextFormikProps = nextProps.formikProps;
-
-  const formKeysNeedRender = [PO_FORM_KEY.PAYMENT_REMITTANCE];
-
-  return (
-    prevProps.disabled === nextProps.disabled &&
-    prevProps.currentPOMode === nextProps.currentPOMode &&
-    isEqualPrevAndNextFormikValues<UpdatePOPaymentFormValue>({
-      prevFormikProps,
-      nextFormikProps,
-      formKeysNeedRender,
-    })
-  );
-});
+export default QuestionOnRemittance;

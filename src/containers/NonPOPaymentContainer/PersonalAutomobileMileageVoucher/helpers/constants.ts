@@ -44,6 +44,10 @@ export const initialPersonalAutomobileRemittance = {
 };
 
 export const personalAutomobileFormInitialValue: PersonalAutomobileFormValue = {
+  // form only
+  action: null,
+  placeholderFileAttachment: null,
+
   // General Information
   loginName: '',
   date: '',
@@ -90,6 +94,7 @@ export const personalAutomobileFormInitialValue: PersonalAutomobileFormValue = {
 
   // Personal Automobile Attachments
   attachments: [],
+  auditTrails: [],
 
   acceptedDate: '',
   internalComments: '',
@@ -116,8 +121,6 @@ export const personalAutomobileFormInitialValue: PersonalAutomobileFormValue = {
   preferredPaymentMethod: '',
   preferredPaymentMethodTimestamp: '',
   paymentMethod: '',
-
-  placeholderFileAttachment: null,
 };
 
 export const personalAutomobileTripItemColumnNames = [

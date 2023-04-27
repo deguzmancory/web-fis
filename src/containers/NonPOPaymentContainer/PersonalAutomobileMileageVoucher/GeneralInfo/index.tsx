@@ -5,7 +5,14 @@ import { FC, memo, useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
-import { Checkbox, Input, InputPhone, Link, Select, TextareaAutosize } from 'src/components/common';
+import {
+  Checkbox,
+  Input,
+  InputUSPhone,
+  Link,
+  Select,
+  TextareaAutosize,
+} from 'src/components/common';
 import { SelectOption } from 'src/components/common/Select';
 import {
   getVendorAddress,
@@ -41,8 +48,6 @@ const GeneralInfo: FC<Props> = ({ formikProps, disabled = false, currentMode }) 
     setFieldValue,
     setFieldTouched,
   } = formikProps;
-  console.log('🚀 ~ file: index.tsx:44 ~ errors:', errors);
-  console.log('🚀 ~ file: index.tsx:52 ~ values:', values);
 
   // show action link only on create PO and PI SU edit mode of PO document
   const showActionLink = isCreateMode(currentMode) || isPiSuEditMode(currentMode);
@@ -80,12 +85,12 @@ const GeneralInfo: FC<Props> = ({ formikProps, disabled = false, currentMode }) 
   };
 
   const handleCreateNewVenderLinkClick = () => {
-    const callingFromParam = `?${VENDOR_REGISTRATION_PARAMS.CALLING_FROM}=${VENDOR_REGISTRATION_NAVIGATE_FROM.NON_EMPLOYEE_TRAVEL_PAYMENT}`;
+    const callingFromParam = `?${VENDOR_REGISTRATION_PARAMS.CALLING_FROM}=${VENDOR_REGISTRATION_NAVIGATE_FROM.PERSONAL_AUTO_PAYMENT}`;
     const documentIdParam = !!id ? `&${VENDOR_REGISTRATION_PARAMS.DOCUMENT_ID}=${id}` : '';
 
     dispatch(setFormData(values));
     Navigator.navigate(`${PATHS.addVendorRegistration}${callingFromParam}${documentIdParam}`, {
-      isFromForm: VENDOR_REGISTRATION_NAVIGATE_FROM.NON_EMPLOYEE_TRAVEL_PAYMENT,
+      isFromForm: VENDOR_REGISTRATION_NAVIGATE_FROM.PERSONAL_AUTO_PAYMENT,
     });
   };
 
@@ -385,7 +390,7 @@ const GeneralInfo: FC<Props> = ({ formikProps, disabled = false, currentMode }) 
           />
         </Grid>
         <Grid item xs={12} sm={4}>
-          <InputPhone
+          <InputUSPhone
             label={'Phone Number'}
             errorMessage={_getErrorMessage(PERSONAL_AUTOMOBILE_FORM_KEY.PHONE_NUMBER)}
             {...getFieldProps(PERSONAL_AUTOMOBILE_FORM_KEY.PHONE_NUMBER)}

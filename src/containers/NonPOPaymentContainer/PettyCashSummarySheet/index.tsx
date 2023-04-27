@@ -350,7 +350,7 @@ const AuthorizationForPayment: FC<Props> = ({
                 >
                   <GeneralInfo
                     formikProps={formikProps}
-                    disabled={disabledSection}
+                    disabled={disabledSection || isReviewMode}
                     currentMode={currentPettyCashMode}
                   />
                 </SectionLayout>
@@ -358,7 +358,7 @@ const AuthorizationForPayment: FC<Props> = ({
                   <ProjectItems
                     title={'PROJECT(S) TO BE CHARGED'}
                     formikProps={formikProps}
-                    disabled={disabledSection}
+                    disabled={disabledSection || isReviewMode}
                     projectItemsPrefix={PETTY_CASH_FORM_KEY.PROJECT_LINE_ITEMS}
                     totalPrefix={PETTY_CASH_FORM_KEY.PAYMENT_TOTAL}
                     showTotalError={false}
@@ -372,9 +372,12 @@ const AuthorizationForPayment: FC<Props> = ({
                   <RemittanceTableLineItems
                     formikProps={formikProps}
                     disableReferenceNumber
-                    disabled={disabledSection}
+                    disabled={disabledSection || isReviewMode}
                   />
-                  <QuestionOnRemittance formikProps={formikProps} disabled={disabledSection} />
+                  <QuestionOnRemittance
+                    formikProps={formikProps}
+                    disabled={disabledSection || isReviewMode}
+                  />
                 </SectionLayout>
 
                 <SectionLayout sx={{ p: 0, border: 'none' }}>
@@ -403,7 +406,10 @@ const AuthorizationForPayment: FC<Props> = ({
                 )}
 
                 <SectionLayout>
-                  <InternalComments formikProps={formikProps} disabled={disabledSection} />
+                  <InternalComments
+                    formikProps={formikProps}
+                    disabled={disabledSection || isReviewMode}
+                  />
                 </SectionLayout>
 
                 <ActionButtons

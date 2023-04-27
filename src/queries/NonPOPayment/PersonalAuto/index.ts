@@ -4,7 +4,7 @@ export * from './useCreatePersonalAutoCloneDocument';
 export * from './useDeletePersonalAuto';
 export * from './useDeletePersonalAutoAttachment';
 export * from './useGetPersonalAutoAttachmentPresignedUrl';
-export * from './useGetPersonalAutoById';
+export * from './useGetPersonalAutoDetail';
 export * from './useUpdatePersonalAuto';
 export * from './useUploadPersonalAutoFileAttachment';
 export * from './useViewPersonalAutoFinalPdf';

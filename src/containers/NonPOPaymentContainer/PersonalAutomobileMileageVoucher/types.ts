@@ -2,7 +2,7 @@ import { Vendor } from 'src/queries/Vendors';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import {
   ItemizedTripInformation,
-  PersonalAutomobileMileageVoucher,
+  PersonalAutomobilePayload,
   TripInfoItem,
 } from '../../../queries/NonPOPayment/PersonalAuto/types';
 import { NonPOPaymentProjectItemFormValue } from '../AuthorizationForPayment/types';
@@ -20,7 +20,7 @@ export interface POPlaceholderFileAttachment {
 
 export interface PersonalAutomobileFormValue
   extends Omit<
-    PersonalAutomobileMileageVoucher,
+    PersonalAutomobilePayload,
     //override
     'vendorName' | 'vendorCode' | 'projectLineItems' | 'tripInfos' | 'expirationDate'
   > {

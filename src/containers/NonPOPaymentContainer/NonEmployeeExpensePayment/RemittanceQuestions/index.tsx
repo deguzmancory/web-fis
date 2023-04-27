@@ -1,18 +1,21 @@
+import { Box, Grid, Link, Typography } from '@mui/material';
+import { memo, useMemo } from 'react';
+import TypographyLink from 'src/components/TypographyLink';
+import { Checkbox, Input, InputUSPhone } from 'src/components/common';
+import { PO_PAYMENT_VENDOR_TYPE } from 'src/containers/PurchaseOrderContainer/POPayment/enums';
 import {
   getErrorMessage,
   getUncontrolledInputFieldProps,
   isEqualPrevAndNextFormikValues,
+  isString,
+  localTimeToHawaii,
 } from 'src/utils';
 import {
   NON_PO_PAYMENT_REMITTANCE_KEY,
   NON_PO_PAYMENT_REMITTANCE_QUESTIONS_KEY,
 } from '../../shared/Remittance/enum';
-import { Box, Grid, Link, Typography } from '@mui/material';
+import { NON_EMPLOYEE_TRAVEL_FORM_KEY } from '../enums';
 import { UpsertNonEmployeeTravelFormikProps } from '../types';
-import { Checkbox, Input, InputUSPhone } from 'src/components/common';
-import { PO_PAYMENT_VENDOR_TYPE } from 'src/containers/PurchaseOrderContainer/POPayment/enums';
-import { memo, useMemo } from 'react';
-import TypographyLink from 'src/components/TypographyLink';
 
 const prefixRemittance = NON_PO_PAYMENT_REMITTANCE_KEY.REMITTANCE;
 
@@ -30,35 +33,67 @@ const RemittanceQuestions: React.FC<Props> = ({ formikProps, disabled = false })
   });
 
   const renderTextCheckBox = useMemo(() => {
-    switch (values?.preferredPaymentMethod) {
+    const paymentType = isString(values.vendorName)
+      ? values.vendorName
+      : values.vendorName?.paymentType;
+    switch (paymentType) {
       case PO_PAYMENT_VENDOR_TYPE.CHECK:
-        return 'Return this check and remittance advice to fiscal office.';
+        setFieldValue(
+          `${prefixRemittance}.${NON_PO_PAYMENT_REMITTANCE_QUESTIONS_KEY.RETURN_REMITTANCE_FLAG}`,
+          true
+        );
+        return {
+          label: 'Return this check and remittance advice to fiscal office.',
+          isDisabled: true,
+        };
       case PO_PAYMENT_VENDOR_TYPE.ACH:
       case PO_PAYMENT_VENDOR_TYPE.CARD:
       case PO_PAYMENT_VENDOR_TYPE.TBD:
-        return 'Override vendor preferred payment type and return this check and remittance advice to fiscal office instead.';
+        return {
+          label:
+            'Override vendor preferred payment type and return this check and remittance advice to fiscal office instead.',
+          isDisabled: false,
+        };
       default:
-        return 'Return this check and remittance advice to fiscal office.';
+        return {
+          label: 'Return this check and remittance advice to fiscal office.',
+          isDisabled: true,
+        };
     }
-  }, [values?.preferredPaymentMethod]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.vendorName]);
 
   return (
     <Box>
       <div style={{ display: 'contents' }}>
         <div style={{ display: 'contents' }}>Vendor preferred payment type</div>
         <div style={{ display: 'inline-block', margin: '0 8px' }}>
-          <Input value={values?.preferredPaymentMethod} disabled style={{ width: 100 }} />
+          <Input
+            value={
+              isString(values?.vendorName) ? values?.vendorName : values.vendorName?.paymentType
+            }
+            disabled
+            style={{ width: 100 }}
+          />
         </div>
         <div style={{ display: 'contents' }}>as of</div>
         <div style={{ display: 'inline-block', margin: '0 8px' }}>
-          <Input value={values?.preferredPaymentMethodTimestamp} disabled style={{ width: 100 }} />
+          <Input
+            value={
+              isString(values.vendorName)
+                ? values.vendorName
+                : localTimeToHawaii(values.vendorName?.updatedAt)
+            }
+            disabled
+            style={{ width: 180 }}
+          />
         </div>
       </div>
 
       <Checkbox.Item
         label={
           <Typography variant="body2" style={{ display: 'contents' }}>
-            {renderTextCheckBox}
+            {renderTextCheckBox.label}
             <TypographyLink variant="body2" style={{ display: 'contents' }}>
               <Link href="https://awsnode.test.rcuh.com/" target="_blank" ml={0.5}>
                 What's This?
@@ -72,7 +107,7 @@ const RemittanceQuestions: React.FC<Props> = ({ formikProps, disabled = false })
         errorMessage={_getErrorMessage(
           `${prefixRemittance}.${NON_PO_PAYMENT_REMITTANCE_QUESTIONS_KEY.RETURN_REMITTANCE_FLAG}`
         )}
-        disabled={disabled}
+        disabled={renderTextCheckBox.isDisabled}
         style={{ margin: '8px 0' }}
       />
 
@@ -131,7 +166,11 @@ export default memo(RemittanceQuestions, (prevProps, nextProps) => {
     isEqualPrevAndNextFormikValues({
       prevFormikProps,
       nextFormikProps,
-      formKeysNeedRender: [NON_PO_PAYMENT_REMITTANCE_KEY.REMITTANCE],
+      formKeysNeedRender: [
+        NON_PO_PAYMENT_REMITTANCE_KEY.REMITTANCE,
+        NON_EMPLOYEE_TRAVEL_FORM_KEY.VENDOR_NAME,
+        NON_EMPLOYEE_TRAVEL_FORM_KEY.VENDOR_CODE,
+      ],
     })
   );
 });

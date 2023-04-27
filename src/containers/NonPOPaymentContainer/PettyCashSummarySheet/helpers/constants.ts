@@ -71,6 +71,7 @@ export const emptyUpsertPettyCashFormValue: UpsertPettyCashFormValue = {
 
   //file attachments
   attachments: [],
+  auditTrails: [],
 
   //comments
   internalComments: '',

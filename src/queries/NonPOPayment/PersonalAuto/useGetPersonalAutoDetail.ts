@@ -4,7 +4,7 @@ import { ApiResponseType, getResponseData, responseWrapper } from 'src/queries/h
 import { API_QUERIES } from 'src/queries/keys';
 import { PersonalAutomobileResponse } from './types';
 
-export function useGetPersonalAutomobileById(
+export function useGetPersonalAutomobileDetail(
   options?: UseQueryOptions<
     ApiResponseType<PersonalAutomobileResponse>,
     Error,
@@ -26,7 +26,7 @@ export function useGetPersonalAutomobileById(
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [_, ...params] = query.queryKey;
         return responseWrapper<ApiResponseType<PersonalAutomobileResponse>>(
-          apiClient.getPersonalAutoById,
+          apiClient.getPersonalAutoDetail,
           params
         );
       },

@@ -1,6 +1,17 @@
-import { MyProfile } from 'src/queries';
-import { DateFormat, getDate, getDateDisplay, localTimeToHawaii } from 'src/utils';
-import { PersonalAutomobileResponse } from '../../../../queries/NonPOPayment/PersonalAuto/types';
+import { MyProfile, PO_ACTION } from 'src/queries';
+import {
+  DateFormat,
+  formatDateApi,
+  getDate,
+  getDateDisplay,
+  isString,
+  isoFormat,
+  localTimeToHawaii,
+} from 'src/utils';
+import {
+  PersonalAutomobilePayload,
+  PersonalAutomobileResponse,
+} from '../../../../queries/NonPOPayment/PersonalAuto/types';
 import { PersonalAutomobileFormValue } from '../types';
 import {
   initialPersonalAutomobileProjectItem,
@@ -29,7 +40,6 @@ export const getPersonalAutomobileFormValueFromResponse = ({
   profile: MyProfile;
 }): PersonalAutomobileFormValue => {
   const {
-    id,
     projectLineItems,
     remittanceLineItems,
     date,
@@ -52,7 +62,8 @@ export const getPersonalAutomobileFormValueFromResponse = ({
 
   return {
     ...formValue,
-    id,
+    action: null,
+    placeholderFileAttachment: null,
     date: getDateDisplay(date),
     projectLineItems: [...transformedProjectItems, initialPersonalAutomobileProjectItem],
     tripInfos: [initialPersonalAutomobileTripInfoItem],
@@ -60,7 +71,66 @@ export const getPersonalAutomobileFormValueFromResponse = ({
       ...transformedRemittanceLineItems,
       initialPersonalAutomobileRemittanceLineItem,
     ],
-    placeholderFileAttachment: null,
     expirationDate: expirationDate && new Date(expirationDate),
+  };
+};
+
+export const getUpsertPersonalAutomobileMileageVoucherPayload = ({
+  formValues,
+  action,
+}: {
+  formValues: PersonalAutomobileFormValue;
+  action: PO_ACTION;
+}): PersonalAutomobilePayload => {
+  const {
+    id,
+    placeholderFileAttachment,
+    vendorName,
+    vendorCode,
+    remittanceLineItems,
+    projectLineItems,
+    tripInfos,
+
+    date,
+
+    ...payloadProps
+  } = formValues;
+
+  const isEdit = !!id;
+
+  const projectLineItemsPayload =
+    projectLineItems.slice(0, -1).map((projectLineItem, index) => ({
+      ...projectLineItem,
+      lineNumber: index + 1,
+      projectNumber: isString(projectLineItem.projectNumber)
+        ? projectLineItem.projectNumber
+        : projectLineItem.projectNumber.number,
+      serviceDate: formatDateApi(projectLineItem.serviceDate),
+    })) || [];
+
+  const remittanceLineItemsPayload =
+    remittanceLineItems.slice(0, -1).map((remittanceItem, index) => ({
+      ...remittanceItem,
+      lineNumber: index + 1,
+    })) || [];
+
+  const tripInfosPayload =
+    tripInfos.slice(0, -1).map((tripInfoItem, index) => ({
+      ...tripInfoItem,
+      serviceDate: formatDateApi(tripInfoItem.serviceDate),
+      lineNumber: index + 1,
+    })) || [];
+
+  return {
+    ...payloadProps,
+    action: action,
+
+    date: isEdit ? date : localTimeToHawaii(new Date(), isoFormat),
+    vendorName: isString(vendorName) ? vendorName : vendorName.name,
+    vendorCode: isString(vendorCode) ? vendorCode : vendorCode.code,
+
+    projectLineItems: projectLineItemsPayload,
+    remittanceLineItems: remittanceLineItemsPayload,
+    tripInfos: tripInfosPayload,
   };
 };

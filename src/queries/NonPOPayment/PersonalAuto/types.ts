@@ -46,7 +46,22 @@ export interface ItemizedTripInformation {
   parkingTotal: number;
   company: string;
   policyNumber: string;
-  expirationDate: string;
+  expirationDate: Date | string;
+}
+
+export interface ProjectLineItem {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string;
+
+  lineNumber: number;
+  projectNumber: string;
+  subProject: string;
+  budgetCategory: string;
+  subBudgetCategory: string;
+  serviceDate: string;
+  amount: number;
+  description: string;
 }
 
 export interface ProjectLines {
@@ -121,8 +136,8 @@ export interface PersonalAutomobileMileageVoucher
     RemittanceInfo,
     PersonalAutoAttachments,
     PersonalAutoAuditTrails {
-  acceptedDate: string;
-  username: string;
+  acceptedDate?: string;
+  username?: string;
 
   internalComments: string;
   faCode: string;
@@ -134,19 +149,21 @@ export interface PersonalAutomobileMileageVoucher
   rcuhApprovedDate: string;
   firstProjectNumber: string;
   listedProjectNumber: string;
-  majorVersion: string;
-  minorVersion: number;
-  formName: string;
-  shortFormName: string;
-  hasFinalPdf: boolean;
-  preparerEmail: string;
+
+  majorVersion?: string;
+  minorVersion?: number;
+  formName?: string;
+  shortFormName?: string;
+
+  hasFinalPdf?: boolean;
+  preparerEmail?: string;
   checkNumber: string;
   checkDate: string;
   piName: string;
   updateVersionNumber: number;
   preferredPaymentMethod: string;
   preferredPaymentMethodTimestamp: string;
-  paymentMethod: string;
+  paymentMethod?: string;
 
   //get from response for logic and view purpose
   status?: PO_DETAIL_STATUS;

@@ -683,7 +683,7 @@ const create = (baseURL = appConfig.API_URL) => {
     );
   };
 
-  const getPersonalAutoById = (params: { id: string }) => {
+  const getPersonalAutoDetail = (params: { id: string }) => {
     return api.get(`/financial-svc/v1/personal-auto-payments/${params.id}`, {}, newCancelToken());
   };
 
@@ -972,7 +972,7 @@ const create = (baseURL = appConfig.API_URL) => {
     getPersonalAutomobileFileAttachmentPresignedDownloadUrl,
     addPersonalAutoAttachment,
     deletePersonalAutoAttachment,
-    getPersonalAutoById,
+    getPersonalAutoDetail,
     updatePersonalAutomobile,
     getPersonalAutoFinalPDF,
     deletePersonalAuto,

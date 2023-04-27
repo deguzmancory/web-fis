@@ -21,7 +21,13 @@ import {
   useProfile,
   useUpdateAuthorizationPayment,
 } from 'src/queries';
-import { isFinalMode, isSaveAction, isViewOnlyMode } from 'src/queries/PurchaseOrders/helpers';
+import {
+  isCUReviewMode,
+  isFAReviewMode,
+  isFinalMode,
+  isSaveAction,
+  isViewOnlyMode,
+} from 'src/queries/PurchaseOrders/helpers';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, RoleService, Toastify } from 'src/services';
@@ -81,6 +87,9 @@ const AuthorizationForPayment: FC<Props> = ({
 
   const disabledSection =
     isViewOnlyMode(currentAuthorizationMode) || isFinalMode(currentAuthorizationMode);
+  const isReviewMode =
+    isFAReviewMode(currentAuthorizationMode) || isCUReviewMode(currentAuthorizationMode);
+
   const { profile } = useProfile();
 
   const { onGetAuthorizationPaymentById, handleInvalidateAuthorizationPaymentDetail } =
@@ -339,7 +348,7 @@ const AuthorizationForPayment: FC<Props> = ({
                 >
                   <GeneralInfo
                     formikProps={formikProps}
-                    disabled={disabledSection}
+                    disabled={disabledSection || isReviewMode}
                     currentMode={currentAuthorizationMode}
                   />
                 </SectionLayout>
@@ -347,7 +356,7 @@ const AuthorizationForPayment: FC<Props> = ({
                 <SectionLayout>
                   <ProjectItems
                     formikProps={formikProps}
-                    disabled={disabledSection}
+                    disabled={disabledSection || isReviewMode}
                     currentMode={currentAuthorizationMode}
                     projectItemsPrefix={AUTHORIZATION_FOR_PAYMENT_KEY.PROJECT_LINE_ITEMS}
                     totalPrefix={AUTHORIZATION_FOR_PAYMENT_KEY.PAYMENT_TOTAL}
@@ -362,20 +371,26 @@ const AuthorizationForPayment: FC<Props> = ({
                 <SectionLayout>
                   <ReasonsForPayment
                     formikProps={formikProps}
-                    disabled={disabledSection}
+                    disabled={disabledSection || isReviewMode}
                     currentMode={currentAuthorizationMode}
                   />
                 </SectionLayout>
 
                 <SectionLayout>
-                  <RemittanceTableLineItems formikProps={formikProps} disabled={disabledSection} />
-                  <RemittanceQuestions formikProps={formikProps} disabled={disabledSection} />
+                  <RemittanceTableLineItems
+                    formikProps={formikProps}
+                    disabled={disabledSection || isReviewMode}
+                  />
+                  <RemittanceQuestions
+                    formikProps={formikProps}
+                    disabled={disabledSection || isReviewMode}
+                  />
                 </SectionLayout>
 
                 <SectionLayout sx={{ p: 0, border: 'none' }}>
                   <EquipmentInventoriesV2
                     formikProps={formikProps}
-                    disabled={disabledSection}
+                    disabled={disabledSection || isReviewMode}
                     currentPOMode={currentAuthorizationMode}
                     authorizationPaymentPrefix={AUTHORIZATION_FOR_PAYMENT_KEY.EQUIPMENT_INVENTORIES}
                   />
@@ -407,7 +422,10 @@ const AuthorizationForPayment: FC<Props> = ({
                 )}
 
                 <SectionLayout>
-                  <InternalComments formikProps={formikProps} disabled={disabledSection} />
+                  <InternalComments
+                    formikProps={formikProps}
+                    disabled={disabledSection || isReviewMode}
+                  />
                 </SectionLayout>
 
                 <ActionButtons

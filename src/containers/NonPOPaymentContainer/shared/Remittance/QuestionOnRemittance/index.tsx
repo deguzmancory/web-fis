@@ -21,6 +21,7 @@ import {
   getUncontrolledInputFieldProps,
   isEqualPrevAndNextFormikValues,
   isString,
+  localTimeToHawaii,
 } from 'src/utils';
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { NON_PO_PAYMENT_REMITTANCE_KEY, NON_PO_PAYMENT_REMITTANCE_QUESTIONS_KEY } from '../enum';
@@ -115,11 +116,25 @@ const RemittanceQuestions: React.FC<Props> = ({ formikProps, disabled = false })
       <div style={{ display: 'contents' }}>
         <div style={{ display: 'contents' }}>Vendor preferred payment type</div>
         <div style={{ display: 'inline-block', margin: '0 8px' }}>
-          <Input value={values?.preferredPaymentMethod} disabled style={{ width: 100 }} />
+          <Input
+            value={
+              isString(values?.vendorName) ? values?.vendorName : values.vendorName?.paymentType
+            }
+            disabled
+            style={{ width: 100 }}
+          />
         </div>
         <div style={{ display: 'contents' }}>as of</div>
         <div style={{ display: 'inline-block', margin: '0 8px' }}>
-          <Input value={values?.preferredPaymentMethodTimestamp} disabled style={{ width: 100 }} />
+          <Input
+            value={
+              isString(values.vendorName)
+                ? values.vendorName
+                : localTimeToHawaii(values.vendorName?.updatedAt)
+            }
+            disabled
+            style={{ width: 180 }}
+          />
         </div>
       </div>
 
@@ -188,7 +203,9 @@ const RemittanceQuestions: React.FC<Props> = ({ formikProps, disabled = false })
               <Grid item xs={4}>
                 <Input
                   label="Name"
-                  value={isString(values.vendorName) ? values.vendorName : values.vendorName.name}
+                  value={
+                    isString(values?.vendorName) ? values?.vendorName : values?.vendorName?.name
+                  }
                   disabled
                   maxLength={30}
                 />
@@ -212,7 +229,9 @@ const RemittanceQuestions: React.FC<Props> = ({ formikProps, disabled = false })
               <Grid item xs={4}>
                 <Input
                   label="Name"
-                  value={isString(values.vendorName) ? values.vendorName : values.vendorName.name}
+                  value={
+                    isString(values?.vendorName) ? values?.vendorName : values?.vendorName?.name
+                  }
                   disabled
                   maxLength={30}
                 />

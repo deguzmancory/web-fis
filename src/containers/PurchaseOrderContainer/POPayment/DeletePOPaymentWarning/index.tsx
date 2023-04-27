@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { PATHS } from 'src/appConfig/paths';
 import { Button } from 'src/components/common';
+import { PURCHASING_LIST_WORK_FLOW_STATUS_KEY } from 'src/containers/POListing/enum';
 import { useDeletePOPayment } from 'src/queries';
 import { hideDialog } from 'src/redux/dialog/dialogSlice';
 import { setFormData } from 'src/redux/form/formSlice';
@@ -16,7 +17,9 @@ const DeletePOPaymentWarning: React.FC<Props> = ({ id, onDelete, onHideDialog, o
       Toastify.success(`PO payment record Deleted.`);
       onHideDialog();
       onSetFormData(null);
-      Navigator.navigate(PATHS.dashboard);
+      Navigator.navigate(
+        `${PATHS.purchasingOrders}?workflowStatus=${PURCHASING_LIST_WORK_FLOW_STATUS_KEY.PO_PAYMENT}`
+      );
     },
     onError(error, _variables, _context) {
       handleShowErrorMsg(error, 'Error when delete PO payment');

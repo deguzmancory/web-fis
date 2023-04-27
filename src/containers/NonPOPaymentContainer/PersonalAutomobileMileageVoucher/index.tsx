@@ -9,10 +9,18 @@ import CustomErrorBoundary from 'src/components/ErrorBoundary/CustomErrorBoundar
 import { LoadingCommon } from 'src/components/common';
 import { getCurrentEditMode } from 'src/containers/PurchaseOrderContainer/PO/helpers';
 import { PO_ACTION, useProfile } from 'src/queries';
-import { NON_PO_PAYMENT_DOCUMENT_TYPE } from 'src/queries/NonPOPayment';
-import { useCreateNonEmployeeTravel } from 'src/queries/NonPOPayment/NonEmployeeTravel/useCreateNonEmployeeTravel';
-import { useUpdateNonEmployeeTravel } from 'src/queries/NonPOPayment/NonEmployeeTravel/useUpdateNonEmployeeTravel';
-import { isSaveAction } from 'src/queries/PurchaseOrders/helpers';
+import {
+  NON_PO_PAYMENT_DOCUMENT_TYPE,
+  useCreatePersonalAutomobile,
+  useUpdatePersonalAutomobile,
+} from 'src/queries/NonPOPayment';
+import {
+  isCUReviewMode,
+  isFAReviewMode,
+  isFinalMode,
+  isSaveAction,
+  isViewOnlyMode,
+} from 'src/queries/PurchaseOrders/helpers';
 import { setFormData, setIsImmutableFormData } from 'src/redux/form/formSlice';
 import { IRootState } from 'src/redux/rootReducer';
 import { Navigator, RoleService, Toastify } from 'src/services';
@@ -40,10 +48,17 @@ import Header from './Header';
 import TripInfos from './TripInfos';
 import { PERSONAL_AUTOMOBILE_FORM_KEY } from './enums';
 import { personalAutomobileFormInitialValue } from './helpers/constants';
-import { getInitialPersonalAutomobileFormValue } from './helpers/formValues';
+import {
+  getInitialPersonalAutomobileFormValue,
+  getPersonalAutomobileFormValueFromResponse,
+  getUpsertPersonalAutomobileMileageVoucherPayload,
+} from './helpers/formValues';
 import { getPersonalAutomobileFormValidationSchema } from './helpers/validationSchema';
 import { PersonalAutomobileFormValue, PersonalAutomobileFormikProps } from './types';
 import InternalComments from '../shared/InternalComments';
+import RemittanceTableLineItems from '../shared/Remittance/TableLineItems';
+import RemittanceQuestions from '../shared/Remittance/QuestionOnRemittance';
+import { useGetPersonalAutomobileDetail } from 'src/queries/NonPOPayment/PersonalAuto/useGetPersonalAutoDetail';
 
 const FileAttachments = lazy(() => import('./FileAttachments'));
 const AuditInformation = lazy(() => import('../shared/AuditInformation'));
@@ -64,38 +79,41 @@ const AuthorizationForPayment: FC<Props> = ({
   const hasPermission = true; //TODO: enhancement: check logic to be granted tp access the this resource
   const currentRole = RoleService.getCurrentRole();
   const poStatus = useMemo(() => formData?.status, [formData?.status]);
-  const currentNonEmployeeTravelMode = useMemo(
+  const currentPersonalAutomobileMode = useMemo(
     () => getCurrentEditMode({ id, status: poStatus, currentRole }),
     [id, poStatus, currentRole]
   );
-  // TODO: Ask for this requirement
-  // const disabledSection =
-  //   isViewOnlyMode(currentNonEmployeeTravelMode) || isFinalMode(currentNonEmployeeTravelMode);
-  const disabledSection = false;
+  const disabledSection =
+    isViewOnlyMode(currentPersonalAutomobileMode) || isFinalMode(currentPersonalAutomobileMode);
+
+  const isReviewMode =
+    isFAReviewMode(currentPersonalAutomobileMode) || isCUReviewMode(currentPersonalAutomobileMode);
+
   const { profile } = useProfile();
 
-  // const { onGetNonEmployeeTravelById, handleInvalidateNonEmployeeTravelDetail } =
-  //   useGetNonEmployeeTravelDetail({
-  //     id,
-  //     onSuccess: (data) => {
-  //       const formValue: PersonalAutomobileFormValue =
-  //         getPersonalAutomobileFormValueFromResponse({
-  //           response: data,
-  //           profile,
-  //         });
+  const { onGetPersonalAutoById, handleInvalidatePersonalAutomobileDetail } =
+    useGetPersonalAutomobileDetail({
+      id,
+      onSuccess: (data) => {
+        const formValue: PersonalAutomobileFormValue = getPersonalAutomobileFormValueFromResponse({
+          response: data,
+          profile,
+        });
 
-  //       onSetFormData<PersonalAutomobileFormValue>(formValue);
-  //     },
-  //     onError: (error) => {
-  //       handleShowErrorMsg(error);
-  //     },
-  //     suspense: true,
-  //   });
+        onSetFormData<PersonalAutomobileFormValue>(formValue);
+      },
+      onError: (error) => {
+        handleShowErrorMsg(error);
+      },
+      suspense: true,
+    });
+
   const {
-    data: createNonEmployeeTravelResponse,
-    isLoading: createNonEmployeeTravelLoading,
-    isSuccess: isCreateNonEmployeeTravelSuccess,
-  } = useCreateNonEmployeeTravel({
+    createPersonalAutomobile,
+    data: createPersonalAutomobileResponse,
+    isLoading: createPersonalAutomobileLoading,
+    isSuccess: isCreatePersonalAutomobileSuccess,
+  } = useCreatePersonalAutomobile({
     onSuccess: () => {
       onSetFormData(null);
 
@@ -109,10 +127,11 @@ const AuthorizationForPayment: FC<Props> = ({
     },
   });
   const {
-    data: updateNonEmployeeTravelResponse,
-    isLoading: updateNonEmployeeTravelLoading,
-    isSuccess: isUpdateNonEmployeeTravelSuccess,
-  } = useUpdateNonEmployeeTravel({
+    updatePersonalAutomobile,
+    data: updatePersonalAutomobileResponse,
+    isLoading: updatePersonalAutomobileLoading,
+    isSuccess: isUpdatePersonalAutomobileSuccess,
+  } = useUpdatePersonalAutomobile({
     onSuccess: () => {
       if (!isSaveAction(formAction)) {
         onSetFormData(null);
@@ -126,57 +145,57 @@ const AuthorizationForPayment: FC<Props> = ({
     },
   });
 
-  const isLoading = createNonEmployeeTravelLoading || updateNonEmployeeTravelLoading;
+  const isLoading = createPersonalAutomobileLoading || updatePersonalAutomobileLoading;
 
   // Navigate to submitted PO success page
   useEffect(() => {
-    if ((isCreateNonEmployeeTravelSuccess || isUpdateNonEmployeeTravelSuccess) && !isLoading) {
+    if ((isCreatePersonalAutomobileSuccess || isUpdatePersonalAutomobileSuccess) && !isLoading) {
       const responseData = isEditMode
-        ? updateNonEmployeeTravelResponse
-        : createNonEmployeeTravelResponse;
+        ? updatePersonalAutomobileResponse
+        : createPersonalAutomobileResponse;
 
       switch (formAction) {
         case PO_ACTION.SAVE: {
           Toastify.success(`Saved form successfully.`);
-          Navigator.navigate(`${PATHS.nonEmployeeTravelPaymentDetail}/${responseData.data.id}`);
+          Navigator.navigate(`${PATHS.personalAutoPaymentDetail}/${responseData.data.id}`);
           return;
         }
         case PO_ACTION.SUBMIT: {
           Navigator.navigate(
-            `${PATHS.submittedNonPOPayment}/${responseData.data.id}?${SUBMITTED_NON_PO_PAYMENT_QUERY.NUMBER}=${responseData.data.requestNumber}&${SUBMITTED_NON_PO_PAYMENT_QUERY.DOCUMENT_TYPE}=${NON_PO_PAYMENT_DOCUMENT_TYPE.NON_EMPLOYEE_TRAVEL_PAYMENT}`
+            `${PATHS.submittedNonPOPayment}/${responseData.data.id}?${SUBMITTED_NON_PO_PAYMENT_QUERY.NUMBER}=${responseData.data.requestNumber}&${SUBMITTED_NON_PO_PAYMENT_QUERY.DOCUMENT_TYPE}=${NON_PO_PAYMENT_DOCUMENT_TYPE.PERSONAL_AUTO_PAYMENT}`
           );
           return;
         }
 
         case PO_ACTION.APPROVE: {
           Toastify.success(`Approved successfully.`);
-          // handleInvalidateNonEmployeeTravelDetail();
-          // onGetNonEmployeeTravelById();
+          handleInvalidatePersonalAutomobileDetail();
+          onGetPersonalAutoById();
           return;
         }
 
         case PO_ACTION.DISAPPROVE: {
           Toastify.success(`Disapproved successfully.`);
-          // handleInvalidateNonEmployeeTravelDetail();
-          // onGetNonEmployeeTravelById();
+          handleInvalidatePersonalAutomobileDetail();
+          onGetPersonalAutoById();
           return;
         }
 
         case PO_ACTION.ADDITIONAL_INFO: {
           Toastify.success(`Request more info successfully.`);
-          // handleInvalidateNonEmployeeTravelDetail();
-          // onGetNonEmployeeTravelById();
+          handleInvalidatePersonalAutomobileDetail();
+          onGetPersonalAutoById();
           return;
         }
 
         default: {
-          // handleInvalidateNonEmployeeTravelDetail();
-          // onGetNonEmployeeTravelById();
+          handleInvalidatePersonalAutomobileDetail();
+          onGetPersonalAutoById();
         }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isCreateNonEmployeeTravelSuccess, isUpdateNonEmployeeTravelSuccess]);
+  }, [isCreatePersonalAutomobileSuccess, isUpdatePersonalAutomobileSuccess]);
 
   /* INIT DATA */
   // get initial data when first time mounted
@@ -198,14 +217,10 @@ const AuthorizationForPayment: FC<Props> = ({
   // using useEffect for fetch data from api
   useEffect(() => {
     if (isEditMode && !isImmutableFormData) {
-      // onGetNonEmployeeTravelById();
+      onGetPersonalAutoById();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    id,
-    isEditMode,
-    // onGetNonEmployeeTravelById
-  ]);
+  }, [id, isEditMode, onGetPersonalAutoById]);
 
   // else formData && isImmutableFormData
   // => just back from additional forms or create vendor registration form => not fetching anything
@@ -222,20 +237,19 @@ const AuthorizationForPayment: FC<Props> = ({
   }, [onSetIsImmutableFormData]);
 
   const handleFormSubmit = (values: PersonalAutomobileFormValue) => {
-    console.log('🚀 ~ file: index.tsx:212 ~ handleFormSubmit ~ values:', values);
-    // if (isEditMode) {
-    //   const editNonEmployeeTravelPayload = getUpsertNonEmployeeTravelPayload({
-    //     formValues: values,
-    //     action: values.action,
-    //   });
-    //   updateNonEmployeeTravel(editNonEmployeeTravelPayload);
-    // } else {
-    //   const createNonEmployeeTravelPayload = getUpsertNonEmployeeTravelPayload({
-    //     formValues: values,
-    //     action: values.action,
-    //   });
-    //   createNonEmployeeTravel(createNonEmployeeTravelPayload);
-    // }
+    if (isEditMode) {
+      const editPersonalAutomobilePayload = getUpsertPersonalAutomobileMileageVoucherPayload({
+        formValues: values,
+        action: values.action,
+      });
+      updatePersonalAutomobile(editPersonalAutomobilePayload);
+    } else {
+      const createPersonalAutomobilePayload = getUpsertPersonalAutomobileMileageVoucherPayload({
+        formValues: values,
+        action: values.action,
+      });
+      createPersonalAutomobile(createPersonalAutomobilePayload);
+    }
   };
 
   const initialFormValue = useMemo(
@@ -311,8 +325,8 @@ const AuthorizationForPayment: FC<Props> = ({
     }
 
     const success = isEditMode
-      ? isUpdateNonEmployeeTravelSuccess
-      : isCreateNonEmployeeTravelSuccess;
+      ? isUpdatePersonalAutomobileSuccess
+      : isCreatePersonalAutomobileSuccess;
 
     if (!success) {
       return isFormDirty;
@@ -349,15 +363,15 @@ const AuthorizationForPayment: FC<Props> = ({
                 >
                   <GeneralInfo
                     formikProps={formikProps}
-                    disabled={disabledSection}
-                    currentMode={currentNonEmployeeTravelMode}
+                    disabled={disabledSection || isReviewMode}
+                    currentMode={currentPersonalAutomobileMode}
                   />
                 </SectionLayout>
                 <SectionLayout>
                   <TripInfos
                     title={'ITEMIZED TRIP INFORMATION'}
                     formikProps={formikProps}
-                    disabled={disabledSection}
+                    disabled={disabledSection || isReviewMode}
                     tripItemsPrefix={PERSONAL_AUTOMOBILE_FORM_KEY.TRIP_INFOS}
                     showTotalError={false}
                     tableErrorMessage={_getErrorMessage(PERSONAL_AUTOMOBILE_FORM_KEY.PAYMENT_TOTAL)}
@@ -378,8 +392,8 @@ const AuthorizationForPayment: FC<Props> = ({
                   <ProjectItems
                     title={'PROJECT(S) TO BE CHARGED'}
                     formikProps={formikProps}
-                    disabled={disabledSection}
                     projectItemsPrefix={PERSONAL_AUTOMOBILE_FORM_KEY.PROJECT_LINE_ITEMS}
+                    disabled={disabledSection || isReviewMode}
                     totalPrefix={PERSONAL_AUTOMOBILE_FORM_KEY.PAYMENT_TOTAL}
                     showTotalError={false}
                     tableErrorMessage={_getErrorMessage(PERSONAL_AUTOMOBILE_FORM_KEY.PAYMENT_TOTAL)}
@@ -388,18 +402,29 @@ const AuthorizationForPayment: FC<Props> = ({
                 <SectionLayout>
                   <AuthorizationSignatures
                     formikProps={formikProps}
-                    disabled={disabledSection}
-                    currentMode={currentNonEmployeeTravelMode}
+                    disabled={disabledSection || isReviewMode}
+                    currentMode={currentPersonalAutomobileMode}
                   />
                 </SectionLayout>
+
+                <SectionLayout>
+                  <RemittanceTableLineItems
+                    formikProps={formikProps}
+                    disabled={disabledSection || isReviewMode}
+                    disableReferenceNumber
+                  />
+                  <RemittanceQuestions
+                    formikProps={formikProps}
+                    disabled={disabledSection || isReviewMode}
+                  />
+                </SectionLayout>
+
                 <SectionLayout sx={{ p: 0, border: 'none' }}>
                   {isEditMode ? (
                     <FileAttachments
                       formikProps={formikProps}
-                      // disabled={isViewOnlyMode(currentNonEmployeeTravelMode)}
-                      disabled={false} // TODO: fix this when integration
-                      // allowActionAfterFinalApproveOnly={isFinalMode(currentNonEmployeeTravelMode)}
-                      allowActionAfterFinalApproveOnly={false} // TODO: fix this when integration
+                      disabled={isViewOnlyMode(currentPersonalAutomobileMode)}
+                      allowActionAfterFinalApproveOnly={isFinalMode(currentPersonalAutomobileMode)}
                     />
                   ) : (
                     <SectionLayout sx={{ p: 2 }}>
@@ -420,11 +445,14 @@ const AuthorizationForPayment: FC<Props> = ({
                 )}
 
                 <SectionLayout>
-                  <InternalComments formikProps={formikProps} disabled={disabledSection} />
+                  <InternalComments
+                    formikProps={formikProps}
+                    disabled={disabledSection || isReviewMode}
+                  />
                 </SectionLayout>
 
                 <ActionButtons
-                  currentFormMode={currentNonEmployeeTravelMode}
+                  currentFormMode={currentPersonalAutomobileMode}
                   formikProps={formikProps}
                   loading={isLoading}
                   disabled={isLoading}

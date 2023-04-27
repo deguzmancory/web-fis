@@ -40,6 +40,7 @@ import ErrorNonPOWrapper from '../shared/ErrorWrapper/index.';
 import HeaderOfSection from '../shared/HeaderOfSection';
 import InternalComments from '../shared/InternalComments';
 import ProjectItems from '../shared/ProjectItems';
+import RemittanceTableLineItems from '../shared/Remittance/TableLineItems';
 import { SUBMITTED_NON_PO_PAYMENT_QUERY } from '../shared/SubmittedNonPO/enums';
 import BusinessPurposeDetails from './BusinessPurposeDetails';
 import DeleteWarning from './DeleteWarning';
@@ -47,6 +48,7 @@ import GeneralInfo from './GeneralInfo';
 import Header from './Header';
 import PartialDayTable from './PartialDayTable';
 import ReceiptCertification from './ReceiptCertification';
+import RemittanceQuestions from './RemittanceQuestions';
 import SelectPayeeCategory from './SelectPayeeCategory';
 import TravelExpenditures from './TravelExpenditures';
 import TripItinerary from './TripItineraries';
@@ -59,8 +61,6 @@ import {
 } from './helpers/formValues';
 import { getNonEmployeeTravelFormValidationSchema } from './helpers/validationSchema';
 import { UpsertNonEmployeeTravelFormValue, UpsertNonEmployeeTravelFormikProps } from './types';
-import RemittanceTableLineItems from '../shared/Remittance/TableLineItems';
-import RemittanceQuestions from './RemittanceQuestions';
 
 const FileAttachments = lazy(() => import('./FileAttachments'));
 const AuditInformation = lazy(() => import('../shared/AuditInformation'));
