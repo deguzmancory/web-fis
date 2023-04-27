@@ -188,7 +188,7 @@ const POChangeForm: React.FC<Props> = ({
         }
 
         case PO_ACTION.DISAPPROVE: {
-          Toastify.success(`Disapprove successfully.`);
+          Toastify.success(`Disapproved successfully.`);
           handleInvalidatePODetail();
           onGetPOById();
           return;

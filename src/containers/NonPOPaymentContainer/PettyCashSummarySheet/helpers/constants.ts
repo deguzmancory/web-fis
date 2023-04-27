@@ -72,8 +72,8 @@ export const emptyUpsertPettyCashFormValue: UpsertPettyCashFormValue = {
   loginName: null,
   date: '',
 
-  beginDate: '',
-  endDate: '',
+  beginDate: null,
+  endDate: null,
   projectName: '',
   projectAddress: '',
   documentNumber: '',
@@ -82,7 +82,7 @@ export const emptyUpsertPettyCashFormValue: UpsertPettyCashFormValue = {
   cashOnHand: null,
   expenses: null,
   cashInTransit: null,
-  totalPettyCash: null,
+  totalPettyCash: 0,
 
   vendorName: '',
   vendorCode: null,

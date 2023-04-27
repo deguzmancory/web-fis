@@ -1,56 +1,37 @@
 export enum PETTY_CASH_FORM_KEY {
   ID = 'id',
 
-  // SelectPayeeCategory
+  //general info
   LOGIN_NAME = 'loginName',
   DATE = 'date',
   REQUEST_NUMBER = 'requestNumber',
-  PAYEE_CATEGORY = 'payeeCategory',
-
-  //general info
+  BEGIN_DATE = 'beginDate',
+  END_DATE = 'endDate',
+  PROJECT_NAME = 'projectName',
+  PROJECT_ADDRESS = 'projectAddress',
+  DOCUMENT_NUMBER = 'documentNumber',
+  ADVANCED_CASH = 'advancedCash',
+  CASH_ON_HAND = 'cashOnHand',
+  EXPENSES = 'expenses',
+  CASH_IN_TRANSIT = 'cashInTransit',
+  TOTAL_PETTY_CASH = 'totalPettyCash',
   VENDOR_NAME = 'vendorName',
   VENDOR_CODE = 'vendorCode',
-  POSITION_TITLE = 'positionTitle',
-  ORGANIZATION = 'organization',
   VENDOR_ADDRESS = 'vendorAddress',
-  DOCUMENT_NUMBER = 'documentNumber',
+  DIRECT_INQUIRIES_TO = 'directInquiriesTo',
+  PHONE_NUMBER = 'phoneNumber',
   FA_STAFF_REVIEWER = 'faStaffReviewer',
-  PROJECT_CONTACT = 'projectContact',
-  PROJECT_CONTACT_PHONE = 'projectContactPhone',
-  TO_SERVICE_DATE = 'toServiceDate',
-  FROM_SERVICE_DATE = 'fromServiceDate',
-
-  // trip itinerary
-  START_DESTINATION = 'startDestination',
-  START_DEPARTURE_DATE = 'startDepartureDate',
-  ITINERARIES = 'itineraries',
-  END_DESTINATION = 'endDestination',
-  END_ARRIVAL_DATE = 'endArrivalDate',
-  TRIP_TOTAL = 'tripTotal',
-
-  // travel expenditure
-  EXPENDITURES = 'expenditures',
-  ADVANCED_DOCUMENT_NUMBER = 'advancedDocumentNumber',
-  EXPENDITURE_TOTAL = 'expenditureTotal',
-  AMOUNT_ADVANCED = 'amountAdvanced',
-  MISC_COST_TOTAL = 'miscCostTotal',
-  LODGING_COST_TOTAL = 'lodgingCostTotal',
-  MISC_DESCRIPTION = 'miscDescription',
-  LODGING_DESCRIPTION = 'lodgingDescription',
-  MISC_DAYS_CLAIM_TOTAL = 'miscDaysClaimTotal',
-  LODGING_DAYS_CLAIM_TOTAL = 'lodgingDaysClaimTotal',
 
   //project items
-  PROJECT_ITEMS = 'projectItems',
+  PROJECT_LINE_ITEMS = 'projectLineItems',
   PAYMENT_TOTAL = 'paymentTotal',
 
   // Receipt Certification
   NO_RECEIPT_SMALL_CORRECT_FLAG = 'noReceiptSmallCorrectFlag',
   NO_RECEIPT_AMOUNT = 'noReceiptAmount',
 
-  // Business Purpose Details
-  TRAVEL_DETAILS = 'travelDetails',
-  CLAIMANT_SIGNATURE = 'claimantSignature',
+  // Signatures
+  CUSTODIAN_SIGNATURE = 'custodianSignature',
   PI_SIGNATURE = 'piSignature',
   FA_SIGNATURE = 'faSignature',
 

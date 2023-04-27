@@ -38,7 +38,8 @@ export const getPettyCashFormValueFromResponse = ({
   response: PettyCashDetailResponse;
   profile: MyProfile;
 }): UpsertPettyCashFormValue => {
-  const { projectLineItems, remittanceLineItems, date, ...formValue } = response;
+  const { projectLineItems, remittanceLineItems, date, beginDate, endDate, ...formValue } =
+    response;
 
   const transformedProjectLineItems =
     projectLineItems?.map((lineItem) => ({
@@ -57,6 +58,9 @@ export const getPettyCashFormValueFromResponse = ({
     ...formValue,
     action: null,
     placeholderFileAttachment: null,
+
+    beginDate: getDate(beginDate),
+    endDate: getDate(endDate),
 
     projectLineItems: [...transformedProjectLineItems, initialPettyCashProjectItem],
     remittanceLineItems: [...transformedRemittanceLineItems, initialPettyCashRemittanceLineItem],
@@ -78,6 +82,8 @@ export const getUpsertPettyCashPayload = ({
     date,
     remittanceLineItems,
     projectLineItems,
+    beginDate,
+    endDate,
 
     ...payloadProps
   } = formValues;
@@ -108,6 +114,9 @@ export const getUpsertPettyCashPayload = ({
     action: action,
 
     date: isEdit ? date : localTimeToHawaii(new Date(), isoFormat),
+
+    beginDate: formatDateApi(beginDate),
+    endDate: formatDateApi(endDate),
 
     vendorName: isString(vendorName) ? vendorName : vendorName.name,
     vendorCode: isString(vendorCode) ? vendorCode : vendorCode.code,

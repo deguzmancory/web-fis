@@ -62,6 +62,22 @@ const NewVendorCheckList: React.FC<Props> = ({ onNextPage }) => {
           return Navigator.navigate(PATHS.createAuthorizationForPayment);
         }
       }
+      case VENDOR_REGISTRATION_NAVIGATE_FROM.PERSONAL_AUTO_PAYMENT: {
+        dispatch(setIsImmutableFormData(true));
+        if (documentId) {
+          return Navigator.navigate(urljoin(PATHS.personalAutoPaymentDetail, documentId));
+        } else {
+          return Navigator.navigate(PATHS.createPersonalAutoPayment);
+        }
+      }
+      case VENDOR_REGISTRATION_NAVIGATE_FROM.PETTY_CASH_PAYMENT: {
+        dispatch(setIsImmutableFormData(true));
+        if (documentId) {
+          return Navigator.navigate(urljoin(PATHS.pettyCashPaymentDetail, documentId));
+        } else {
+          return Navigator.navigate(PATHS.createPettyCashPayment);
+        }
+      }
 
       default:
         Navigator.navigate(PATHS.vendors);

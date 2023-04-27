@@ -13,6 +13,7 @@ import SectionLayout from 'src/containers/shared/SectionLayout';
 import {
   useGetAuthorizationPaymentDetail,
   useGetPODetail,
+  useGetPettyCashDetail,
   useProfile,
   useUpdateVendorRegistration,
 } from 'src/queries';
@@ -44,6 +45,8 @@ import { useGetNonEmployeeTravelDetail } from 'src/queries/NonPOPayment/NonEmplo
 import { getNonEmployeeTravelFormValueFromResponse } from 'src/containers/NonPOPaymentContainer/NonEmployeeExpensePayment/helpers/formValues';
 import { UpsertAuthorizationFormValue } from 'src/containers/NonPOPaymentContainer/AuthorizationForPayment/types';
 import { getAuthorizationPaymentFormValueFromResponse } from 'src/containers/NonPOPaymentContainer/AuthorizationForPayment/helpers/formValues';
+import { UpsertPettyCashFormValue } from 'src/containers/NonPOPaymentContainer/PettyCashSummarySheet/types';
+import { getPettyCashFormValueFromResponse } from 'src/containers/NonPOPaymentContainer/PettyCashSummarySheet/helpers/formValues';
 
 const CreateVendorRegistration: FC<Props> = ({
   formData,
@@ -84,8 +87,13 @@ const CreateVendorRegistration: FC<Props> = ({
       Toastify.error(error.message);
     },
   });
-
   const { onGetAuthorizationPaymentById } = useGetAuthorizationPaymentDetail({
+    id: documentId,
+    onError: (error) => {
+      Toastify.error(error.message);
+    },
+  });
+  const { onGetPettyCashById } = useGetPettyCashDetail({
     id: documentId,
     onError: (error) => {
       Toastify.error(error.message);
@@ -120,7 +128,7 @@ const CreateVendorRegistration: FC<Props> = ({
 
         // PO
         if (redirectSection === VENDOR_REGISTRATION_NAVIGATE_FROM.PO) {
-          //if there's no formData => redirect page have no data => fetch data to prepari
+          //if there's no formData => redirect page have no data => fetch data to prepare
           if (!formData) {
             const { data: poDataResponse } = await onGetPOById();
 
@@ -152,7 +160,7 @@ const CreateVendorRegistration: FC<Props> = ({
 
         // Non PO Payment
         if (redirectSection === VENDOR_REGISTRATION_NAVIGATE_FROM.NON_EMPLOYEE_TRAVEL_PAYMENT) {
-          //if there's no formData => redirect page have no data => fetch data to prepari
+          //if there's no formData => redirect page have no data => fetch data to prepare
           if (!formData) {
             const { data: nonEmployeeTravelDataResponse } = await onGetNonEmployeeTravelById();
 
@@ -184,7 +192,7 @@ const CreateVendorRegistration: FC<Props> = ({
         }
 
         if (redirectSection === VENDOR_REGISTRATION_NAVIGATE_FROM.AUTHORIZATION_PAYMENT) {
-          //if there's no formData => redirect page have no data => fetch data to prepari
+          //if there's no formData => redirect page have no data => fetch data to prepare
           if (!formData) {
             const { data: authorizationForPaymentResponse } = await onGetAuthorizationPaymentById();
 
@@ -209,6 +217,37 @@ const CreateVendorRegistration: FC<Props> = ({
               Navigator.navigate(urljoin(PATHS.authorizationForPaymentDetail, documentId));
             } else {
               Navigator.navigate(PATHS.createAuthorizationForPayment);
+            }
+          });
+
+          return;
+        }
+
+        if (redirectSection === VENDOR_REGISTRATION_NAVIGATE_FROM.PETTY_CASH_PAYMENT) {
+          //if there's no formData => redirect page have no data => fetch data to prepare
+          if (!formData) {
+            const { data: pettyCashPaymentResponse } = await onGetPettyCashById();
+
+            const formValue: UpsertPettyCashFormValue = getPettyCashFormValueFromResponse({
+              response: pettyCashPaymentResponse,
+              profile,
+            });
+
+            onSetFormData<UpsertPettyCashFormValue>({ ...formValue, ...newVendorData });
+          } else {
+            onSetFormData<UpsertPettyCashFormValue>({
+              ...formData,
+              ...newVendorData,
+            });
+          }
+
+          onSetIsImmutableFormData(true);
+
+          setTimeout(() => {
+            if (documentId) {
+              Navigator.navigate(urljoin(PATHS.pettyCashPaymentDetail, documentId));
+            } else {
+              Navigator.navigate(PATHS.createPettyCashPayment);
             }
           });
 

@@ -151,7 +151,7 @@ const AuthorizationForPayment: FC<Props> = ({
         }
 
         case PO_ACTION.DISAPPROVE: {
-          Toastify.success(`Disapprove successfully.`);
+          Toastify.success(`Disapproved successfully.`);
           // handleInvalidateNonEmployeeTravelDetail();
           // onGetNonEmployeeTravelById();
           return;
@@ -335,7 +335,13 @@ const AuthorizationForPayment: FC<Props> = ({
             ) : (
               <>
                 {apiError && <FormErrorSection>{apiError}</FormErrorSection>}
-                <SectionLayout header={<HeaderOfSection showPolicyLink allowApproving />}>
+                <SectionLayout
+                  header={
+                    <HeaderOfSection
+                      documentType={NON_PO_PAYMENT_DOCUMENT_TYPE.PERSONAL_AUTO_PAYMENT}
+                    />
+                  }
+                >
                   <GeneralInfo
                     formikProps={formikProps}
                     disabled={disabledSection}

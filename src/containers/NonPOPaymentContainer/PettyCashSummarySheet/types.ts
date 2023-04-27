@@ -14,10 +14,12 @@ export interface UpsertPettyCashFormValue
   extends Omit<
     UpsertPettyCashPayload,
     //override
-    'vendorName' | 'vendorCode' | 'projectLineItems'
+    'vendorName' | 'vendorCode' | 'projectLineItems' | 'beginDate' | 'endDate'
   > {
   vendorName: Vendor | string;
   vendorCode: Vendor | string;
+  beginDate: Date;
+  endDate: Date;
   projectLineItems: NonPOPaymentProjectItemFormValue[];
 
   //form only

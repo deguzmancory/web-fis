@@ -75,6 +75,50 @@ const BreadcrumbsVendorRegistration: FC<Props> = ({ isFrom }) => {
           <Typography variant="body2">Create Vendor</Typography>,
         ];
 
+      case VENDOR_REGISTRATION_NAVIGATE_FROM.PERSONAL_AUTO_PAYMENT:
+        return [
+          <Typography variant="body2">Non-PO Payments</Typography>,
+          <RouterLink
+            to={
+              documentId
+                ? `${PATHS.personalAutoPaymentDetail}/${documentId}`
+                : PATHS.createPersonalAutoPayment
+            }
+            onClick={() => {
+              dispatch(setIsImmutableFormData(true));
+            }}
+          >
+            <TypographyLink>
+              {documentId
+                ? 'Edit Personal Automobile Mileage Voucher Form'
+                : 'Create Personal Automobile Mileage Voucher Form'}
+            </TypographyLink>
+          </RouterLink>,
+          <Typography variant="body2">Create Vendor</Typography>,
+        ];
+
+      case VENDOR_REGISTRATION_NAVIGATE_FROM.PETTY_CASH_PAYMENT:
+        return [
+          <Typography variant="body2">Non-PO Payments</Typography>,
+          <RouterLink
+            to={
+              documentId
+                ? `${PATHS.pettyCashPaymentDetail}/${documentId}`
+                : PATHS.createPettyCashPayment
+            }
+            onClick={() => {
+              dispatch(setIsImmutableFormData(true));
+            }}
+          >
+            <TypographyLink>
+              {documentId
+                ? 'Edit Petty Cash Summary Sheet Form'
+                : 'Create Petty Cash Summary Sheet Form'}
+            </TypographyLink>
+          </RouterLink>,
+          <Typography variant="body2">Create Vendor</Typography>,
+        ];
+
       case VENDOR_REGISTRATION_NAVIGATE_FROM.VIEW_VENDOR_REGISTRATION:
         return [
           <Typography variant="body2">Miscellaneous</Typography>,

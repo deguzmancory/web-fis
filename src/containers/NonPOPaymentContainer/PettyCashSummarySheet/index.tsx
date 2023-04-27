@@ -162,7 +162,7 @@ const AuthorizationForPayment: FC<Props> = ({
         }
 
         case PO_ACTION.DISAPPROVE: {
-          Toastify.success(`Disapprove successfully.`);
+          Toastify.success(`Disapproved successfully.`);
           handleInvalidatePettyCashDetail();
           onGetPettyCashById();
           return;
@@ -341,7 +341,13 @@ const AuthorizationForPayment: FC<Props> = ({
               <>
                 {apiError && <FormErrorSection>{apiError}</FormErrorSection>}
 
-                <SectionLayout header={<HeaderOfSection />}>
+                <SectionLayout
+                  header={
+                    <HeaderOfSection
+                      documentType={NON_PO_PAYMENT_DOCUMENT_TYPE.PETTY_CASH_PAYMENT}
+                    />
+                  }
+                >
                   <GeneralInfo
                     formikProps={formikProps}
                     disabled={disabledSection}
@@ -353,7 +359,7 @@ const AuthorizationForPayment: FC<Props> = ({
                     title={'PROJECT(S) TO BE CHARGED'}
                     formikProps={formikProps}
                     disabled={disabledSection}
-                    projectItemsPrefix={PETTY_CASH_FORM_KEY.PROJECT_ITEMS}
+                    projectItemsPrefix={PETTY_CASH_FORM_KEY.PROJECT_LINE_ITEMS}
                     totalPrefix={PETTY_CASH_FORM_KEY.PAYMENT_TOTAL}
                     showTotalError={false}
                     tableErrorMessage={

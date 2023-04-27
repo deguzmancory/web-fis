@@ -13,13 +13,13 @@ import { handleShowErrorMsg } from 'src/utils';
 const DeletePettyCashWarning: FC<Props> = ({ id, onHideDialog, onSetFormData, onDelete }) => {
   const { deletePettyCash, isLoading: isLoadingDeletePettyCash } = useDeletePettyCash({
     onSuccess() {
-      Toastify.success(`Non Employee Expense Payment record Deleted.`);
+      Toastify.success(`Petty Cash Payment record Deleted.`);
       onHideDialog();
       onSetFormData(null);
       Navigator.navigate(PATHS.dashboard);
     },
     onError(error, _variables, _context) {
-      handleShowErrorMsg(error, 'Error when delete Non Employee Expense Payment');
+      handleShowErrorMsg(error, 'Error when delete Petty Cash Payment');
     },
   });
 

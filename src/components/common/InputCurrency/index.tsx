@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactElement, ReactNode, FC, CSSProperties } from 'react';
 import CurrencyFormat from 'react-currency-format';
 import { Callback } from 'src/redux/types';
 import { emptyFunction, isString, MoneyInputDetect } from 'src/utils';
@@ -7,6 +7,7 @@ import EllipsisTooltipBaseInput, {
   EllipsisTooltipBaseInputProps,
 } from '../EllipsisTooltipBaseInput';
 import { InputIcon, InputProps } from '../Input';
+import { Box } from '@mui/material';
 
 const baseStyles = {
   overflow: 'hidden',
@@ -24,7 +25,7 @@ const DollarInputIcon = (
   />
 );
 
-const CustomInput: React.FC<Props> = ({
+const CustomInput: FC<Props> = ({
   showCustomIcon,
   customIcon = DollarInputIcon,
   customIconPosition = 'left',
@@ -37,7 +38,7 @@ const CustomInput: React.FC<Props> = ({
   />
 );
 
-const InputCurrency: React.FC<Props> = ({
+const InputCurrency: FC<Props> = ({
   unFixedDecimalScale = false,
   name,
   value,
@@ -52,6 +53,7 @@ const InputCurrency: React.FC<Props> = ({
   disabled,
   defaultValue,
   textAlign = 'right',
+  footer,
   onChange,
   ...props
 }) => {
@@ -61,30 +63,33 @@ const InputCurrency: React.FC<Props> = ({
     onChange && onChange(name, returnValue);
   };
   return (
-    <CurrencyFormat
-      className={className}
-      style={{ ...baseStyles, textAlign: textAlign, ...style }}
-      thousandSeparator={thousandSeparator}
-      fixedDecimalScale={!unFixedDecimalScale}
-      decimalScale={decimalScale}
-      displayType="input"
-      prefix={prefix}
-      name={name}
-      customInput={CustomInput}
-      disabled={disabled}
-      onValueChange={handleChange}
-      {...(value !== undefined && {
-        value: isString(value) ? value : MoneyInputDetect(value),
-      })}
-      {...(defaultValue !== undefined && {
-        value: isString(defaultValue) ? defaultValue : MoneyInputDetect(defaultValue),
-      })}
-      {...props}
-    />
+    <>
+      <CurrencyFormat
+        className={className}
+        style={{ ...baseStyles, textAlign: textAlign, ...style }}
+        thousandSeparator={thousandSeparator}
+        fixedDecimalScale={!unFixedDecimalScale}
+        decimalScale={decimalScale}
+        displayType="input"
+        prefix={prefix}
+        name={name}
+        customInput={CustomInput}
+        disabled={disabled}
+        onValueChange={handleChange}
+        {...(value !== undefined && {
+          value: isString(value) ? value : MoneyInputDetect(value),
+        })}
+        {...(defaultValue !== undefined && {
+          value: isString(defaultValue) ? defaultValue : MoneyInputDetect(defaultValue),
+        })}
+        {...props}
+      />
+      {footer && <Box mt={1}>{footer}</Box>}
+    </>
   );
 };
 
-const EllipsisTooltipInputCurrency: React.FC<EllipsisTooltipInputProps> = ({ ...props }) => {
+const EllipsisTooltipInputCurrency: FC<EllipsisTooltipInputProps> = ({ ...props }) => {
   return (
     <EllipsisTooltipBaseInput {...props}>
       <InputCurrency name={props.name} />
@@ -100,8 +105,8 @@ type Props = Omit<CurrencyFormat.Props, 'InputProps'> & { InputProps?: InputProp
   defaultValue?: string | number;
   name: string;
   className?: string;
-  style?: React.CSSProperties;
-  customIcon?: React.ReactElement;
+  style?: CSSProperties;
+  customIcon?: ReactElement;
   showCustomIcon?: boolean;
   customIconPosition?: 'left' | 'right';
   prefix?: string;
@@ -109,6 +114,7 @@ type Props = Omit<CurrencyFormat.Props, 'InputProps'> & { InputProps?: InputProp
   thousandSeparator?: string | boolean;
   disabled?: boolean;
   textAlign?: 'start' | 'end' | 'left' | 'right' | 'center' | 'justify' | 'match-parent';
+  footer?: ReactNode;
   onChange?: Callback;
 };
 

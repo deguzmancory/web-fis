@@ -54,6 +54,9 @@ const VendorRegistrationContainer: React.FC<Props> = ({ location }) => {
           [
             VENDOR_REGISTRATION_NAVIGATE_FROM.PO,
             VENDOR_REGISTRATION_NAVIGATE_FROM.NON_EMPLOYEE_TRAVEL_PAYMENT,
+            VENDOR_REGISTRATION_NAVIGATE_FROM.AUTHORIZATION_PAYMENT,
+            VENDOR_REGISTRATION_NAVIGATE_FROM.PETTY_CASH_PAYMENT,
+            VENDOR_REGISTRATION_NAVIGATE_FROM.PERSONAL_AUTO_PAYMENT,
           ].includes(isFromForm)
         )
           dispatch(setIsImmutableFormData(true));

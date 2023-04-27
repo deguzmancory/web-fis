@@ -67,7 +67,7 @@ const isUpsertPettyCashFormValue = (
   formValues,
   projectItemsPrefix: string
 ): formValues is UpsertPettyCashFormValue => {
-  return projectItemsPrefix === PETTY_CASH_FORM_KEY.PROJECT_ITEMS;
+  return projectItemsPrefix === PETTY_CASH_FORM_KEY.PROJECT_LINE_ITEMS;
 };
 
 const ProjectItems = <
