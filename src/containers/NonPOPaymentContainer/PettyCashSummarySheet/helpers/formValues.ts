@@ -111,6 +111,7 @@ export const getUpsertPettyCashPayload = ({
 
   return {
     ...payloadProps,
+    id,
     action: action,
 
     date: isEdit ? date : localTimeToHawaii(new Date(), isoFormat),

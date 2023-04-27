@@ -24,9 +24,11 @@ const FileAttachments: React.FC<Props> = ({
   const attachments = useMemo(() => {
     if (isEmpty(fileAttachments)) return [];
 
-    return fileAttachments.slice().sort((cur, next) => {
-      return cur.createdAt < next.createdAt ? 1 : -1;
-    });
+    return (
+      fileAttachments.slice().sort((cur, next) => {
+        return cur.createdAt < next.createdAt ? 1 : -1;
+      }) || []
+    );
   }, [fileAttachments]);
 
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -77,7 +79,7 @@ const FileAttachments: React.FC<Props> = ({
 
         setUploadProgress(0);
         setFieldValue(AUTHORIZATION_FOR_PAYMENT_KEY.PLACEHOLDER_FILE_ATTACHMENT, null);
-        setFieldValue(AUTHORIZATION_FOR_PAYMENT_KEY.FILE_ATTACHMENTS, [...fileAttachments, data]);
+        setFieldValue(AUTHORIZATION_FOR_PAYMENT_KEY.FILE_ATTACHMENTS, [...attachments, data]);
       },
       onError(error) {
         handleShowErrorMsg(error);

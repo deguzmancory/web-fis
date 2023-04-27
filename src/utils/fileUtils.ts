@@ -31,7 +31,7 @@ export const getFileType = (file: File) => {
   return 'image/png';
 };
 
-const units = ['bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 
 export const niceBytes = (x) => {
   let l = 0;

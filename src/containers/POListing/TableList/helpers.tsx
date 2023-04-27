@@ -128,7 +128,7 @@ export const getCreatePOChangeOrPaymentLink = ({
         </Link>
       );
     case PO_DOCUMENT_TYPE.PO_PAYMENT: {
-      return <TypographyLink onClick={onCreatePOPayment}>Create PO Pm</TypographyLink>;
+      return <TypographyLink onClick={onCreatePOPayment}>Create PO Pmnt</TypographyLink>;
     }
     default:
       return null;

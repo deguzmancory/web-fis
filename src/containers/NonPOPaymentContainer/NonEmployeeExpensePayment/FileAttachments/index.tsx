@@ -31,9 +31,11 @@ const FileAttachments = ({
   const attachments = React.useMemo(() => {
     if (isEmpty(fileAttachments)) return [];
 
-    return fileAttachments.slice().sort((cur, next) => {
-      return cur.createdAt < next.createdAt ? 1 : -1;
-    });
+    return (
+      fileAttachments.slice().sort((cur, next) => {
+        return cur.createdAt < next.createdAt ? 1 : -1;
+      }) || []
+    );
   }, [fileAttachments]);
 
   const [uploadProgress, setUploadProgress] = React.useState(0);
@@ -84,7 +86,7 @@ const FileAttachments = ({
 
         setUploadProgress(0);
         setFieldValue(NON_EMPLOYEE_TRAVEL_FORM_KEY.PLACEHOLDER_FILE_ATTACHMENT, null);
-        setFieldValue(NON_EMPLOYEE_TRAVEL_FORM_KEY.FILE_ATTACHMENTS, [...fileAttachments, data]);
+        setFieldValue(NON_EMPLOYEE_TRAVEL_FORM_KEY.FILE_ATTACHMENTS, [...attachments, data]);
       },
       onError(error) {
         handleShowErrorMsg(error);
