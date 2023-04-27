@@ -22,6 +22,7 @@ import {
 import SearchProjectNumber from 'src/containers/shared/SearchProjectNumber';
 import { PO_MODE } from 'src/queries';
 import { isPOChangeDescriptionForm } from 'src/queries/POChange/helpers';
+import { isCUReviewMode, isFAReviewMode } from 'src/queries/PurchaseOrders/helpers';
 import {
   checkRowStateAndSetValue,
   getErrorMessage,
@@ -34,6 +35,7 @@ const TableLineItemsPOChange: React.FC<Props> = ({
   allowUpdateInfoAndAmount,
   allowUpdateDescription,
   isOriginItems,
+  currentPOMode,
 }) => {
   const { values, errors, touched, setFieldValue, getFieldProps, setFieldTouched } = formikProps;
 
@@ -46,6 +48,8 @@ const TableLineItemsPOChange: React.FC<Props> = ({
   }, [isOriginItems, values.lineItems, values.originalLineItems]);
 
   const prefixLineItems = isOriginItems ? PO_FORM_KEY.ORIGINAL_LINE_ITEMS : PO_FORM_KEY.LINE_ITEMS;
+
+  const isReviewMode = isFAReviewMode(currentPOMode) || isCUReviewMode(currentPOMode);
 
   const isInPOChangeDescriptionForm = isPOChangeDescriptionForm(values?.formNumber);
 
@@ -247,7 +251,7 @@ const TableLineItemsPOChange: React.FC<Props> = ({
               style={{ width: hideProjectNumberColumn ? 90 : 85 }}
               hideEllipsisTooltip
               maxLength={5}
-              disabled={disabled || !allowUpdateInfoAndAmount}
+              disabled={disabled || !allowUpdateInfoAndAmount || isReviewMode}
             />
           ),
           width: hideProjectNumberColumn ? 90 : 85,

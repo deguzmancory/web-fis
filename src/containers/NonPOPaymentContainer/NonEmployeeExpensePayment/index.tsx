@@ -338,7 +338,7 @@ const AuthorizationForPayment: FC<Props> = ({
   );
 
   const projectItemsError =
-    touched.projectItems && errors.projectItems && values.projectItems?.length === 1
+    touched.projectLineItems && errors.projectLineItems && values.projectLineItems?.length === 1
       ? 'At least one Project # is required.'
       : '';
 
@@ -409,7 +409,7 @@ const AuthorizationForPayment: FC<Props> = ({
                     title={'PROJECT(S) TO BE CHARGED'}
                     formikProps={formikProps}
                     disabled={disabledSection}
-                    projectItemsPrefix={NON_EMPLOYEE_TRAVEL_FORM_KEY.PROJECT_ITEMS}
+                    projectItemsPrefix={NON_EMPLOYEE_TRAVEL_FORM_KEY.PROJECT_LINE_ITEMS}
                     totalPrefix={NON_EMPLOYEE_TRAVEL_FORM_KEY.PAYMENT_TOTAL}
                     showTotalError={false}
                     tableErrorMessage={

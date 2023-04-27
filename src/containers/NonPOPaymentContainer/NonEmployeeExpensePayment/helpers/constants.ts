@@ -1,7 +1,7 @@
 import { EXPENDITURE_ITEM_FORM_KEY } from '../enums';
 import { UpsertNonEmployeeTravelFormValue } from '../types';
 
-export const initialNonEmployeeTravelProjectItem = {
+export const initialNonEmployeeTravelProjectLineItem = {
   lineNumber: null,
   projectNumber: '',
   subProject: '',
@@ -101,7 +101,7 @@ export const emptyUpsertNonEmployeeTravelFormValue: UpsertNonEmployeeTravelFormV
   lodgingDescription: '',
 
   // project Items
-  projectItems: [initialNonEmployeeTravelProjectItem],
+  projectLineItems: [initialNonEmployeeTravelProjectLineItem],
   paymentTotal: 0,
 
   // Receipt Certification

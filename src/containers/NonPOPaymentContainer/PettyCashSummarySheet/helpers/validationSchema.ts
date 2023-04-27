@@ -8,18 +8,17 @@ export const getPettyCashFormValidationSchema = ({ action }: { action: PO_ACTION
   const isSubmitPOAction = isSubmitAction(action);
 
   return Yup.object().shape<
-    CustomShape<
-      Partial<Omit<UpsertPettyCashFormValue, 'vendorName' | 'vendorCode' | 'projectLineItems'>>
-    > & {
+    CustomShape<Partial<Omit<UpsertPettyCashFormValue, 'vendorName' | 'projectLineItems'>>> & {
       vendorName: any;
-      vendorCode: any;
       projectLineItems: any;
     }
   >({
     //general info
     vendorName: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
-    vendorCode: Yup.mixed().required().typeError(ErrorService.MESSAGES.required),
     faStaffReviewer: isSubmitPOAction
+      ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
+      : Yup.string().nullable(),
+    directInquiriesTo: isSubmitPOAction
       ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
       : Yup.string().nullable(),
 
@@ -46,30 +45,6 @@ export const getPettyCashFormValidationSchema = ({ action }: { action: PO_ACTION
       ? Yup.number()
           .moreThan(0, 'The TOTAL must be greater than $0.')
           .lessThan(100000000, 'The TOTAL must be less than $100,000,000.00.')
-          .typeError('The TOTAL must be greater than $0.')
-          .test(
-            'not-match-claim-due',
-            'The TOTAL must match the CLAIM DUE (A-B) from the Expenditures section.',
-            (value, context) => {
-              const { expenditureTotal, amountAdvanced } = context.parent;
-
-              if (Number(value) !== Number(expenditureTotal) - Number(amountAdvanced)) {
-                return false;
-              }
-
-              return true;
-            }
-          )
       : Yup.number().nullable(),
-
-    custodianSignature: isSubmitPOAction
-      ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
-      : Yup.string().nullable(),
-    piSignature: isSubmitPOAction
-      ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
-      : Yup.string().nullable(),
-    faSignature: isSubmitPOAction
-      ? Yup.string().required().typeError(ErrorService.MESSAGES.required)
-      : Yup.string().nullable(),
   });
 };

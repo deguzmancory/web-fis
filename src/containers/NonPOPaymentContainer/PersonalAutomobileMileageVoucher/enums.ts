@@ -34,7 +34,7 @@ export enum PERSONAL_AUTOMOBILE_FORM_KEY {
   EXPIRATION_DATE = 'expirationDate',
 
   // Project Items
-  PROJECT_ITEMS = 'projectLineItems',
+  PROJECT_LINE_ITEMS = 'projectLineItems',
   PAYMENT_TOTAL = 'paymentTotal',
 
   // Authorization Signatures

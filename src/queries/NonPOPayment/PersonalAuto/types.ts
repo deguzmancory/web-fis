@@ -1,5 +1,6 @@
 import { PO_ACTION, PO_DETAIL_STATUS } from '../../PurchaseOrders/enums';
 import { NON_PO_PAYMENT_DOCUMENT_TYPE } from '../enums';
+import { NonPOPaymentProjectLineItem, NonPOPaymentRemittanceLineItem } from '../types';
 
 export interface GeneralInfo {
   loginName: string;
@@ -48,22 +49,8 @@ export interface ItemizedTripInformation {
   expirationDate: string;
 }
 
-export interface ProjectLineItem {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  lineNumber: number;
-  projectNumber: string;
-  subProject: string;
-  budgetCategory: string;
-  subBudgetCategory: string;
-  serviceDate: string;
-  amount: number;
-  description: string;
-}
-
 export interface ProjectLines {
-  projectLineItems: ProjectLineItem[];
+  projectLineItems: NonPOPaymentProjectLineItem[];
   total: number;
 }
 
@@ -71,16 +58,6 @@ export interface AuthorizationSignature {
   travelerSignature: string;
   piSignature: string;
   uhSignature: string;
-}
-
-export interface RemittanceLineItem {
-  lineNumber: number;
-  referenceNumber: string;
-  amount: number;
-  customerAccountComment: string;
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string;
 }
 
 export interface Remittance {
@@ -99,7 +76,7 @@ export interface Remittance {
 }
 
 export interface RemittanceInfo {
-  remittanceLineItems: RemittanceLineItem[];
+  remittanceLineItems: NonPOPaymentRemittanceLineItem[];
   remittance: Remittance;
 }
 

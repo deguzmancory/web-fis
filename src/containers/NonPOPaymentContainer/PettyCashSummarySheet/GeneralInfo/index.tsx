@@ -150,7 +150,6 @@ const GeneralInfo: FC<Props> = ({ formikProps, disabled = false, currentMode }) 
               onChange={setFieldValue}
               selected={values.beginDate}
               disabled={disabled}
-              required
             />
           </Grid>
           <Grid item xs={6}>
@@ -161,7 +160,6 @@ const GeneralInfo: FC<Props> = ({ formikProps, disabled = false, currentMode }) 
               onChange={setFieldValue}
               selected={values.endDate}
               disabled={disabled}
-              required
             />
           </Grid>
           <Grid item xs={12}>

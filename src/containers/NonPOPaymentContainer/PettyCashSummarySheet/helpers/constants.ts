@@ -1,4 +1,3 @@
-import { EXPENDITURE_ITEM_FORM_KEY } from '../enums';
 import { UpsertPettyCashFormValue } from '../types';
 
 export const initialPettyCashProjectItem = {
@@ -10,36 +9,6 @@ export const initialPettyCashProjectItem = {
   serviceDate: null,
   amount: 0,
   description: '',
-};
-
-export const initialPettyCashItinerary = {
-  destination: '',
-  departureDate: null,
-  arrivalDate: null,
-
-  calcDays: null,
-  minusDays: null,
-  businessDays: null,
-
-  lodgingFar: null,
-  lodgingRate: null,
-  lodgingExcess: null,
-  lodgingDaysClaim: null,
-  lodgingCost: null,
-  miscFar: null,
-  miscRate: null,
-  miscExcess: null,
-  miscDaysClaim: null,
-  miscCost: null,
-  miscEstimated: null,
-};
-
-export const initialPettyCashExpenditure = {
-  item: '',
-  leg: '',
-  paymentMethod: '',
-  description: '',
-  amount: 0,
 };
 
 export const initialPettyCashRemittanceLineItem = {
@@ -109,11 +78,3 @@ export const emptyUpsertPettyCashFormValue: UpsertPettyCashFormValue = {
   remittanceLineItems: [initialPettyCashRemittanceLineItem],
   remittance: initialPettyCashRemittance,
 };
-
-export const travelExpenditureColumnNames = [
-  EXPENDITURE_ITEM_FORM_KEY.ITEM,
-  EXPENDITURE_ITEM_FORM_KEY.LEG,
-  EXPENDITURE_ITEM_FORM_KEY.PAYMENT_METHOD,
-  EXPENDITURE_ITEM_FORM_KEY.DESCRIPTION,
-  EXPENDITURE_ITEM_FORM_KEY.AMOUNT,
-];

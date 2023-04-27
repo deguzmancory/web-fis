@@ -18,7 +18,7 @@ import { UpsertNonEmployeeTravelFormValue } from '../types';
 import {
   emptyUpsertNonEmployeeTravelFormValue,
   initialNonEmployeeTravelItinerary,
-  initialNonEmployeeTravelProjectItem,
+  initialNonEmployeeTravelProjectLineItem,
   initialNonEmployeeTravelRemittanceLineItem,
 } from './constants';
 
@@ -42,7 +42,7 @@ export const getNonEmployeeTravelFormValueFromResponse = ({
   profile: MyProfile;
 }): UpsertNonEmployeeTravelFormValue => {
   const {
-    projectItems,
+    projectLineItems,
     remittanceLineItems,
     date,
     itineraries,
@@ -54,8 +54,8 @@ export const getNonEmployeeTravelFormValueFromResponse = ({
     ...formValue
   } = response;
 
-  const transformedProjectItems =
-    projectItems?.map((lineItem) => ({
+  const transformedProjectLineItems =
+    projectLineItems?.map((lineItem) => ({
       ...lineItem,
       serviceDate: getDate(lineItem.serviceDate),
       amount: Number(lineItem.amount || 0),
@@ -100,7 +100,7 @@ export const getNonEmployeeTravelFormValueFromResponse = ({
     itineraries: [...transformedItineraries, initialNonEmployeeTravelItinerary],
     tripTotal: Number(tripTotal || 0),
 
-    projectItems: [...transformedProjectItems, initialNonEmployeeTravelProjectItem],
+    projectLineItems: [...transformedProjectLineItems, initialNonEmployeeTravelProjectLineItem],
     remittanceLineItems: [
       ...transformedRemittanceLineItems,
       initialNonEmployeeTravelRemittanceLineItem,
@@ -122,7 +122,7 @@ export const getUpsertNonEmployeeTravelPayload = ({
     vendorCode,
     date,
     remittanceLineItems,
-    projectItems,
+    projectLineItems,
     itineraries,
     fromServiceDate,
     toServiceDate,
@@ -134,16 +134,16 @@ export const getUpsertNonEmployeeTravelPayload = ({
   const isEdit = !!id;
 
   //ignore last row of line items
-  const projectItemsFormValue = projectItems.slice(0, -1) || [];
+  const projectLineItemsFormValue = projectLineItems.slice(0, -1) || [];
 
-  const projectItemsPayload =
-    projectItemsFormValue.map((projectItem, index) => ({
-      ...projectItem,
+  const projectLineItemsPayload =
+    projectLineItemsFormValue.map((projectLineItem, index) => ({
+      ...projectLineItem,
       lineNumber: index + 1,
-      projectNumber: isString(projectItem.projectNumber)
-        ? projectItem.projectNumber
-        : projectItem.projectNumber.number,
-      serviceDate: formatDateApi(projectItem.serviceDate),
+      projectNumber: isString(projectLineItem.projectNumber)
+        ? projectLineItem.projectNumber
+        : projectLineItem.projectNumber.number,
+      serviceDate: formatDateApi(projectLineItem.serviceDate),
     })) || [];
 
   const remittanceLineItemsPayload =
@@ -167,7 +167,7 @@ export const getUpsertNonEmployeeTravelPayload = ({
     startDepartureDate: formatDateApi(startDepartureDate, isoFormat),
     endArrivalDate: formatDateApi(endArrivalDate, isoFormat),
 
-    projectItems: projectItemsPayload,
+    projectLineItems: projectLineItemsPayload,
     remittanceLineItems: remittanceLineItemsPayload,
     itineraries: itinerariesPayload,
   };

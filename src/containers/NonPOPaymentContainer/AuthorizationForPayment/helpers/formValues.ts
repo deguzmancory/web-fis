@@ -94,11 +94,12 @@ export const getAuthorizationPaymentFormValueFromResponse = ({
 }): UpsertAuthorizationFormValue => {
   const { projectLineItems, remittanceLineItems, equipmentInventories, ...formValue } = response;
 
-  const transformedProjectLineItems = projectLineItems?.map((lineItem) => ({
-    ...lineItem,
-    serviceDate: getDate(lineItem.serviceDate),
-    amount: Number(lineItem.amount || 0),
-  }));
+  const transformedProjectLineItems =
+    projectLineItems?.map((lineItem) => ({
+      ...lineItem,
+      serviceDate: getDate(lineItem.serviceDate),
+      amount: Number(lineItem.amount || 0),
+    })) || [];
 
   const transformedRemittanceLineItems =
     remittanceLineItems?.map((remittanceLineItem) => ({

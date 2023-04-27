@@ -41,7 +41,7 @@ export enum NON_EMPLOYEE_TRAVEL_FORM_KEY {
   LODGING_DAYS_CLAIM_TOTAL = 'lodgingDaysClaimTotal',
 
   //project items
-  PROJECT_ITEMS = 'projectItems',
+  PROJECT_LINE_ITEMS = 'projectLineItems',
   PAYMENT_TOTAL = 'paymentTotal',
 
   // Receipt Certification

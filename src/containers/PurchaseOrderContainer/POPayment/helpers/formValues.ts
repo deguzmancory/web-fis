@@ -11,6 +11,7 @@ import {
   DateFormatDisplayMinute,
   getDate,
   getDateDisplay,
+  isString,
   localTimeToHawaii,
 } from 'src/utils';
 import { isEmpty } from 'src/validations';
@@ -53,10 +54,7 @@ export const getPOPaymentFormValueFromResponse = ({
         ...lineItem,
         amount: Number(lineItem.amount || 0),
       })) || []
-    : mockupDataRes.remainingBalance.itemList.map((lineItem) => ({
-        ...lineItem,
-        amount: Number(lineItem.amount || 0),
-      })); //TODO: Tuyen Tran: remove mock data after BE integrate
+    : [];
 
   const transformRemittanceLineItems = poPaymentResponse.remittanceLineItems?.map(
     (remittanceLineItem) => ({
@@ -96,12 +94,11 @@ export const getPOPaymentFormValueFromResponse = ({
       isAdvancePayment: true,
     }),
     paymentTotal: Number(poPaymentResponse.paymentTotal || 0),
-    remainingBalance:
-      remainingBalanceResponse?.remainingBalance?.total || mockupDataRes.remainingBalance.total, //TODO: Tuyen Tran replace with remainingBalanceResponse
+    remainingBalance: remainingBalanceResponse?.remainingBalance?.total,
     remainingBalanceLineItems: transformedRemainingBalanceLineItems,
     remainingBalanceAsOfDate:
       getDateDisplay(remainingBalanceResponse?.asOfDate, DateFormatDisplayMinute) ||
-      getDateDisplay(mockupDataRes?.asOfDate, DateFormatDisplayMinute), //TODO: Tuyen Tran: remove mock data after BE integrate
+      getDateDisplay(mockupDataRes?.asOfDate, DateFormatDisplayMinute),
 
     paymentEquipmentInventories: transformedPaymentEquipmentInventories,
     paymentNumberOfEquipmentInventories: getNumberOfEquipmentInventories(
@@ -142,14 +139,25 @@ export const getUpdatePOPaymentPayload = ({
     ...payloadProps,
     action,
     paymentLineItems: isAdvancePaymentResponse
-      ? advancePaymentLineItem
-      : partialOrFinalPaymentLineItem.slice(0, -1),
-    paymentEquipmentInventories: paymentEquipmentInventories
-      .slice(0, paymentNumberOfEquipmentInventories)
-      .map((inventory, index) => ({
-        ...inventory,
-        lineNumber: index + 1,
-      })),
-    remittanceLineItems: remittanceLineItems.slice(0, -1),
+      ? advancePaymentLineItem.map((lineItem) => ({
+          ...lineItem,
+          itemProjectNumber: isString(lineItem.itemProjectNumber)
+            ? lineItem.itemProjectNumber
+            : lineItem.itemProjectNumber.number,
+        })) || []
+      : partialOrFinalPaymentLineItem.slice(0, -1).map((lineItem) => ({
+          ...lineItem,
+          itemProjectNumber: isString(lineItem.itemProjectNumber)
+            ? lineItem.itemProjectNumber
+            : lineItem.itemProjectNumber.number,
+        })) || [],
+    paymentEquipmentInventories:
+      paymentEquipmentInventories
+        .slice(0, paymentNumberOfEquipmentInventories)
+        .map((inventory, index) => ({
+          ...inventory,
+          lineNumber: index + 1,
+        })) || [],
+    remittanceLineItems: remittanceLineItems.slice(0, -1) || [],
   };
 };

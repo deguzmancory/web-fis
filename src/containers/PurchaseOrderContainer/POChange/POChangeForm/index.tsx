@@ -1,7 +1,7 @@
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { Location } from 'history';
-import React, { Suspense, useState } from 'react';
+import { FC, Suspense, useEffect, useMemo, useState } from 'react';
 import { AiFillWarning } from 'react-icons/ai';
 import { connect } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
@@ -64,7 +64,7 @@ import PurchaseInfoChange from './PurchaseInfoChange';
 import TableLineItemsPOChange from './TableLineItemsChange';
 import { getPoChangeFormTitle } from './helpers';
 
-const POChangeForm: React.FC<Props> = ({
+const POChangeForm: FC<Props> = ({
   formData,
   isImmutableFormData,
   onSetFormData,
@@ -74,15 +74,15 @@ const POChangeForm: React.FC<Props> = ({
   const { id } = useParams<{ id: string }>();
 
   const location = useLocation();
-  const query = React.useMemo(() => new URLSearchParams(location.search), [location]);
+  const query = useMemo(() => new URLSearchParams(location.search), [location]);
   const [allowRedirectWithoutWarning, setAllowRedirectWithoutWarning] = useState<boolean>(false);
 
-  const scrollToParam = React.useMemo(
+  const scrollToParam = useMemo(
     () => query.get(PO_CHANGE_FORM_QUERY_KEY.SCROLL_TO) || null,
     [query]
   );
   // Auto scroll to additional form section base on scrollToParam
-  React.useEffect(() => {
+  useEffect(() => {
     if (scrollToParam && scrollToParam === PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS) {
       const additionalFormId = document.getElementById(PO_FORM_ELEMENT_ID.ADDITIONAL_FORMS);
 
@@ -95,9 +95,9 @@ const POChangeForm: React.FC<Props> = ({
   }, [scrollToParam]);
 
   const currentRole = RoleService.getCurrentRole() as ROLE_NAME;
-  const poStatus = React.useMemo(() => formData?.status, [formData?.status]);
-  const poChangeFormNumber = React.useMemo(() => formData?.formNumber, [formData?.formNumber]);
-  const currentPOMode = React.useMemo(
+  const poStatus = useMemo(() => formData?.status, [formData?.status]);
+  const poChangeFormNumber = useMemo(() => formData?.formNumber, [formData?.formNumber]);
+  const currentPOMode = useMemo(
     () => getCurrentEditMode({ id, status: poStatus, currentRole }),
     [id, poStatus, currentRole]
   );
@@ -164,7 +164,7 @@ const POChangeForm: React.FC<Props> = ({
   const isLoading = updatePOLoading;
 
   // Navigate to submitted PO success page
-  React.useEffect(() => {
+  useEffect(() => {
     if (isUpdatePOSuccess && !isLoading) {
       const responseData = updatePOResponse;
 
@@ -211,7 +211,7 @@ const POChangeForm: React.FC<Props> = ({
   }, [isUpdatePOSuccess]);
 
   /* INIT DATA */
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isImmutableFormData) {
       onGetPOById();
     }
@@ -222,15 +222,15 @@ const POChangeForm: React.FC<Props> = ({
   // The next time component did mount:
   //  * if isImmutableFormData is true => it will reset to initial empty form
   //  * if isImmutableFormData is false => it will get the formData from Redux to initial form
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       onSetIsImmutableFormData(false);
     };
   }, [onSetIsImmutableFormData]);
 
-  const initialFormValue = React.useMemo(() => formData || emptyUpsertPOFormValue, [formData]);
+  const initialFormValue = useMemo(() => formData || emptyUpsertPOFormValue, [formData]);
 
-  const validationSchema = React.useMemo(
+  const validationSchema = useMemo(
     () => getPOFormValidationSchema({ action: formAction }),
     [formAction]
   );
@@ -450,7 +450,7 @@ const POChangeForm: React.FC<Props> = ({
   );
 };
 
-const POChangeFormWrapper: React.FC<Props> = ({ ...props }) => {
+const POChangeFormWrapper: FC<Props> = ({ ...props }) => {
   return (
     <CustomErrorBoundary FallbackComponent={(props) => <ErrorWrapperPO {...props} />}>
       <Suspense

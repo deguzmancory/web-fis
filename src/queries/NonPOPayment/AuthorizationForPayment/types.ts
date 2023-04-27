@@ -7,7 +7,11 @@ import {
   PO_ACTION,
   PO_DETAIL_STATUS,
 } from 'src/queries/PurchaseOrders';
-import { NonPOPaymentProjectLineItem, NonPOPaymentRemittance } from '../types';
+import {
+  NonPOPaymentProjectLineItem,
+  NonPOPaymentRemittance,
+  NonPOPaymentRemittanceLineItem,
+} from '../types';
 
 export interface AuthorizationGeneralInfo {
   loginName: string;
@@ -45,17 +49,6 @@ export interface AuthorizationEquipmentInventory {
   receiveDate: string | Date;
 }
 
-export interface AuthorizationRemittanceLineItem {
-  id?: string;
-  referenceNumber: string;
-  customerAccountComment: string;
-  amount: number;
-
-  externalId?: number;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
 export interface AuthorizationEquipmentInventories {
   equipmentInventories: AuthorizationEquipmentInventory[];
   equipmentInventoryManualFlag: boolean;
@@ -65,11 +58,6 @@ export interface SharedAuthorizationDetail
   extends AuthorizationGeneralInfo,
     AuthorizationSignature,
     AuthorizationEquipmentInventories {
-  // TODO: Tuyen Tran will remove if don't use
-  majorVersion?: string;
-  minorVersion: number;
-  formName?: string;
-  shortFormName?: string;
   status?: PO_DETAIL_STATUS;
   docType: string;
   preferredPaymentMethod: string;
@@ -79,8 +67,14 @@ export interface SharedAuthorizationDetail
   internalComments: string;
   remittance: NonPOPaymentRemittance;
   projectLineItems: NonPOPaymentProjectLineItem[];
-  remittanceLineItems: AuthorizationRemittanceLineItem[];
+  remittanceLineItems: NonPOPaymentRemittanceLineItem[];
   auditTrails?: POAuditTrails[];
+
+  // TODO: Tuyen Tran will remove if don't use
+  majorVersion?: string;
+  minorVersion: number;
+  formName?: string;
+  shortFormName?: string;
 }
 
 export interface UpsertAuthorizationPayload extends SharedAuthorizationDetail {

@@ -23,7 +23,7 @@ export const getNonEmployeeTravelFormValidationSchema = ({ action }: { action: P
           | 'toServiceDate'
           | 'startDepartureDate'
           | 'endArrivalDate'
-          | 'projectItems'
+          | 'projectLineItems'
         >
       >
     > & {
@@ -33,7 +33,7 @@ export const getNonEmployeeTravelFormValidationSchema = ({ action }: { action: P
       toServiceDate: any;
       startDepartureDate: any;
       endArrivalDate: any;
-      projectItems: any;
+      projectLineItems: any;
     }
   >({
     // SelectPayeeCategory
@@ -129,7 +129,7 @@ export const getNonEmployeeTravelFormValidationSchema = ({ action }: { action: P
       : Yup.date().nullable(),
 
     //project items
-    projectItems: Yup.array()
+    projectLineItems: Yup.array()
       .min(1, 'At least one Project # is required.')
       .transform((fields: any[]) => fields.slice(0, -1))
       .of(

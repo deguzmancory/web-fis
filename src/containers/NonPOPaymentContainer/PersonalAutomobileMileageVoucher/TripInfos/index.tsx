@@ -30,7 +30,7 @@ import {
   PersonalAutomobileTripItemFormValue,
 } from '../types';
 
-const ProjectItems = <T extends PersonalAutomobileFormikProps>({
+const ProjectLineItems = <T extends PersonalAutomobileFormikProps>({
   formikProps,
   disabled,
   tripItemsPrefix,
@@ -639,7 +639,7 @@ type Props<T> = {
   showTotalError?: boolean;
 };
 
-export default memo(ProjectItems, (prevProps, nextProps) => {
+export default memo(ProjectLineItems, (prevProps, nextProps) => {
   const prevFormikProps = prevProps.formikProps;
   const nextFormikProps = nextProps.formikProps;
 

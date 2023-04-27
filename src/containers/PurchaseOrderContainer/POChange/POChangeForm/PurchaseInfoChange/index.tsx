@@ -1,5 +1,5 @@
 import { Box, Divider, Grid, Typography } from '@mui/material';
-import React from 'react';
+import { FC, useEffect, memo, ChangeEvent } from 'react';
 import {
   EllipsisTooltipInput,
   EllipsisTooltipInputCurrency,
@@ -18,7 +18,7 @@ import { PO_MODE } from 'src/queries';
 import { getTypeOfPOChange } from '../helpers';
 import { isPOChangeTotalCancellationForm } from 'src/queries/POChange/helpers';
 
-const PurchaseInfoChange: React.FC<Props> = ({
+const PurchaseInfoChange: FC<Props> = ({
   formikProps,
   disabled = false,
   allowUpdateAmount = true,
@@ -40,7 +40,7 @@ const PurchaseInfoChange: React.FC<Props> = ({
     setFieldValue(PO_FORM_KEY.TAX_RATE, '');
   };
 
-  const handleTaxRateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTaxRateChange = (event: ChangeEvent<HTMLInputElement>) => {
     const subTotalValue = values.subtotal || 0;
     const taxRateValue = Number(event.target.value);
     const taxTotalValue = (Number(subTotalValue) * taxRateValue) / 100;
@@ -50,7 +50,7 @@ const PurchaseInfoChange: React.FC<Props> = ({
   };
 
   // update taxTotal when subTotal change
-  React.useEffect(() => {
+  useEffect(() => {
     const subTotalValue = values.subtotal || 0;
     const taxRateValue = values.taxRate || 0;
     const taxTotalValue = (Number(subTotalValue) * Number(taxRateValue)) / 100;
@@ -60,7 +60,7 @@ const PurchaseInfoChange: React.FC<Props> = ({
   }, [setFieldValue, values.subtotal]);
 
   // update totalValue when subTotal or taxTotal or shippingTotal change
-  React.useEffect(() => {
+  useEffect(() => {
     let taxTotalValue = 0;
     const subTotalValue = values.subtotal || 0;
     const originalTotal = values.originalTotal;
@@ -230,7 +230,7 @@ interface Props {
   showAmountChangeSection: boolean;
 }
 
-export default React.memo(PurchaseInfoChange, (prevProps, nextProps) => {
+export default memo(PurchaseInfoChange, (prevProps, nextProps) => {
   const prevFormikProps = prevProps.formikProps;
   const nextFormikProps = nextProps.formikProps;
 

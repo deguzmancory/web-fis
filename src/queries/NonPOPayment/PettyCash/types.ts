@@ -30,7 +30,7 @@ interface GeneralInfo {
   faStaffReviewer: string;
 }
 
-interface ProjectItems {
+interface ProjectLineItems {
   projectLineItems: NonPOPaymentProjectLineItem[];
   paymentTotal: number;
 }
@@ -46,7 +46,11 @@ interface Remittance {
   remittance: NonPOPaymentRemittance;
 }
 
-export interface SharedPettyCashDetail extends GeneralInfo, ProjectItems, Signatures, Remittance {
+export interface SharedPettyCashDetail
+  extends GeneralInfo,
+    ProjectLineItems,
+    Signatures,
+    Remittance {
   vendorAddress: string;
   vendorCode: string;
 

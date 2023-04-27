@@ -1,15 +1,14 @@
-import React from 'react';
-import { UpdatePOPaymentFormikProps } from '../types';
-import { PO_MODE, useGetPOPmtRemainingBalance } from 'src/queries';
 import { Box, Grid, Typography } from '@mui/material';
+import React from 'react';
+import { useParams } from 'react-router-dom';
 import CustomTable from 'src/components/CustomTable';
 import { BodyBasicRows, CellType } from 'src/components/CustomTable/types';
-import { DateFormatDisplayMinute, getDateDisplay, localTimeToHawaii } from 'src/utils';
-import { EllipsisTooltipInputCurrency, Input } from 'src/components/common';
-import { mockupDataRes } from './mokupDataRes';
 import TypographyLink from 'src/components/TypographyLink';
-import { useParams } from 'react-router-dom';
+import { EllipsisTooltipInputCurrency, Input } from 'src/components/common';
 import { PO_FORM_KEY } from 'src/containers/PurchaseOrderContainer/PO/enums';
+import { PO_MODE, useGetPOPmtRemainingBalance } from 'src/queries';
+import { handleShowErrorMsg, localTimeToHawaii } from 'src/utils';
+import { UpdatePOPaymentFormikProps } from '../types';
 
 const TablePaymentRemainingBalanceLineItems: React.FC<Props> = ({
   formikProps,
@@ -32,24 +31,17 @@ const TablePaymentRemainingBalanceLineItems: React.FC<Props> = ({
     handleInvalidateRemainingBalance();
     try {
       const { data: remainingBalanceData } = await onGetRemainingBalance();
-      setFieldValue(
-        PO_FORM_KEY.REMAINING_BALANCE,
-        remainingBalanceData?.remainingBalance?.total || mockupDataRes.remainingBalance.total //TODO: Tuyen Tran: remove mock data after BE integrate
-      );
+      setFieldValue(PO_FORM_KEY.REMAINING_BALANCE, remainingBalanceData?.remainingBalance?.total);
       setFieldValue(
         PO_FORM_KEY.REMAINING_BALANCE_LINE_ITEMS,
-        remainingBalanceData?.remainingBalance?.itemList || mockupDataRes.remainingBalance.itemList //TODO: Tuyen Tran: remove mock data after BE integrate
+        remainingBalanceData?.remainingBalance?.itemList
       );
-      setFieldValue(
-        PO_FORM_KEY.REMAINING_BALANCE_AS_OF_DATE,
-        remainingBalanceData?.asOfDate || getDateDisplay(new Date(), DateFormatDisplayMinute) //TODO: Tuyen Tran: remove mock data after BE integrate
-      );
+      setFieldValue(PO_FORM_KEY.REMAINING_BALANCE_AS_OF_DATE, remainingBalanceData?.asOfDate);
     } catch (error) {
-      // handleShowErrorMsg(error);  //TODO: Tuyen Tran: uncomment after BE integrate
+      handleShowErrorMsg(error);
     }
   };
 
-  // TODO: Tuyen Tran replace mockup data
   const lineItemRows: BodyBasicRows = remainingBalanceLineItems.map((lineItem, _) => {
     return {
       style: {

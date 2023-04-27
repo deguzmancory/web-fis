@@ -53,14 +53,14 @@ const isUpsertNonEmployeeTravelFormValue = (
   formValues,
   projectItemsPrefix: string
 ): formValues is UpsertNonEmployeeTravelFormValue => {
-  return projectItemsPrefix === NON_EMPLOYEE_TRAVEL_FORM_KEY.PROJECT_ITEMS;
+  return projectItemsPrefix === NON_EMPLOYEE_TRAVEL_FORM_KEY.PROJECT_LINE_ITEMS;
 };
 
 const isUpsertPersonalAutomobileFormValue = (
   formValues,
   projectItemsPrefix: string
 ): formValues is PersonalAutomobileFormValue => {
-  return projectItemsPrefix === PERSONAL_AUTOMOBILE_FORM_KEY.PROJECT_ITEMS;
+  return projectItemsPrefix === PERSONAL_AUTOMOBILE_FORM_KEY.PROJECT_LINE_ITEMS;
 };
 
 const isUpsertPettyCashFormValue = (
@@ -70,7 +70,7 @@ const isUpsertPettyCashFormValue = (
   return projectItemsPrefix === PETTY_CASH_FORM_KEY.PROJECT_LINE_ITEMS;
 };
 
-const ProjectItems = <
+const ProjectLineItems = <
   T extends
     | UpsertAuthorizationPaymentFormikProps
     | UpsertNonEmployeeTravelFormikProps
@@ -108,7 +108,7 @@ const ProjectItems = <
     }
 
     if (isUpsertNonEmployeeTravelFormValue(values, projectItemsPrefix)) {
-      return values.projectItems || [];
+      return values.projectLineItems || [];
     }
 
     return [];
@@ -434,7 +434,7 @@ type Props<T> = {
   showTotalError?: boolean;
 };
 
-export default memo(ProjectItems, (prevProps, nextProps) => {
+export default memo(ProjectLineItems, (prevProps, nextProps) => {
   const prevFormikProps = prevProps.formikProps;
   const nextFormikProps = nextProps.formikProps;
 

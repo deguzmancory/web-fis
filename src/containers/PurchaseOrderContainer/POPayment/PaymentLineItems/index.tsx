@@ -12,7 +12,7 @@ import {
 import { isVariousProject } from 'src/containers/PurchaseOrderContainer/PO/GeneralInfo/helpers';
 import { PO_FORM_KEY } from 'src/containers/PurchaseOrderContainer/PO/enums';
 import SearchProjectNumber from 'src/containers/shared/SearchProjectNumber';
-import { POPaymentLineItem, PO_MODE } from 'src/queries';
+import { PO_MODE } from 'src/queries';
 import {
   checkRowStateAndSetValue,
   getErrorMessage,
@@ -20,7 +20,11 @@ import {
 } from 'src/utils';
 import { PO_PAYMENT_LINE_ITEM_KEY } from '../enums';
 import { initialPaymentLineItemValue, paymentLineItemsColumnNames } from '../helpers';
-import { UpdatePOPaymentFormValue, UpdatePOPaymentFormikProps } from '../types';
+import {
+  POPaymentLineItemFormValue,
+  UpdatePOPaymentFormValue,
+  UpdatePOPaymentFormikProps,
+} from '../types';
 import { isAdvancePOPayment } from 'src/queries/POPayment/helpers';
 
 const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false }) => {
@@ -84,7 +88,7 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
   ]);
 
   const updatePaymentTotal = React.useCallback(
-    ({ lineItemRow, index }: { lineItemRow: POPaymentLineItem; index: number }) => {
+    ({ lineItemRow, index }: { lineItemRow: POPaymentLineItemFormValue; index: number }) => {
       const currentLineItemAmount = Number(lineItemRow.amount || 0);
 
       // calculate subtotal
@@ -112,7 +116,7 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
     }: {
       name: string;
       value: any;
-      lineItemRow: POPaymentLineItem;
+      lineItemRow: POPaymentLineItemFormValue;
       key: PO_PAYMENT_LINE_ITEM_KEY;
       index: number;
     }) => {
@@ -128,7 +132,7 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
         return;
       }
 
-      checkRowStateAndSetValue<POPaymentLineItem>({
+      checkRowStateAndSetValue<POPaymentLineItemFormValue>({
         name,
         value,
         index,
@@ -164,7 +168,7 @@ const TablePaymentLineItems: React.FC<Props> = ({ formikProps, disabled = false 
       return;
     }
 
-    checkRowStateAndSetValue<POPaymentLineItem>({
+    checkRowStateAndSetValue<POPaymentLineItemFormValue>({
       name,
       value,
       index,

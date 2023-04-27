@@ -1,6 +1,6 @@
 import { UseQueryOptions, useQuery, useQueryClient } from 'react-query';
 import apiClient from '../apiClient';
-import { ApiResponseType, responseWrapper } from '../helpers';
+import { ApiResponseType, getResponseData, responseWrapper } from '../helpers';
 import { API_QUERIES } from '../keys';
 import { POPaymentRemainingBalance } from './types';
 
@@ -30,6 +30,7 @@ export function useGetPOPmtRemainingBalance(
         );
       },
       notifyOnChangeProps: ['data', 'isFetching'],
+      select: getResponseData,
       enabled: false,
       ...options,
     }

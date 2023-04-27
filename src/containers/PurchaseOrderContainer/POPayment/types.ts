@@ -1,4 +1,5 @@
 import {
+  FinancialProject,
   POGeneralInfo,
   POLineItem,
   POPaymentLineItem,
@@ -10,6 +11,9 @@ import {
 import { CommonFormikProps } from 'src/utils/commonTypes';
 import { POPlaceholderFileAttachment } from '../PO/types';
 
+export interface POPaymentLineItemFormValue extends Omit<POPaymentLineItem, 'itemProjectNumber'> {
+  itemProjectNumber: string | FinancialProject;
+}
 export interface UpdatePOPaymentFormValue
   extends POGeneralInfo,
     POPurchaseInfo,
@@ -18,8 +22,8 @@ export interface UpdatePOPaymentFormValue
   lineItems: POLineItem[];
 
   //payment summary
-  advancePaymentLineItem: POPaymentLineItem[];
-  partialOrFinalPaymentLineItem: POPaymentLineItem[];
+  advancePaymentLineItem: POPaymentLineItemFormValue[];
+  partialOrFinalPaymentLineItem: POPaymentLineItemFormValue[];
   remittanceLineItems: POPaymentRemittanceLineItem[];
 
   //po remaining balance

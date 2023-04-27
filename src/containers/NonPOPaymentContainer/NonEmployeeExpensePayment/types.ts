@@ -16,7 +16,7 @@ export interface UpsertNonEmployeeTravelFormValue
     //override
     | 'vendorName'
     | 'vendorCode'
-    | 'projectItems'
+    | 'projectLineItems'
     | 'fromServiceDate'
     | 'toServiceDate'
     | 'startDepartureDate'
@@ -24,7 +24,7 @@ export interface UpsertNonEmployeeTravelFormValue
   > {
   vendorName: Vendor | string;
   vendorCode: Vendor | string;
-  projectItems: NonPOPaymentProjectItemFormValue[];
+  projectLineItems: NonPOPaymentProjectItemFormValue[];
   fromServiceDate: Date;
   toServiceDate: Date;
   startDepartureDate: Date;

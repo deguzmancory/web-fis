@@ -1,7 +1,7 @@
 import { POAuditTrails, POFileAttachment } from 'src/queries/PurchaseOrders';
 import { PO_ACTION, PO_DETAIL_STATUS } from '../../PurchaseOrders/enums';
 import { NON_PO_PAYMENT_DOCUMENT_TYPE } from '../enums';
-import { NonPOPaymentProjectLineItem } from '../types';
+import { NonPOPaymentProjectLineItem, NonPOPaymentRemittanceLineItem } from '../types';
 import { NON_EMPLOYEE_TRAVEL_PAYEE_CATEGORY } from './enums';
 
 interface SelectPayeeCategory {
@@ -48,7 +48,7 @@ interface TravelExpenditure {
 }
 
 interface NonEmployeeTravelProjectItems {
-  projectItems: NonPOPaymentProjectLineItem[];
+  projectLineItems: NonPOPaymentProjectLineItem[];
   paymentTotal: number; //miss api
 }
 
@@ -65,7 +65,7 @@ interface BusinessPurposeDetails {
 }
 
 interface NonEmployeeTravelRemittance {
-  remittanceLineItems: NonEmployeeTravelRemittanceLineItem[];
+  remittanceLineItems: NonPOPaymentRemittanceLineItem[];
   remittance: NonEmployeeTravelRemittanceDetail;
 }
 
@@ -122,16 +122,6 @@ export interface NonEmployeeTravelExpenditure {
   paymentMethod: string;
   description: string;
   amount: number;
-}
-
-export interface NonEmployeeTravelRemittanceLineItem {
-  id?: string;
-  nonEmployeeTravelId?: string;
-  // number: string;
-  referenceNumber: string;
-  amount: number;
-  lineNumber: number;
-  customerAccountComment: string;
 }
 
 export interface NonEmployeeTravelRemittanceDetail {
