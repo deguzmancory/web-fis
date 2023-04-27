@@ -47,7 +47,6 @@ export const mockPoDetail = {
   directInquiriesTo: 'string',
   phoneNumber: 'string',
   date: '2023-03-02T14:59:16.952Z',
-  modifiedDate: '2023-03-02T14:59:16.952Z',
   confirming: true,
   getExempt: true,
   taxRate: null,

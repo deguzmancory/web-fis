@@ -110,7 +110,7 @@ export enum PURCHASE_ORDER_KEY {
   FA_APPROVED_DATE = 'faApprovedDate',
   FINAL_APPROVED_DATE = 'finalApprovedDate',
   IS_HISTORICAL = 'isHistorical',
-  MODIFIED_DATE = 'modifiedDate',
+  MODIFIED_DATE = 'updatedAt',
 }
 
 export interface SearchPurchaseParams {

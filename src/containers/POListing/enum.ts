@@ -29,7 +29,7 @@ export enum PO_LIST_QUERY_KEY {
 
   // --- date range
   //for form
-  MODIFIED_DATE = 'modifiedDate',
+  MODIFIED_DATE = 'updatedAt',
   //for params
   MODIFIED_START_DATE = 'modifiedStartDate',
   MODIFIED_END_DATE = 'modifiedEndDate',

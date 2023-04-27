@@ -112,7 +112,7 @@ const SearchPOChangePayment = ({
       vendorName: searchValues.vendorName || '',
       faReviewer: searchValues.faReviewer || '',
       piName: searchValues.piName || '',
-      modifiedDate:
+      updatedAt:
         searchValues.modifiedStartDate && searchValues.modifiedEndDate
           ? [getDate(searchValues.modifiedStartDate), getDate(searchValues.modifiedEndDate)]
           : null,
@@ -216,7 +216,7 @@ const SearchPOChangePayment = ({
                 label={'Modified Date'}
                 placeholder="From - To"
                 {...getFieldProps(PO_LIST_QUERY_KEY.MODIFIED_DATE)}
-                selecteds={values.modifiedDate}
+                selecteds={values.updatedAt}
                 onChange={setFieldValue}
                 monthsShown={2}
               />

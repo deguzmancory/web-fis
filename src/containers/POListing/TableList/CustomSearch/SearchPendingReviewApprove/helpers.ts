@@ -27,7 +27,7 @@ export type CustomFilterPOFormValue = {
   vendorName: string;
   faReviewer: string;
   piName: string;
-  modifiedDate: [Date, Date];
+  updatedAt: [Date, Date];
   documentType: PO_DOCUMENT_TYPE[];
   status: PO_DETAIL_STATUS[];
 };
@@ -38,7 +38,7 @@ export const emptySearchPendingReviewApproveFormValue = {
   vendorName: '',
   faReviewer: '',
   piName: '',
-  modifiedDate: null,
+  updatedAt: null,
   documentType: [],
   status: [],
 };

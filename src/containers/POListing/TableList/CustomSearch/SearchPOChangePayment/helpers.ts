@@ -19,7 +19,7 @@ export type CustomFilterPOPaymentAndChangeFormFormValue = {
   vendorName: string;
   faReviewer: string;
   piName: string;
-  modifiedDate: [Date, Date];
+  updatedAt: [Date, Date];
   finalApprovedDate: [Date, Date];
   printedDate: [Date, Date];
   documentType: PO_CHG_PMT_FORM_DOCUMENT_TYPE[];
@@ -36,7 +36,7 @@ export const emptySearchPaymentAndChangeFormValue = {
   vendorName: '',
   faReviewer: '',
   piName: '',
-  modifiedDate: null,
+  updatedAt: null,
   finalApprovedDate: null,
   printedDate: null,
   documentType: [],

@@ -86,7 +86,7 @@ const SearchPendingReviewApprove = ({
       vendorName: searchValues.vendorName || '',
       faStaffReviewer: searchValues.faStaffReviewer || '',
       piName: searchValues.piName || '',
-      modifiedDate:
+      updatedAt:
         searchValues.modifiedStartDate && searchValues.modifiedEndDate
           ? [getDate(searchValues.modifiedStartDate), getDate(searchValues.modifiedEndDate)]
           : null,
@@ -180,7 +180,7 @@ const SearchPendingReviewApprove = ({
               placeholder="Search"
               {...getFieldProps(NON_PO_LISTING_QUERY_KEY.UPDATED_AT)}
               onChange={setFieldValue}
-              selecteds={values.modifiedDate}
+              selecteds={values.updatedAt}
             />
           </Grid>
           <Grid item xs={2}>

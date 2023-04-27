@@ -112,7 +112,6 @@ export interface POPaymentResponse
   finalApprovedDate: string;
   approved: string;
   vendorName2: string;
-  modifiedDate: string;
   userType: string;
   printedDate: string;
   hasChangeDocument: boolean;

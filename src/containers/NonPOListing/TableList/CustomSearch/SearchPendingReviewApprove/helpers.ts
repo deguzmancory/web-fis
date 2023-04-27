@@ -27,7 +27,7 @@ export type CustomFilterNonPOFormValue = {
   listedProjectNumber: string;
   faStaffReviewer: string;
   piName: string;
-  modifiedDate: [Date, Date];
+  updatedAt: [Date, Date];
 
   documentType: NON_PO_PAYMENT_DOCUMENT_TYPE[];
   status: PO_DETAIL_STATUS[];
@@ -40,7 +40,7 @@ export const emptySearchPendingReviewApproveNonPOFormValue = {
   listedProjectNumber: '',
   faStaffReviewer: '',
   piName: '',
-  modifiedDate: null,
+  updatedAt: null,
 
   documentType: [],
   status: [],

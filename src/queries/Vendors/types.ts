@@ -138,7 +138,6 @@ export interface VendorRegistrationResponse {
   zip4: string;
   type: string;
   ssn: string;
-  updated: string;
   entityType: string;
   citizen: string;
   taxStatus: string;
@@ -162,7 +161,6 @@ export interface VendorRegistrationResponse {
   secondBNoteSendDate: string;
   fiscalAdminEmail: string;
   fiscalAdminName: string;
-  createdDate: string;
   exemptPayeeCode: string;
   exemptFatcaReptCode: string;
   departmentOffice: string;
