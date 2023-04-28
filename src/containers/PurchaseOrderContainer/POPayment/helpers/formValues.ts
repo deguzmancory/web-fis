@@ -132,6 +132,7 @@ export const getUpdatePOPaymentPayload = ({
     remainingBalanceLineItems,
     remainingBalanceAsOfDate,
     remittanceLineItems,
+    remittance,
     ...payloadProps
   } = formValues;
 
@@ -159,5 +160,6 @@ export const getUpdatePOPaymentPayload = ({
           lineNumber: index + 1,
         })) || [],
     remittanceLineItems: remittanceLineItems.slice(0, -1) || [],
+    remittance: remittance?.returnRemittanceFlag ? remittance : null,
   };
 };

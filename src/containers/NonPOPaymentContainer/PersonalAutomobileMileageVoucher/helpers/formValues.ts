@@ -1,4 +1,4 @@
-import { MyProfile, PO_ACTION } from 'src/queries';
+import { MyProfile, PO_ACTION, PO_DETAIL_STATUS } from 'src/queries';
 import {
   DateFormat,
   formatDateApi,
@@ -124,6 +124,7 @@ export const getUpsertPersonalAutomobileMileageVoucherPayload = ({
     ...payloadProps,
     id,
     action: action,
+    status: !isEdit ? PO_DETAIL_STATUS.PI_PENDING_SUBMITTAL : undefined,
 
     createdDate: isEdit ? createdDate : localTimeToHawaii(new Date(), isoFormat),
     vendorName: isString(vendorName) ? vendorName : vendorName.name,
