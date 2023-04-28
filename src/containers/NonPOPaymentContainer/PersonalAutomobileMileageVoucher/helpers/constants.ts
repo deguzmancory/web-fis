@@ -50,7 +50,7 @@ export const personalAutomobileFormInitialValue: PersonalAutomobileFormValue = {
 
   // General Information
   loginName: '',
-  date: '',
+  createdDate: '',
   requestNumber: 'To be assigned',
   vendorName: null,
   vendorCode: null,

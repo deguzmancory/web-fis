@@ -28,7 +28,7 @@ export const getInitialPersonalAutomobileFormValue = ({
   return {
     ...personalAutomobileFormInitialValue,
     loginName: profile.username,
-    date: localTimeToHawaii(new Date(), DateFormat),
+    createdDate: localTimeToHawaii(new Date(), DateFormat),
   };
 };
 
@@ -42,7 +42,7 @@ export const getPersonalAutomobileFormValueFromResponse = ({
   const {
     projectLineItems,
     remittanceLineItems,
-    date,
+    createdDate,
     expirationDate = null,
     ...formValue
   } = response;
@@ -64,7 +64,7 @@ export const getPersonalAutomobileFormValueFromResponse = ({
     ...formValue,
     action: null,
     placeholderFileAttachment: null,
-    date: getDateDisplay(date),
+    createdDate: getDateDisplay(createdDate),
     projectLineItems: [...transformedProjectItems, initialPersonalAutomobileProjectItem],
     tripInfos: [initialPersonalAutomobileTripInfoItem],
     remittanceLineItems: [
@@ -90,8 +90,7 @@ export const getUpsertPersonalAutomobileMileageVoucherPayload = ({
     remittanceLineItems,
     projectLineItems,
     tripInfos,
-
-    date,
+    createdDate,
 
     ...payloadProps
   } = formValues;
@@ -123,9 +122,10 @@ export const getUpsertPersonalAutomobileMileageVoucherPayload = ({
 
   return {
     ...payloadProps,
+    id,
     action: action,
 
-    date: isEdit ? date : localTimeToHawaii(new Date(), isoFormat),
+    createdDate: isEdit ? createdDate : localTimeToHawaii(new Date(), isoFormat),
     vendorName: isString(vendorName) ? vendorName : vendorName.name,
     vendorCode: isString(vendorCode) ? vendorCode : vendorCode.code,
 

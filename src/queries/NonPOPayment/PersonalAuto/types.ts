@@ -4,7 +4,7 @@ import { NonPOPaymentProjectLineItem, NonPOPaymentRemittanceLineItem } from '../
 
 export interface GeneralInfo {
   loginName: string;
-  date: string;
+  createdDate: string;
   requestNumber: string;
   vendorName: string;
   vendorCode: string;

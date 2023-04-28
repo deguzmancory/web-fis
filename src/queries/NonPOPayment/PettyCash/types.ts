@@ -9,7 +9,7 @@ import {
 
 interface GeneralInfo {
   loginName: string;
-  date?: string; //miss api
+  createdDate: string;
   requestNumber: string;
 
   beginDate: string;

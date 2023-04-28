@@ -3,7 +3,7 @@ export enum PERSONAL_AUTOMOBILE_FORM_KEY {
 
   //general info
   LOGIN_NAME = 'loginName',
-  DATE = 'date',
+  DATE = 'createdDate',
   REQUEST_NUMBER = 'requestNumber',
   VENDOR_NAME = 'vendorName',
   VENDOR_CODE = 'vendorCode',

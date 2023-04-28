@@ -39,7 +39,7 @@ export const emptyUpsertPettyCashFormValue: UpsertPettyCashFormValue = {
   //general info
   requestNumber: 'To be assigned',
   loginName: null,
-  date: '',
+  createdDate: '',
 
   beginDate: null,
   endDate: null,

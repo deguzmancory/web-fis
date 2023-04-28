@@ -63,7 +63,7 @@ export const emptyUpsertNonEmployeeTravelFormValue: UpsertNonEmployeeTravelFormV
 
   // SelectPayeeCategory
   loginName: '',
-  date: '',
+  createdDate: '',
   requestNumber: 'To be assigned',
   payeeCategory: null,
 

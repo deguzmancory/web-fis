@@ -335,7 +335,6 @@ const TableLineItems = <T extends UpsertPOFormikProps | UpdatePOPaymentFormikPro
                 });
               }}
               type="number"
-              value={isNumber(lineItemRow?.quantity) ? lineItemRow.quantity : ''}
               style={{ width: hideProjectNumberColumn ? 100 : 80 }}
               lengthShowTooltip={hideProjectNumberColumn ? 7 : 5}
               hideArrowTypeNumber

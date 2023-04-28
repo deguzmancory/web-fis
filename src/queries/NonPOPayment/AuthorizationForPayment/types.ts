@@ -15,7 +15,7 @@ import {
 
 export interface AuthorizationGeneralInfo {
   loginName: string;
-  date: string;
+  createdDate: string;
   requestNumber: string;
   vendorName: string;
   vendorCode: string;

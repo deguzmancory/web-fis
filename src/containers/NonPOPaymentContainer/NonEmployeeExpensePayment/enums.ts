@@ -3,7 +3,7 @@ export enum NON_EMPLOYEE_TRAVEL_FORM_KEY {
 
   // SelectPayeeCategory
   LOGIN_NAME = 'loginName',
-  DATE = 'date',
+  DATE = 'createdDate',
   REQUEST_NUMBER = 'requestNumber',
   PAYEE_CATEGORY = 'payeeCategory',
 

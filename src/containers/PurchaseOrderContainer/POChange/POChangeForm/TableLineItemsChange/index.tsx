@@ -350,7 +350,6 @@ const TableLineItemsPOChange: React.FC<Props> = ({
                 });
               }}
               type="number"
-              value={isNumber(lineItemRow?.quantity) ? lineItemRow.quantity : ''}
               style={{ width: hideProjectNumberColumn ? 100 : 80 }}
               lengthShowTooltip={hideProjectNumberColumn ? 7 : 5}
               hideArrowTypeNumber

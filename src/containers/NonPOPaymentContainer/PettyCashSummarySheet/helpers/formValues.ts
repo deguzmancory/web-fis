@@ -3,11 +3,12 @@ import {
   PettyCashDetailResponse,
   UpsertPettyCashPayload,
 } from 'src/queries/NonPOPayment/PettyCash/types';
-import { PO_ACTION } from 'src/queries/PurchaseOrders';
+import { PO_ACTION, PO_DETAIL_STATUS } from 'src/queries/PurchaseOrders';
 import {
   DateFormat,
   formatDateApi,
   getDate,
+  getDateDisplay,
   isString,
   isoFormat,
   localTimeToHawaii,
@@ -27,7 +28,7 @@ export const getInitialPettyCashFormValue = ({
   return {
     ...emptyUpsertPettyCashFormValue,
     loginName: profile.username,
-    date: localTimeToHawaii(new Date(), DateFormat),
+    createdDate: localTimeToHawaii(new Date(), DateFormat),
   };
 };
 
@@ -38,7 +39,7 @@ export const getPettyCashFormValueFromResponse = ({
   response: PettyCashDetailResponse;
   profile: MyProfile;
 }): UpsertPettyCashFormValue => {
-  const { projectLineItems, remittanceLineItems, date, beginDate, endDate, ...formValue } =
+  const { projectLineItems, remittanceLineItems, createdDate, beginDate, endDate, ...formValue } =
     response;
 
   const transformedProjectLineItems =
@@ -59,6 +60,7 @@ export const getPettyCashFormValueFromResponse = ({
     action: null,
     placeholderFileAttachment: null,
 
+    createdDate: getDateDisplay(createdDate),
     beginDate: getDate(beginDate),
     endDate: getDate(endDate),
 
@@ -79,7 +81,7 @@ export const getUpsertPettyCashPayload = ({
     placeholderFileAttachment,
     vendorName,
     vendorCode,
-    date,
+    createdDate,
     remittanceLineItems,
     projectLineItems,
     beginDate,
@@ -114,7 +116,8 @@ export const getUpsertPettyCashPayload = ({
     id,
     action: action,
 
-    date: isEdit ? date : localTimeToHawaii(new Date(), isoFormat),
+    status: !isEdit ? PO_DETAIL_STATUS.PI_PENDING_SUBMITTAL : undefined,
+    createdDate: isEdit ? createdDate : localTimeToHawaii(new Date(), isoFormat),
 
     beginDate: formatDateApi(beginDate),
     endDate: formatDateApi(endDate),

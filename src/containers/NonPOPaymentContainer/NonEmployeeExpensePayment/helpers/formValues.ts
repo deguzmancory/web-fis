@@ -3,7 +3,7 @@ import {
   NonEmployeeTravelDetailResponse,
   UpsertNonEmployeeTravelPayload,
 } from 'src/queries/NonPOPayment/NonEmployeeTravel/types';
-import { PO_ACTION } from 'src/queries/PurchaseOrders';
+import { PO_ACTION, PO_DETAIL_STATUS } from 'src/queries/PurchaseOrders';
 import {
   DateFormat,
   convertNumberOrNull,
@@ -30,7 +30,7 @@ export const getInitialNonEmployeeTravelFormValue = ({
   return {
     ...emptyUpsertNonEmployeeTravelFormValue,
     loginName: profile.username,
-    date: localTimeToHawaii(new Date(), DateFormat),
+    createdDate: localTimeToHawaii(new Date(), DateFormat),
   };
 };
 
@@ -44,7 +44,7 @@ export const getNonEmployeeTravelFormValueFromResponse = ({
   const {
     projectLineItems,
     remittanceLineItems,
-    date,
+    createdDate,
     itineraries,
     fromServiceDate,
     toServiceDate,
@@ -90,7 +90,7 @@ export const getNonEmployeeTravelFormValueFromResponse = ({
     action: null,
     placeholderFileAttachment: null,
 
-    date: getDateDisplay(date),
+    createdDate: getDateDisplay(createdDate),
 
     fromServiceDate: getDate(fromServiceDate),
     toServiceDate: getDate(toServiceDate),
@@ -120,7 +120,7 @@ export const getUpsertNonEmployeeTravelPayload = ({
     placeholderFileAttachment,
     vendorName,
     vendorCode,
-    date,
+    createdDate,
     remittanceLineItems,
     projectLineItems,
     itineraries,
@@ -158,7 +158,8 @@ export const getUpsertNonEmployeeTravelPayload = ({
     id,
     action: action,
 
-    date: isEdit ? date : localTimeToHawaii(new Date(), isoFormat),
+    status: !isEdit ? PO_DETAIL_STATUS.PI_PENDING_SUBMITTAL : undefined,
+    createdDate: isEdit ? createdDate : localTimeToHawaii(new Date(), isoFormat),
 
     vendorName: isString(vendorName) ? vendorName : vendorName.name,
     vendorCode: isString(vendorCode) ? vendorCode : vendorCode.code,

@@ -6,7 +6,7 @@ import { NON_EMPLOYEE_TRAVEL_PAYEE_CATEGORY } from './enums';
 
 interface SelectPayeeCategory {
   loginName: string;
-  date: string; //miss api
+  createdDate: string; //miss api
   requestNumber: string;
   payeeCategory: NON_EMPLOYEE_TRAVEL_PAYEE_CATEGORY;
 }

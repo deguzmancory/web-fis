@@ -2,7 +2,7 @@ export enum AUTHORIZATION_FOR_PAYMENT_KEY {
   // General Info
   ID = 'id',
   LOGIN_NAME = 'loginName',
-  DATE = 'date',
+  DATE = 'createdDate',
   REQUEST_NUMBER = 'requestNumber',
   VENDOR_NAME = 'vendorName',
   VENDOR_CODE = 'vendorCode',

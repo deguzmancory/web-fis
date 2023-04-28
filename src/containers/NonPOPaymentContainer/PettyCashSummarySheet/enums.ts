@@ -3,7 +3,7 @@ export enum PETTY_CASH_FORM_KEY {
 
   //general info
   LOGIN_NAME = 'loginName',
-  DATE = 'date',
+  DATE = 'createdDate',
   REQUEST_NUMBER = 'requestNumber',
   BEGIN_DATE = 'beginDate',
   END_DATE = 'endDate',

@@ -1,7 +1,7 @@
 import { isEmpty } from 'lodash';
 import { DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS } from 'src/containers/PurchaseOrderContainer/POPayment/EquipmentInventoriesV2/helpers';
 import { getNumberOfEquipmentInventories } from 'src/containers/PurchaseOrderContainer/POPayment/helpers';
-import { MyProfile, PO_ACTION } from 'src/queries';
+import { MyProfile, PO_ACTION, PO_DETAIL_STATUS } from 'src/queries';
 import {
   AuthorizationPaymentResponse,
   UpsertAuthorizationPayload,
@@ -10,6 +10,7 @@ import {
   DateFormat,
   formatDateApi,
   getDate,
+  getDateDisplay,
   isString,
   isoFormat,
   localTimeToHawaii,
@@ -28,7 +29,7 @@ export const getInitialAuthorizationFormValue = ({
   return {
     ...emptyUpsertAuthorizationFormValue,
     loginName: profile.username,
-    date: localTimeToHawaii(new Date(), DateFormat),
+    createdDate: localTimeToHawaii(new Date(), DateFormat),
   };
 };
 
@@ -44,7 +45,7 @@ export const getUpsertAuthorizationPaymentPayload = ({
     placeholderFileAttachment,
     vendorName,
     vendorCode,
-    date,
+    createdDate,
     projectLineItems,
     remittanceLineItems,
     equipmentInventories,
@@ -68,9 +69,11 @@ export const getUpsertAuthorizationPaymentPayload = ({
 
   return {
     ...payloadProps,
+    id,
     action: action,
+    status: !isEdit ? PO_DETAIL_STATUS.PI_PENDING_SUBMITTAL : undefined,
 
-    date: isEdit ? date : localTimeToHawaii(new Date(), isoFormat),
+    createdDate: isEdit ? createdDate : localTimeToHawaii(new Date(), isoFormat),
 
     vendorName: isString(vendorName) ? vendorName : vendorName.name,
     vendorCode: isString(vendorCode) ? vendorCode : vendorCode.code,
@@ -120,7 +123,7 @@ export const getAuthorizationPaymentFormValueFromResponse = ({
     action: null,
     placeholderFileAttachment: null,
 
-    date: formatDateApi(response.date),
+    createdDate: getDateDisplay(response.createdDate),
     paymentTotal: Number(response.paymentTotal || 0),
     total: Number(response.total || 0),
 
