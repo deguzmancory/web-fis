@@ -5,8 +5,8 @@ import {
   POFileAttachment,
   POFileAttachmentResponse,
   PO_ACTION,
-  PO_DETAIL_STATUS,
 } from 'src/queries/PurchaseOrders';
+import { NON_PO_DETAIL_STATUS } from '../enums';
 import {
   NonPOPaymentProjectLineItem,
   NonPOPaymentRemittance,
@@ -58,8 +58,11 @@ export interface SharedAuthorizationDetail
   extends AuthorizationGeneralInfo,
     AuthorizationSignature,
     AuthorizationEquipmentInventories {
-  status?: PO_DETAIL_STATUS;
-  docType: string;
+  formName?: string;
+  shortFormName?: string;
+  status?: NON_PO_DETAIL_STATUS;
+  docType?: string;
+
   preferredPaymentMethod: string;
   preferredPaymentMethodTimestamp: string;
   paymentTotal: number;
@@ -73,8 +76,6 @@ export interface SharedAuthorizationDetail
   // TODO: Tuyen Tran will remove if don't use
   majorVersion?: string;
   minorVersion: number;
-  formName?: string;
-  shortFormName?: string;
 }
 
 export interface UpsertAuthorizationPayload extends SharedAuthorizationDetail {

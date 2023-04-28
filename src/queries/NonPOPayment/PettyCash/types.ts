@@ -56,6 +56,8 @@ export interface SharedPettyCashDetail
 
   attachments: POFileAttachment[];
   internalComments: string;
+  formName?: string;
+  shortFormName?: string;
 
   //get from response for logic and view purpose
   preferredPaymentMethod?: string;

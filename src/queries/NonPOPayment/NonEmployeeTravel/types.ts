@@ -84,7 +84,10 @@ export interface SharedNonEmployeeTravelDetail
   //get from response for logic and view purpose
   status?: PO_DETAIL_STATUS;
   auditTrails?: POAuditTrails[];
+
   documentType?: NON_PO_PAYMENT_DOCUMENT_TYPE;
+  formName?: string;
+  shortFormName?: string;
 
   total?: number;
   preferredPaymentMethod?: string;

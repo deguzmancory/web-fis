@@ -1,9 +1,9 @@
-import { MyProfile } from 'src/queries';
+import { MyProfile, NON_PO_FORM_NAME, NON_PO_SHORT_FORM_NAME } from 'src/queries';
 import {
   PettyCashDetailResponse,
   UpsertPettyCashPayload,
 } from 'src/queries/NonPOPayment/PettyCash/types';
-import { PO_ACTION, PO_DETAIL_STATUS } from 'src/queries/PurchaseOrders';
+import { PO_ACTION } from 'src/queries/PurchaseOrders';
 import {
   DateFormat,
   formatDateApi,
@@ -116,7 +116,9 @@ export const getUpsertPettyCashPayload = ({
     id,
     action: action,
 
-    status: !isEdit ? PO_DETAIL_STATUS.PI_PENDING_SUBMITTAL : undefined,
+    formName: NON_PO_FORM_NAME.PETTY_CASH_PAYMENT,
+    shortFormName: NON_PO_SHORT_FORM_NAME.PETTY_CASH_PAYMENT,
+
     createdDate: isEdit ? createdDate : localTimeToHawaii(new Date(), isoFormat),
 
     beginDate: formatDateApi(beginDate),

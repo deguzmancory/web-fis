@@ -76,7 +76,7 @@ export const allApprovedColumns = ({
               maxWidth: 80,
             }}
           >
-            <Typography variant="body2">{value ?? '--'}</Typography>
+            <Typography variant="body2">{transformNonPODocumentType(value)}</Typography>
           </Box>
         );
       },

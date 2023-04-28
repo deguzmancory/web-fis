@@ -8,3 +8,4 @@ export * from './useGetAuthorizationPaymentDetail';
 export * from './usePostAuthorizationPaymentCloneDocument';
 export * from './useUpdateAuthorizationPayment';
 export * from './useUploadAuthorizationFileAttachment';
+export * from './useViewAuthorizationPaymentFinalPdf';

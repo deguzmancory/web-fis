@@ -7,7 +7,13 @@ import { muiResponsive } from 'src/appConfig/constants';
 import EmptyTable from 'src/components/EmptyTable';
 import { getFileName, handleParseAndDownloadFile } from 'src/components/FilePreview/helper';
 import { LoadingCommon, Table } from 'src/components/common';
-import { useViewNonEmployeeTravelFinalPdf } from 'src/queries';
+import {
+  NON_PO_PAYMENT_DOCUMENT_TYPE,
+  useViewAuthorizationPaymentFinalPdf,
+  useViewNonEmployeeTravelFinalPdf,
+  useViewPersonalAutoFinalPdf,
+  useViewPettyCashFinalPdf,
+} from 'src/queries';
 import {
   NON_PO_LISTING_ITEM_KEY,
   NonPOListingItem,
@@ -154,6 +160,39 @@ const TableNonPOOrderList: FC<Props> = () => {
     },
   });
 
+  const { getFinalPdfAuthorizationPayment } = useViewAuthorizationPaymentFinalPdf({
+    onSuccess(_data) {
+      const url = _data.data.url;
+
+      setPdfUrl(url);
+    },
+    onError(error: Error) {
+      handleShowErrorMsg(error);
+    },
+  });
+
+  const { getPersonalAutoFinalPdf } = useViewPersonalAutoFinalPdf({
+    onSuccess(_data) {
+      const url = _data.data.url;
+
+      setPdfUrl(url);
+    },
+    onError(error: Error) {
+      handleShowErrorMsg(error);
+    },
+  });
+
+  const { getFinalPdfPettyCash } = useViewPettyCashFinalPdf({
+    onSuccess(_data) {
+      const url = _data.data.url;
+
+      setPdfUrl(url);
+    },
+    onError(error: Error) {
+      handleShowErrorMsg(error);
+    },
+  });
+
   const { nonPOListing, totalRecords, isFetching, setParams, handleInvalidateAllNonPOListing } =
     useGetAllNonPOListing({
       onError: (error) => handleShowErrorMsg(error),
@@ -188,9 +227,29 @@ const TableNonPOOrderList: FC<Props> = () => {
   const handleViewFinalPDF = useCallback(
     (rowData: NonPOListingItem) => {
       const id = rowData?.id;
-      getFinalPdfNonEmployeeTravel({ id: id });
+      switch (rowData?.documentType as NON_PO_PAYMENT_DOCUMENT_TYPE) {
+        case NON_PO_PAYMENT_DOCUMENT_TYPE.AUTHORIZATION_PAYMENT:
+          getFinalPdfAuthorizationPayment({ id: id });
+          return;
+        case NON_PO_PAYMENT_DOCUMENT_TYPE.NON_EMPLOYEE_TRAVEL_PAYMENT:
+          getFinalPdfNonEmployeeTravel({ id: id });
+          return;
+        case NON_PO_PAYMENT_DOCUMENT_TYPE.PERSONAL_AUTO_PAYMENT:
+          getPersonalAutoFinalPdf({ id: id });
+          return;
+        case NON_PO_PAYMENT_DOCUMENT_TYPE.PETTY_CASH_PAYMENT:
+          getFinalPdfPettyCash({ id: id });
+          return;
+        default:
+          return;
+      }
     },
-    [getFinalPdfNonEmployeeTravel]
+    [
+      getFinalPdfNonEmployeeTravel,
+      getFinalPdfAuthorizationPayment,
+      getPersonalAutoFinalPdf,
+      getFinalPdfPettyCash,
+    ]
   );
 
   const columns = useMemo(() => {

@@ -68,3 +68,27 @@ export enum UHPRNumber {
   F94 = 'F94',
   F95 = 'F95',
 }
+
+export enum NON_PO_FORM_NAME {
+  AUTHORIZATION_PAYMENT = 'Authorization for Payment',
+  NON_EMPLOYEE_TRAVEL_PAYMENT = 'Non Employee Travel Payment',
+  PERSONAL_AUTO_PAYMENT = 'Personal Auto Payment',
+  PETTY_CASH_PAYMENT = 'Petty Cash Payment',
+}
+
+export enum NON_PO_SHORT_FORM_NAME {
+  AUTHORIZATION_PAYMENT = 'Auth For Pmnt',
+  NON_EMPLOYEE_TRAVEL_PAYMENT = 'Non Emp Trvl',
+  PERSONAL_AUTO_PAYMENT = 'Personal Auto Payment',
+  PETTY_CASH_PAYMENT = 'Petty Cash',
+}
+
+export enum NON_PO_DETAIL_STATUS {
+  PI_PENDING_SUBMITTAL = 'Pending PI Submittal',
+  FA_PENDING_APPROVAL = 'Fa Pending Approval',
+  PI_ADDITIONAL_INFO_REQUESTED = 'Pi Additional Info Requested',
+  PI_DISAPPROVED = 'Pi Disapproved',
+  FA_ADDITIONAL_INFO_REQUESTED_RCUH = 'Fa Additional Info Requested Rcuh',
+  RCUH_PENDING_RCUH_APPROVAL = 'Rcuh Pending Rcuh Approval',
+  FINAL = 'Final',
+}

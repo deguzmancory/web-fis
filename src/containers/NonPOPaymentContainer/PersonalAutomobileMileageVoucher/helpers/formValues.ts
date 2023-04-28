@@ -1,4 +1,4 @@
-import { MyProfile, PO_ACTION, PO_DETAIL_STATUS } from 'src/queries';
+import { MyProfile, NON_PO_FORM_NAME, NON_PO_SHORT_FORM_NAME, PO_ACTION } from 'src/queries';
 import {
   DateFormat,
   formatDateApi,
@@ -124,7 +124,8 @@ export const getUpsertPersonalAutomobileMileageVoucherPayload = ({
     ...payloadProps,
     id,
     action: action,
-    status: !isEdit ? PO_DETAIL_STATUS.PI_PENDING_SUBMITTAL : undefined,
+    formName: NON_PO_FORM_NAME.PERSONAL_AUTO_PAYMENT,
+    shortFormName: NON_PO_SHORT_FORM_NAME.PERSONAL_AUTO_PAYMENT,
 
     createdDate: isEdit ? createdDate : localTimeToHawaii(new Date(), isoFormat),
     vendorName: isString(vendorName) ? vendorName : vendorName.name,

@@ -1,7 +1,7 @@
 import { isEmpty } from 'lodash';
 import { DEFAULT_NUMBER_OF_PAYMENT_EQUIPMENT_ITEMS } from 'src/containers/PurchaseOrderContainer/POPayment/EquipmentInventoriesV2/helpers';
 import { getNumberOfEquipmentInventories } from 'src/containers/PurchaseOrderContainer/POPayment/helpers';
-import { MyProfile, PO_ACTION, PO_DETAIL_STATUS } from 'src/queries';
+import { MyProfile, NON_PO_FORM_NAME, NON_PO_SHORT_FORM_NAME, PO_ACTION } from 'src/queries';
 import {
   AuthorizationPaymentResponse,
   UpsertAuthorizationPayload,
@@ -71,8 +71,9 @@ export const getUpsertAuthorizationPaymentPayload = ({
     ...payloadProps,
     id,
     action: action,
-    status: !isEdit ? PO_DETAIL_STATUS.PI_PENDING_SUBMITTAL : undefined,
 
+    formName: NON_PO_FORM_NAME.AUTHORIZATION_PAYMENT,
+    shortFormName: NON_PO_SHORT_FORM_NAME.AUTHORIZATION_PAYMENT,
     createdDate: isEdit ? createdDate : localTimeToHawaii(new Date(), isoFormat),
 
     vendorName: isString(vendorName) ? vendorName : vendorName.name,
