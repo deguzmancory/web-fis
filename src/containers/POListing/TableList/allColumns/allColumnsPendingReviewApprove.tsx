@@ -4,6 +4,7 @@ import { MUIDataTableColumn, MUIDataTableMeta } from 'mui-datatables';
 import { PURCHASE_ORDER_KEY, PurchaseOrderItem } from 'src/queries/PurchasingListing';
 import { localTimeToHawaii } from 'src/utils';
 import { getPOLinkByDocumentType, getPOStatus, transformDocumentType } from '../helpers';
+import { ArrowDropDown } from '@mui/icons-material';
 
 export const allColumnsPendingReviewApprove = (): MUIDataTableColumn[] => [
   {
@@ -116,10 +117,29 @@ export const allColumnsPendingReviewApprove = (): MUIDataTableColumn[] => [
 
   {
     name: PURCHASE_ORDER_KEY.MODIFIED_DATE,
-    label: 'Modified date',
     options: {
       filter: false,
       sort: true,
+
+      customHeadLabelRender: () => {
+        return (
+          <Stack>
+            <Typography
+              sx={{
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: 14,
+                display: 'flex',
+                transform: 'translateY(2px)',
+              }}
+            >
+              Modified date
+              <ArrowDropDown sx={{ position: 'relative', transform: 'translateY(-3px)' }} />
+            </Typography>
+          </Stack>
+        );
+      },
+      setCellHeaderProps: () => ({ style: { width: '200px' } }), // Set the width of the column
 
       customBodyRender: (value: string) => {
         return (
