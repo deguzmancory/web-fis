@@ -16,14 +16,12 @@ import {
 } from './CustomSearch/SearchPendingReviewApprove/helpers';
 import { purchasingListType } from './helpers';
 import { paymentMethodOptions } from 'src/containers/POListing/TableList/CustomSearch/SearchApproved/helpers';
-import { ArrowDropDown } from '@mui/icons-material';
 
 export interface SearchChip {
   id: string;
   key: string;
   value: string;
-  label: React.ReactNode;
-  icon: React.ReactNode;
+  label: string;
 }
 
 const POHeaderTable: FC<Props> = ({ searchValues, currentRole, allowSelectWorkflow = true }) => {
@@ -76,7 +74,6 @@ const POHeaderTable: FC<Props> = ({ searchValues, currentRole, allowSelectWorkfl
         name: 'modifiedStartDate;modifiedEndDate',
         nameSplitter: ';',
         label: 'Modified Date',
-        icon: <ArrowDropDown />,
         value: [searchValues.modifiedStartDate, searchValues.modifiedEndDate],
         type: 'dateRange',
       },
