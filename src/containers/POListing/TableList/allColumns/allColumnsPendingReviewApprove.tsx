@@ -117,6 +117,7 @@ export const allColumnsPendingReviewApprove = (): MUIDataTableColumn[] => [
 
   {
     name: PURCHASE_ORDER_KEY.MODIFIED_DATE,
+    label: 'Modified Date',
     options: {
       filter: false,
       sort: true,
@@ -133,7 +134,7 @@ export const allColumnsPendingReviewApprove = (): MUIDataTableColumn[] => [
                 transform: 'translateY(2px)',
               }}
             >
-              Modified date
+              Modified Date
               <ArrowDropDown sx={{ position: 'relative', transform: 'translateY(-3px)' }} />
             </Typography>
           </Stack>
